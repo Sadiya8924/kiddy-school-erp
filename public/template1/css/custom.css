@@ -1,0 +1,38 @@
+#sidebar {
+    transition: width 0.3s ease; 
+    width: 280px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#sidebar.collapsed {
+    width: 85px;
+}
+
+#sidebar.collapsed .profile-info, 
+#sidebar.collapsed .nav-link span {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+#sidebar.collapsed .nav-link i {
+    margin-right: 0 !important;
+    font-size: 1.5rem;
+    transition: margin 0.3s ease;
+}
+
+.profile-section img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: all 0.3s ease; 
+}
+
+#sidebar.collapsed .profile-section img {
+    width: 50px !important;
+    height: 50px !important;
+}
+
+#main-content {
+    transition: margin-left 0.3s ease; 
+}

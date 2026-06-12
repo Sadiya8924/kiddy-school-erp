@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@yield('title', 'Super Admin') — TK Ceria</title>
+  <link rel="stylesheet" href="/template2/css/styles.min.css" />
+  <link rel="stylesheet" href="/template2/css/icons/tabler-icons/tabler-icons.css" />
+  
+  <style>
+    .left-sidebar {
+      transition: margin-left 0.3s ease, transform 0.3s ease !important;
+    }
+    .body-wrapper {
+      transition: margin-left 0.3s ease, width 0.3s ease !important;
+    }
+    body.sidebar-hidden .left-sidebar {
+      transform: translateX(-100%) !important;
+      margin-left: -270px !important;
+    }
+    @media (min-width: 992px) {
+      body.sidebar-hidden .body-wrapper {
+        margin-left: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+
+      @include('layouts.partials.sidebar')
+
+      <div class="body-wrapper">
+
+        <header class="app-header">
+          <nav class="navbar navbar-expand-lg navbar-light">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                  <i class="ti ti-menu-2"></i>
+                </a>
+              </li>
+            </ul>
+
+            <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+              <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+
+                <li class="nav-item d-none d-md-block me-4 border-end pe-4">
+                    <form action="{{ route('superadmin.switch_school') }}" method="POST" id="formSwitchSchool" class="d-flex align-items-center gap-2 m-0">
+                        @csrf
+                        <iconify-icon icon="solar:buildings-bold-duotone" class="fs-6 text-primary"></iconify-icon>
+                        <select name="active_school_id" class="form-select form-select-sm border-primary text-primary fw-bold shadow-sm" onchange="document.getElementById('formSwitchSchool').submit()" style="min-width: 200px;">
+                            <option value="">-- Mode Pusat (Semua Data) --</option>
+                            @foreach(\App\Models\School::where('status', 'aktif')->get() as $school)
+                                <option value="{{ $school->id }}" {{ session('active_school_id') == $school->id ? 'selected' : '' }}>
+                                    Pantau: {{ $school->nama_sekolah }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link nav-icon-hover" href="javascript:void(0)" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                           style="width:35px;height:35px;font-size:14px;">
+                        {{ strtoupper(substr(auth()->user()->name ?? 'S', 0, 1)) }}
+                      </div>
+                      <span class="d-none d-md-block fw-semibold text-dark small">
+                        {{ auth()->user()->name ?? 'User' }}
+                      </span>
+                    </div>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up">
+                    <div class="message-body">
+                      <p class="mb-1 px-3 py-1 text-muted small">
+                        <span class="badge bg-danger-subtle text-danger">Super Admin</span>
+                      </p>
+                      <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger">
+                          <i class="ti ti-logout fs-6"></i> Logout
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </header>
+
+        <div class="container-fluid">
+
+          {{-- Flash messages --}}
+          @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+              <i class="ti ti-circle-check me-2"></i>{{ session('success') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          @endif
+          @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+              <i class="ti ti-alert-circle me-2"></i>{{ session('error') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          @endif
+
+          @yield('content')
+        </div>
+
+      </div>
+  </div> 
+  
+  <script src="/template2/libs/jquery/dist/jquery.min.js"></script>
+  <script src="/template2/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/template2/js/sidebarmenu.js"></script>
+  <script src="/template2/js/app.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const togglers = document.querySelectorAll(".sidebartoggler");
+      togglers.forEach(function (toggler) {
+        toggler.addEventListener("click", function (e) {
+          e.preventDefault();
+          document.body.classList.toggle("sidebar-hidden");
+        });
+      });
+    });
+  </script>
+
+  @stack('scripts')
+</body>
+</html>

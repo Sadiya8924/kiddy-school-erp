@@ -423,7 +423,7 @@ Route::middleware(['auth'])->group(function () {
 
         // 2. Tambahkan menu-menu yang sebelumnya Ghaib / Belum ada di DB
         $missing = [
-            ['name' => 'Manajemen LMS', 'route_name' => 'lms.index', 'icon' => 'solar:folder-with-files-bold-duotone', 'category' => 'KEGIATAN', 'role_access' => 'admin,guru,kepsek'],
+            ['name' => 'Manajemen Materi', 'route_name' => 'lms.index', 'icon' => 'solar:folder-with-files-bold-duotone', 'category' => 'KEGIATAN', 'role_access' => 'admin,guru,kepsek'],
             ['name' => 'Jurnal Harian', 'route_name' => 'jurnal.index', 'icon' => 'solar:book-bookmark-bold-duotone', 'category' => 'KEGIATAN', 'role_access' => 'admin,guru,kepsek'],
             ['name' => 'Arsip Rapor', 'route_name' => 'arsip.index', 'icon' => 'solar:folder-with-files-bold-duotone', 'category' => 'RAPOR', 'role_access' => 'admin,guru,kepsek'],
             ['name' => 'Template Rapor', 'route_name' => 'template.index', 'icon' => 'solar:document-add-bold-duotone', 'category' => 'SISTEM', 'role_access' => 'admin,kepsek'],

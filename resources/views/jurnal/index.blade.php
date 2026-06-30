@@ -4,7 +4,7 @@
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
     <div>
         @if(isset($pageType) && $pageType === 'lms')
-            <h2 class="fw-semibold text-dark mb-1">Manajemen LMS</h2>
+            <h2 class="fw-semibold text-dark mb-1">Manajemen Materi</h2>
             <span class="text-muted fs-3">Kelola materi pembelajaran dan modul untuk siswa.</span>
         @else
             <h2 class="fw-semibold text-dark mb-1">Jurnal Harian</h2>

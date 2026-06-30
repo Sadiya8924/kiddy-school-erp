@@ -115,7 +115,7 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->is('manajemen-lms*') ? 'active' : '' }}" href="/manajemen-lms">
                             <span><iconify-icon icon="solar:folder-with-files-bold-duotone" class="fs-6"></iconify-icon></span>
-                            <span class="hide-menu">Manajemen LMS</span>
+                            <span class="hide-menu">Manajemen Materi</span>
                         </a>
                     </li>
                     <li class="sidebar-item">

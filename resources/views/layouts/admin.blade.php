@@ -91,6 +91,79 @@
     <!-- Library Chart (ApexCharts) untuk Grafik -->
     <script src="{{ asset('template2/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Global SweetAlert Override untuk Semua Fitur -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Intercept tag <a> atau <button> yang pakai onclick="return confirm(...)"
+            document.body.addEventListener('click', function(e) {
+                let el = e.target.closest('[onclick*="confirm"]');
+                if (el) {
+                    e.preventDefault();
+                    e.stopPropagation(); // Cegah event default
+                    
+                    let onclickText = el.getAttribute('onclick');
+                    let match = onclickText.match(/confirm\(['"](.*?)['"]\)/);
+                    let message = match ? match[1] : 'Apakah Anda yakin ingin melanjutkan aksi ini?';
+
+                    Swal.fire({
+                        title: 'Konfirmasi',
+                        text: message,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6e7881',
+                        confirmButtonText: 'Ya, Lanjutkan!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            el.removeAttribute('onclick'); // Hapus atribut
+                            
+                            // Eksekusi ulang
+                            if (el.tagName.toLowerCase() === 'button' && el.type === 'submit') {
+                                if (el.form) el.form.submit();
+                            } else {
+                                el.click(); // Klik ulang secara programmatis
+                            }
+                        }
+                    });
+                }
+            }, true); // Gunakan capture phase
+
+            // 2. Intercept tag <form> yang pakai onsubmit="return confirm(...)"
+            document.body.addEventListener('submit', function(e) {
+                let form = e.target;
+                if (form.hasAttribute('onsubmit')) {
+                    let onsubmitText = form.getAttribute('onsubmit');
+                    if (onsubmitText.includes('confirm(')) {
+                        e.preventDefault(); // Hentikan submit bawaan
+                        
+                        let match = onsubmitText.match(/confirm\(['"](.*?)['"]\)/);
+                        let message = match ? match[1] : 'Konfirmasi tindakan ini?';
+
+                        Swal.fire({
+                            title: 'Konfirmasi',
+                            text: message,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#6e7881',
+                            confirmButtonText: 'Ya, Lanjutkan!',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.removeAttribute('onsubmit'); // Hapus attribute
+                                form.submit(); // Lanjutkan submit
+                            }
+                        });
+                    }
+                }
+            }, true);
+        });
+    </script>
+
     <!-- Tempat untuk naruh Script JS tambahan per-halaman -->
     @stack('scripts')
 </body>

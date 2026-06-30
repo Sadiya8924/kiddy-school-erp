@@ -113,6 +113,12 @@
                     
                     @if($hasMenu('Jurnal Harian'))
                     <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->is('manajemen-lms*') ? 'active' : '' }}" href="/manajemen-lms">
+                            <span><iconify-icon icon="solar:folder-with-files-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Manajemen LMS</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->is('jurnal-harian*') ? 'active' : '' }}" href="/jurnal-harian">
                             <span><iconify-icon icon="solar:book-bookmark-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Jurnal Harian</span>
@@ -208,7 +214,13 @@
                     
                     @if($hasMenu('Rapor Anak'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="/rapor-anak">
+                        <a class="sidebar-link {{ request()->is('materi-anak*') ? 'active' : '' }}" href="/materi-anak">
+                            <span><iconify-icon icon="solar:book-bookmark-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Materi & Jurnal</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->is('rapor-anak*') ? 'active' : '' }}" href="/rapor-anak">
                             <span><iconify-icon icon="solar:notebook-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Rapor Anak</span>
                         </a>

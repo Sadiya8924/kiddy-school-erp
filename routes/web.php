@@ -131,7 +131,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/data-siswa', [SiswaController::class, 'index'])->name('data-siswa');
         Route::get('/siswa/{id}', [SiswaController::class, 'show'])->name('siswa.show');
         
-        Route::get('/jurnal-harian', [JurnalHarianController::class, 'index'])->name('jurnal.index');
+        Route::get('/manajemen-lms', [JurnalHarianController::class, 'lmsIndex'])->name('lms.index');
+        Route::get('/jurnal-harian', [JurnalHarianController::class, 'jurnalIndex'])->name('jurnal.index');
         Route::get('/jurnal-harian/materi/{materi_id}/kelas/{kelas_id}', [JurnalHarianController::class, 'showKelas'])->name('jurnal.kelas.show');
         Route::get('/jurnal-harian/download-zip', [JurnalHarianController::class, 'downloadZip'])->name('jurnal.zip');
         
@@ -282,6 +283,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/jurnal-harian/materi', [JurnalHarianController::class, 'storeMateri'])->name('jurnal.materi.store');
         Route::delete('/jurnal-harian/materi/{id}', [JurnalHarianController::class, 'destroyMateri'])->name('jurnal.materi.destroy');
+        Route::post('/jurnal-harian/materi/{id}/acc', [JurnalHarianController::class, 'accMateri'])->name('jurnal.materi.acc')->middleware('role:super_admin,admin,kepsek');
+        Route::post('/jurnal-harian/materi/{id}/tolak', [JurnalHarianController::class, 'tolakMateri'])->name('jurnal.materi.tolak')->middleware('role:super_admin,admin,kepsek');
         Route::post('/jurnal-harian/siswa', [JurnalHarianController::class, 'storeJurnalSiswa'])->name('jurnal.siswa.store');
         Route::delete('/jurnal-harian/siswa/{id}', [JurnalHarianController::class, 'destroyJurnalSiswa'])->name('jurnal.siswa.destroy');
 
@@ -401,6 +404,10 @@ Route::middleware(['auth'])->group(function () {
             $riwayat = \App\Models\PerkembanganFisik::where('siswa_id', $siswa->id)->orderBy('tgl_periksa', 'desc')->get();
             return view('walimurid.perkembangan', compact('siswa', 'riwayat'));
         })->name('walimurid.perkembangan');
+        
+        Route::get('/materi-anak', [JurnalHarianController::class, 'waliMuridMateri'])->name('walimurid.materi');
+        Route::post('/materi-anak/{id}/read', [JurnalHarianController::class, 'markMateriRead'])->name('walimurid.materi.read');
+        Route::post('/materi-anak/{id}/comment', [JurnalHarianController::class, 'storeMateriComment'])->name('walimurid.materi.comment');
     });
 
     Route::get('/magic-fix-menu', function() {
@@ -416,6 +423,7 @@ Route::middleware(['auth'])->group(function () {
 
         // 2. Tambahkan menu-menu yang sebelumnya Ghaib / Belum ada di DB
         $missing = [
+            ['name' => 'Manajemen LMS', 'route_name' => 'lms.index', 'icon' => 'solar:folder-with-files-bold-duotone', 'category' => 'KEGIATAN', 'role_access' => 'admin,guru,kepsek'],
             ['name' => 'Jurnal Harian', 'route_name' => 'jurnal.index', 'icon' => 'solar:book-bookmark-bold-duotone', 'category' => 'KEGIATAN', 'role_access' => 'admin,guru,kepsek'],
             ['name' => 'Arsip Rapor', 'route_name' => 'arsip.index', 'icon' => 'solar:folder-with-files-bold-duotone', 'category' => 'RAPOR', 'role_access' => 'admin,guru,kepsek'],
             ['name' => 'Template Rapor', 'route_name' => 'template.index', 'icon' => 'solar:document-add-bold-duotone', 'category' => 'SISTEM', 'role_access' => 'admin,kepsek'],

@@ -9,8 +9,8 @@ class JurnalHarian extends Model
     use HasFactory;
     
     protected $fillable = [
-        'school_id', 'kelas_id', 'materi_id', 'siswa_id', 'user_id', 'tanggal', 
-        'tema', 'kegiatan', 'catatan', 'foto', 'video'
+        'school_id', 'kelas_id', 'materi_id', 'siswa_id', 'user_id', 'tanggal', 'presensi', 'mood',
+        'tema', 'kegiatan', 'catatan', 'catatan_khusus', 'catatan_kepsek', 'foto', 'video'
     ];
 
     public function kelas() {

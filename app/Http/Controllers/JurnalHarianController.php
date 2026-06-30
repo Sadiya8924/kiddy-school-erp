@@ -13,49 +13,95 @@ use Illuminate\Support\Facades\DB;
 class JurnalHarianController extends Controller
 {
     // 1. HALAMAN UTAMA (LIST MATERI / CARD)
-    public function index(Request $request)
+    public function lmsIndex(Request $request)
+    {
+        return $this->renderIndex('lms');
+    }
+
+    public function jurnalIndex(Request $request)
+    {
+        return $this->renderIndex('jurnal');
+    }
+
+    private function renderIndex($pageType)
     {
         $user = Auth::user();
         $schoolId = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
         
-        // Cari kelas & materi berdasarkan Role
+        // Fetch semua kelas untuk dropdown form
+        $list_kelas = Kelas::where('school_id', $schoolId)->get();
+
+        // Cari materi berdasarkan Role
         if ($user->role === 'guru' && $user->kelas_id) {
-            $list_kelas = Kelas::where('id', $user->kelas_id)->get();
-            $kelompoks = $list_kelas->pluck('kelompok')->filter()->toArray();
-            $materis = MateriJurnal::where('school_id', $schoolId)
-                        ->whereIn('kelompok', $kelompoks)
-                        ->latest('tanggal_dibuat')
-                        ->get();
+            $my_kelas = $list_kelas->firstWhere('id', $user->kelas_id);
+            $kelompoks = $my_kelas && $my_kelas->kelompok ? [$my_kelas->kelompok] : [];
+            
+            $query = MateriJurnal::where('school_id', $schoolId);
+            
+            if ($pageType === 'jurnal') {
+                $query->whereIn('kelompok', $kelompoks)->where('status', 'Disetujui');
+            } else {
+                $query->where(function($q) use ($user, $kelompoks) {
+                    $q->where('user_id', $user->id)
+                      ->orWhere(function($q2) use ($kelompoks) {
+                          $q2->whereIn('kelompok', $kelompoks)->where('status', 'Disetujui');
+                      });
+                });
+            }
+            $materis = $query->latest('tanggal_dibuat')->get();
         } else {
-            $list_kelas = Kelas::where('school_id', $schoolId)->get();
-            $materis = MateriJurnal::where('school_id', $schoolId)
-                        ->latest('tanggal_dibuat')
-                        ->get();
+            $query = MateriJurnal::where('school_id', $schoolId);
+            if ($pageType === 'jurnal') {
+                $query->where('status', 'Disetujui');
+            }
+            $materis = $query->latest('tanggal_dibuat')->get();
         }
 
-        return view('jurnal.index', compact('materis', 'list_kelas'));
+        return view('jurnal.index', compact('materis', 'list_kelas', 'pageType'));
     }
 
-    // 2. ADMIN BIKIN MATERI BARU
+    // 2. GURU / ADMIN BIKIN MATERI BARU
     public function storeMateri(Request $request)
     {
         $request->validate([
-            'kelompok'       => 'required|in:A,B,PAUD',
-            'judul_materi'   => 'required|string|max:255',
-            'tanggal_dibuat' => 'required|date',
+            'kelas_ids'           => 'required|array|min:1',
+            'judul_materi'        => 'required|string|max:255',
+            'tujuan_pembelajaran' => 'required|string',
+            'file_materi'         => 'nullable|file|mimes:pdf,jpg,jpeg,png,mp4|max:20480',
+            'status_action'       => 'required|in:DRAFT,Menunggu ACC',
+            'tanggal_tayang'      => 'nullable|date',
         ]);
 
         $schoolId = Auth::user()->isSuperAdmin() ? session('active_school_id') : Auth::user()->school_id;
+        
+        // Auto-approve if Kepsek/Admin, otherwise use the action from the button
+        $status = in_array(Auth::user()->role, ['admin', 'kepsek', 'super_admin']) ? 'Disetujui' : $request->status_action;
 
-        MateriJurnal::create([
-            'school_id'      => $schoolId,
-            'kelompok'       => $request->kelompok,
-            'judul_materi'   => $request->judul_materi,
-            'deskripsi'      => $request->deskripsi,
-            'tanggal_dibuat' => $request->tanggal_dibuat,
+        $filePath = null;
+        if ($request->hasFile('file_materi')) {
+            $filePath = $request->file('file_materi')->store('materi_media', 'public');
+        }
+
+        // Get default kelompok from first selected class to maintain backward compatibility
+        $firstKelas = Kelas::find($request->kelas_ids[0]);
+
+        $materi = MateriJurnal::create([
+            'school_id'           => $schoolId,
+            'user_id'             => Auth::id(),
+            'kelompok'            => $firstKelas ? $firstKelas->kelompok : 'A',
+            'judul_materi'        => $request->judul_materi,
+            'deskripsi'           => $request->deskripsi,
+            'tujuan_pembelajaran' => $request->tujuan_pembelajaran,
+            'file_materi'         => $filePath,
+            'tanggal_dibuat'      => now()->toDateString(),
+            'tanggal_tayang'      => $request->tanggal_tayang,
+            'status'              => $status,
         ]);
 
-        return back()->with('success', 'Materi Jurnal berhasil ditambahkan!');
+        $materi->kelas_targets()->sync($request->kelas_ids);
+
+        $message = $status == 'DRAFT' ? 'Materi berhasil disimpan sebagai Draft.' : 'Materi berhasil ditambahkan dan Menunggu ACC Kepsek!';
+        return back()->with('success', $message);
     }
 
     public function destroyMateri($id)
@@ -92,7 +138,20 @@ class JurnalHarianController extends Controller
             ->get()
             ->keyBy('siswa_id');
 
-        return view('jurnal.show', compact('materi', 'kelas', 'siswas', 'jurnals'));
+        $readReceipts = \DB::table('materi_read_receipts')
+            ->join('users', 'materi_read_receipts.user_id', '=', 'users.id')
+            ->where('materi_id', $materi_id)
+            ->select('users.name', 'materi_read_receipts.read_at')
+            ->get();
+
+        $comments = \DB::table('materi_comments')
+            ->join('users', 'materi_comments.user_id', '=', 'users.id')
+            ->where('materi_id', $materi_id)
+            ->select('materi_comments.*', 'users.name')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return view('jurnal.show', compact('materi', 'kelas', 'siswas', 'jurnals', 'readReceipts', 'comments'));
     }
 
     // 4. SIMPAN JURNAL (FOTO & KEGIATAN PER ANAK)
@@ -102,6 +161,7 @@ class JurnalHarianController extends Controller
             'materi_id' => 'required',
             'siswa_id'  => 'required',
             'kelas_id'  => 'required',
+            'presensi'  => 'required|in:Hadir,Izin,Sakit,Alpa',
             'kegiatan'  => 'required|string',
             'foto'      => 'nullable|image|mimes:jpeg,png,jpg|max:5120', 
             'video'     => 'nullable|mimes:mp4,mov,avi|max:20480', 
@@ -115,22 +175,36 @@ class JurnalHarianController extends Controller
         if ($request->hasFile('foto')) $fotoPath = $request->file('foto')->store('jurnal_media/foto', 'public');
         if ($request->hasFile('video')) $videoPath = $request->file('video')->store('jurnal_media/video', 'public');
 
+        // Allow Kepsek to update only catatan_kepsek without changing other fields
+        $jurnalData = [
+            'school_id' => $schoolId,
+            'user_id'   => Auth::id(), // Still the one who filled it, or we shouldn't overwrite user_id if Kepsek edits.
+            'kelas_id'  => $request->kelas_id,
+            'tema'      => $materi->judul_materi, 
+            'tanggal'   => $materi->tanggal_dibuat,
+            'presensi'  => $request->presensi,
+            'mood'      => $request->mood,
+            'kegiatan'  => $request->kegiatan,
+            'catatan'   => $request->catatan,
+            'catatan_khusus' => $request->catatan_khusus,
+        ];
+
+        // Jika foto/video diupload, tambahkan ke data yang diupdate
+        if ($fotoPath) $jurnalData['foto'] = $fotoPath;
+        if ($videoPath) $jurnalData['video'] = $videoPath;
+
+        // Jika Kepsek yang mengedit, tambahkan catatan_kepsek dan jangan ubah user_id pembuat jurnal
+        if (Auth::user()->role === 'kepsek' && $request->has('catatan_kepsek')) {
+            $jurnalData['catatan_kepsek'] = $request->catatan_kepsek;
+            unset($jurnalData['user_id']); // Biarkan user_id tetap milik guru
+        }
+
         JurnalHarian::updateOrCreate(
             [
                 'materi_id' => $request->materi_id,
                 'siswa_id'  => $request->siswa_id,
             ],
-            [
-                'school_id' => $schoolId,
-                'user_id'   => Auth::id(),
-                'kelas_id'  => $request->kelas_id,
-                'tema'      => $materi->judul_materi, 
-                'tanggal'   => $materi->tanggal_dibuat,
-                'kegiatan'  => $request->kegiatan,
-                'catatan'   => $request->catatan,
-                'foto'      => $fotoPath ?? DB::raw('foto'),
-                'video'     => $videoPath ?? DB::raw('video'),
-            ]
+            $jurnalData
         );
 
         return back()->with('success', 'Jurnal siswa berhasil disimpan!');
@@ -182,5 +256,103 @@ class JurnalHarianController extends Controller
             }
         }
         return back()->with('error', 'Gagal membuat file ZIP.');
+    }
+
+    // 6. ACC / TOLAK MATERI OLEH KEPSEK
+    public function accMateri($id)
+    {
+        $materi = MateriJurnal::findOrFail($id);
+        
+        // Edge Case: Kepsek ACC materi yang sudah ditarik guru (menjadi DRAFT)
+        if ($materi->status === 'DRAFT') {
+            return back()->with('error', 'Tindakan diblokir: Materi ini sudah ditarik oleh guru.');
+        }
+
+        $materi->update(['status' => 'Disetujui', 'catatan_penolakan' => null]);
+        
+        // TODO: Trigger Notifikasi ke Guru dan Wali Murid
+        
+        return back()->with('success', "Materi '{$materi->judul_materi}' telah disetujui dan sekarang dapat diakses oleh wali murid kelompok {$materi->kelompok}.");
+    }
+
+    public function tolakMateri(Request $request, $id)
+    {
+        $request->validate(
+            ['catatan_penolakan' => 'required|string|min:10'],
+            ['catatan_penolakan.required' => 'Mohon isi catatan penolakan agar guru dapat melakukan revisi.', 'catatan_penolakan.min' => 'Catatan penolakan minimal 10 karakter.']
+        );
+        $materi = MateriJurnal::findOrFail($id);
+        $materi->update(['status' => 'Ditolak', 'catatan_penolakan' => $request->catatan_penolakan]);
+        return back()->with('success', 'Materi berhasil ditolak dengan memberikan catatan.');
+    }
+
+    // 7. HALAMAN WALI MURID
+    public function waliMuridMateri()
+    {
+        $user = Auth::user();
+        $siswa = \App\Models\Siswa::where('school_id', $user->school_id)->where('email', $user->email)->first();
+        if (!$siswa) { $siswa = \App\Models\Siswa::where('school_id', $user->school_id)->first(); }
+        if (!$siswa) return "Belum ada data siswa di sekolah ini.";
+
+        $semesterAktif = Semester::where('is_active', true)->first();
+        $kelasSiswa = null;
+        if ($semesterAktif) {
+            $anggota = \DB::table('anggota_kelas')->where('siswa_id', $siswa->id)->where('semester_id', $semesterAktif->id)->first();
+            if ($anggota) $kelasSiswa = Kelas::find($anggota->kelas_id);
+        }
+        
+        if (!$kelasSiswa) return "Siswa belum memiliki kelas aktif.";
+
+        $materis = MateriJurnal::where('school_id', $user->school_id)
+            ->where('kelompok', $kelasSiswa->kelompok)
+            ->where('status', 'Disetujui')
+            ->latest('tanggal_dibuat')
+            ->get();
+
+        $jurnals = JurnalHarian::where('siswa_id', $siswa->id)
+            ->whereIn('materi_id', $materis->pluck('id'))
+            ->get()->keyBy('materi_id');
+
+        $readReceipts = \DB::table('materi_read_receipts')
+            ->where('user_id', $user->id)
+            ->pluck('materi_id')->toArray();
+            
+        $comments = \DB::table('materi_comments')
+            ->join('users', 'materi_comments.user_id', '=', 'users.id')
+            ->select('materi_comments.*', 'users.name')
+            ->orderBy('created_at', 'asc')
+            ->get()->groupBy('materi_id');
+
+        return view('walimurid.materi', compact('siswa', 'kelasSiswa', 'materis', 'jurnals', 'readReceipts', 'comments'));
+    }
+
+    // 8. INTERAKSI WALI MURID
+    public function markMateriRead($id)
+    {
+        $materi = MateriJurnal::findOrFail($id);
+        
+        \DB::table('materi_read_receipts')->updateOrInsert(
+            ['materi_id' => $materi->id, 'user_id' => Auth::id()],
+            ['read_at' => now(), 'created_at' => now(), 'updated_at' => now()]
+        );
+
+        return back()->with('success', 'Terima kasih, materi telah ditandai sudah dibaca.');
+    }
+
+    public function storeMateriComment(Request $request, $id)
+    {
+        $request->validate(['komentar' => 'required|string|max:1000']);
+        
+        $materi = MateriJurnal::findOrFail($id);
+        
+        \DB::table('materi_comments')->insert([
+            'materi_id' => $materi->id,
+            'user_id' => Auth::id(),
+            'komentar' => $request->komentar,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return back()->with('success', 'Komentar berhasil ditambahkan.');
     }
 }

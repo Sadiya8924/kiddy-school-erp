@@ -31,6 +31,53 @@
         </li>
         @endif
 
+        <!-- ======================================================== -->
+        <!-- NOTIFICATION BELL (REAL-TIME NOTIFICATIONS) -->
+        <!-- ======================================================== -->
+        <li class="nav-item dropdown me-2">
+            <a class="nav-link nav-icon-hover position-relative p-0 d-flex align-items-center justify-content-center" href="javascript:void(0)" id="dropNotification" data-bs-toggle="dropdown" aria-expanded="false" style="width: 40px; height: 40px;">
+                <iconify-icon icon="solar:bell-bing-bold-duotone" class="fs-6 text-dark"></iconify-icon>
+                @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 0.25em 0.4em;">
+                        {{ Auth::user()->unreadNotifications->count() }}
+                    </span>
+                @endif
+            </a>
+            
+            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up border-0 shadow-sm rounded-4 mt-2 p-0" aria-labelledby="dropNotification" style="min-width: 320px; width: 350px;">
+                <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-primary text-white rounded-top-4">
+                    <h6 class="mb-0 text-white fw-bold">Notifikasi</h6>
+                    @if(Auth::check() && Auth::user()->unreadNotifications->count() > 0)
+                        <span class="badge bg-white text-primary rounded-pill">{{ Auth::user()->unreadNotifications->count() }} Baru</span>
+                    @endif
+                </div>
+                <div class="message-body" style="max-height: 300px; overflow-y: auto;">
+                    @if(Auth::check() && Auth::user()->notifications->count() > 0)
+                        @foreach(Auth::user()->unreadNotifications->take(5) as $notification)
+                            <a href="#" class="py-3 px-4 d-flex align-items-start border-bottom text-decoration-none {{ $notification->read_at ? 'bg-light' : '' }}">
+                                <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    <iconify-icon icon="solar:bell-bold-duotone" class="fs-5"></iconify-icon>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 text-dark fw-bold" style="font-size: 0.85rem;">Pemberitahuan Baru</h6>
+                                    <span class="d-block text-muted small" style="font-size: 0.75rem;">{{ $notification->data['message'] ?? 'Ada pesan sistem untuk Anda.' }}</span>
+                                    <span class="d-block text-muted small mt-1" style="font-size: 0.7rem;">{{ $notification->created_at->diffForHumans() }}</span>
+                                </div>
+                            </a>
+                        @endforeach
+                    @else
+                        <div class="text-center py-5">
+                            <iconify-icon icon="solar:bell-cross-bold-duotone" class="fs-1 text-muted opacity-50 mb-2"></iconify-icon>
+                            <p class="text-muted small mb-0">Belum ada notifikasi baru.</p>
+                        </div>
+                    @endif
+                </div>
+                <div class="p-2 border-top text-center bg-light rounded-bottom-4">
+                    <a href="#" class="text-primary small fw-bold text-decoration-none">Tandai Semua Dibaca</a>
+                </div>
+            </div>
+        </li>
+
         <!-- Dropdown Profil -->
         <li class="nav-item dropdown">
           <a class="nav-link nav-icon-hover p-0 ms-3" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">

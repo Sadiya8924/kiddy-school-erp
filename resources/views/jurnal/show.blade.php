@@ -94,14 +94,54 @@
                                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body p-4">
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fw-bold">Presensi <span class="text-danger">*</span></label>
+                                                            <select name="presensi" class="form-select border-primary" required>
+                                                                <option value="Hadir" {{ ($jurnal->presensi ?? '') == 'Hadir' ? 'selected' : '' }}>Hadir</option>
+                                                                <option value="Izin" {{ ($jurnal->presensi ?? '') == 'Izin' ? 'selected' : '' }}>Izin</option>
+                                                                <option value="Sakit" {{ ($jurnal->presensi ?? '') == 'Sakit' ? 'selected' : '' }}>Sakit</option>
+                                                                <option value="Alpa" {{ ($jurnal->presensi ?? '') == 'Alpa' ? 'selected' : '' }}>Tanpa Keterangan (Alpa)</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fw-bold">Kondisi / Mood <span class="text-muted fw-normal">(Opsional)</span></label>
+                                                            <select name="mood" class="form-select border-primary">
+                                                                <option value="">-- Pilih Mood --</option>
+                                                                <option value="😊 Ceria/Senang" {{ ($jurnal->mood ?? '') == '😊 Ceria/Senang' ? 'selected' : '' }}>😊 Ceria/Senang</option>
+                                                                <option value="😢 Sedih/Murung" {{ ($jurnal->mood ?? '') == '😢 Sedih/Murung' ? 'selected' : '' }}>😢 Sedih/Murung</option>
+                                                                <option value="😡 Marah/Tantrum" {{ ($jurnal->mood ?? '') == '😡 Marah/Tantrum' ? 'selected' : '' }}>😡 Marah/Tantrum</option>
+                                                                <option value="😴 Mengantuk/Lemas" {{ ($jurnal->mood ?? '') == '😴 Mengantuk/Lemas' ? 'selected' : '' }}>😴 Mengantuk/Lemas</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold">Deskripsi Kegiatan Anak <span class="text-danger">*</span></label>
-                                                        <textarea name="kegiatan" class="form-control border-primary" rows="4" placeholder="Ceritakan bagaimana anak mengikuti materi ini..." required>{{ $jurnal->kegiatan ?? '' }}</textarea>
+                                                        <textarea name="kegiatan" class="form-control border-primary" rows="2" placeholder="Ceritakan bagaimana anak mengikuti materi ini..." required>{{ $jurnal->kegiatan ?? '' }}</textarea>
                                                     </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-bold">Catatan Khusus <span class="text-muted fw-normal">(Opsional)</span></label>
-                                                        <textarea name="catatan" class="form-control" rows="2" placeholder="Anak sangat antusias, atau sedang rewel hari ini...">{{ $jurnal->catatan ?? '' }}</textarea>
+                                                    
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fw-bold">Perkembangan Individual <span class="text-muted fw-normal">(Opsional)</span></label>
+                                                            <textarea name="catatan" class="form-control" rows="2" placeholder="Catatan observasi perkembangan anak...">{{ $jurnal->catatan ?? '' }}</textarea>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label fw-bold">Catatan Khusus <span class="text-muted fw-normal">(Opsional)</span></label>
+                                                            <textarea name="catatan_khusus" class="form-control" rows="2" placeholder="Insiden, peringatan, atau hal penting lainnya...">{{ $jurnal->catatan_khusus ?? '' }}</textarea>
+                                                        </div>
                                                     </div>
+
+                                                    @if(auth()->user()->role == 'kepsek' || ($jurnal && $jurnal->catatan_kepsek))
+                                                        <div class="mb-3 bg-warning-subtle p-3 rounded-3 border border-warning">
+                                                            <label class="form-label fw-bold text-dark"><iconify-icon icon="solar:shield-star-bold-duotone"></iconify-icon> Catatan Pengawasan Kepala Sekolah</label>
+                                                            @if(auth()->user()->role == 'kepsek')
+                                                                <textarea name="catatan_kepsek" class="form-control border-warning" rows="2" placeholder="Tambahkan evaluasi atau arahan untuk guru...">{{ $jurnal->catatan_kepsek ?? '' }}</textarea>
+                                                            @else
+                                                                <p class="mb-0 text-dark fst-italic">{{ $jurnal->catatan_kepsek }}</p>
+                                                            @endif
+                                                        </div>
+                                                    @endif
 
                                                     <div class="row mt-3 border-top pt-3">
                                                         <div class="col-md-6 mb-3">
@@ -179,4 +219,66 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-info text-white p-3 border-0 rounded-top-4 d-flex align-items-center gap-2">
+                <iconify-icon icon="solar:eye-scan-bold-duotone" class="fs-5"></iconify-icon>
+                <h6 class="mb-0 fw-bold text-white">Pemantauan Wali Murid (Read Receipts)</h6>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    @forelse($readReceipts as $receipt)
+                        <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-success-subtle text-success rounded-circle p-2 d-flex align-items-center justify-content-center">
+                                    <iconify-icon icon="solar:check-read-bold-duotone" class="fs-5"></iconify-icon>
+                                </div>
+                                <div>
+                                    <span class="d-block fw-bold text-dark small">{{ $receipt->name }}</span>
+                                    <span class="text-muted" style="font-size: 0.75rem;">Membaca pada: {{ \Carbon\Carbon::parse($receipt->read_at)->translatedFormat('d M Y, H:i') }}</span>
+                                </div>
+                            </div>
+                            <span class="badge bg-success rounded-pill">Dibaca</span>
+                        </li>
+                    @empty
+                        <li class="list-group-item text-center py-4 text-muted border-0">
+                            <iconify-icon icon="solar:sleep-bold-duotone" class="fs-1 opacity-50 mb-2"></iconify-icon>
+                            <p class="mb-0 small">Belum ada Wali Murid yang membaca materi ini.</p>
+                        </li>
+                    @endforelse
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-primary text-white p-3 border-0 rounded-top-4 d-flex align-items-center gap-2">
+                <iconify-icon icon="solar:chat-round-dots-bold-duotone" class="fs-5"></iconify-icon>
+                <h6 class="mb-0 fw-bold text-white">Ruang Diskusi & Komentar</h6>
+            </div>
+            <div class="card-body p-4 bg-light" style="max-height: 400px; overflow-y: auto;">
+                @forelse($comments as $comment)
+                    <div class="d-flex gap-3 mb-3 p-3 bg-white rounded-3 shadow-sm border border-light">
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold text-dark small">{{ $comment->name }}</span>
+                                <small class="text-muted" style="font-size: 0.7rem;">{{ \Carbon\Carbon::parse($comment->created_at)->diffForHumans() }}</small>
+                            </div>
+                            <p class="mb-0 small text-dark">{{ $comment->komentar }}</p>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-5 text-muted">
+                        <iconify-icon icon="solar:chat-line-broken" class="fs-1 opacity-50 mb-2"></iconify-icon>
+                        <p class="mb-0 small">Belum ada diskusi atau pertanyaan dari Wali Murid.</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection

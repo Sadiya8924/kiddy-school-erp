@@ -1,115 +1,166 @@
 @extends('layouts.admin')
 
 @section('konten_halaman')
-<div class="row">
-    {{-- BARIS ATAS / HEADER --}}
-    <div class="col-12 mb-4">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-            <div>
-                <a href="{{ route('data-siswa') }}" class="text-decoration-none text-muted mb-2 d-inline-block">
-                    <iconify-icon icon="solar:arrow-left-bold" class="align-middle"></iconify-icon> Kembali ke Data Siswa
-                </a>
-                <h2 class="fw-semibold text-dark mb-1">Profil Lengkap Siswa</h2>
-                <span class="text-muted fs-3">Informasi biodata pribadi dan status akademik peserta didik.</span>
+<div class="row gx-3 gy-3 mt-0">
+    
+    {{-- Header Halaman --}}
+    <div class="col-12 mb-2">
+        <div class="d-flex align-items-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ route('data-siswa') }}" class="btn btn-outline-light border shadow-none text-muted p-2 rounded d-inline-flex"><iconify-icon icon="solar:arrow-left-line-duotone" class="fs-5"></iconify-icon></a>
+                <div>
+                    <h4 class="fw-bold text-dark mb-0">Profil Lengkap Siswa</h4>
+                    <p class="text-muted mb-0 small">Detail biodata, alamat, dan data orang tua peserta didik.</p>
+                </div>
             </div>
-            
-            {{-- TOMBOL NAVIGATION KE RAPOR --}}
-            <div>
-                <a href="/rapor/{{ $siswa->id }}" class="btn btn-primary rounded-pill px-4 d-flex align-items-center gap-2 shadow-sm py-2">
-                    <iconify-icon icon="solar:file-text-bold-duotone" class="fs-5"></iconify-icon> Lihat Nilai Rapor Ananda
-                </a>
-            </div>
+            @if($siswa->status == 'menunggu')
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold border border-warning">Status: Menunggu Verifikasi</span>
+            @elseif($siswa->status == 'aktif')
+                <span class="badge bg-success px-3 py-2 rounded-pill fw-bold border border-success">Status: Siswa Aktif</span>
+            @else
+                <span class="badge bg-secondary px-3 py-2 rounded-pill fw-bold border border-secondary">Status: Alumni (Lulus)</span>
+            @endif
         </div>
     </div>
 
-    {{-- KARTU FOTO & RINGKASAN PROFIL --}}
-    <div class="col-lg-4 mb-4">
-        <div class="card border-0 shadow-sm rounded-4 text-center p-4 h-100 bg-white">
-            <div class="card-body d-flex flex-column align-items-center justify-content-center">
-                <div class="mb-3 position-relative">
-                    @if($siswa->foto_anak)
-                        <img src="{{ asset('storage/' . $siswa->foto_anak) }}" alt="Foto {{ $siswa->nama_lengkap }}" class="rounded-circle border border-4 border-light-subtle shadow-sm object-cover" style="width: 140px; height: 140px; object-fit: cover;">
-                    @else
-                        <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto border border-4 border-white shadow-sm" style="width: 140px; height: 140px;">
-                            <iconify-icon icon="solar:user-circle-bold-duotone" style="font-size: 100px;"></iconify-icon>
+    <div class="row mt-3">
+        {{-- KARTU KIRI: FOTO & IDENTITAS SINGKAT --}}
+        <div class="col-lg-4 col-xl-3 mb-4">
+            <div class="card border shadow-sm rounded-4 text-center">
+                <div class="card-body p-4">
+                    <div class="position-relative d-inline-block mb-3">
+                        @if($siswa->foto_anak)
+                            <img src="{{ asset('storage/' . $siswa->foto_anak) }}" alt="Foto Siswa" class="rounded-circle border border-4 border-white shadow-sm" style="width: 120px; height: 120px; object-fit: cover;">
+                        @else
+                            <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center mx-auto border border-4 border-white shadow-sm" style="width: 120px; height: 120px;">
+                                <iconify-icon icon="solar:user-bold-duotone" style="font-size: 60px;"></iconify-icon>
+                            </div>
+                        @endif
+                        
+                        <span class="position-absolute bottom-0 end-0 translate-middle p-2 bg-success border border-light rounded-circle" title="Aktif"></span>
+                    </div>
+                    
+                    <h5 class="fw-bold text-dark mb-1">{{ $siswa->nama_lengkap }}</h5>
+                    <p class="text-muted small mb-3">NIK: {{ $siswa->nik }}</p>
+
+                    <div class="d-flex justify-content-between align-items-center bg-light rounded p-2 px-3 border border-light-subtle">
+                        <span class="small text-muted fw-medium">Kelas Aktif</span>
+                        <span class="badge bg-primary-subtle text-primary fw-bold">{{ $siswa->nama_kelas_aktif }}</span>
+                    </div>
+                    
+                    @if($siswa->program_pilihan)
+                        <div class="d-flex justify-content-between align-items-center bg-light rounded p-2 px-3 border border-light-subtle mt-2">
+                            <span class="small text-muted fw-medium">Program</span>
+                            <span class="badge bg-secondary-subtle text-secondary fw-bold" style="font-size: 10px;">{{ $siswa->program_pilihan }}</span>
                         </div>
                     @endif
-                    <span class="position-absolute bottom-0 end-0 badge rounded-pill {{ $siswa->status == 'aktif' ? 'bg-success' : 'bg-secondary' }} px-3 py-2 border border-3 border-white">
-                        {{ ucfirst($siswa->status) }}
-                    </span>
-                </div>
-                
-                <h4 class="fw-bold text-dark mb-1">{{ $siswa->nama_lengkap }}</h4>
-                <p class="text-muted small mb-3">NIK: {{ $siswa->nik ?? '-' }}</p>
-                
-                <div class="w-100 border-top pt-3 mt-2">
-                    <div class="row text-start g-2">
-                        <div class="col-5 text-muted small">Kelas Aktif</div>
-                        <div class="col-7 fw-semibold text-dark text-end">
-                            <span class="badge bg-info-subtle text-info px-3 py-2 rounded-pill fs-2">
-                                {{ $siswa->nama_kelas_aktif }}
-                            </span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {{-- DETAIL BIODATA LENGKAP --}}
-    <div class="col-lg-8 mb-4">
-        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
-            <div class="card-header bg-white border-bottom p-4">
-                <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
-                    <iconify-icon icon="solar:document-text-bold-duotone" class="text-primary fs-5"></iconify-icon> Biodata Pribadi Peserta Didik
-                </h5>
-            </div>
-            <div class="card-body p-4">
-                <div class="table-responsive">
-                    <table class="table table-borderless align-middle mb-0">
-                        <tbody>
-                            <tr class="border-bottom" style="border-color: #f8f9fa;">
-                                <td width="30%" class="text-muted py-3 ps-0">Nama Lengkap</td>
-                                <td class="fw-bold text-dark py-3">{{ $siswa->nama_lengkap }}</td>
-                            </tr>
-                            <tr class="border-bottom" style="border-color: #f8f9fa;">
-                                <td class="text-muted py-3 ps-0">Nomor Induk Kependudukan (NIK)</td>
-                                <td class="fw-medium text-dark py-3">{{ $siswa->nik ?? '-' }}</td>
-                            </tr>
-                            {{-- INI BARIS BARU UNTUK NISN --}}
-                            <tr class="border-bottom" style="border-color: #f8f9fa;">
-                                <td class="text-muted py-3 ps-0">Nomor Induk Siswa Nasional (NISN)</td>
-                                <td class="fw-medium text-dark py-3">{{ $siswa->nisn ?? '-' }}</td>
-                            </tr>
-                            <tr class="border-bottom" style="border-color: #f8f9fa;">
-                                <td class="text-muted py-3 ps-0">Jenis Kelamin</td>
-                                <td class="fw-medium text-dark py-3">
-                                    <span class="badge {{ $siswa->jenis_kelamin == 'Laki-laki' ? 'bg-primary-subtle text-primary' : 'bg-danger-subtle text-danger' }} px-3 py-2 rounded-pill">
-                                        {{ $siswa->jenis_kelamin ?? 'Laki-laki' }}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="border-bottom" style="border-color: #f8f9fa;">
-                                <td class="text-muted py-3 ps-0">Tempat, Tanggal Lahir</td>
-                                <td class="fw-medium text-dark py-3">
-                                    {{ $siswa->tempat_lahir ?? '-' }}, 
-                                    {{ $siswa->tgl_lahir ? \Carbon\Carbon::parse($siswa->tgl_lahir)->translatedFormat('d F Y') : '-' }}
-                                </td>
-                            </tr>
-                            <tr class="border-bottom" style="border-color: #f8f9fa;">
-                                <td class="text-muted py-3 ps-0">Nama Orang Tua / Wali</td>
-                                <td class="fw-semibold text-dark py-3">{{ $siswa->nama_ortu ?? '-' }}</td>
-                            </tr>
-                            <tr class="border-bottom" style="border-color: #f8f9fa;">
-                                <td class="text-muted py-3 ps-0">Nama Ibu Kandung</td>
-                                <td class="fw-medium text-dark py-3">{{ $siswa->nama_ibu ?? '-' }}</td>
-                            </tr>
-                            <tr class="border-bottom" style="border-color: #f8f9fa;">
-                                <td class="text-muted py-3 ps-0">Nama Ayah Kandung</td>
-                                <td class="fw-medium text-dark py-3">{{ $siswa->nama_ayah ?? '-' }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        {{-- KARTU KANAN: DATA LENGKAP DAPODIK --}}
+        <div class="col-lg-8 col-xl-9">
+            <div class="card border shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom p-4">
+                    <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                        <iconify-icon icon="solar:document-text-bold-duotone" class="text-primary"></iconify-icon> Biodata Lengkap Peserta Didik
+                    </h5>
+                </div>
+                
+                <div class="card-body p-0">
+                    
+                    {{-- A. INFORMASI PRIBADI --}}
+                    <div class="p-4 border-bottom">
+                        <h6 class="fw-bold text-primary mb-3 text-uppercase" style="letter-spacing: 0.5px; font-size: 12px;">A. Informasi Pribadi</h6>
+                        <div class="row gy-3">
+                            <div class="col-md-6"><span class="d-block small text-muted">Nama Lengkap</span><strong class="text-dark">{{ $siswa->nama_lengkap ?? '-' }}</strong></div>
+                            <div class="col-md-3"><span class="d-block small text-muted">NISN</span><strong class="text-dark">{{ $siswa->nisn ?? '-' }}</strong></div>
+                            <div class="col-md-3"><span class="d-block small text-muted">No. Induk (NIPD)</span><strong class="text-dark">{{ $siswa->no_induk ?? '-' }}</strong></div>
+                            
+                            <div class="col-md-6"><span class="d-block small text-muted">Tempat, Tanggal Lahir</span><strong class="text-dark">{{ $siswa->tempat_lahir ?? '-' }}, {{ $siswa->tgl_lahir ? date('d F Y', strtotime($siswa->tgl_lahir)) : '-' }}</strong></div>
+                            <div class="col-md-3"><span class="d-block small text-muted">Jenis Kelamin</span><strong class="text-dark">{{ $siswa->jenis_kelamin == 'L' || $siswa->jenis_kelamin == 'Laki-laki' ? 'Laki-laki' : 'Perempuan' }}</strong></div>
+                            <div class="col-md-3"><span class="d-block small text-muted">Agama</span><strong class="text-dark">{{ $siswa->agama ?? '-' }}</strong></div>
+                            
+                            <div class="col-md-3"><span class="d-block small text-muted">Anak ke-</span><strong class="text-dark">{{ $siswa->anak_ke ?? '-' }}</strong></div>
+                            <div class="col-md-3"><span class="d-block small text-muted">Jumlah Saudara</span><strong class="text-dark">{{ $siswa->jml_saudara ?? '-' }}</strong></div>
+                        </div>
+                    </div>
+
+                    {{-- B. ALAMAT & KONTAK --}}
+                    <div class="p-4 border-bottom bg-light bg-opacity-50">
+                        <h6 class="fw-bold text-primary mb-3 text-uppercase" style="letter-spacing: 0.5px; font-size: 12px;">B. Alamat & Kontak</h6>
+                        <div class="row gy-3">
+                            <div class="col-md-12"><span class="d-block small text-muted">Alamat Lengkap</span>
+                                <strong class="text-dark">
+                                    {{ $siswa->alamat ?? '-' }} 
+                                    @if($siswa->rt || $siswa->rw) RT {{ $siswa->rt ?? '-' }}/RW {{ $siswa->rw ?? '-' }} @endif
+                                    @if($siswa->dusun) Dusun {{ $siswa->dusun }} @endif
+                                </strong>
+                            </div>
+                            <div class="col-md-4"><span class="d-block small text-muted">Desa / Kelurahan</span><strong class="text-dark">{{ $siswa->kelurahan ?? '-' }}</strong></div>
+                            <div class="col-md-4"><span class="d-block small text-muted">Kecamatan</span><strong class="text-dark">{{ $siswa->kecamatan ?? '-' }}</strong></div>
+                            <div class="col-md-4"><span class="d-block small text-muted">Kode Pos</span><strong class="text-dark">{{ $siswa->kode_pos ?? '-' }}</strong></div>
+                            
+                            <div class="col-md-4"><span class="d-block small text-muted">Jenis Tempat Tinggal</span><strong class="text-dark">{{ $siswa->jenis_tinggal ?? '-' }}</strong></div>
+                            <div class="col-md-4"><span class="d-block small text-muted">Alat Transportasi</span><strong class="text-dark">{{ $siswa->alat_transportasi ?? '-' }}</strong></div>
+                            <div class="col-md-4"><span class="d-block small text-muted">Jarak ke Sekolah</span><strong class="text-dark">{{ $siswa->jarak_rumah ? $siswa->jarak_rumah . ' Km' : '-' }}</strong></div>
+                            
+                            <div class="col-md-4"><span class="d-block small text-muted">No. HP / WhatsApp</span><strong class="text-dark">{{ $siswa->hp ?? '-' }}</strong></div>
+                            <div class="col-md-8"><span class="d-block small text-muted">Email Wali Murid</span><strong class="text-dark">{{ $siswa->email ?? '-' }}</strong></div>
+                        </div>
+                    </div>
+
+                    {{-- C. DATA ORANG TUA --}}
+                    <div class="p-4 border-bottom">
+                        <h6 class="fw-bold text-primary mb-3 text-uppercase" style="letter-spacing: 0.5px; font-size: 12px;">C. Data Orang Tua / Wali</h6>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <div class="border border-light-subtle rounded p-3 h-100">
+                                    <h6 class="fw-bold text-dark border-bottom pb-2 mb-2">Ayah Kandung</h6>
+                                    <table class="table table-sm table-borderless mb-0 small">
+                                        <tr><td width="40%" class="text-muted">Nama</td><td>: <strong>{{ $siswa->nama_ayah ?? '-' }}</strong></td></tr>
+                                        <tr><td class="text-muted">NIK</td><td>: <strong>{{ $siswa->nik_ayah ?? '-' }}</strong></td></tr>
+                                        <tr><td class="text-muted">Tahun Lahir</td><td>: <strong>{{ $siswa->tahun_lahir_ayah ?? '-' }}</strong></td></tr>
+                                        <tr><td class="text-muted">Pendidikan</td><td>: <strong>{{ $siswa->pendidikan_ayah ?? '-' }}</strong></td></tr>
+                                        <tr><td class="text-muted">Pekerjaan</td><td>: <strong>{{ $siswa->pekerjaan_ayah ?? '-' }}</strong></td></tr>
+                                        <tr><td class="text-muted">Penghasilan</td><td>: <strong>{{ $siswa->penghasilan_ayah ?? '-' }}</strong></td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="border border-light-subtle rounded p-3 h-100">
+                                    <h6 class="fw-bold text-dark border-bottom pb-2 mb-2">Ibu Kandung</h6>
+                                    <table class="table table-sm table-borderless mb-0 small">
+                                        <tr><td width="40%" class="text-muted">Nama</td><td>: <strong>{{ $siswa->nama_ibu ?? '-' }}</strong></td></tr>
+                                        <tr><td class="text-muted">NIK</td><td>: <strong>{{ $siswa->nik_ibu ?? '-' }}</strong></td></tr>
+                                        <tr><td class="text-muted">Tahun Lahir</td><td>: <strong>{{ $siswa->tahun_lahir_ibu ?? '-' }}</strong></td></tr>
+                                        <tr><td class="text-muted">Pendidikan</td><td>: <strong>{{ $siswa->pendidikan_ibu ?? '-' }}</strong></td></tr>
+                                        <tr><td class="text-muted">Pekerjaan</td><td>: <strong>{{ $siswa->pekerjaan_ibu ?? '-' }}</strong></td></tr>
+                                        <tr><td class="text-muted">Penghasilan</td><td>: <strong>{{ $siswa->penghasilan_ibu ?? '-' }}</strong></td></tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- D. BERKAS DOKUMEN --}}
+                    <div class="p-4 bg-light bg-opacity-50">
+                        <h6 class="fw-bold text-primary mb-3 text-uppercase" style="letter-spacing: 0.5px; font-size: 12px;">D. Berkas & Dokumen Pendaftaran</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <span class="d-block small text-muted mb-2">Bukti Pembayaran Pendaftaran</span>
+                                @if($siswa->bukti_pembayaran)
+                                    <a href="{{ asset('storage/' . $siswa->bukti_pembayaran) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $siswa->bukti_pembayaran) }}" class="img-fluid rounded border shadow-sm" style="max-height: 200px; object-fit: cover;" alt="Bukti Pembayaran">
+                                    </a>
+                                @else
+                                    <div class="alert alert-secondary small py-2 d-inline-block">Tidak ada bukti pembayaran</div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

@@ -13,7 +13,7 @@
 @section('konten_halaman')
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
     <div>
-        <h2 class="fw-semibold text-dark mb-1">Rekap Absensi Siswa</h2>
+        <h2 class="fw-semibold text-dark mb-1">Rekap Presensi Siswa</h2>
         <span class="text-muted fs-3">Pantau kehadiran siswa berdasarkan rentang tanggal.</span>
     </div>
 </div>
@@ -44,7 +44,7 @@
 <div class="card w-100 border-0 shadow-sm position-relative overflow-hidden">
     <div class="card-body p-4">
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-            <h5 class="fw-semibold text-dark mb-0 d-none d-md-block">Data Matriks Absensi</h5>
+            <h5 class="fw-semibold text-dark mb-0 d-none d-md-block">Data Matriks Presensi</h5>
             
             <!-- Legend / Keterangan Minimalis Modern -->
             <div class="d-flex gap-4 bg-light px-4 py-2 rounded-pill shadow-sm border-0">

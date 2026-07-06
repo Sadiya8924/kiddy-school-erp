@@ -30,4 +30,34 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/login');
     }
+
+    // Tambahkan fungsi register ini
+    public function register(Request $request)
+    {
+        // 1. Validasi input form
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|string',
+        ], [
+            'email.unique' => 'Email ini sudah terdaftar! Silakan login.',
+            'password.confirmed' => 'Konfirmasi sandi tidak cocok.',
+            'password.min' => 'Sandi minimal 8 karakter.'
+        ]);
+
+        // 2. Simpan user baru ke database
+        $user = \App\Models\User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'role' => $request->role, 
+        ]);
+
+        // 3. Login otomatis
+        Auth::login($user);
+
+        // 4. Redirect ke Form Pendaftaran Anak
+        return redirect('/dashboard')->with('success', 'Akun berhasil dibuat! Silakan daftarkan putra/putri Anda.');
+    }
 }

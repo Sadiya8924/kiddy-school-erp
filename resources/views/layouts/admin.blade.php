@@ -16,34 +16,82 @@
     <!-- CSS Utama SeoDash -->
     <link rel="stylesheet" href="{{ asset('template2/css/styles.min.css') }}" />
     
-    <!-- Global UI/UX Fixes (Sesuai Review Desain) -->
+    <!-- ========================================================= -->
+    <!-- TEMA "SOLID & CRISP" (Sesuai Referensi Terbaru)           -->
+    <!-- ========================================================= -->
+    <!-- Import Font 'Inter' biar tulisan lebih "bakuh" -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* 1. Kontras & Aksesibilitas: Memperjelas border input form secara global */
-        .form-control, .form-select {
-            border: 1px solid #adb5bd !important; /* Abu-abu medium yang lebih tegas */
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #2952ff !important; /* Fokus warna biru (Primary) */
-            box-shadow: 0 0 0 0.25rem rgba(41, 82, 255, 0.25) !important;
-        }
-        
-        /* 2. Warna Background & Kontras: Memastikan body off-white agar card putih menonjol */
-        body, .page-wrapper {
-            background-color: #f8f9fa !important;
+        :root {
+            --primary-blue: #2563eb;       /* Biru solid/pekat */
+            --primary-blue-soft: #eff6ff;  /* Background biru super muda */
+            --primary-blue-border: #bfdbfe;/* Border biru muda */
+            --primary-blue-dark: #1e40af;  /* Biru gelap pekat */
+            --text-dark: #0f172a;          /* Teks hitam pekat (Slate 900) */
+            --text-muted: #64748b;         /* Abu-abu solid (Slate 500) */
+            --bg-body: #f8fafc;            
+            --border-color: #e2e8f0;       
         }
 
-        /* 3. Standardisasi Identitas Warna: Memaksa elemen aktif sidebar menjadi hijau (menggantikan biru) */
-        .sidebar-nav ul .sidebar-item.selected>.sidebar-link, 
-        .sidebar-nav ul .sidebar-item.selected>.sidebar-link.active, 
-        .sidebar-nav ul .sidebar-item>.sidebar-link.active {
-            background-color: #2952ff !important;
-            color: #fff !important;
+        body, .page-wrapper {
+            background-color: var(--bg-body) !important;
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif !important;
+            -webkit-font-smoothing: antialiased; /* Kunci biar tulisan tajam! */
         }
-        
-        /* Mengubah warna icon pada menu yang aktif agar selaras */
-        .sidebar-nav ul .sidebar-item.selected>.sidebar-link iconify-icon, 
-        .sidebar-nav ul .sidebar-item>.sidebar-link.active iconify-icon {
-            color: #fff !important;
+
+        h1, h2, h3, h4, h5, h6 { font-weight: 600 !important; color: var(--text-dark); }
+        .text-muted { color: var(--text-muted) !important; }
+
+        .card {
+            border: 1px solid var(--border-color) !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+            border-radius: 12px !important;
+            background-color: #ffffff;
+        }
+
+        /* Sidebar Styling (Lebih Rapi & Tegas) */
+        .sidebar-nav ul .sidebar-item > .sidebar-link {
+            font-weight: 500;
+            color: #475569;
+        }
+        .sidebar-nav ul .sidebar-item.selected > .sidebar-link,
+        .sidebar-nav ul .sidebar-item > .sidebar-link.active {
+            background-color: var(--primary-blue-soft) !important;
+            color: var(--primary-blue-dark) !important;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        .sidebar-nav ul .sidebar-item.selected > .sidebar-link iconify-icon,
+        .sidebar-nav ul .sidebar-item > .sidebar-link.active iconify-icon {
+            color: var(--primary-blue-dark) !important;
+        }
+        .nav-small-cap {
+            color: #94a3b8 !important;
+            font-weight: 600 !important;
+            font-size: 11px !important;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Tombol Utama */
+        .btn-primary { 
+            background-color: var(--primary-blue) !important; 
+            border-color: var(--primary-blue) !important; 
+            font-weight: 500 !important;
+        }
+        .btn-primary:hover { 
+            background-color: var(--primary-blue-dark) !important; 
+        }
+
+        /* Header Tabel */
+        .table thead th {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
     </style>
 
@@ -90,79 +138,6 @@
     
     <!-- Library Chart (ApexCharts) untuk Grafik -->
     <script src="{{ asset('template2/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
-
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Global SweetAlert Override untuk Semua Fitur -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 1. Intercept tag <a> atau <button> yang pakai onclick="return confirm(...)"
-            document.body.addEventListener('click', function(e) {
-                let el = e.target.closest('[onclick*="confirm"]');
-                if (el) {
-                    e.preventDefault();
-                    e.stopPropagation(); // Cegah event default
-                    
-                    let onclickText = el.getAttribute('onclick');
-                    let match = onclickText.match(/confirm\(['"](.*?)['"]\)/);
-                    let message = match ? match[1] : 'Apakah Anda yakin ingin melanjutkan aksi ini?';
-
-                    Swal.fire({
-                        title: 'Konfirmasi',
-                        text: message,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#6e7881',
-                        confirmButtonText: 'Ya, Lanjutkan!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            el.removeAttribute('onclick'); // Hapus atribut
-                            
-                            // Eksekusi ulang
-                            if (el.tagName.toLowerCase() === 'button' && el.type === 'submit') {
-                                if (el.form) el.form.submit();
-                            } else {
-                                el.click(); // Klik ulang secara programmatis
-                            }
-                        }
-                    });
-                }
-            }, true); // Gunakan capture phase
-
-            // 2. Intercept tag <form> yang pakai onsubmit="return confirm(...)"
-            document.body.addEventListener('submit', function(e) {
-                let form = e.target;
-                if (form.hasAttribute('onsubmit')) {
-                    let onsubmitText = form.getAttribute('onsubmit');
-                    if (onsubmitText.includes('confirm(')) {
-                        e.preventDefault(); // Hentikan submit bawaan
-                        
-                        let match = onsubmitText.match(/confirm\(['"](.*?)['"]\)/);
-                        let message = match ? match[1] : 'Konfirmasi tindakan ini?';
-
-                        Swal.fire({
-                            title: 'Konfirmasi',
-                            text: message,
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#d33',
-                            cancelButtonColor: '#6e7881',
-                            confirmButtonText: 'Ya, Lanjutkan!',
-                            cancelButtonText: 'Batal'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                form.removeAttribute('onsubmit'); // Hapus attribute
-                                form.submit(); // Lanjutkan submit
-                            }
-                        });
-                    }
-                }
-            }, true);
-        });
-    </script>
 
     <!-- Tempat untuk naruh Script JS tambahan per-halaman -->
     @stack('scripts')

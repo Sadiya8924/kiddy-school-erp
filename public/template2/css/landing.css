@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bs-primary: #2952ff;
+    --bs-primary-rgb: 41, 82, 255;
+    --bs-primary-soft: #e4f1fc;
+    --bs-border-color: #ebf1f6;
+    --bs-text-main: #3a4752;
+    --bs-text-muted: #707a82;
+    --bs-body-font-family: 'Inter', sans-serif;
+}
+
+body {
+    font-family: var(--bs-body-font-family) !important;
+    color: var(--bs-text-main);
+}
+
+/* --- UTILITY CLASSES --- */
+.text-10 { font-size: 10px; }
+.text-11 { font-size: 11px; }
+.text-12 { font-size: 12px; }
+.text-13 { font-size: 13px; }
+.text-14 { font-size: 14px; }
+
+/* --- BACKGROUND SECTIONS --- */
+/* Gradien halus kayak di referensi Gambar 2 */
+.section-hero-bg { 
+    background: linear-gradient(135deg, #f2f7fb 0%, #e5eff8 100%); 
+}
+.section-soft { background-color: #f8fafc; }
+.section-white { background-color: #ffffff; }
+
+/* --- HEADERS --- */
+.section-eyebrow { letter-spacing: 1px; font-size: 11px; }
+.section-title { letter-spacing: -0.5px; font-weight: 800; }
+.section-desc { max-width: 600px; }
+
+/* --- HERO SECTION --- */
+.hero-title { line-height: 1.2; letter-spacing: -1.5px; }
+.hero-subtitle { max-width: 95%; }
+
+.hero-stats h4 { font-weight: 800; color: var(--bs-text-main); margin-bottom: 0.2rem; }
+.hero-stats p { font-size: 0.85rem; color: var(--bs-text-muted); margin-bottom: 0; }
+
+/* Bentuk Card Kuota di Hero persis Gambar 2 */
+.hero-quota-card {
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+}
+.hero-quota-item {
+    background: #f8fafc;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+}
+
+/* Progress bar memanjang */
+.progress-track {
+    height: 5px;
+    border-radius: 10px;
+    background: #e2e8f0;
+    width: 90%; 
+    margin-top: 8px;
+}
+.progress-fill {
+    height: 100%;
+    background-color: var(--bs-primary);
+    border-radius: 10px;
+}
+
+/* --- TABS PROFIL --- */
+.nav-custom-underline { border-bottom: 1px solid var(--bs-border-color); gap: 1.5rem; }
+.nav-custom-underline .nav-link {
+    color: var(--bs-text-muted);
+    font-weight: 600;
+    padding: 0.75rem 0.5rem;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    transition: all 0.2s;
+}
+.nav-custom-underline .nav-link:hover { color: var(--bs-primary); }
+.nav-custom-underline .nav-link.active {
+    color: var(--bs-primary);
+    border-bottom-color: var(--bs-primary);
+}
+
+/* --- KONTEN PROFIL --- */
+.card-profil-left {
+    border: 1px solid var(--bs-border-color); 
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+}
+.avatar-wrapper {
+    width: 90px; 
+    height: 90px; 
+    background-color: var(--bs-primary-soft);
+}
+.avatar-icon { font-size: 45px; }
+
+.soft-box {
+    background: #f8fafc;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 12px;
+    padding: 1.25rem;
+    height: 100%;
+}
+.pill-unggulan {
+    background: var(--bs-primary-soft);
+    color: var(--bs-primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+/* --- TABS & KONTEN KUOTA (BAGIAN BAWAH) --- */
+.nav-kuota-pills { gap: 0.5rem; }
+.nav-kuota-pills .nav-link {
+    color: var(--bs-text-muted);
+    background: #ffffff;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.6rem 1.25rem;
+    transition: all 0.2s ease;
+}
+.nav-kuota-pills .nav-link:hover { border-color: var(--bs-primary); color: var(--bs-primary); }
+.nav-kuota-pills .nav-link.active {
+    background: var(--bs-primary);
+    color: #ffffff;
+    border-color: var(--bs-primary);
+}
+
+.card-kuota { border-radius: 16px !important; overflow: hidden; }
+
+/* --- CARD SYARAT PENDAFTARAN --- */
+.card-syarat {
+    background: #ffffff;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 16px;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+.card-syarat:hover {
+    border-color: var(--bs-primary);
+    box-shadow: 0 10px 20px -5px rgba(41, 82, 255, 0.1);
+    transform: translateY(-3px);
+}
+.icon-syarat {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--bs-primary-soft);
+    color: var(--bs-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}

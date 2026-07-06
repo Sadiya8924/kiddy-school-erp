@@ -19,16 +19,11 @@
 
         {{-- Filter by Role (SUDAH DIREVISI MENJADI 'kepsek') --}}
         <div class="d-flex gap-2 mb-3 flex-wrap">
-          <a href="{{ route('superadmin.users.index') }}"
-             class="btn btn-sm {{ !request('role') ? 'btn-primary' : 'btn-light' }}">Semua</a>
-          <a href="{{ route('superadmin.users.index', ['role' => 'admin']) }}"
-             class="btn btn-sm {{ request('role') === 'admin' ? 'btn-primary' : 'btn-light' }}">Admin</a>
-          <a href="{{ route('superadmin.users.index', ['role' => 'guru']) }}"
-             class="btn btn-sm {{ request('role') === 'guru' ? 'btn-primary' : 'btn-light' }}">Guru</a>
-          <a href="{{ route('superadmin.users.index', ['role' => 'wali_murid']) }}"
-             class="btn btn-sm {{ request('role') === 'wali_murid' ? 'btn-primary' : 'btn-light' }}">Wali Murid</a>
-          <a href="{{ route('superadmin.users.index', ['role' => 'kepsek']) }}"
-             class="btn btn-sm {{ request('role') === 'kepsek' ? 'btn-primary' : 'btn-light' }}">Kepala Sekolah</a>
+          <a href="{{ route('superadmin.users.index') }}" class="btn btn-sm {{ !request('role') ? 'btn-primary' : 'btn-light' }}">Semua</a>
+          <a href="{{ route('superadmin.users.index', ['role' => 'admin']) }}" class="btn btn-sm {{ request('role') === 'admin' ? 'btn-primary' : 'btn-light' }}">Admin</a>
+          <a href="{{ route('superadmin.users.index', ['role' => 'kepsek']) }}" class="btn btn-sm {{ request('role') === 'kepsek' ? 'btn-primary' : 'btn-light' }}">Kepala Sekolah</a>
+          <a href="{{ route('superadmin.users.index', ['role' => 'guru']) }}" class="btn btn-sm {{ request('role') === 'guru' ? 'btn-primary' : 'btn-light' }}">Guru</a>
+          <a href="{{ route('superadmin.users.index', ['role' => 'wali_murid']) }}" class="btn btn-sm {{ request('role') === 'wali_murid' ? 'btn-primary' : 'btn-light' }}">Wali Murid</a>
         </div>
 
         <div class="table-responsive">

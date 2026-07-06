@@ -19,14 +19,26 @@ class KelasController extends Controller
         
         $semesterAktif = Semester::where('is_active', true)->first();
 
-        $list_kelas = Kelas::where('school_id', $schoolId)->withCount(['siswas' => function($q) use ($semesterAktif) {
+        // Tarik data kelas dan jumlah siswa (tambahkan relasi school)
+        $query = Kelas::with('school')->withCount(['siswas' => function($q) use ($semesterAktif) {
             if ($semesterAktif) {
                 $q->where('anggota_kelas.semester_id', $semesterAktif->id)
                   ->where('siswas.status', 'aktif');
             }
-        }])->get();
+        }]);
         
-        return view('kelas.index', compact('list_kelas')); 
+        // JIKA BUKAN SUPER ADMIN MODE PUSAT, FILTER BERDASARKAN SCHOOL_ID
+        if ($schoolId) {
+            $query->where('school_id', $schoolId);
+        }
+
+        $list_kelas = $query->get();
+        
+        // Kirim data sekolah buat dropdown di Modal Tambah (khusus Super Admin)
+        $schools = $user->isSuperAdmin() ? \App\Models\School::where('status', 'aktif')->get() : [];
+        $active_school_id = $schoolId;
+
+        return view('kelas.index', compact('list_kelas', 'schools', 'active_school_id')); 
     }
 
     // 2. SIMPAN KELAS BARU
@@ -34,11 +46,15 @@ class KelasController extends Controller
     {
         $request->validate([
             'nama_kelas' => 'required|string|max:255',
-            'tingkat' => 'required|string|max:255'
+            'tingkat' => 'required|string|max:255',
+            // Super admin wajib milih sekolah pas bikin kelas
+            'school_id' => Auth::user()->isSuperAdmin() ? 'required|exists:schools,id' : 'nullable' 
         ]);
 
+        $schoolId = Auth::user()->isSuperAdmin() ? $request->school_id : Auth::user()->school_id;
+
         Kelas::create([
-            'school_id' => Auth::user()->school_id,
+            'school_id' => $schoolId,
             'nama_kelas' => $request->nama_kelas,
             'tingkat' => $request->tingkat,
         ]);
@@ -91,13 +107,14 @@ class KelasController extends Controller
     public function show($id)
     {
         $kelas = Kelas::findOrFail($id);
-        if ($kelas->school_id != Auth::user()->school_id) {
+        
+        // FIX: Beri akses VIP untuk Super Admin. Selain itu, cek school_id.
+        if (!Auth::user()->isSuperAdmin() && $kelas->school_id != Auth::user()->school_id) {
             abort(403, 'Anda tidak memiliki akses ke kelas ini.');
         }
 
         $semesterAktif = Semester::where('is_active', true)->first();
 
-        // TAMBAHAN TURBO: Gunakan with('kelasAktif')
         $siswas = Siswa::with('kelasAktif')->whereHas('kelas', function($q) use ($id, $semesterAktif) {
             $q->where('anggota_kelas.kelas_id', $id);
             if ($semesterAktif) {
@@ -105,7 +122,24 @@ class KelasController extends Controller
             }
         })->where('status', 'aktif')->get();
 
-        return view('kelas.show', compact('kelas', 'siswas'));
+        // Tarik daftar kelas lain (di sekolah yang sama) untuk fitur Pindah Kelas Massal
+        $list_kelas = Kelas::where('school_id', $kelas->school_id)->where('id', '!=', $id)->get();
+
+        return view('kelas.show', compact('kelas', 'siswas', 'list_kelas'));
+    }
+
+    // FUNGSI BARU: KELUARKAN SISWA DARI KELAS
+    public function removeStudent($kelas_id, $siswa_id)
+    {
+        $semesterAktif = Semester::where('is_active', true)->first();
+        if ($semesterAktif) {
+            // Hapus data dari tabel jembatan (anggota_kelas) saja, biodata siswa tetap aman
+            AnggotaKelas::where('kelas_id', $kelas_id)
+                        ->where('siswa_id', $siswa_id)
+                        ->where('semester_id', $semesterAktif->id)
+                        ->delete();
+        }
+        return back()->with('success', 'Siswa berhasil dikeluarkan dari kelas ini.');
     }
 
     // 6. UPDATE AKSES MODUL (MULTI-ROLE)
@@ -145,5 +179,38 @@ class KelasController extends Controller
 
         $nama_role = str_replace('_', ' ', strtoupper($role));
         return back()->with('success', "Hak akses menu untuk $nama_role berhasil diperbarui!");
+    }
+
+// 7. SIMPAN ABSENSI SISWA (MULTI-STATUS)
+    public function storeAbsensi(Request $request)
+    {
+        $tanggal = $request->tanggal ?? date('Y-m-d');
+        $user = Auth::user();
+        
+        // Ambil school_id yang benar (Dukung Super Admin & Guru biasa)
+        $school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
+
+        // Loop semua input status yang dikirim dari form
+        foreach ($request->all() as $key => $value) {
+            // Cek apakah key inputannya berawalan 'status_'
+            if (strpos($key, 'status_') === 0) {
+                // Ekstrak ID siswa dari nama input (contoh: status_12 -> 12)
+                $siswa_id = str_replace('status_', '', $key);
+                
+                // Simpan atau Update data absensi tanpa pakai semester_id
+                \App\Models\Absensi::updateOrCreate(
+                    [
+                        'siswa_id' => $siswa_id,
+                        'tanggal'  => $tanggal,
+                    ],
+                    [
+                        'school_id' => $school_id,
+                        'status'    => strtolower($value) // Pastikan huruf kecil (hadir, sakit, izin, alfa)
+                    ]
+                );
+            }
+        }
+        
+        return back()->with('success', 'Presensi tanggal ' . date('d/m/Y', strtotime($tanggal)) . ' berhasil disimpan!');
     }
 }

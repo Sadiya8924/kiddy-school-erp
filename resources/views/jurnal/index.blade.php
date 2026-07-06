@@ -3,8 +3,18 @@
 @section('konten_halaman')
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
     <div>
+<<<<<<< HEAD
         <h2 class="fw-semibold text-dark mb-1">Materi & Jurnal Harian</h2>
         <span class="text-muted fs-3">Pilih materi yang tersedia untuk mengisi jurnal perkembangan anak.</span>
+=======
+        @if(isset($pageType) && $pageType === 'lms')
+            <h2 class="fw-semibold text-dark mb-1">Manajemen Materi</h2>
+            <span class="text-muted fs-3">Kelola materi pembelajaran dan modul untuk siswa.</span>
+        @else
+            <h2 class="fw-semibold text-dark mb-1">Jurnal Harian</h2>
+            <span class="text-muted fs-3">Pilih materi yang tersedia untuk mengisi jurnal perkembangan anak.</span>
+        @endif
+>>>>>>> 00c4646d314d37b51f95aed1e4223ee0c2d787f3
     </div>
     
     <div class="d-flex gap-2">

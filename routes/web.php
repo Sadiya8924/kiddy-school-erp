@@ -21,6 +21,7 @@ use App\Http\Controllers\RaporTemplateController;
 use App\Http\Controllers\ArsipRaporController;
 use App\Http\Controllers\JurnalHarianController;
 use App\Http\Controllers\SettingController;
+use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
 | PUBLIC & AUTH ROUTES

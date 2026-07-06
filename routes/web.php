@@ -384,5 +384,74 @@ Route::middleware(['auth'])->group(function () {
             $riwayat = \App\Models\PerkembanganFisik::where('siswa_id', $siswa->id)->orderBy('tgl_periksa', 'desc')->get();
             return view('walimurid.perkembangan', compact('siswa', 'riwayat'));
         })->name('walimurid.perkembangan');
+<<<<<<< HEAD
+=======
+        
+        Route::get('/materi-anak', [JurnalHarianController::class, 'waliMuridMateri'])->name('walimurid.materi');
+        Route::post('/materi-anak/{id}/read', [JurnalHarianController::class, 'markMateriRead'])->name('walimurid.materi.read');
+        Route::post('/materi-anak/{id}/comment', [JurnalHarianController::class, 'storeMateriComment'])->name('walimurid.materi.comment');
+    });
+
+    Route::get('/magic-fix-menu', function() {
+        // 1. Update menu yang sudah ada biar Admin & Kepsek bisa ikut akses
+        DB::table('modules')->whereIn('name', ['Data Siswa', 'Manajemen Kelas', 'Isi Rapor', 'Cetak Rapor', 'Pengumuman'])
+        ->update(['role_access' => 'admin,guru,kepsek']);
+
+        DB::table('modules')->whereIn('name', ['Perkembangan Fisik', 'Absensi Harian', 'Rekap Absensi'])
+        ->update(['role_access' => 'admin,guru,kepsek']);
+
+        DB::table('modules')->whereIn('name', ['Pengaturan Sekolah', 'Kenaikan Kelas'])
+        ->update(['role_access' => 'admin,kepsek']);
+
+        // 2. Tambahkan menu-menu yang sebelumnya Ghaib / Belum ada di DB
+        $missing = [
+            ['name' => 'Manajemen Materi', 'route_name' => 'lms.index', 'icon' => 'solar:folder-with-files-bold-duotone', 'category' => 'KEGIATAN', 'role_access' => 'admin,guru,kepsek'],
+            ['name' => 'Jurnal Harian', 'route_name' => 'jurnal.index', 'icon' => 'solar:book-bookmark-bold-duotone', 'category' => 'KEGIATAN', 'role_access' => 'admin,guru,kepsek'],
+            ['name' => 'Arsip Rapor', 'route_name' => 'arsip.index', 'icon' => 'solar:folder-with-files-bold-duotone', 'category' => 'RAPOR', 'role_access' => 'admin,guru,kepsek'],
+            ['name' => 'Template Rapor', 'route_name' => 'template.index', 'icon' => 'solar:document-add-bold-duotone', 'category' => 'SISTEM', 'role_access' => 'admin,kepsek'],
+            ['name' => 'Rapor Anak', 'route_name' => 'walimurid.rapor', 'icon' => 'solar:notebook-bold-duotone', 'category' => 'AKADEMIK ANAK', 'role_access' => 'wali_murid'],
+            ['name' => 'Laporan Fisik', 'route_name' => 'walimurid.perkembangan', 'icon' => 'solar:pulse-bold-duotone', 'category' => 'AKADEMIK ANAK', 'role_access' => 'wali_murid'],
+        ];
+
+        foreach($missing as $m) {
+            $exists = DB::table('modules')->where('name', $m['name'])->first();
+            if(!$exists) {
+                $m['created_at'] = now();
+                $m['updated_at'] = now();
+                DB::table('modules')->insert($m);
+            }
+        }
+
+        // 3. Sambungkan semua menu ke sekolah dan NYALAKAN (ON) semua toggle-nya!
+        $schools = DB::table('schools')->get();
+        $modules = DB::table('modules')->get();
+        foreach($schools as $school) {
+            foreach($modules as $mod) {
+                $exists = DB::table('school_modules')
+                    ->where('school_id', $school->id)
+                    ->where('module_id', $mod->id)
+                    ->first();
+                    
+                if(!$exists) {
+                    DB::table('school_modules')->insert([
+                        'school_id' => $school->id,
+                        'module_id' => $mod->id,
+                        'is_active_for_guru' => 1,
+                        'is_active_for_admin' => 1,
+                        'is_active_for_kepsek' => 1,
+                        'is_active_for_wali_murid' => 1,
+                    ]);
+                } else {
+                    DB::table('school_modules')->where('id', $exists->id)->update([
+                        'is_active_for_guru' => 1,
+                        'is_active_for_admin' => 1,
+                        'is_active_for_kepsek' => 1,
+                        'is_active_for_wali_murid' => 1,
+                    ]);
+                }
+            }
+        }
+        return "🔥 DATABASE MENU BERHASIL DIPERBAIKI! Silakan kembali ke web dan refresh halamannya.";
+>>>>>>> 00c4646d314d37b51f95aed1e4223ee0c2d787f3
     });
 });

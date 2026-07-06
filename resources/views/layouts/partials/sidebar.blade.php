@@ -18,7 +18,8 @@
                     $akademik_roles = ['super_admin', 'admin', 'guru', 'kepsek'];
 
                     $allowed_modules = [];
-                    if ($user && !$user->isSuperAdmin()) {
+                    // Tarik hak akses HANYA untuk Admin, Guru, & Kepsek (karena terikat sekolah)
+                    if ($user && in_array($user->role, ['admin', 'guru', 'kepsek'])) {
                         $role_column = 'is_active_for_' . $user->role;
                         
                         $allowed_modules = \Illuminate\Support\Facades\DB::table('school_modules')
@@ -29,10 +30,16 @@
                             ->toArray();
                     }
 
-                    $hasMenu = function($moduleName) use ($allowed_modules, $user) {
-                        if ($user->isSuperAdmin()) return true; 
+                    // Fungsi penentu menu muncul atau tidak
+                    $hasMenu = function($menuName) use ($allowed_modules, $user) {
+                        if (!$user) return false;
+                        if ($user->isSuperAdmin()) return true; // Super admin bebas
+                        if ($user->role === 'wali_murid') return true; // Wali murid bebas
+                        
+                        // Cek untuk Admin, Guru, Kepsek
                         foreach ($allowed_modules as $allowed) {
-                            if (strtolower(trim($allowed)) == strtolower(trim($moduleName))) {
+                            // TYPO FIXED: Pakai $menuName, bukan $moduleName
+                            if (strtolower(trim($allowed)) == strtolower(trim($menuName))) {
                                 return true;
                             }
                         }
@@ -112,12 +119,6 @@
                     </li>
                     
                     @if($hasMenu('Jurnal Harian'))
-                    <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('manajemen-lms*') ? 'active' : '' }}" href="/manajemen-lms">
-                            <span><iconify-icon icon="solar:folder-with-files-bold-duotone" class="fs-6"></iconify-icon></span>
-                            <span class="hide-menu">Manajemen LMS</span>
-                        </a>
-                    </li>
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->is('jurnal-harian*') ? 'active' : '' }}" href="/jurnal-harian">
                             <span><iconify-icon icon="solar:book-bookmark-bold-duotone" class="fs-6"></iconify-icon></span>
@@ -214,13 +215,7 @@
                     
                     @if($hasMenu('Rapor Anak'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('materi-anak*') ? 'active' : '' }}" href="/materi-anak">
-                            <span><iconify-icon icon="solar:book-bookmark-bold-duotone" class="fs-6"></iconify-icon></span>
-                            <span class="hide-menu">Materi & Jurnal</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('rapor-anak*') ? 'active' : '' }}" href="/rapor-anak">
+                        <a class="sidebar-link" href="/rapor-anak">
                             <span><iconify-icon icon="solar:notebook-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Rapor Anak</span>
                         </a>
@@ -232,6 +227,15 @@
                         <a class="sidebar-link" href="/perkembangan-anak">
                             <span><iconify-icon icon="solar:pulse-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Laporan Fisik</span>
+                        </a>
+                    </li>
+                    @endif
+
+                    @if($hasMenu('Pengumuman'))
+                    <li class="sidebar-item mt-2">
+                        <a class="sidebar-link {{ request()->is('pengumuman*') ? 'active' : '' }}" href="/pengumuman">
+                            <span><iconify-icon icon="solar:bell-bing-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Pengumuman Sekolah</span>
                         </a>
                     </li>
                     @endif

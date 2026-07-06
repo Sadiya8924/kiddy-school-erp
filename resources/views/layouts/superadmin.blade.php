@@ -7,23 +7,84 @@
   <link rel="stylesheet" href="/template2/css/styles.min.css" />
   <link rel="stylesheet" href="/template2/css/icons/tabler-icons/tabler-icons.css" />
   
-  <style>
-    .left-sidebar {
-      transition: margin-left 0.3s ease, transform 0.3s ease !important;
-    }
-    .body-wrapper {
-      transition: margin-left 0.3s ease, width 0.3s ease !important;
-    }
-    body.sidebar-hidden .left-sidebar {
-      transform: translateX(-100%) !important;
-      margin-left: -270px !important;
-    }
-    @media (min-width: 992px) {
-      body.sidebar-hidden .body-wrapper {
-        margin-left: 0 !important;
-      }
-    }
-  </style>
+  <!-- ========================================================= -->
+    <!-- TEMA "SOLID & CRISP" (Sesuai Referensi Terbaru)           -->
+    <!-- ========================================================= -->
+    <!-- Import Font 'Inter' biar tulisan lebih "bakuh" -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #2563eb;       /* Biru solid/pekat */
+            --primary-blue-soft: #eff6ff;  /* Background biru super muda */
+            --primary-blue-border: #bfdbfe;/* Border biru muda */
+            --primary-blue-dark: #1e40af;  /* Biru gelap pekat */
+            --text-dark: #0f172a;          /* Teks hitam pekat (Slate 900) */
+            --text-muted: #64748b;         /* Abu-abu solid (Slate 500) */
+            --bg-body: #f8fafc;            
+            --border-color: #e2e8f0;       
+        }
+
+        body, .page-wrapper {
+            background-color: var(--bg-body) !important;
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif !important;
+            -webkit-font-smoothing: antialiased; /* Kunci biar tulisan tajam! */
+        }
+
+        h1, h2, h3, h4, h5, h6 { font-weight: 600 !important; color: var(--text-dark); }
+        .text-muted { color: var(--text-muted) !important; }
+
+        .card {
+            border: 1px solid var(--border-color) !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+            border-radius: 12px !important;
+            background-color: #ffffff;
+        }
+
+        /* Sidebar Styling (Lebih Rapi & Tegas) */
+        .sidebar-nav ul .sidebar-item > .sidebar-link {
+            font-weight: 500;
+            color: #475569;
+        }
+        .sidebar-nav ul .sidebar-item.selected > .sidebar-link,
+        .sidebar-nav ul .sidebar-item > .sidebar-link.active {
+            background-color: var(--primary-blue-soft) !important;
+            color: var(--primary-blue-dark) !important;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        .sidebar-nav ul .sidebar-item.selected > .sidebar-link iconify-icon,
+        .sidebar-nav ul .sidebar-item > .sidebar-link.active iconify-icon {
+            color: var(--primary-blue-dark) !important;
+        }
+        .nav-small-cap {
+            color: #94a3b8 !important;
+            font-weight: 600 !important;
+            font-size: 11px !important;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Tombol Utama */
+        .btn-primary { 
+            background-color: var(--primary-blue) !important; 
+            border-color: var(--primary-blue) !important; 
+            font-weight: 500 !important;
+        }
+        .btn-primary:hover { 
+            background-color: var(--primary-blue-dark) !important; 
+        }
+
+        /* Header Tabel */
+        .table thead th {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    </style>
 </head>
 <body>
 

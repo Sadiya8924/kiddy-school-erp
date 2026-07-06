@@ -60,6 +60,7 @@
               <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
               <select name="role" class="form-select @error('role') is-invalid @enderror" required>
                 <option value="admin"      {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="kepsek"     {{ old('role', $user->role) === 'kepsek' ? 'selected' : '' }}>Kepala Sekolah</option>
                 <option value="guru"       {{ old('role', $user->role) === 'guru' ? 'selected' : '' }}>Guru</option>
                 <option value="wali_murid" {{ old('role', $user->role) === 'wali_murid' ? 'selected' : '' }}>Wali Murid</option>
               </select>

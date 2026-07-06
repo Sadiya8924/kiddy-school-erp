@@ -20,11 +20,14 @@
                     <iconify-icon icon="solar:notification-lines-remove-bold-duotone"></iconify-icon> Pendaftaran & Inden Dibuka
                 </span>
                 
-                <h1 class="fw-bolder text-dark display-5 mb-3 hero-title">Ciptakan Generasi <br><span class="text-primary">Cerdas & Ceria</span></h1>
+                <h1 class="fw-bolder text-dark display-5 mb-3 hero-title">
+                    {{ \App\Models\Setting::get('hero_title_1', 'Ciptakan Generasi') }} <br>
+                    <span class="text-primary">{{ \App\Models\Setting::get('hero_title_2', 'Cerdas & Ceria') }}</span>
+                </h1>
                 
-                <p class="text-muted mb-4 fs-6 fw-normal lh-lg hero-subtitle">
-                    Memberikan pendidikan terbaik untuk generasi masa depan dengan fasilitas lengkap dan tenaga pengajar profesional. Amankan kuota putra-putri Anda sekarang.
-                </p>
+                <div class="text-muted mb-4 fs-6 fw-normal lh-lg hero-subtitle">
+                    {!! \App\Models\Setting::get('hero_subtitle', 'Memberikan pendidikan terbaik untuk generasi masa depan dengan fasilitas lengkap dan tenaga pengajar profesional. Amankan kuota putra-putri Anda sekarang.') !!}
+                </div>
                 
                 <div class="d-flex gap-3 mb-5">
                     <a href="#info-kuota" class="btn btn-primary rounded-3 px-4 py-2.5 fw-semibold shadow-sm d-inline-flex align-items-center gap-2">
@@ -119,8 +122,8 @@
     <div id="profil-sekolah" class="container py-5">
         <div class="mb-5 text-start">
             <p class="text-primary fw-bold text-uppercase mb-2 small section-eyebrow">PENDIDIKAN BERKUALITAS UNTUK ANANDA</p>
-            <h2 class="fw-bolder text-dark mb-3 section-title display-6">Kenali Lebih Dekat</h2>
-            <p class="text-muted fw-normal section-desc fs-6">Pelajari lebih lanjut tentang institusi dan program unggulan kami untuk putra-putri Anda.</p>
+            <h2 class="fw-bolder text-dark mb-3 section-title display-6">{{ \App\Models\Setting::get('profil_title', 'Kenali Lebih Dekat') }}</h2>
+            <div class="text-muted fw-normal section-desc fs-6">{!! \App\Models\Setting::get('profil_subtitle', 'Pelajari lebih lanjut tentang institusi dan program unggulan kami untuk putra-putri Anda.') !!}</div>
         </div>
 
         <ul class="nav nav-custom-underline mb-5 justify-content-start" id="profilTab" role="tablist">
@@ -142,46 +145,48 @@
                     <div class="col-lg-3">
                         <div class="card-profil-left p-4 text-center h-100 d-flex flex-column justify-content-center">
                             <div class="avatar-wrapper rounded-circle overflow-hidden mb-4 mx-auto d-flex align-items-center justify-content-center">
-                                <iconify-icon icon="solar:user-bold-duotone" class="text-primary opacity-50 avatar-icon"></iconify-icon>
+                                @if(\App\Models\Setting::get('yayasan_image'))
+                                    <img src="{{ \App\Models\Setting::get('yayasan_image') }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <iconify-icon icon="solar:user-bold-duotone" class="text-primary opacity-50 avatar-icon"></iconify-icon>
+                                @endif
                             </div>
-                            <h6 class="fw-bold text-dark mb-1 fs-6">Dr. H. Fulan, M.Pd</h6>
-                            <p class="text-muted small mb-4">Ketua Yayasan</p>
+                            <h6 class="fw-bold text-dark mb-1 fs-6">{{ \App\Models\Setting::get('yayasan_profile_name', 'Dr. H. Fulan, M.Pd') }}</h6>
+                            <p class="text-muted small mb-4">{{ \App\Models\Setting::get('yayasan_profile_title', 'Ketua Yayasan') }}</p>
                             
                             <ul class="list-unstyled text-start text-muted border-top pt-4 mb-0 d-flex flex-column gap-3 text-13">
-                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> Berdiri sejak 2010</li>
-                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> Akreditasi A</li>
-                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> 2 Unit Sekolah</li>
-                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> 320+ Alumni</li>
+                                @foreach(explode(',', \App\Models\Setting::get('yayasan_bullets', 'Berdiri sejak 2010, Akreditasi A, 2 Unit Sekolah, 320+ Alumni')) as $bullet)
+                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> {{ trim($bullet) }}</li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-9 ps-lg-4">
-                        <h4 class="fw-bold text-dark mb-3">Yayasan Pendidikan Al-Hikmah</h4>
-                        <p class="text-muted fs-6 mb-4 lh-lg">
-                            Yayasan kami berdiri sejak tahun 2010 dengan komitmen penuh untuk mencetak generasi Islami yang unggul, berakhlak mulia, dan siap menghadapi tantangan masa depan. Kami menaungi berbagai cabang pendidikan dengan standar pengajaran terpadu, fasilitas belajar yang modern, dan tenaga pendidik profesional.
-                        </p>
+                        <h4 class="fw-bold text-dark mb-3">{{ \App\Models\Setting::get('yayasan_title', 'Yayasan Pendidikan Al-Hikmah') }}</h4>
+                        <div class="text-muted fs-6 mb-4 lh-lg">
+                            {!! \App\Models\Setting::get('yayasan_desc', 'Yayasan kami berdiri sejak tahun 2010 dengan komitmen penuh untuk mencetak generasi Islami yang unggul, berakhlak mulia, dan siap menghadapi tantangan masa depan. Kami menaungi berbagai cabang pendidikan dengan standar pengajaran terpadu, fasilitas belajar yang modern, dan tenaga pendidik profesional.') !!}
+                        </div>
                         
                         <div class="row g-4 mb-5">
                             <div class="col-md-6">
                                 <div class="soft-box">
                                     <h6 class="fw-bold text-primary mb-2 text-uppercase text-12"><iconify-icon icon="solar:target-bold-duotone" class="fs-5 align-middle me-2"></iconify-icon> Visi</h6>
-                                    <p class="text-muted small mb-0 lh-lg">Mewujudkan lembaga pendidikan yang berpijak pada penanaman aqidah Islam dan kemuliaan karakter.</p>
+                                    <div class="text-muted small mb-0 lh-lg">{!! \App\Models\Setting::get('yayasan_visi', 'Mewujudkan lembaga pendidikan yang berpijak pada penanaman aqidah Islam dan kemuliaan karakter.') !!}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="soft-box">
                                     <h6 class="fw-bold text-primary mb-2 text-uppercase text-12"><iconify-icon icon="solar:rocket-bold-duotone" class="fs-5 align-middle me-2"></iconify-icon> Misi</h6>
-                                    <p class="text-muted small mb-0 lh-lg">Menyelenggarakan proses pembelajaran yang berkualitas, kreatif, inovatif, dan bermakna.</p>
+                                    <div class="text-muted small mb-0 lh-lg">{!! \App\Models\Setting::get('yayasan_misi', 'Menyelenggarakan proses pembelajaran yang berkualitas, kreatif, inovatif, dan bermakna.') !!}</div>
                                 </div>
                             </div>
                         </div>
 
                         <h6 class="fw-bold text-dark mb-3 fs-6">Program Unggulan</h6>
                         <div class="d-flex flex-wrap gap-3">
-                            <span class="pill-unggulan"><iconify-icon icon="solar:book-bookmark-bold-duotone" class="fs-5"></iconify-icon> Tahfidz Quran</span>
-                            <span class="pill-unggulan"><iconify-icon icon="solar:chat-line-bold-duotone" class="fs-5"></iconify-icon> Bahasa Arab & Inggris</span>
-                            <span class="pill-unggulan"><iconify-icon icon="solar:palette-round-bold-duotone" class="fs-5"></iconify-icon> Seni & Kreativitas</span>
-                            <span class="pill-unggulan"><iconify-icon icon="solar:shield-check-bold-duotone" class="fs-5"></iconify-icon> Pendidikan Karakter</span>
+                            @foreach(explode(',', \App\Models\Setting::get('yayasan_programs', 'Tahfidz Quran, Bahasa Arab & Inggris, Seni & Kreativitas, Pendidikan Karakter')) as $program)
+                            <span class="pill-unggulan"><iconify-icon icon="solar:star-circle-bold-duotone" class="fs-5"></iconify-icon> {{ trim($program) }}</span>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -192,23 +197,27 @@
                     <div class="col-lg-3">
                         <div class="card-profil-left p-4 text-center h-100 d-flex flex-column justify-content-center">
                             <div class="avatar-wrapper rounded-circle overflow-hidden mb-4 mx-auto d-flex align-items-center justify-content-center">
-                                <iconify-icon icon="solar:user-bold-duotone" class="text-primary opacity-50 avatar-icon"></iconify-icon>
+                                @if(\App\Models\Setting::get('tk_image'))
+                                    <img src="{{ \App\Models\Setting::get('tk_image') }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <iconify-icon icon="solar:user-bold-duotone" class="text-primary opacity-50 avatar-icon"></iconify-icon>
+                                @endif
                             </div>
-                            <h6 class="fw-bold text-dark mb-1 fs-6">Bunda Fatimah, S.Pd</h6>
-                            <p class="text-muted small mb-4">Kepala Sekolah TK</p>
+                            <h6 class="fw-bold text-dark mb-1 fs-6">{{ \App\Models\Setting::get('tk_profile_name', 'Bunda Fatimah, S.Pd') }}</h6>
+                            <p class="text-muted small mb-4">{{ \App\Models\Setting::get('tk_profile_title', 'Kepala Sekolah TK') }}</p>
                             
                             <ul class="list-unstyled text-start text-muted border-top pt-4 mb-0 d-flex flex-column gap-3 text-13">
-                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> Usia 4-6 Tahun</li>
-                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> Kurikulum Tematik</li>
-                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> Native Speaker</li>
+                                @foreach(explode(',', \App\Models\Setting::get('tk_bullets', 'Usia 4-6 Tahun, Kurikulum Tematik, Native Speaker')) as $bullet)
+                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> {{ trim($bullet) }}</li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-9 ps-lg-4">
-                        <h4 class="fw-bold text-dark mb-3">Taman Kanak-Kanak (TK)</h4>
-                        <p class="text-muted fs-6 mb-4 lh-lg">
-                            Program Taman Kanak-Kanak dirancang untuk mengasah kognitif, motorik, dan sosio-emosional anak melalui pendekatan <i>learning by playing</i>. Tersedia pilihan jam belajar fleksibel: <b>TK Pagi</b> dan <b>TK Siang</b> untuk mendukung rutinitas keluarga Anda.
-                        </p>
+                        <h4 class="fw-bold text-dark mb-3">{{ \App\Models\Setting::get('tk_title', 'Taman Kanak-Kanak (TK)') }}</h4>
+                        <div class="text-muted fs-6 mb-4 lh-lg">
+                            {!! \App\Models\Setting::get('tk_desc', 'Program Taman Kanak-Kanak dirancang untuk mengasah kognitif, motorik, dan sosio-emosional anak melalui pendekatan <i>learning by playing</i>. Tersedia pilihan jam belajar fleksibel: <b>TK Pagi</b> dan <b>TK Siang</b> untuk mendukung rutinitas keluarga Anda.') !!}
+                        </div>
                         
                         <div class="row g-4 mb-5">
                             <div class="col-md-12">
@@ -225,9 +234,9 @@
 
                         <h6 class="fw-bold text-dark mb-3 fs-6">Aktivitas Penunjang</h6>
                         <div class="d-flex flex-wrap gap-3">
-                            <span class="pill-unggulan"><iconify-icon icon="solar:swimming-bold-duotone" class="fs-5"></iconify-icon> Renang Ceria</span>
-                            <span class="pill-unggulan"><iconify-icon icon="solar:bus-bold-duotone" class="fs-5"></iconify-icon> Field Trip Edutainment</span>
-                            <span class="pill-unggulan"><iconify-icon icon="solar:stethoscope-bold-duotone" class="fs-5"></iconify-icon> Cek Kesehatan Rutin</span>
+                            @foreach(explode(',', \App\Models\Setting::get('tk_programs', 'Renang Ceria, Field Trip Edutainment, Cek Kesehatan Rutin')) as $program)
+                            <span class="pill-unggulan"><iconify-icon icon="solar:star-circle-bold-duotone" class="fs-5"></iconify-icon> {{ trim($program) }}</span>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -238,23 +247,27 @@
                     <div class="col-lg-3">
                         <div class="card-profil-left p-4 text-center h-100 d-flex flex-column justify-content-center">
                             <div class="avatar-wrapper rounded-circle overflow-hidden mb-4 mx-auto d-flex align-items-center justify-content-center">
-                                <iconify-icon icon="solar:user-bold-duotone" class="text-primary opacity-50 avatar-icon"></iconify-icon>
+                                @if(\App\Models\Setting::get('paud_image'))
+                                    <img src="{{ \App\Models\Setting::get('paud_image') }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <iconify-icon icon="solar:user-bold-duotone" class="text-primary opacity-50 avatar-icon"></iconify-icon>
+                                @endif
                             </div>
-                            <h6 class="fw-bold text-dark mb-1 fs-6">Bunda Aisyah, S.Psi</h6>
-                            <p class="text-muted small mb-4">Koordinator PAUD</p>
+                            <h6 class="fw-bold text-dark mb-1 fs-6">{{ \App\Models\Setting::get('paud_profile_name', 'Bunda Aisyah, S.Psi') }}</h6>
+                            <p class="text-muted small mb-4">{{ \App\Models\Setting::get('paud_profile_title', 'Koordinator PAUD') }}</p>
                             
                             <ul class="list-unstyled text-start text-muted border-top pt-4 mb-0 d-flex flex-column gap-3 text-13">
-                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> Usia 2-4 Tahun</li>
-                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> Toilet Training</li>
-                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> Indoor Playground</li>
+                                @foreach(explode(',', \App\Models\Setting::get('paud_bullets', 'Usia 2-4 Tahun, Toilet Training, Indoor Playground')) as $bullet)
+                                <li><iconify-icon icon="solar:square-alt-arrow-right-line-duotone" class="text-primary me-2 fs-5 align-middle"></iconify-icon> {{ trim($bullet) }}</li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-9 ps-lg-4">
-                        <h4 class="fw-bold text-dark mb-3">Pendidikan Anak Usia Dini (PAUD)</h4>
-                        <p class="text-muted fs-6 mb-4 lh-lg">
-                            Program PAUD/Kelompok Bermain kami memfasilitasi masa emas <i>(golden age)</i> anak. Lingkungan sekolah dibuat senyaman dan seaman mungkin seperti di rumah (<i>homely environment</i>) untuk merangsang rasa ingin tahu dan keberanian anak bersosialisasi.
-                        </p>
+                        <h4 class="fw-bold text-dark mb-3">{{ \App\Models\Setting::get('paud_title', 'Pendidikan Anak Usia Dini (PAUD)') }}</h4>
+                        <div class="text-muted fs-6 mb-4 lh-lg">
+                            {!! \App\Models\Setting::get('paud_desc', 'Program PAUD/Kelompok Bermain kami memfasilitasi masa emas <i>(golden age)</i> anak. Lingkungan sekolah dibuat senyaman dan seaman mungkin seperti di rumah (<i>homely environment</i>) untuk merangsang rasa ingin tahu dan keberanian anak bersosialisasi.') !!}
+                        </div>
                         
                         <div class="row g-4 mb-5">
                             <div class="col-md-12">
@@ -271,9 +284,9 @@
 
                         <h6 class="fw-bold text-dark mb-3 fs-6">Metode Stimulasi</h6>
                         <div class="d-flex flex-wrap gap-3">
-                            <span class="pill-unggulan"><iconify-icon icon="solar:music-notes-bold-duotone" class="fs-5"></iconify-icon> Bernyanyi & Menari</span>
-                            <span class="pill-unggulan"><iconify-icon icon="solar:book-square-bold-duotone" class="fs-5"></iconify-icon> Story Telling</span>
-                            <span class="pill-unggulan"><iconify-icon icon="solar:gamepad-bold-duotone" class="fs-5"></iconify-icon> Sensoric Play</span>
+                            @foreach(explode(',', \App\Models\Setting::get('paud_programs', 'Bernyanyi & Menari, Story Telling, Sensoric Play')) as $program)
+                            <span class="pill-unggulan"><iconify-icon icon="solar:star-circle-bold-duotone" class="fs-5"></iconify-icon> {{ trim($program) }}</span>
+                            @endforeach
                         </div>
                     </div>
                 </div>

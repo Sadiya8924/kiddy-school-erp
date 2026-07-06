@@ -60,6 +60,19 @@
                     </a>
                 </li>
 
+                @if($user && in_array($user->role, ['super_admin', 'admin']))
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
+                        <span class="hide-menu">WEBSITE</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->is('settings/landing-page*') ? 'active' : '' }}" href="/settings/landing-page">
+                            <span><iconify-icon icon="solar:monitor-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Edit Landing Page</span>
+                        </a>
+                    </li>
+                @endif
+
                 @if($user && $user->isSuperAdmin())
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
@@ -119,6 +132,12 @@
                     </li>
                     
                     @if($hasMenu('Jurnal Harian'))
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->is('manajemen-lms*') ? 'active' : '' }}" href="/manajemen-lms">
+                            <span><iconify-icon icon="solar:folder-with-files-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Manajemen Materi</span>
+                        </a>
+                    </li>
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->is('jurnal-harian*') ? 'active' : '' }}" href="/jurnal-harian">
                             <span><iconify-icon icon="solar:book-bookmark-bold-duotone" class="fs-6"></iconify-icon></span>

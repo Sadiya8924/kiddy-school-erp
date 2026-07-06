@@ -378,7 +378,7 @@
 </section>
 
 {{-- ========================================== --}}
-{{-- 4. BAGIAN SYARAT PENDAFTARAN (Latar Putih) --}}
+{{--        4. BAGIAN SYARAT PENDAFTARAN        --}}
 {{-- ========================================== --}}
 <section class="section-white py-5 mb-5 border-top">
     <div class="container py-4">

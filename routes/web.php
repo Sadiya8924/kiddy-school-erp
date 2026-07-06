@@ -20,6 +20,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\RaporTemplateController; 
 use App\Http\Controllers\ArsipRaporController;
 use App\Http\Controllers\JurnalHarianController;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,7 +53,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         $user = Auth::user();
         
-        if ($user->isSuperAdmin()) {
+        if ($user->role === 'super_admin') {
             if (session('active_school_id')) {
                 $current_school_id = session('active_school_id');
             } else {
@@ -63,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
             $school_ids = $anak->pluck('school_id')->unique();
             $pengumuman = \App\Models\Announcement::whereIn('school_id', $school_ids)
                             ->whereIn('target', ['semua', 'wali_murid'])
+                            ->whereDate('tanggal_kegiatan', '>=', Carbon::today())
                             ->latest()->take(4)->get();
             return view('walimurid.dashboard', compact('anak', 'pengumuman')); 
         } else {
@@ -73,6 +75,7 @@ Route::middleware(['auth'])->group(function () {
         $semesterAktif = Semester::where('is_active', true)->first();
 
         $pengumuman = \App\Models\Announcement::where('school_id', $current_school_id)
+            ->whereDate('tanggal_kegiatan', '>=', Carbon::today())
             ->where(function($q) use ($user) {
                 if ($user->role == 'guru' && $user->kelas_id) {
                     $q->whereNull('kelas_id')->orWhere('kelas_id', $user->kelas_id); 

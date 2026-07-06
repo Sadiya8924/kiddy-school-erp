@@ -3,17 +3,72 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\School;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AnnouncementController extends Controller
 {
     // Semua role bisa lihat daftar pengumuman
     public function index()
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
         $user = Auth::user();
-        $pengumuman = Announcement::where('school_id', $user->school_id)->latest()->get();
-        return view('pengumuman.index', compact('pengumuman'));
+        $today = Carbon::today();
+
+        if ($user->role === 'wali_murid') {
+            $schoolIds = Siswa::where('email', $user->email)
+                ->pluck('school_id')
+                ->unique()
+                ->values();
+
+            $schools = School::whereIn('id', $schoolIds)->get();
+
+            $pengumumanAktif = Announcement::whereIn('school_id', $schoolIds)
+                ->whereIn('target', ['semua', 'wali_murid'])
+                ->whereDate('tanggal_kegiatan', '>=', $today)
+                ->orderBy('tanggal_kegiatan')
+                ->latest()
+                ->get()
+                ->groupBy('school_id');
+
+            $arsipPengumuman = Announcement::whereIn('school_id', $schoolIds)
+                ->whereIn('target', ['semua', 'wali_murid'])
+                ->whereDate('tanggal_kegiatan', '<', $today)
+                ->orderByDesc('tanggal_kegiatan')
+                ->latest()
+                ->get()
+                ->groupBy('school_id');
+
+            return view('pengumuman.index', compact('schools', 'pengumumanAktif', 'arsipPengumuman'));
+        }
+
+        $schoolId = $user->role === 'super_admin' ? session('active_school_id') : $user->school_id;
+
+        if (!$schoolId) {
+            return back()->with('error', 'Silakan pilih sekolah aktif terlebih dahulu.');
+        }
+
+        $school = School::find($schoolId);
+
+        $pengumumanAktif = Announcement::where('school_id', $schoolId)
+            ->whereDate('tanggal_kegiatan', '>=', $today)
+            ->orderBy('tanggal_kegiatan')
+            ->latest()
+            ->get();
+
+        $arsipPengumuman = Announcement::where('school_id', $schoolId)
+            ->whereDate('tanggal_kegiatan', '<', $today)
+            ->orderByDesc('tanggal_kegiatan')
+            ->latest()
+            ->get();
+
+        return view('pengumuman.index', compact('school', 'pengumumanAktif', 'arsipPengumuman'));
     }
 
     // Hanya Admin yang bisa simpan

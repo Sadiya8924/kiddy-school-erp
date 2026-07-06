@@ -186,6 +186,15 @@
                     </li>
                     @endif
 
+                    @if($hasMenu('Pengumuman'))
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->is('pengumuman*') ? 'active' : '' }}" href="/pengumuman">
+                            <span><iconify-icon icon="solar:bell-bing-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Pengumuman Sekolah</span>
+                        </a>
+                    </li>
+                    @endif
+
                     @if(in_array($user->role, ['super_admin', 'admin']))
                         @if($hasMenu('Template Rapor'))
                         <li class="sidebar-item mt-2">
@@ -231,14 +240,6 @@
                     </li>
                     @endif
 
-                    @if($hasMenu('Pengumuman'))
-                    <li class="sidebar-item mt-2">
-                        <a class="sidebar-link {{ request()->is('pengumuman*') ? 'active' : '' }}" href="/pengumuman">
-                            <span><iconify-icon icon="solar:bell-bing-bold-duotone" class="fs-6"></iconify-icon></span>
-                            <span class="hide-menu">Pengumuman Sekolah</span>
-                        </a>
-                    </li>
-                    @endif
                 @endif
                 
             </ul>

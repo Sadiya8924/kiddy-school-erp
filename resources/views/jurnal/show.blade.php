@@ -43,7 +43,7 @@
                         @php 
                             $jurnal = $jurnals[$siswa->id] ?? null; 
                         @endphp
-                        <tr>
+                        <tr @if($jurnal) data-bs-toggle="modal" data-bs-target="#modalDetailJurnal{{ $siswa->id }}" style="cursor: pointer;" class="table-hover-custom" title="Klik untuk lihat detail dan komentar" @endif>
                             <td class="text-center text-muted">{{ $index + 1 }}</td>
                             <td class="fw-bold text-dark">{{ $siswa->nama_lengkap }}</td>
                             <td>
@@ -53,15 +53,15 @@
                                     {{-- TOMBOL LIHAT MEDIA --}}
                                     <div class="d-flex gap-2 mt-1">
                                         @if($jurnal->foto)
-                                            <a href="javascript:void(0)" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalLihatFoto{{ $jurnal->id }}">
-                                                <span class="badge bg-info-subtle text-info small py-1 px-2" style="cursor: pointer;">
+                                            <a href="javascript:void(0)" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalLihatFoto{{ $jurnal->id }}" onclick="event.stopPropagation();">
+                                                <span class="badge bg-info-subtle text-info small py-1 px-2">
                                                     <iconify-icon icon="solar:gallery-bold-duotone" class="align-middle"></iconify-icon> Lihat Foto
                                                 </span>
                                             </a>
                                         @endif
                                         @if($jurnal->video)
-                                            <a href="javascript:void(0)" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalLihatVideo{{ $jurnal->id }}">
-                                                <span class="badge bg-danger-subtle text-danger small py-1 px-2" style="cursor: pointer;">
+                                            <a href="javascript:void(0)" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalLihatVideo{{ $jurnal->id }}" onclick="event.stopPropagation();">
+                                                <span class="badge bg-danger-subtle text-danger small py-1 px-2">
                                                     <iconify-icon icon="solar:video-frame-bold-duotone" class="align-middle"></iconify-icon> Lihat Video
                                                 </span>
                                             </a>
@@ -75,9 +75,11 @@
                                 <span class="small text-muted fst-italic">{{ $jurnal->catatan ?? '-' }}</span>
                             </td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-sm {{ $jurnal ? 'btn-outline-primary' : 'btn-primary' }} rounded-pill shadow-none px-3" data-bs-toggle="modal" data-bs-target="#modalJurnal{{ $siswa->id }}">
-                                    <iconify-icon icon="solar:pen-new-round-bold-duotone"></iconify-icon> {{ $jurnal ? 'Edit' : 'Isi' }}
-                                </button>
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <button type="button" class="btn btn-sm {{ $jurnal ? 'btn-outline-primary' : 'btn-primary' }} rounded-pill shadow-none px-3" data-bs-toggle="modal" data-bs-target="#modalJurnal{{ $siswa->id }}" onclick="event.stopPropagation();">
+                                        <iconify-icon icon="solar:pen-new-round-bold-duotone"></iconify-icon> {{ $jurnal ? 'Edit' : 'Isi' }}
+                                    </button>
+                                </div>
 
                                 {{-- MODAL ISI JURNAL --}}
                                 <div class="modal fade text-start" id="modalJurnal{{ $siswa->id }}" tabindex="-1">
@@ -130,6 +132,69 @@
                                 </div>
 
                                 @if($jurnal)
+                                    {{-- MODAL DETAIL JURNAL (DAN KOMENTAR) --}}
+                                    <div class="modal fade text-start" id="modalDetailJurnal{{ $siswa->id }}" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+                                            <div class="modal-content border-0 shadow rounded-4">
+                                                <div class="modal-header bg-info bg-gradient text-white">
+                                                    <h5 class="modal-title fw-bold text-white">Detail Jurnal: {{ $siswa->nama_lengkap }}</h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body p-4">
+                                                    <h6 class="fw-bold mb-2">Kegiatan Anak:</h6>
+                                                    <p class="text-dark mb-4" style="line-height: 1.6;">{!! nl2br(e($jurnal->kegiatan)) !!}</p>
+                                                    
+                                                    @if($jurnal->catatan)
+                                                    <div class="bg-warning-subtle text-dark p-3 rounded-3 mb-4 border border-warning-subtle">
+                                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                                            <iconify-icon icon="solar:notes-bold-duotone" class="text-warning fs-5"></iconify-icon>
+                                                            <span class="fw-bold text-warning-emphasis">Catatan Khusus:</span>
+                                                        </div>
+                                                        <span class="fst-italic">{{ $jurnal->catatan }}</span>
+                                                    </div>
+                                                    @endif
+                                                    
+                                                    <hr>
+                                                    
+                                                    <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                                                        <iconify-icon icon="solar:chat-line-bold-duotone" class="text-primary fs-5"></iconify-icon> Diskusi / Komentar Wali Murid
+                                                    </h6>
+                                                    
+                                                    @php
+                                                        $comments = \Illuminate\Support\Facades\DB::table('jurnal_comments')
+                                                            ->join('users', 'jurnal_comments.user_id', '=', 'users.id')
+                                                            ->where('jurnal_id', $jurnal->id)
+                                                            ->select('jurnal_comments.*', 'users.name as user_name')
+                                                            ->orderBy('created_at', 'asc')
+                                                            ->get();
+                                                    @endphp
+                                                    
+                                                    <div class="d-flex flex-column gap-3 mb-4 bg-light p-3 rounded-3" style="max-height: 300px; overflow-y: auto;">
+                                                        @forelse($comments as $comment)
+                                                            <div class="p-3 rounded-3 {{ $comment->user_id == Auth::id() ? 'bg-primary-subtle align-self-end' : 'bg-white border' }}" style="max-width: 85%;">
+                                                                <div class="d-flex justify-content-between align-items-center mb-1 gap-3">
+                                                                    <span class="fw-bold small {{ $comment->user_id == Auth::id() ? 'text-primary' : 'text-dark' }}">{{ $comment->user_name }}</span>
+                                                                    <span class="text-muted" style="font-size: 10px;">{{ \Carbon\Carbon::parse($comment->created_at)->format('d M H:i') }}</span>
+                                                                </div>
+                                                                <p class="mb-0" style="font-size: 13px;">{{ $comment->komentar }}</p>
+                                                            </div>
+                                                        @empty
+                                                            <div class="text-center text-muted small py-3 fst-italic">Belum ada diskusi untuk jurnal ini.</div>
+                                                        @endforelse
+                                                    </div>
+                                                    
+                                                    <form action="{{ route('jurnal.comment.store', $jurnal->id) }}" method="POST">
+                                                        @csrf
+                                                        <div class="input-group">
+                                                            <input type="text" name="komentar" class="form-control rounded-start-pill border-secondary" placeholder="Tulis balasan..." required>
+                                                            <button class="btn btn-primary rounded-end-pill px-4 shadow-sm" type="submit">Kirim Balasan</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     {{-- MODAL LIHAT FOTO --}}
                                     @if($jurnal->foto)
                                     <div class="modal fade" id="modalLihatFoto{{ $jurnal->id }}" tabindex="-1">

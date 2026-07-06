@@ -131,13 +131,23 @@
                         <span class="hide-menu">KEGIATAN & PRESENSI</span>
                     </li>
                     
-                    @if($hasMenu('Jurnal Harian'))
+                    @if($user->role == 'guru' || $user->isSuperAdmin())
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('manajemen-lms*') ? 'active' : '' }}" href="/manajemen-lms">
-                            <span><iconify-icon icon="solar:folder-with-files-bold-duotone" class="fs-6"></iconify-icon></span>
+                        <a class="sidebar-link {{ request()->is('materi/guru*') ? 'active' : '' }}" href="{{ route('materi.guru.index') }}">
+                            <span><iconify-icon icon="solar:document-add-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Manajemen Materi</span>
                         </a>
                     </li>
+                    @endif
+                    @if(in_array($user->role, ['kepsek', 'admin', 'super_admin']))
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->is('materi/persetujuan*') ? 'active' : '' }}" href="{{ route('materi.kepsek.index') }}">
+                            <span><iconify-icon icon="solar:shield-check-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Persetujuan Materi</span>
+                        </a>
+                    </li>
+                    @endif
+                    @if($hasMenu('Jurnal Harian'))
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->is('jurnal-harian*') ? 'active' : '' }}" href="/jurnal-harian">
                             <span><iconify-icon icon="solar:book-bookmark-bold-duotone" class="fs-6"></iconify-icon></span>
@@ -259,6 +269,20 @@
                     </li>
                     @endif
 
+                    
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->routeIs('materi.ortu.index') ? 'active' : '' }}" href="{{ route('materi.ortu.index') }}">
+                            <span><iconify-icon icon="solar:book-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Materi Pelajaran</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->is('materi-anak*') ? 'active' : '' }}" href="{{ route('walimurid.materi') }}">
+                            <span><iconify-icon icon="solar:notebook-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Jurnal Harian Anak</span>
+                        </a>
+                    </li>
                 @endif
                 
             </ul>

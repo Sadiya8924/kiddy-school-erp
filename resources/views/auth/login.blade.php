@@ -8,10 +8,11 @@
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
   <style>
     body { background-color: #fafafa; font-family: 'Segoe UI', sans-serif; }
-    .text-dark-green { color: #0d5c46; }
-    .btn-dark-green { background-color: #0d5c46; color: #fff; transition: 0.3s; }
-    .btn-dark-green:hover { background-color: #0a4635; color: #fff; }
-    .form-control:focus { border-color: #0d5c46; box-shadow: 0 0 0 0.25rem rgba(13, 92, 70, 0.25); }
+    .text-primary-custom { color: #2952ff; }
+    .btn-primary-custom { background-color: #2952ff; color: #fff; transition: 0.3s; border: none; }
+    .btn-primary-custom:hover { background-color: #193199; color: #fff; }
+    .form-control:focus { border-color: #2952ff; box-shadow: 0 0 0 0.25rem rgba(41, 82, 255, 0.25); }
+    .bg-primary-custom { background-color: #2952ff !important; color: white !important; }
   </style>
 </head>
 
@@ -23,10 +24,14 @@
         <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
           <div class="text-center mb-4">
             <a href="/" class="text-decoration-none d-flex flex-column align-items-center gap-2">
-                <div class="bg-success text-white rounded d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                    <iconify-icon icon="solar:diploma-bold-duotone" class="fs-2"></iconify-icon>
-                </div>
-                <h4 class="fw-bold text-dark-green mb-0 mt-2">Yayasan Al-Hikmah</h4>
+                @if(\App\Models\Setting::get('site_logo'))
+                    <img src="{{ \App\Models\Setting::get('site_logo') }}" alt="Logo" style="height: 48px; object-fit: contain;">
+                @else
+                    <div class="bg-primary-custom rounded d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <iconify-icon icon="solar:diploma-bold-duotone" class="fs-2 text-white"></iconify-icon>
+                    </div>
+                @endif
+                <h4 class="fw-bold text-primary-custom mb-0 mt-2">{{ \App\Models\Setting::get('site_title', 'Yayasan Al-Hikmah') }}</h4>
             </a>
             <p class="text-muted small mt-2">Silakan masuk ke akun Anda</p>
           </div>
@@ -54,16 +59,16 @@
                 <input class="form-check-input" type="checkbox" name="remember" id="rememberCheck">
                 <label class="form-check-label text-muted small" for="rememberCheck">Ingat Saya</label>
               </div>
-              <a class="text-dark-green fw-semibold small text-decoration-none" href="#">Lupa Sandi?</a>
+              <a class="text-primary-custom fw-semibold small text-decoration-none" href="#">Lupa Sandi?</a>
             </div>
             
-            <button type="submit" class="btn btn-dark-green w-100 py-2 rounded-pill fw-bold shadow-sm mb-4">
+            <button type="submit" class="btn btn-primary-custom w-100 py-2 rounded-pill fw-bold shadow-sm mb-4">
                Masuk Sekarang
             </button>
             
             <div class="text-center small">
               <span class="text-muted">Belum punya akun?</span>
-              <a class="text-dark-green fw-bold text-decoration-none ms-1" href="/register">Daftar di sini</a>
+              <a class="text-primary-custom fw-bold text-decoration-none ms-1" href="/register">Daftar di sini</a>
             </div>
           </form>
 

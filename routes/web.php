@@ -20,6 +20,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\RaporTemplateController; 
 use App\Http\Controllers\ArsipRaporController;
 use App\Http\Controllers\JurnalHarianController;
+use App\Http\Controllers\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -276,6 +277,9 @@ Route::middleware(['auth'])->group(function () {
 
     // 4. AKSES ADMIN & SUPER ADMIN ONLY
     Route::middleware('role:super_admin,admin')->group(function () {
+        Route::get('/settings/landing-page', [SettingController::class, 'editLandingPage'])->name('settings.landing.edit');
+        Route::post('/settings/landing-page', [SettingController::class, 'updateLandingPage'])->name('settings.landing.update');
+        
         Route::get('/kenaikan-kelas', [ProsesKelasController::class, 'index'])->name('kenaikan.index');
         Route::post('/kenaikan-kelas/proses', [ProsesKelasController::class, 'proses'])->name('kenaikan.proses');
         Route::get('/admin/template', [RaporTemplateController::class, 'index']);
@@ -384,8 +388,6 @@ Route::middleware(['auth'])->group(function () {
             $riwayat = \App\Models\PerkembanganFisik::where('siswa_id', $siswa->id)->orderBy('tgl_periksa', 'desc')->get();
             return view('walimurid.perkembangan', compact('siswa', 'riwayat'));
         })->name('walimurid.perkembangan');
-<<<<<<< HEAD
-=======
         
         Route::get('/materi-anak', [JurnalHarianController::class, 'waliMuridMateri'])->name('walimurid.materi');
         Route::post('/materi-anak/{id}/read', [JurnalHarianController::class, 'markMateriRead'])->name('walimurid.materi.read');
@@ -452,6 +454,5 @@ Route::middleware(['auth'])->group(function () {
             }
         }
         return "🔥 DATABASE MENU BERHASIL DIPERBAIKI! Silakan kembali ke web dan refresh halamannya.";
->>>>>>> 00c4646d314d37b51f95aed1e4223ee0c2d787f3
     });
 });

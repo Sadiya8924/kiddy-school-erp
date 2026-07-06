@@ -95,7 +95,7 @@
                         </thead>
                         <tbody>
                             @forelse($siswas as $index => $siswa)
-                            <tr class="border-bottom border-light-subtle">
+                            <tr class="border-bottom border-light-subtle table-hover-custom" style="cursor: pointer;" onclick="window.location.href='/siswa/{{ $siswa->id }}'" title="Klik untuk lihat detail siswa">
                                 <td class="text-center text-muted py-3" style="font-size: 13px;">{{ $index + 1 }}</td>
                                 <td class="py-3">
                                     <div class="fw-bold text-dark mb-1" style="font-size: 14px;">{{ $siswa->nama_lengkap }}</div>
@@ -126,20 +126,15 @@
                                     @else
                                         <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded px-2 py-1 d-inline-flex align-items-center gap-1" style="font-size: 10px;"><iconify-icon icon="solar:link-broken-bold"></iconify-icon> Belum Terhubung</span>
                                     @endif
-                                </td>
                                 <td class="text-end py-3 pe-4">
                                     <div class="d-flex justify-content-end gap-2 flex-wrap">
-                                        {{-- Tombol Profil --}}
-                                        <a href="/siswa/{{ $siswa->id }}" class="btn btn-sm btn-light border rounded shadow-none text-muted p-2 d-flex align-items-center justify-content-center" title="Lihat Profil">
-                                            <iconify-icon icon="solar:user-id-bold-duotone" class="fs-5"></iconify-icon>
-                                        </a>
                                         
                                         @auth
                                             @if(in_array(auth()->user()->role, ['admin', 'super_admin']) && $siswa->status != 'lulus')
                                                 
                                                 {{-- JIKA STATUS MENUNGGU (CALON SISWA BARU) --}}
                                                 @if($siswa->status == 'menunggu')
-                                                    <button type="button" class="btn btn-sm btn-warning rounded shadow-none px-3 fw-bold text-dark" style="font-size: 11px;" data-bs-toggle="modal" data-bs-target="#modalVerifikasi{{ $siswa->id }}">
+                                                    <button type="button" class="btn btn-sm btn-warning rounded shadow-none px-3 fw-bold text-dark" style="font-size: 11px;" data-bs-toggle="modal" data-bs-target="#modalVerifikasi{{ $siswa->id }}" onclick="event.stopPropagation();">
                                                         Verifikasi & Terima
                                                     </button>
 
@@ -178,12 +173,12 @@
                                                 {{-- JIKA STATUS AKTIF (SUDAH DITERIMA) --}}
                                                 @else
                                                     {{-- Tombol Tautkan Ortu --}}
-                                                    <button type="button" class="btn btn-sm btn-outline-success bg-success-subtle border-success-subtle text-success rounded shadow-none px-3 fw-bold" style="font-size: 11px;" data-bs-toggle="modal" data-bs-target="#modalTautkanOrtu{{ $siswa->id }}">
+                                                    <button type="button" class="btn btn-sm btn-outline-success bg-success-subtle border-success-subtle text-success rounded shadow-none px-3 fw-bold" style="font-size: 11px;" data-bs-toggle="modal" data-bs-target="#modalTautkanOrtu{{ $siswa->id }}" onclick="event.stopPropagation();">
                                                         Link Ortu
                                                     </button>
 
                                                     {{-- Tombol Set Kelas --}}
-                                                    <button type="button" class="btn btn-sm btn-primary rounded shadow-none px-3 fw-bold" style="font-size: 11px;" data-bs-toggle="modal" data-bs-target="#modalSetKelas{{ $siswa->id }}">
+                                                    <button type="button" class="btn btn-sm btn-primary rounded shadow-none px-3 fw-bold" style="font-size: 11px;" data-bs-toggle="modal" data-bs-target="#modalSetKelas{{ $siswa->id }}" onclick="event.stopPropagation();">
                                                         Set Kelas
                                                     </button>
 

@@ -79,10 +79,12 @@
                     </p>
                 </div>
             </div>
-            <div class="card-footer bg-light border-top pt-3 pb-3 px-4 d-flex gap-2">
+            <div class="card-footer bg-light border-top pt-3 pb-3 px-4 d-flex gap-2 flex-wrap">
                 {{-- Selipkan ID Anak ke URL-nya --}}
-                <a href="/rapor-anak/{{ $a->id }}" class="btn btn-white border w-100 fw-semibold text-dark shadow-sm bg-white" style="font-size: 12px; padding: 8px;">Lihat Rapor</a>
-                <a href="/perkembangan-anak/{{ $a->id }}" class="btn btn-white border w-100 fw-semibold text-dark shadow-sm bg-white" style="font-size: 12px; padding: 8px;">Cek Fisik</a>
+                <a href="/rapor-anak/{{ $a->id }}" class="btn btn-white border flex-grow-1 fw-semibold text-dark shadow-sm bg-white" style="font-size: 12px; padding: 8px;">Lihat Rapor</a>
+                <a href="/perkembangan-anak/{{ $a->id }}" class="btn btn-white border flex-grow-1 fw-semibold text-dark shadow-sm bg-white" style="font-size: 12px; padding: 8px;">Cek Fisik</a>
+                <a href="{{ route('walimurid.materi') }}" class="btn btn-primary border flex-grow-1 fw-semibold shadow-sm" style="font-size: 12px; padding: 8px;">Jurnal Harian</a>
+                <a href="{{ route('materi.ortu.index') }}" class="btn btn-info border text-white flex-grow-1 fw-semibold shadow-sm" style="font-size: 12px; padding: 8px;">Materi Pelajaran</a>
             </div>
         </div>
     </div>

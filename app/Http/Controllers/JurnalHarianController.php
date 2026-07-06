@@ -17,6 +17,7 @@ class JurnalHarianController extends Controller
     {
         $user = Auth::user();
         $schoolId = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
+        $pageType = $request->route() ? ($request->route()->getName() == 'lms.index' ? 'lms' : 'jurnal') : 'jurnal';
         
         // Cari kelas & materi berdasarkan Role
         if ($user->role === 'guru' && $user->kelas_id) {
@@ -33,7 +34,7 @@ class JurnalHarianController extends Controller
                         ->get();
         }
 
-        return view('jurnal.index', compact('materis', 'list_kelas'));
+        return view('jurnal.index', compact('materis', 'list_kelas', 'pageType'));
     }
 
     // 2. ADMIN BIKIN MATERI BARU
@@ -182,5 +183,51 @@ class JurnalHarianController extends Controller
             }
         }
         return back()->with('error', 'Gagal membuat file ZIP.');
+    }
+
+    // 6. AKSES ORANG TUA (WALI MURID)
+    public function waliMuridMateri(Request $request)
+    {
+        $user = Auth::user();
+        
+        // Ambil semua anak
+        $anak = \App\Models\Siswa::where('email', $user->email)->get();
+        if ($anak->isEmpty()) {
+            return redirect('/dashboard')->with('error', 'Belum ada data anak.');
+        }
+
+        $siswaIds = $anak->pluck('id')->toArray();
+        
+        // Ambil Jurnal Harian khusus untuk anak-anak ini
+        $jurnals = JurnalHarian::with(['materi', 'siswa'])
+                    ->whereIn('siswa_id', $siswaIds)
+                    ->orderBy('tanggal', 'desc')
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+                    
+        return view('jurnal.ortu_jurnal', compact('jurnals', 'anak'));
+    }
+
+    public function markMateriRead(Request $request, $id)
+    {
+        // Fitur read receipt
+        return back();
+    }
+
+    public function storeMateriComment(Request $request, $id)
+    {
+        $request->validate([
+            'komentar' => 'required|string'
+        ]);
+
+        DB::table('jurnal_comments')->insert([
+            'jurnal_id' => $id,
+            'user_id' => Auth::id(),
+            'komentar' => $request->komentar,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return back()->with('success', 'Komentar berhasil ditambahkan.');
     }
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 30, 2026 at 11:17 AM
+-- Generation Time: Jul 06, 2026 at 05:51 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -52,7 +52,21 @@ INSERT INTO `absensis` (`id`, `school_id`, `siswa_id`, `tanggal`, `status`, `ket
 (7, 1, 1, '2026-05-17', 'Hadir', NULL, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
 (8, 1, 2, '2026-05-17', 'Hadir', NULL, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
 (9, 1, 1, '2026-05-18', 'Izin', 'Keterangan Izin', '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
-(10, 1, 2, '2026-05-18', 'Alfa', 'Keterangan Alfa', '2026-05-19 03:48:17', '2026-05-19 03:48:17');
+(10, 1, 2, '2026-05-18', 'Alfa', 'Keterangan Alfa', '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
+(11, 1, 1, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(12, 1, 2, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(13, 1, 3, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(14, 1, 4, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(15, 1, 5, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(16, 1, 6, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(17, 1, 7, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(18, 1, 8, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(19, 1, 9, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(20, 1, 10, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(21, 1, 11, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(22, 1, 12, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(23, 1, 13, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29'),
+(24, 1, 15, '2026-06-27', 'hadir', NULL, '2026-06-27 10:42:29', '2026-06-27 10:42:29');
 
 -- --------------------------------------------------------
 
@@ -79,8 +93,20 @@ INSERT INTO `anggota_kelas` (`id`, `siswa_id`, `kelas_id`, `semester_id`, `creat
 (3, 3, 2, 1, '2026-05-19 10:01:00', '2026-05-19 10:01:00'),
 (4, 1, 1, 2, '2026-05-19 22:34:42', '2026-05-19 22:34:42'),
 (5, 2, 2, 2, '2026-05-19 22:34:47', '2026-05-19 22:34:47'),
-(6, 1, 1, 3, '2026-05-21 03:33:08', '2026-05-21 03:33:08'),
-(7, 2, 2, 3, '2026-05-21 03:33:08', '2026-05-21 03:33:08');
+(6, 1, 1, 3, '2026-05-21 03:33:08', '2026-06-27 09:29:45'),
+(7, 2, 2, 3, '2026-05-21 03:33:08', '2026-05-21 03:33:08'),
+(8, 3, 1, 3, '2026-06-21 21:20:46', '2026-06-27 09:29:45'),
+(10, 13, 1, 3, '2026-06-27 09:52:16', '2026-06-27 09:52:16'),
+(11, 4, 1, 3, '2026-06-27 09:52:23', '2026-07-05 10:30:16'),
+(12, 5, 3, 3, '2026-06-27 09:52:26', '2026-06-27 09:52:26'),
+(13, 6, 1, 3, '2026-06-27 09:52:30', '2026-07-05 10:30:16'),
+(14, 7, 3, 3, '2026-06-27 09:52:35', '2026-06-27 09:52:35'),
+(15, 8, 1, 3, '2026-06-27 09:52:39', '2026-07-05 10:30:16'),
+(16, 9, 3, 3, '2026-06-27 09:52:42', '2026-06-27 09:52:42'),
+(17, 10, 1, 3, '2026-06-27 09:52:47', '2026-07-05 10:30:16'),
+(18, 11, 1, 3, '2026-06-27 09:52:52', '2026-07-05 10:30:16'),
+(19, 12, 1, 3, '2026-06-27 09:52:56', '2026-07-05 10:30:16'),
+(20, 14, 4, 3, '2026-06-27 09:53:22', '2026-06-27 09:53:22');
 
 -- --------------------------------------------------------
 
@@ -99,6 +125,13 @@ CREATE TABLE `announcements` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `announcements`
+--
+
+INSERT INTO `announcements` (`id`, `school_id`, `kelas_id`, `judul`, `isi`, `tanggal_kegiatan`, `target`, `created_at`, `updated_at`) VALUES
+(1, 1, NULL, 'pengambilan buku', 'membayar buku seharga 30k', '2026-06-21', 'semua', '2026-06-20 19:59:13', '2026-06-20 19:59:13');
 
 -- --------------------------------------------------------
 
@@ -131,8 +164,8 @@ INSERT INTO `arsip_rapors` (`id`, `siswa_id`, `semester_id`, `file_path`, `nama_
 --
 
 CREATE TABLE `cache` (
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `expiration` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -143,8 +176,8 @@ CREATE TABLE `cache` (
 --
 
 CREATE TABLE `cache_locks` (
-  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `expiration` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -158,10 +191,18 @@ CREATE TABLE `jurnal_comments` (
   `id` bigint UNSIGNED NOT NULL,
   `jurnal_id` bigint UNSIGNED NOT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
-  `komentar` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `komentar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `jurnal_comments`
+--
+
+INSERT INTO `jurnal_comments` (`id`, `jurnal_id`, `user_id`, `komentar`, `created_at`, `updated_at`) VALUES
+(1, 2, 4, 'materi nya bagus bu', '2026-07-06 10:34:09', '2026-07-06 10:34:09'),
+(2, 3, 4, 'Terimakasih bu', '2026-07-06 10:41:21', '2026-07-06 10:41:21');
 
 -- --------------------------------------------------------
 
@@ -177,13 +218,13 @@ CREATE TABLE `jurnal_harians` (
   `siswa_id` bigint UNSIGNED DEFAULT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
   `tanggal` date NOT NULL,
-  `presensi` enum('Hadir','Izin','Sakit','Alpa') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Hadir',
-  `mood` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `presensi` enum('Hadir','Izin','Sakit','Alpa') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Hadir',
+  `mood` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tema` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `kegiatan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `catatan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `catatan_khusus` text COLLATE utf8mb4_unicode_ci,
-  `catatan_kepsek` text COLLATE utf8mb4_unicode_ci COMMENT 'Catatan pengawasan dari Kepala Sekolah',
+  `catatan_khusus` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `catatan_kepsek` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'Catatan pengawasan dari Kepala Sekolah',
   `foto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `video` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -197,7 +238,7 @@ CREATE TABLE `jurnal_harians` (
 INSERT INTO `jurnal_harians` (`id`, `school_id`, `kelas_id`, `materi_id`, `siswa_id`, `user_id`, `tanggal`, `presensi`, `mood`, `tema`, `kegiatan`, `catatan`, `catatan_khusus`, `catatan_kepsek`, `foto`, `video`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, NULL, 1, 2, '2026-06-01', 'Hadir', NULL, 'day 1', 'mikir kidss', 'nangis sendiri masa?', NULL, NULL, 'jurnal_media/foto/7D6B2INDIT8XrMcRx06u6aKdckwdzWm5BT6oyQ6M.jpg', NULL, '2026-06-01 16:52:20', '2026-06-01 16:52:20'),
 (2, 1, 1, 1, 1, 2, '2026-06-02', 'Hadir', NULL, 'Mewarnai di buku mewarna', 'sangat bagus warnanya', NULL, NULL, NULL, 'jurnal_media/foto/hms0gkVDjOCxzGfaYmMOB9Z4woxXzz2lxht3Ou6o.jpg', NULL, '2026-06-02 12:49:13', '2026-06-02 12:49:13'),
-(3, 1, 1, 3, 1, 3, '2026-06-15', 'Hadir', '😊 Ceria/Senang', 'Calistung', 'senang', 'semangat membaca', 'hati hati jika berkata', NULL, NULL, NULL, '2026-06-15 05:18:28', '2026-06-15 05:18:28');
+(3, 1, 1, 4, 1, 3, '2026-07-07', 'Hadir', NULL, 'Menghitung Dasar', 'Aman', 'Rajin', NULL, NULL, NULL, NULL, '2026-07-06 10:36:32', '2026-07-06 10:36:32');
 
 -- --------------------------------------------------------
 
@@ -223,7 +264,39 @@ INSERT INTO `kelas` (`id`, `school_id`, `nama_kelas`, `kelompok`, `tingkat`, `cr
 (1, 1, 'Tk A Mangga', 'A', 'TK A', '2026-05-19 03:59:03', '2026-05-19 03:59:03'),
 (2, 1, 'Tk B Strobery', 'B', 'TK B', '2026-05-19 10:00:44', '2026-05-19 10:00:44'),
 (3, 1, 'Tk A Nanas', 'A', 'TK A', '2026-06-02 12:47:58', '2026-06-02 12:47:58'),
-(4, 1, 'Tk A Semangka', NULL, 'KB', '2026-06-15 05:30:04', '2026-06-15 05:30:04');
+(4, 2, 'Tk A Banana', NULL, 'TK A', '2026-06-26 19:56:08', '2026-06-26 19:56:08'),
+(5, 2, 'Tk B Bunglon', NULL, 'TK B', '2026-06-26 19:56:19', '2026-06-26 19:56:19');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `materis`
+--
+
+CREATE TABLE `materis` (
+  `id` bigint UNSIGNED NOT NULL,
+  `school_id` bigint UNSIGNED DEFAULT NULL,
+  `judul` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `deskripsi` text COLLATE utf8mb4_unicode_ci,
+  `mata_pelajaran` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `kelas` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` bigint UNSIGNED NOT NULL,
+  `status` enum('Draft','Pending','Approved','Rejected','Published') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Draft',
+  `approved_by` bigint UNSIGNED DEFAULT NULL,
+  `approved_at` timestamp NULL DEFAULT NULL,
+  `rejection_note` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `materis`
+--
+
+INSERT INTO `materis` (`id`, `school_id`, `judul`, `deskripsi`, `mata_pelajaran`, `kelas`, `file`, `created_by`, `status`, `approved_by`, `approved_at`, `rejection_note`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Pengenalan Huruf Arab', 'Lorem ipsum', 'Pendidikan Agama', 'Tk A Mangga (Kelompok A)', NULL, 3, 'Published', 6, '2026-07-06 10:15:30', NULL, '2026-07-06 10:15:07', '2026-07-06 10:15:30'),
+(2, 1, 'Pengenalan Huruf Arab 2', 'Part 2', 'Pendidikan Agama', 'Tk A Mangga (Kelompok A)', 'materi_files/lkMXV2jprxK1SEhahw7ZdWCfqcoBIeKdJ1gZOqzB.pdf', 3, 'Published', 6, '2026-07-06 10:25:04', NULL, '2026-07-06 10:24:30', '2026-07-06 10:25:04');
 
 -- --------------------------------------------------------
 
@@ -235,17 +308,10 @@ CREATE TABLE `materi_comments` (
   `id` bigint UNSIGNED NOT NULL,
   `materi_id` bigint UNSIGNED NOT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
-  `komentar` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `komentar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `materi_comments`
---
-
-INSERT INTO `materi_comments` (`id`, `materi_id`, `user_id`, `komentar`, `created_at`, `updated_at`) VALUES
-(1, 3, 4, 'materi nya bagus', '2026-06-15 05:15:55', '2026-06-15 05:15:55');
 
 -- --------------------------------------------------------
 
@@ -260,12 +326,12 @@ CREATE TABLE `materi_jurnals` (
   `kelompok` enum('A','B','PAUD') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `judul_materi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `deskripsi` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `tujuan_pembelajaran` text COLLATE utf8mb4_unicode_ci,
-  `file_materi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tujuan_pembelajaran` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `file_materi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tanggal_dibuat` date NOT NULL,
   `tanggal_tayang` date DEFAULT NULL,
-  `status` enum('DRAFT','Menunggu ACC','Disetujui','Ditolak') COLLATE utf8mb4_unicode_ci DEFAULT 'DRAFT',
-  `catatan_penolakan` text COLLATE utf8mb4_unicode_ci,
+  `status` enum('DRAFT','Menunggu ACC','Disetujui','Ditolak') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'DRAFT',
+  `catatan_penolakan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -277,8 +343,8 @@ CREATE TABLE `materi_jurnals` (
 INSERT INTO `materi_jurnals` (`id`, `school_id`, `user_id`, `kelompok`, `judul_materi`, `deskripsi`, `tujuan_pembelajaran`, `file_materi`, `tanggal_dibuat`, `tanggal_tayang`, `status`, `catatan_penolakan`, `created_at`, `updated_at`) VALUES
 (1, 1, NULL, 'A', 'Mewarnai di buku mewarna', 'mewarnai gamabr', NULL, NULL, '2026-06-02', NULL, 'Menunggu ACC', NULL, '2026-06-02 12:39:25', '2026-06-02 12:39:25'),
 (2, 1, NULL, 'B', 'Menulis', 'Menulis kalimat utuh', NULL, NULL, '2026-06-02', NULL, 'Menunggu ACC', NULL, '2026-06-02 12:48:36', '2026-06-02 12:48:36'),
-(3, 1, 3, 'A', 'Calistung', 'Lorem ipsum', 'Siswa diharapkan pintar', 'materi_media/g4NlZ8qMv0DOgGLef2KRgm7qA8C9lilTEhCZgsui.pdf', '2026-06-15', '2026-06-22', 'Disetujui', NULL, '2026-06-15 05:06:14', '2026-06-15 05:11:58'),
-(4, 1, 3, 'A', 'Mewarnai', 'Yoi', 'Yoi', 'materi_media/TdJOM1HYlitaqBQbxUk1CWoeYIHmnmgQlpwwysGF.pdf', '2026-06-15', '2026-06-16', 'Disetujui', NULL, '2026-06-15 05:31:00', '2026-06-15 05:35:44');
+(3, 1, NULL, 'A', 'Membaca Dasar', 'Siswa dapat membaca dengan baik', NULL, NULL, '2026-07-07', NULL, 'DRAFT', NULL, '2026-07-06 10:31:07', '2026-07-06 10:31:07'),
+(4, 1, NULL, 'A', 'Menghitung Dasar', 'Anak menghitung', NULL, NULL, '2026-07-07', NULL, 'DRAFT', NULL, '2026-07-06 10:36:02', '2026-07-06 10:36:02');
 
 -- --------------------------------------------------------
 
@@ -294,14 +360,6 @@ CREATE TABLE `materi_kelas_targets` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `materi_kelas_targets`
---
-
-INSERT INTO `materi_kelas_targets` (`id`, `materi_id`, `kelas_id`, `created_at`, `updated_at`) VALUES
-(1, 3, 1, NULL, NULL),
-(2, 4, 1, NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -316,14 +374,6 @@ CREATE TABLE `materi_read_receipts` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `materi_read_receipts`
---
-
-INSERT INTO `materi_read_receipts` (`id`, `materi_id`, `user_id`, `read_at`, `created_at`, `updated_at`) VALUES
-(1, 3, 4, '2026-06-15 05:15:45', '2026-06-15 05:15:45', '2026-06-15 05:15:45'),
-(2, 4, 4, '2026-06-15 05:36:12', '2026-06-15 05:36:12', '2026-06-15 05:36:12');
 
 -- --------------------------------------------------------
 
@@ -382,13 +432,19 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (38, '2026_06_02_192719_setup_lms_jurnal_tables', 14),
 (39, '2026_06_03_082645_change_role_column_in_users_table', 15),
 (40, '2026_06_03_110755_add_multi_role_access_to_school_modules_table', 16),
-(41, '2026_06_15_111146_create_sessions_table', 17),
-(42, '2026_06_15_111250_create_cache_table', 18),
-(43, '2026_06_15_183000_add_approval_to_materi_jurnals_table', 19),
-(44, '2026_06_15_184000_add_guru_features_to_jurnals', 19),
-(45, '2026_06_15_185000_add_kepsek_features_to_jurnals', 19),
-(46, '2026_06_15_190000_add_walimurid_interaction_tables', 19),
-(47, '2026_06_15_191000_add_status_and_notifications_table', 19);
+(41, '2026_06_19_144428_add_kuota_and_program_columns', 17),
+(42, '2026_07_01_113348_add_bukti_pembayaran_to_siswas_table', 18),
+(43, '2026_07_01_171827_modify_status_column_in_siswas_table', 19),
+(44, '2026_06_15_111146_create_sessions_table', 20),
+(45, '2026_06_15_111250_create_cache_table', 20),
+(46, '2026_06_15_183000_add_approval_to_materi_jurnals_table', 20),
+(47, '2026_06_15_184000_add_guru_features_to_jurnals', 20),
+(48, '2026_06_15_185000_add_kepsek_features_to_jurnals', 20),
+(49, '2026_06_15_190000_add_walimurid_interaction_tables', 20),
+(50, '2026_06_15_191000_add_status_and_notifications_table', 20),
+(51, '2026_07_02_093212_add_kuota_settings_to_schools_table', 20),
+(52, '2026_07_06_000000_create_settings_table', 21),
+(53, '2026_07_06_171000_create_materis_table', 22);
 
 -- --------------------------------------------------------
 
@@ -435,11 +491,11 @@ INSERT INTO `modules` (`id`, `name`, `route_name`, `icon`, `category`, `role_acc
 --
 
 CREATE TABLE `notifications` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `notifiable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `notifiable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `notifiable_id` bigint UNSIGNED NOT NULL,
-  `data` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `read_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -624,6 +680,10 @@ CREATE TABLE `schools` (
   `is_rapor_open` tinyint(1) NOT NULL DEFAULT '0',
   `logo_sekolah` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'aktif',
+  `max_indent_years` int NOT NULL DEFAULT '3',
+  `kuota_tk_pagi` int NOT NULL DEFAULT '25',
+  `kuota_tk_siang` int NOT NULL DEFAULT '25',
+  `kuota_paud` int NOT NULL DEFAULT '25',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -632,9 +692,9 @@ CREATE TABLE `schools` (
 -- Dumping data for table `schools`
 --
 
-INSERT INTO `schools` (`id`, `nama_sekolah`, `npsn`, `alamat`, `kepala_sekolah`, `telepon`, `tahun_ajaran_aktif`, `semester_aktif`, `is_rapor_open`, `logo_sekolah`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'TK Permata', '12345678', 'Jl. Pendidikan No. 1, Pasuruan', 'Ibu Siti Aminah', '08123456789', '2025/2026', 'Genap', 1, NULL, 'aktif', '2026-05-19 03:48:16', '2026-05-21 00:03:49'),
-(2, 'Tk Matahari', '1234567890', 'Jalan Bunga Bunga no 00', 'Sadiya', '1234567890', '2026/2027', 'Genap', 0, 'logos/7kKGbTvePn5b7ovpz8M2GSdhxYwzuIEXetZ6s5dE.jpg', 'aktif', '2026-06-03 00:48:28', '2026-06-03 00:48:28');
+INSERT INTO `schools` (`id`, `nama_sekolah`, `npsn`, `alamat`, `kepala_sekolah`, `telepon`, `tahun_ajaran_aktif`, `semester_aktif`, `is_rapor_open`, `logo_sekolah`, `status`, `max_indent_years`, `kuota_tk_pagi`, `kuota_tk_siang`, `kuota_paud`, `created_at`, `updated_at`) VALUES
+(1, 'TK Permata', '12345678', 'Jl. Pendidikan No. 1, Pasuruan', 'Ibu Siti Aminah', '08123456789', '2025/2026', 'Genap', 1, NULL, 'aktif', 3, 25, 30, 25, '2026-05-19 03:48:16', '2026-07-05 21:48:48'),
+(2, 'Tk Matahari', '1234567890', 'Jalan Bunga Bunga no 00', 'Sadiya', '1234567890', '2026/2027', 'Genap', 0, 'logos/7kKGbTvePn5b7ovpz8M2GSdhxYwzuIEXetZ6s5dE.jpg', 'aktif', 3, 25, 25, 25, '2026-06-03 00:48:28', '2026-06-03 00:48:28');
 
 -- --------------------------------------------------------
 
@@ -660,14 +720,14 @@ CREATE TABLE `school_modules` (
 
 INSERT INTO `school_modules` (`id`, `school_id`, `module_id`, `is_active_for_guru`, `is_active_for_admin`, `is_active_for_kepsek`, `is_active_for_wali_murid`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, 1, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
-(2, 1, 2, 1, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
+(2, 1, 2, 0, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
 (3, 1, 3, 1, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
-(4, 1, 4, 1, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
+(4, 1, 4, 1, 1, 0, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
 (5, 1, 5, 1, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
 (6, 1, 6, 1, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
 (7, 1, 7, 1, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
-(8, 1, 8, 1, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
-(9, 1, 9, 1, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
+(8, 1, 8, 0, 1, 0, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
+(9, 1, 9, 0, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
 (10, 1, 10, 1, 1, 1, 1, '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
 (11, 2, 1, 1, 1, 1, 1, '2026-06-03 00:48:47', '2026-06-03 00:48:47'),
 (12, 2, 2, 1, 1, 1, 1, '2026-06-03 00:48:47', '2026-06-03 00:48:47'),
@@ -681,9 +741,9 @@ INSERT INTO `school_modules` (`id`, `school_id`, `module_id`, `is_active_for_gur
 (20, 2, 10, 1, 1, 1, 1, '2026-06-03 00:48:47', '2026-06-03 00:48:47'),
 (21, 1, 11, 1, 1, 1, 1, NULL, NULL),
 (22, 1, 12, 1, 1, 1, 1, NULL, NULL),
-(23, 1, 13, 1, 1, 1, 1, NULL, NULL),
-(24, 1, 14, 1, 1, 1, 1, NULL, NULL),
-(25, 1, 15, 1, 1, 1, 1, NULL, NULL),
+(23, 1, 13, 0, 1, 1, 1, NULL, NULL),
+(24, 1, 14, 0, 1, 0, 1, NULL, NULL),
+(25, 1, 15, 0, 1, 0, 1, NULL, NULL),
 (26, 2, 11, 1, 1, 1, 1, NULL, NULL),
 (27, 2, 12, 1, 1, 1, 1, NULL, NULL),
 (28, 2, 13, 1, 1, 1, 1, NULL, NULL),
@@ -721,11 +781,11 @@ INSERT INTO `semesters` (`id`, `tahun_ajaran`, `jenis`, `is_active`, `created_at
 --
 
 CREATE TABLE `sessions` (
-  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` bigint UNSIGNED DEFAULT NULL,
-  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `user_agent` text COLLATE utf8mb4_unicode_ci,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip_address` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `last_activity` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -734,7 +794,68 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('wngCDd6vwlcY2GMsBzley1JXn6hjKolV5lba9UcJ', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoib3pNSko1NXBVYmxpREZvbGFtVU1SSUhSa1dKa2o2YmFRd1dDOEtHZyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9qdXJuYWwtaGFyaWFuIjtzOjU6InJvdXRlIjtzOjEyOiJqdXJuYWwuaW5kZXgiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjM6InVybCI7YToxOntzOjg6ImludGVuZGVkIjtzOjIyOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mzt9', 1782817478);
+('jCypU6obL2Fsdr6MEAGHX8oECSs7p3YeVE8VSYAz', 6, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiaFBjekxJNmRudkZjUTRmeTVXYzhmQzZpZEhGa2lRSkdkZzc2eVNoYiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9tYXRlcmkvcGVyc2V0dWp1YW4iO3M6NToicm91dGUiO3M6MTk6Im1hdGVyaS5rZXBzZWsuaW5kZXgiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo2O30=', 1783359847),
+('kLnP78S2w7gAByQrcFt6egyxBD4QG1ppS2OganOy', 3, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoidm5zYTAzVTNIeHNrbTBLT0M2YzFmRDRjN2pVWUFGalMwWk9GY0IxWSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9tYXRlcmkvZ3VydSI7czo1OiJyb3V0ZSI7czoxNzoibWF0ZXJpLmd1cnUuaW5kZXgiO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTozO30=', 1783360230);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `settings`
+--
+
+CREATE TABLE `settings` (
+  `id` bigint UNSIGNED NOT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`id`, `key`, `value`, `created_at`, `updated_at`) VALUES
+(1, 'hero_title_1', 'Ciptakan Generasi Gen Z', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
+(2, 'hero_title_2', 'Cerdas & Ceria', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
+(3, 'hero_subtitle', 'Memberikan pendidikan terbaik untuk generasi masa depan dengan fasilitas lengkap dan tenaga pengajar profesional. Amankan kuota putra-putri Anda sekarang. Cuy', '2026-07-06 08:45:46', '2026-07-06 08:47:00'),
+(4, 'files', NULL, '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
+(5, 'profil_title', 'Kenali Lebih Dekat', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
+(6, 'profil_subtitle', '<b>Pelajari lebih lanjut tentang institusi dan program unggulan kami untuk putra-putri Anda.</b>', '2026-07-06 08:45:46', '2026-07-06 08:47:00'),
+(7, 'yayasan_title', 'Yayasan Pendidikan Al-Hikmah 2', '2026-07-06 08:45:46', '2026-07-06 08:47:00'),
+(8, 'yayasan_desc', '<i>Yayasan kami berdiri sejak tahun 2010 dengan komitmen penuh untuk mencetak generasi Islami yang unggul, berakhlak mulia, dan siap menghadapi tantangan masa depan. Kami menaungi berbagai cabang pendidikan dengan standar pengajaran terpadu, fasilitas belajar yang modern, dan tenaga pendidik profesional.</i>', '2026-07-06 08:45:46', '2026-07-06 08:47:00'),
+(9, 'yayasan_visi', '<u>Mewujudkan lembaga pendidikan yang berpijak pada penanaman aqidah Islam dan kemuliaan karakter.</u>', '2026-07-06 08:45:46', '2026-07-06 08:47:00'),
+(10, 'yayasan_misi', 'Menyelenggarakan proses pembelajaran yang berkualitas, kreatif, inovatif, dan bermakna.', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
+(11, 'tk_title', 'Taman Kanak-Kanak (TK)', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
+(12, 'tk_desc', 'Program Taman Kanak-Kanak dirancang untuk mengasah kognitif, motorik, dan sosio-emosional anak melalui pendekatan <i>learning by playing</i>. Tersedia pilihan jam belajar fleksibel: <b>TK Pagi</b> dan <b>TK Siang</b> untuk mendukung rutinitas keluarga Anda.', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
+(13, 'paud_title', 'Pendidikan Anak Usia Dini (PAUD)', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
+(14, 'paud_desc', 'Program PAUD/Kelompok Bermain kami memfasilitasi masa emas <i>(golden age)</i> anak. Lingkungan sekolah dibuat senyaman dan seaman mungkin seperti di rumah (<i>homely environment</i>) untuk merangsang rasa ingin tahu dan keberanian anak bersosialisasi.', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
+(15, 'yayasan_profile_name', 'Dr. H. Fulan, M.Pd', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(16, 'yayasan_profile_title', 'Ketua Yayasan', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(17, 'yayasan_bullets', 'Berdiri sejak 2010, Akreditasi A, 2 Unit Sekolah, 320+ Alumni', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(18, 'yayasan_programs', 'Tahfidz Quran, Bahasa Arab & Inggris, Seni & Kreativitas, Pendidikan Karakter', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(19, 'tk_profile_name', 'Bunda Fatimah, S.Pd', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(20, 'tk_profile_title', 'Kepala Sekolah TK', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(21, 'tk_bullets', 'Usia 4-6 Tahun, Kurikulum Tematik, Native Speaker', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(22, 'tk_programs', 'Renang Ceria, Field Trip Edutainment, Cek Kesehatan Rutin', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(23, 'paud_profile_name', 'Bunda Aisyah, S.Psi', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(24, 'paud_profile_title', 'Koordinator PAUD', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(25, 'paud_bullets', 'Usia 2-4 Tahun, Toilet Training, Indoor Playground', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(26, 'paud_programs', 'Bernyanyi & Menari, Story Telling, Sensoric Play', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(27, 'yayasan_image', '/storage/landing/DlcR9JMaT7veJME3jPcfleuDacdkGXUtxmNEPIfL.jpg', '2026-07-06 08:54:36', '2026-07-06 08:54:36'),
+(28, 'footer_title', 'Yayasan Al-Hikmah 2', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(29, 'footer_tagline', 'Ciptakan Generasi Cerdas, Ceria, & Berakhlak Mulia Sekali', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(30, 'footer_address', 'Jl. KH. Wahid Hasyim No. 45, Kecamatan Sukun, Kota Malang, Jawa Timur 65117', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(31, 'footer_ig', '#', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(32, 'footer_fb', '#', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(33, 'footer_tw', '#', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(34, 'footer_yt', '#', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(35, 'footer_phone', '(0341) 567-890 1', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(36, 'footer_whatsapp', '0812-3456-78902', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(37, 'footer_email', 'admin@alhikmah.sch.id', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(38, 'footer_hours', 'Senin–Sabtu, 07.00–15.00', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
+(39, 'site_title', 'Yayasan Al-Hikmah 2', '2026-07-06 09:20:19', '2026-07-06 09:20:19'),
+(40, 'site_logo', '/storage/landing/pg89b801w6c10eeQwcUCEtA8wszdJSHCgDzlv8cf.webp', '2026-07-06 09:20:19', '2026-07-06 09:20:19');
 
 -- --------------------------------------------------------
 
@@ -746,15 +867,17 @@ CREATE TABLE `siswas` (
   `id` bigint UNSIGNED NOT NULL,
   `school_id` bigint UNSIGNED DEFAULT NULL,
   `nama_lengkap` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `program_pilihan` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `nik` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `nisn` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `no_induk` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `nama_ortu` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `foto_anak` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bukti_pembayaran` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tempat_lahir` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tgl_lahir` date NOT NULL,
   `jenis_kelamin` enum('Laki-laki','Perempuan') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` enum('aktif','lulus','pindah') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'aktif',
+  `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'menunggu',
   `nama_ibu` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `nama_ayah` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_id` bigint UNSIGNED DEFAULT NULL,
@@ -796,19 +919,26 @@ CREATE TABLE `siswas` (
 -- Dumping data for table `siswas`
 --
 
-INSERT INTO `siswas` (`id`, `school_id`, `nama_lengkap`, `nik`, `nisn`, `no_induk`, `nama_ortu`, `foto_anak`, `tempat_lahir`, `tgl_lahir`, `jenis_kelamin`, `status`, `nama_ibu`, `nama_ayah`, `user_id`, `created_at`, `updated_at`, `tinggi_badan`, `berat_badan`, `koordinat_rumah`, `alamat`, `rt`, `rw`, `dusun`, `kelurahan`, `kecamatan`, `kode_pos`, `agama`, `anak_ke`, `jml_saudara`, `jenis_tinggal`, `alat_transportasi`, `telepon`, `hp`, `email`, `jarak_rumah`, `lingkar_kepala`, `nik_ayah`, `tahun_lahir_ayah`, `pendidikan_ayah`, `pekerjaan_ayah`, `penghasilan_ayah`, `nik_ibu`, `tahun_lahir_ibu`, `pendidikan_ibu`, `pekerjaan_ibu`, `penghasilan_ibu`) VALUES
-(1, 1, 'Rania Putri', '3514012305200001', '1234567869', NULL, 'Bapak/Ibu Santoso', NULL, 'Surabaya', '2020-05-10', 'Perempuan', 'aktif', 'Ibu Sari', 'Bapak Santoso', NULL, '2026-05-19 03:48:17', '2026-06-02 11:50:58', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 1, 'Budi Santoso', '3514012305200002', '1234567899', NULL, 'Bapak/Ibu Harto', NULL, 'Malang', '2019-08-15', 'Laki-laki', 'aktif', 'Ibu Dewi', 'Bapak Harto', NULL, '2026-05-19 03:48:17', '2026-06-02 11:52:09', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(3, 1, 'Sadiya Maritza', '12345678913', NULL, NULL, 'Ibu', 'foto_siswa/39luUUgudmM3h9ZlKdXL8phb7qHfwZ3CxBm4abR6.jpg', 'Blitar', '2016-09-08', 'Perempuan', 'aktif', NULL, NULL, NULL, '2026-05-19 08:23:25', '2026-05-19 08:23:25', 149, 50, '3J38+6C Jatimulyo, Kota Malang, Jawa Timur', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 1, 'AZZAM AULIAN PUTRA', '3505103112190002', '3196599897', '', '-', NULL, 'BLITAR', '2019-12-31', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(5, 1, 'KEANA GAZALA ACHSAN', '3572036402200002', '3204668269', '', '-', NULL, 'BLITAR', '2020-02-24', 'Perempuan', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(6, 1, 'KENZIE ANDREW FORTUNIO', '3505101004200002', '3203476148', '', '-', NULL, 'BLITAR', '2020-04-10', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(7, 1, 'MUHAMMAD MIRZA HANIF', '3505101509190001', '3196279065', '', '-', NULL, 'BLITAR', '2019-09-15', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(8, 1, 'MUHAMMAD RUSLI RASYID', '3505101803200002', '3206749439', '', '-', NULL, 'BLITAR', '2020-03-18', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(9, 1, 'RADHITYA WIJAYA', '3505102311200002', '3209617761', '', '-', NULL, 'BLITAR', '2020-11-23', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(10, 1, 'RAFA ALTHAFUNNISA', '3505105603190002', '3191213107', '', '-', NULL, 'BLITAR', '2019-03-16', 'Perempuan', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(11, 1, 'REYNAND EL BARCA PRATAMA', '3505101310200001', '3209183411', '', '-', NULL, 'BLITAR', '2020-10-13', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(12, 1, 'Sadiya Maritza', '3505101310200002', '1234567899', '', '-', NULL, 'BLITAR', '2020-10-14', 'Perempuan', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-02 11:50:58', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `siswas` (`id`, `school_id`, `nama_lengkap`, `program_pilihan`, `nik`, `nisn`, `no_induk`, `nama_ortu`, `foto_anak`, `bukti_pembayaran`, `tempat_lahir`, `tgl_lahir`, `jenis_kelamin`, `status`, `nama_ibu`, `nama_ayah`, `user_id`, `created_at`, `updated_at`, `tinggi_badan`, `berat_badan`, `koordinat_rumah`, `alamat`, `rt`, `rw`, `dusun`, `kelurahan`, `kecamatan`, `kode_pos`, `agama`, `anak_ke`, `jml_saudara`, `jenis_tinggal`, `alat_transportasi`, `telepon`, `hp`, `email`, `jarak_rumah`, `lingkar_kepala`, `nik_ayah`, `tahun_lahir_ayah`, `pendidikan_ayah`, `pekerjaan_ayah`, `penghasilan_ayah`, `nik_ibu`, `tahun_lahir_ibu`, `pendidikan_ibu`, `pekerjaan_ibu`, `penghasilan_ibu`) VALUES
+(1, 1, 'Rania Putri', NULL, '3514012305200001', '1234567869', NULL, 'Bapak/Ibu Santoso', NULL, NULL, 'Surabaya', '2020-05-10', 'Perempuan', 'aktif', 'Ibu Sari', 'Bapak Santoso', NULL, '2026-05-19 03:48:17', '2026-06-27 09:54:51', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ortu@tk.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 1, 'Budi Santoso', NULL, '3514012305200002', '1234567899', NULL, 'Bapak/Ibu Harto', NULL, NULL, 'Malang', '2019-08-15', 'Laki-laki', 'lulus', 'Ibu Dewi', 'Bapak Harto', NULL, '2026-05-19 03:48:17', '2026-07-05 10:30:16', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ortu2@tk.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 1, 'Sadiya Maritza', NULL, '12345678913', NULL, NULL, 'Ibu', 'foto_siswa/39luUUgudmM3h9ZlKdXL8phb7qHfwZ3CxBm4abR6.jpg', NULL, 'Blitar', '2016-09-08', 'Perempuan', 'aktif', NULL, NULL, NULL, '2026-05-19 08:23:25', '2026-05-19 08:23:25', 149, 50, '3J38+6C Jatimulyo, Kota Malang, Jawa Timur', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 1, 'AZZAM AULIAN PUTRA', NULL, '3505103112190002', '3196599897', '', '-', NULL, NULL, 'BLITAR', '2019-12-31', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 1, 'KEANA GAZALA ACHSAN', NULL, '3572036402200002', '3204668269', '', '-', NULL, NULL, 'BLITAR', '2020-02-24', 'Perempuan', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(6, 1, 'KENZIE ANDREW FORTUNIO', NULL, '3505101004200002', '3203476148', '', '-', NULL, NULL, 'BLITAR', '2020-04-10', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 1, 'MUHAMMAD MIRZA HANIF', NULL, '3505101509190001', '3196279065', '', '-', NULL, NULL, 'BLITAR', '2019-09-15', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(8, 1, 'MUHAMMAD RUSLI RASYID', NULL, '3505101803200002', '3206749439', '', '-', NULL, NULL, 'BLITAR', '2020-03-18', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(9, 1, 'RADHITYA WIJAYA', NULL, '3505102311200002', '3209617761', '', '-', NULL, NULL, 'BLITAR', '2020-11-23', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 1, 'RAFA ALTHAFUNNISA', NULL, '3505105603190002', '3191213107', '', '-', NULL, NULL, 'BLITAR', '2019-03-16', 'Perempuan', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(11, 1, 'REYNAND EL BARCA PRATAMA', NULL, '3505101310200001', '3209183411', '', '-', NULL, NULL, 'BLITAR', '2020-10-13', 'Laki-laki', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-01 15:56:22', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(12, 1, 'Sadiya Maritza', NULL, '3505101310200002', '1234567899', '', '-', NULL, NULL, 'BLITAR', '2020-10-14', 'Perempuan', 'aktif', NULL, NULL, NULL, '2026-06-01 15:56:22', '2026-06-02 11:50:58', NULL, NULL, NULL, '-', '-', '-', '-', '-', '-', '-', 'Islam', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(13, 1, 'anak wali2', 'TK Pagi', '1234575', NULL, NULL, NULL, 'foto_siswa/Lg0zvZnRkSfwxyC8Gk7SluxqHE7RsKqrdvFCG4zQ.jpg', NULL, 'Malang', '2019-07-12', 'Perempuan', 'aktif', 'Rahayu Kuswandari', 'Omar Suryono', NULL, '2026-06-19 19:35:36', '2026-06-19 19:35:36', 80, 20, NULL, 'Desa Kuningan', '2', '3', 'ad3wef', 'wdefwf', 'fwe3f3', '66171', 'Islam', '1', '2', 'Bersama orang tua', 'jalan', NULL, '089681010691', 'ortu2@tk.com', '4', '40', '123456789', '1234', 'asdfd', 'WDEWVGG', '500', '1234567', '1234', 'ASRG', 'AWWSDFG', '200'),
+(14, 2, 'anak wali2', 'TK Pagi', '123456789009876543', NULL, NULL, NULL, 'foto_siswa/uEbNeXuN7OUXk7JrFH4KcJWqH0lK7YqQt8AllOFR.jpg', NULL, 'Malang', '2022-07-20', 'Perempuan', 'aktif', 'Rahayu Kuswandari', 'Omar Suryono', NULL, '2026-06-19 19:37:44', '2026-06-19 19:37:44', 70, 20, NULL, 'Desa Kuningan', '2', '3', 'ad3wef', 'scwecdecwe', 'dsvadv', '66171', 'Islam', '1', '2', 'Bersama orang tua', 'jalan', NULL, '123456789', 'ortu2@tk.com', '3', '40', '123456765432', '1234', 'adfg', 'asdf', '500', '167765245678998765', '1234', 'ASRG', 'AWWSDFG', '200'),
+(15, 1, 'Sasa', 'TK Siang', '1234567865432', NULL, NULL, NULL, 'foto_siswa/oDlXBglYuqLUWtIXZohjQA9HS88iqLNNvrbPjCKD.jpg', NULL, 'argthn', '2023-06-06', 'Perempuan', 'aktif', 'adfghn', 'asadfgnh', NULL, '2026-06-19 22:46:07', '2026-06-19 22:46:07', 90, 35, NULL, '234rthyfregbh45t', '3', '5', 'sdfbgnh', 'asdfghn', 'sdfn', '1234', 'Islam', '2', '2', 'Bersama orang tua', NULL, NULL, '12345432134', 'ortu@tk.com', '2', '75', '1234432', '123', 'asf', 'wdefrg', '600', '12345432', '2344', 'efrgr', 'dewfrg', '300'),
+(16, 1, 'Maritza', 'TK Pagi (Tahun: 2028/2029)', '3507542670943981', NULL, NULL, NULL, 'foto_siswa/Y3g6QJ95KzaWleRjWQKp9rJ2EAB18GRm5w8NtCmb.jpg', 'bukti_pendaftaran/cbYneseKBH3CZGwCoBb2BxgRfXYQW40yhnO87h5f.jpg', 'Malang', '2026-07-09', 'Perempuan', 'aktif', 'Rahayu Kuswandari', 'Omar Suryono', NULL, '2026-07-01 10:18:56', '2026-07-01 22:20:14', 105, 20, NULL, 'Desa Kuningan', '2', '3', 'ad3wef', 'scwecdecwe', 'fwe3f3', '66171', 'Islam', '2', '2', 'Bersama orang tua', 'jalan', NULL, '089681010691', NULL, '3', '45', '3514012305201111', '1234', 'asdfd', 'WDEWVGG', '500', '3514012305201212', '1234', 'ASRG', 'AWWSDFG', '200'),
+(18, 1, 'Amar Amir', 'PAUD (Tahun: 2029/2030)', '3505105603191155', NULL, NULL, NULL, 'foto_siswa/qep7NdEGYiyntreEMdeOsXvWvyocwqh0xvvdndqO.jpg', 'bukti_pendaftaran/loHTbv7pKH4xqKSiUTIvRcqodhBetOd46solhxxS.jpg', 'Sibolga', '2024-05-02', 'Laki-laki', 'aktif', 'Anastasia Mandasari', 'Omar Suryono', NULL, '2026-07-01 22:03:19', '2026-07-01 22:18:31', 12, 22, NULL, 'Desa Kuningan', '2', '3', 'ad3wef', 'scwecdecwe', 'fwe3f3', '66171', 'Islam', '3', '4', 'Wali', 'jalan', NULL, '089681010691', 'ortu@tk.com', NULL, '13', '3505105603193333', '1234', 'asdfd', 'WDEWVGG', '500', '3505105603195555', '1234', 'ASRG', 'AWWSDFG', '200'),
+(19, 1, 'asdfghj', 'TK Pagi (Tahun: 2031/2032)', '3514012305208768', NULL, NULL, NULL, 'foto_siswa/uSTJvAmKrbzOnP0FeSGjNKWuryZBxRbMlpzC3Ig4.jpg', 'bukti_pendaftaran/OAfcBW2pMR1vLAFluzZN95fKzjidWAL0irYtLMDq.jpg', 'argthn', '2026-07-22', 'Perempuan', 'menunggu', 'adfghn', 'asadfgnh', NULL, '2026-07-05 10:23:29', '2026-07-05 10:23:29', 80, 21, NULL, '234rthyfregbh45t', '3', '5', 'sdfbgnh', 'asdfghn', 'sdfn', '3134', 'Hindu', '2', '3', 'Bersama orang tua', 'motor', NULL, '12345432134', 'ortu5@tk.com', NULL, '30', '3514012305202568', '2345', 'asf', 'wdefrg', '600', '3514012305201702', '1234', 'efrgr', 'dewfrg', '300'),
+(20, 1, 'Sadam', 'TK Siang (Tahun: 2027/2028)', '3514012305212367', NULL, NULL, NULL, 'foto_siswa/cCMM2Q7US0p8MEQZnLjje8vwnc5AV15a3ouFuo98.jpg', 'bukti_pendaftaran/SjaZJrTvwa0hEa8bmAJYrsddb3UuTYdT6X01Q3H1.jpg', 'argthn', '2026-07-02', 'Laki-laki', 'menunggu', 'adfghn', 'asadfgnh', NULL, '2026-07-06 07:59:45', '2026-07-06 07:59:45', 60, 18, NULL, '234rthyfregbh45t', '3', '5', 'sdfbgnh', 'asdfghn', 'sdfn', '1457', 'Islam', '1', '2', 'Wali', 'motor', NULL, '12345432134', 'ortu5@tk.com', NULL, '34', '3514012305226803', '1234', 'asf', 'wdefrg', '600', '3514012305782047', '1234', 'efrgr', 'dewfrg', '300');
 
 -- --------------------------------------------------------
 
@@ -835,10 +965,14 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `school_id`, `kelas_id`, `name`, `email`, `password`, `role`, `created_at`, `updated_at`) VALUES
 (1, NULL, NULL, 'Super Admin', 'superadmin@tkceria.com', '$2y$12$6Dv7X1W3iyrP4dSWmpWgb.MGWb82HwTJELjiC3XDjPoVYo7pUl8S.', 'super_admin', '2026-05-19 03:48:16', '2026-05-19 03:48:16'),
 (2, 1, NULL, 'Admin TK Permata', 'admin@tk.com', '$2y$12$Z2XUUhApK4wiZlNfTOkBIebemWnjtEIsX8oyxXbsikIMQc3o5vEB.', 'admin', '2026-05-19 03:48:16', '2026-05-19 03:48:16'),
-(3, 1, 1, 'Naning', 'naning@tk.com', '$2y$12$Ys0d25uZOO5h1euzu/kCgeNEAvsBSxgoAv2W/6DzDOOuh9wyWwC46', 'guru', '2026-05-19 03:48:16', '2026-05-20 22:01:05'),
+(3, 1, 1, 'Naning', 'naning@tk.com', '$2y$12$Ys0d25uZOO5h1euzu/kCgeNEAvsBSxgoAv2W/6DzDOOuh9wyWwC46', 'guru', '2026-05-19 03:48:16', '2026-06-27 10:08:40'),
 (4, 1, NULL, 'Wali Murid', 'ortu@tk.com', '$2y$12$x7ZIWUi20hK0Psr3evkkeODLq65WxkW/Ogb7VjpcA2tN27hEgb2uu', 'wali_murid', '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
 (5, 2, NULL, 'adminmatahari', 'adminmatahari@tk.com', '$2y$12$tr0a9cbPfNqk2hrnSr.NYecu7TLHaXWRsKd8qK6JTjz4JuQP6q.3i', 'admin', '2026-06-03 00:49:47', '2026-06-03 01:32:59'),
-(6, 1, NULL, 'Sadiya2', 'kepsek@tk.com', '$2y$12$hshkpXEMDxnf/Z81HjPbEuRHHkVGJL15enVcfrdRALHaWJkGEvmqW', 'admin', '2026-06-03 01:27:23', '2026-06-03 01:32:49');
+(6, 1, NULL, 'Sadiya2', 'kepsek@tk.com', '$2y$12$hshkpXEMDxnf/Z81HjPbEuRHHkVGJL15enVcfrdRALHaWJkGEvmqW', 'kepsek', '2026-06-03 01:27:23', '2026-06-19 20:45:16'),
+(7, NULL, NULL, 'ortu', 'ortu2@tk.com', '$2y$12$a067cIJwqd4lZePViI9FJe9SU6d0tK244tnUuyWKO005wjohcLxJ2', 'wali_murid', '2026-06-19 09:28:57', '2026-06-19 09:28:57'),
+(8, NULL, NULL, 'ortu3', 'ortu3@tk.com', '$2y$12$BAS4vBwmUP93XSQqI2UD2OgWZnDO79I9LkLq58WMnfgJohFNmHlxa', 'wali_murid', '2026-06-19 09:38:49', '2026-06-19 09:38:49'),
+(9, NULL, NULL, 'ortu4', 'ortu4@tk.com', '$2y$12$z/uCtfB4Shf66MN3E8.jn.RZ3PSp16PqIhclUSIY0bK0UKV2syWgi', 'wali_murid', '2026-06-19 09:45:33', '2026-06-19 09:45:33'),
+(10, NULL, NULL, 'ortu5', 'ortu5@tk.com', '$2y$12$.JteLqWIQgPQnf31.38as.8FuQNwTU4TeptrXoJL3vHOJVJbJTZ8q', 'wali_murid', '2026-06-29 22:46:46', '2026-06-29 22:46:46');
 
 --
 -- Indexes for dumped tables
@@ -911,6 +1045,15 @@ ALTER TABLE `jurnal_harians`
 ALTER TABLE `kelas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `kelas_school_id_foreign` (`school_id`);
+
+--
+-- Indexes for table `materis`
+--
+ALTER TABLE `materis`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `materis_school_id_foreign` (`school_id`),
+  ADD KEY `materis_created_by_foreign` (`created_by`),
+  ADD KEY `materis_approved_by_foreign` (`approved_by`);
 
 --
 -- Indexes for table `materi_comments`
@@ -1021,6 +1164,13 @@ ALTER TABLE `sessions`
   ADD KEY `sessions_last_activity_index` (`last_activity`);
 
 --
+-- Indexes for table `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `settings_key_unique` (`key`);
+
+--
 -- Indexes for table `siswas`
 --
 ALTER TABLE `siswas`
@@ -1045,19 +1195,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `absensis`
 --
 ALTER TABLE `absensis`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `anggota_kelas`
 --
 ALTER TABLE `anggota_kelas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `arsip_rapors`
@@ -1069,7 +1219,7 @@ ALTER TABLE `arsip_rapors`
 -- AUTO_INCREMENT for table `jurnal_comments`
 --
 ALTER TABLE `jurnal_comments`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `jurnal_harians`
@@ -1081,13 +1231,19 @@ ALTER TABLE `jurnal_harians`
 -- AUTO_INCREMENT for table `kelas`
 --
 ALTER TABLE `kelas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `materis`
+--
+ALTER TABLE `materis`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `materi_comments`
 --
 ALTER TABLE `materi_comments`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `materi_jurnals`
@@ -1099,19 +1255,19 @@ ALTER TABLE `materi_jurnals`
 -- AUTO_INCREMENT for table `materi_kelas_targets`
 --
 ALTER TABLE `materi_kelas_targets`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `materi_read_receipts`
 --
 ALTER TABLE `materi_read_receipts`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `modules`
@@ -1162,16 +1318,22 @@ ALTER TABLE `semesters`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `settings`
+--
+ALTER TABLE `settings`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+
+--
 -- AUTO_INCREMENT for table `siswas`
 --
 ALTER TABLE `siswas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
@@ -1218,6 +1380,14 @@ ALTER TABLE `jurnal_comments`
 --
 ALTER TABLE `kelas`
   ADD CONSTRAINT `kelas_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `materis`
+--
+ALTER TABLE `materis`
+  ADD CONSTRAINT `materis_approved_by_foreign` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `materis_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `materis_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `materi_comments`

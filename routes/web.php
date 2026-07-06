@@ -21,6 +21,7 @@ use App\Http\Controllers\RaporTemplateController;
 use App\Http\Controllers\ArsipRaporController;
 use App\Http\Controllers\JurnalHarianController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\MateriController;
 use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
@@ -137,6 +138,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/kelas/{id}', [KelasController::class, 'show'])->name('kelas.show');
         Route::get('/data-siswa', [SiswaController::class, 'index'])->name('data-siswa');
         Route::get('/siswa/{id}', [SiswaController::class, 'show'])->name('siswa.show');
+        Route::get('/manajemen-lms', [JurnalHarianController::class, 'index'])->name('lms.index');
         Route::get('/jurnal-harian', [JurnalHarianController::class, 'index'])->name('jurnal.index');
         Route::get('/jurnal-harian/materi/{materi_id}/kelas/{kelas_id}', [JurnalHarianController::class, 'showKelas'])->name('jurnal.kelas.show');
         Route::get('/jurnal-harian/download-zip', [JurnalHarianController::class, 'downloadZip'])->name('jurnal.zip');
@@ -270,11 +272,17 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/jurnal-harian/materi/{id}', [JurnalHarianController::class, 'destroyMateri'])->name('jurnal.materi.destroy');
         Route::post('/jurnal-harian/siswa', [JurnalHarianController::class, 'storeJurnalSiswa'])->name('jurnal.siswa.store');
         Route::delete('/jurnal-harian/siswa/{id}', [JurnalHarianController::class, 'destroyJurnalSiswa'])->name('jurnal.siswa.destroy');
+        Route::post('/jurnal-harian/{id}/comment', [JurnalHarianController::class, 'storeMateriComment'])->name('jurnal.comment.store');
         Route::post('/perkembangan-fisik', [PerkembanganFisikController::class, 'store'])->name('perkembangan.store');
         Route::post('/isi-rapor', [RaporController::class, 'store']);
         Route::post('/arsip-rapor', [ArsipRaporController::class, 'store'])->name('arsip.store');
         Route::delete('/arsip-rapor/{id}', [ArsipRaporController::class, 'destroy'])->name('arsip.destroy');
         Route::post('/absensi-harian', [KelasController::class, 'storeAbsensi'])->name('absensi.store');
+        
+        // Manajemen Materi (Guru)
+        Route::get('/materi/guru', [MateriController::class, 'indexGuru'])->name('materi.guru.index');
+        Route::get('/materi/guru/create', [MateriController::class, 'createGuru'])->name('materi.guru.create');
+        Route::post('/materi/guru', [MateriController::class, 'storeGuru'])->name('materi.guru.store');
     });
 
     // 4. AKSES ADMIN & SUPER ADMIN ONLY
@@ -364,6 +372,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pengaturan/menu-access', [KelasController::class, 'updateMenuAccess'])->name('pengaturan.update-menu-access');
     });
 
+    // AKSES KEPSEK & ADMIN
+    Route::middleware('role:super_admin,admin,kepsek')->group(function () {
+        Route::get('/materi/persetujuan', [MateriController::class, 'indexKepsek'])->name('materi.kepsek.index');
+        Route::post('/materi/{id}/approve', [MateriController::class, 'approve'])->name('materi.approve');
+        Route::post('/materi/{id}/reject', [MateriController::class, 'reject'])->name('materi.reject');
+    });
+
     // 5. AKSES WALI MURID (Ortu)
     Route::middleware('role:wali_murid')->group(function () {
         Route::get('/rapor-anak/{id?}', function($id = null) {
@@ -394,6 +409,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/materi-anak', [JurnalHarianController::class, 'waliMuridMateri'])->name('walimurid.materi');
         Route::post('/materi-anak/{id}/read', [JurnalHarianController::class, 'markMateriRead'])->name('walimurid.materi.read');
         Route::post('/materi-anak/{id}/comment', [JurnalHarianController::class, 'storeMateriComment'])->name('walimurid.materi.comment');
+
+        // Materi Publik (Orang Tua)
+        Route::get('/materi', [MateriController::class, 'indexOrtu'])->name('materi.ortu.index');
     });
 
     Route::get('/magic-fix-menu', function() {

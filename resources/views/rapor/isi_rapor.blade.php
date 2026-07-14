@@ -1,98 +1,79 @@
 @extends('layouts.admin')
 
-@push('styles')
-<style>
-    .nav-pills .nav-link.active {
-        background-color: #2d5cf7 !important; 
-        color: white !important;
-    }
-    .nav-pills .nav-link {
-        color: #2d5cf7 !important;
-        border-color: #2d5cf7 !important;
-    }
-    .locked-card {
-        background: linear-gradient(135deg, #e0e8ff 0%, #f4f7ff 100%);
-        border-left: 5px solid #2d5cf7;
-    }
-    .input-error {
-        border: 2px solid #dc3545 !important;
-        background-color: #fff8f8 !important;
-    }
-    .accordion-button:not(.collapsed) {
-        background-color: #e0e8ff;
-        color: #2d5cf7;
-    }
-    .accordion-button:focus {
-        box-shadow: none;
-        border-color: rgba(0,0,0,.125);
-    }
-</style>
-@endpush
-
 @section('konten_halaman')
 @php 
     $smtAktif = \App\Models\Semester::where('is_active', true)->first(); 
     $templateAktif = \App\Models\RaporTemplate::where('is_active', true)->with('items.anak_isian')->first();
 @endphp
 
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-    <div>
-        <h2 class="fw-semibold text-dark mb-1">Form Pengisian Rapor</h2>
-        <span class="text-muted fs-3">Input dan kelola nilai akademik peserta didik.</span>
+<div class="row gx-3 gy-3 mt-0">
+    <div class="col-12">
+        <div class="card border shadow-none mb-0" style="background-color: var(--primary-blue-soft); border-color: var(--primary-blue-border) !important;">
+            <div class="card-body px-4 py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <h4 class="fw-bold text-dark mb-1">Form Pengisian Rapor</h4>
+                    <p class="text-muted mb-0 small">Input dan kelola nilai akademik peserta didik sesuai format yang ditetapkan.</p>
+                </div>
+                @if($smtAktif)
+                <div class="text-md-end">
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill shadow-sm" style="font-size: 12px;">
+                        <iconify-icon icon="solar:calendar-bold-duotone" class="align-middle me-1 fs-6"></iconify-icon>
+                        Semester Aktif: {{ $smtAktif->tahun_ajaran }} ({{ $smtAktif->jenis }})
+                    </span>
+                </div>
+                @endif
+            </div>
+        </div>
     </div>
-    
-    @if($smtAktif)
-    <div class="text-md-end">
-        <span class="badge bg-warning-subtle text-warning border border-warning px-3 py-2 rounded-pill shadow-sm fs-4">
-            <iconify-icon icon="solar:calendar-bold-duotone" class="align-middle me-1"></iconify-icon> 
-            Semester Aktif: {{ $smtAktif->tahun_ajaran }} ({{ $smtAktif->jenis }})
-        </span>
-    </div>
-    @endif
-</div>
 
-<div class="card w-100 border-0 shadow-sm position-relative overflow-hidden mb-4">
-    <div class="card-body p-4"> 
+    <div class="col-12">
+        <div class="card border shadow-none rounded-4 overflow-hidden mb-4">
+            <div class="card-body p-4 p-md-5"> 
+        
+        {{-- PERINGATAN JIKA RAPOR DITUTUP / TEMPLATE KOSONG --}}
         @if(auth()->user()->school && !auth()->user()->school->is_rapor_open)
-            <div class="alert alert-danger rounded-3 fw-medium border-0 mb-4">
-                <iconify-icon icon="solar:danger-triangle-bold" class="fs-5 align-middle me-2"></iconify-icon> Perhatian: Akses pengisian rapor sedang <strong>DITUTUP</strong> oleh Admin Sekolah.
+            <div class="alert alert-danger bg-danger-subtle text-danger border-danger-subtle rounded-3 fw-medium mb-4 d-flex align-items-center small">
+                <iconify-icon icon="solar:danger-triangle-bold" class="fs-5 me-2"></iconify-icon> 
+                Perhatian: Akses pengisian rapor sedang <strong>DITUTUP</strong> oleh Admin Sekolah.
             </div>
         @endif
 
         @if(!$templateAktif)
-            <div class="alert alert-danger rounded-3 fw-medium border-0 mb-4">
-                <iconify-icon icon="solar:shield-warning-bold" class="fs-5 align-middle me-2"></iconify-icon> Admin Sekolah belum mengaktifkan Template Rapor apapun!
+            <div class="alert alert-danger bg-danger-subtle text-danger border-danger-subtle rounded-3 fw-medium mb-4 d-flex align-items-center small">
+                <iconify-icon icon="solar:shield-warning-bold" class="fs-5 me-2"></iconify-icon> 
+                Admin Sekolah belum mengaktifkan Template Rapor apapun!
             </div>
         @endif
 
-        <div id="alert-status-rapor" class="d-none alert rounded-3 fw-medium border-0 mb-4 align-items-center">
-            <iconify-icon icon="solar:info-circle-bold" class="fs-5 align-middle me-2"></iconify-icon>
+        <div id="alert-status-rapor" class="d-none alert rounded-3 fw-medium border-0 mb-4 d-flex align-items-center small shadow-sm">
+            <iconify-icon icon="solar:info-circle-bold" class="fs-5 me-2"></iconify-icon>
             <span id="teks-status-rapor"></span>
         </div>
 
         <form method="POST" action="/isi-rapor" id="formRapor">
             @csrf
 
-            {{-- BANNER BIRU KUNCI DATA SISWA + IDENTITAS TAMBAHAN --}}
-            <div id="row-locked-siswa" class="d-none locked-card p-3 rounded-4 mb-4 d-flex justify-content-between align-items-center shadow-sm">
-                <div>
-                    <span class="badge bg-primary rounded-pill mb-2 px-3">Sedang Mengisi Rapor</span>
+            {{-- BANNER BIRU KUNCI DATA SISWA (Murni pakai Utility Class) --}}
+            <div id="row-locked-siswa" class="d-none bg-primary-subtle border border-primary-subtle border-start border-5 border-primary p-4 rounded-4 mb-4 flex-column flex-md-row justify-content-between align-items-md-center">
+                <div class="mb-3 mb-md-0">
+                    <span class="badge bg-primary text-white rounded-pill mb-2 px-3 py-1" style="font-size: 10px; letter-spacing: 0.5px;">SEDANG MENILAI</span>
                     <h4 class="fw-bold text-dark mb-1" id="locked_nama">-</h4>
-                    <div class="d-flex gap-4 text-muted fs-3 mt-1">
-                        <span>🏫 <strong>Kelas:</strong> <span id="locked_kelas" class="text-dark fw-semibold">-</span></span>
-                        <span>🆔 <strong>No Induk / NISN:</strong> <span id="locked_identitas" class="text-dark fw-semibold">-</span></span>
+                    <div class="d-flex flex-wrap gap-3 gap-md-4 text-muted small mt-2">
+                        <span class="d-flex align-items-center gap-1"><iconify-icon icon="solar:backpack-bold-duotone" class="text-primary fs-5"></iconify-icon> <strong class="text-dark">Kelas:</strong> <span id="locked_kelas">-</span></span>
+                        <span class="d-flex align-items-center gap-1"><iconify-icon icon="solar:user-id-bold-duotone" class="text-primary fs-5"></iconify-icon> <strong class="text-dark">Induk/NISN:</strong> <span id="locked_identitas">-</span></span>
                     </div>
                 </div>
-                <button type="button" class="btn btn-outline-primary bg-white rounded-pill px-4 fw-medium shadow-sm" onclick="confirmGantiSiswa()">
-                    <iconify-icon icon="solar:users-group-rounded-bold-duotone" class="align-middle me-1"></iconify-icon> Ganti Siswa
+                <button type="button" class="btn bg-white text-primary border-primary border rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center gap-2" onclick="confirmGantiSiswa()">
+                    <iconify-icon icon="solar:users-group-rounded-bold-duotone" class="fs-5"></iconify-icon> Ganti Siswa
                 </button>
             </div>
 
-            <div id="row-pilih-siswa" class="row mb-4 align-items-end p-3 bg-light rounded-4 mx-0 border">
+            {{-- FORM PILIH SISWA --}}
+            <div id="row-pilih-siswa" class="row mb-5 align-items-end p-4 bg-light rounded-4 mx-0 border border-light-subtle">
                 @if(auth()->user()->role == 'admin')
                 <div class="col-md-4 mb-3 mb-md-0">
-                    <label class="form-label fw-bold text-dark small mb-2">1. Filter Kelas (Admin)</label>
-                    <select id="filter_kelas" class="form-select border-1 text-dark shadow-none py-2 border-success" onchange="window.location.href='?kelas_id='+this.value">
+                    <label class="form-label fw-bold text-dark small mb-2"><span class="text-primary me-1">1.</span> Filter Kelas (Admin)</label>
+                    <select id="filter_kelas" class="form-select bg-white border-light-subtle text-dark shadow-none py-2" onchange="window.location.href='?kelas_id='+this.value">
                         <option value="all">-- Semua Kelas --</option>
                         @foreach($list_kelas as $k)
                             <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>{{ $k->nama_kelas }}</option>
@@ -102,9 +83,9 @@
                 @endif
 
                 <div class="col-md-{{ auth()->user()->role == 'admin' ? '8' : '12' }}">
-                    <label class="form-label fw-bold text-dark small mb-2">{{ auth()->user()->role == 'admin' ? '2.' : '1.' }} Pilih Siswa yang Akan Dinilai</label>
-                    <select name="siswa_id" class="form-select border-1 text-dark shadow-none py-2 border-primary" id="pilih_siswa" required>
-                        <option disabled selected value="">-- Klik untuk Pilih Data Siswa --</option>
+                    <label class="form-label fw-bold text-dark small mb-2"><span class="text-primary me-1">{{ auth()->user()->role == 'admin' ? '2.' : '1.' }}</span> Pilih Siswa yang Akan Dinilai</label>
+                    <select name="siswa_id" class="form-select bg-white border-primary border-2 text-dark shadow-none py-2 fw-medium" id="pilih_siswa" required>
+                        <option disabled selected value="">-- Klik untuk Menampilkan Data Siswa Aktif --</option>
                         @foreach($siswas as $siswa)
                             @php
                                 $statusTxt = 'Belum Diisi';
@@ -116,83 +97,111 @@
                                 $nisn = $siswa->nisn ?? '-';
                             @endphp
                             <option value="{{ $siswa->id }}" data-kelas="{{ $namaKelas }}" data-noinduk="{{ $noInduk }}" data-nisn="{{ $nisn }}">
-                                {{ $siswa->nama_lengkap }} - ({{ $statusTxt }})
+                                {{ $siswa->nama_lengkap }} (Status: {{ $statusTxt }})
                             </option>
                         @endforeach
                     </select>
                 </div>
             </div>
 
-            <ul class="nav nav-pills nav-fill mb-4 gap-2" id="pills-tab" role="tablist">
-                <li class="nav-item"><button class="nav-link active py-2 fw-bold border rounded-pill shadow-sm" id="pills-biodata-tab" data-bs-toggle="pill" data-bs-target="#pills-biodata" type="button">1. Cek Biodata</button></li>
-                <li class="nav-item"><button class="nav-link py-2 fw-bold border rounded-pill shadow-sm" id="pills-rapor-tab" data-bs-toggle="pill" data-bs-target="#pills-rapor" type="button">2. Isi Narasi</button></li>
-                <li class="nav-item"><button class="nav-link py-2 fw-bold border rounded-pill shadow-sm" id="pills-mulok-tab" data-bs-toggle="pill" data-bs-target="#pills-mulok" type="button">3. Isi Mulok</button></li>
+            <!-- TABS NAVIGASI (Murni Bootstrap Nav-Pills) -->
+            <ul class="nav nav-pills nav-fill justify-content-center mb-5 gap-2" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active border rounded-pill d-flex align-items-center justify-content-center gap-2 py-2 fw-bold" id="pills-biodata-tab" data-bs-toggle="pill" data-bs-target="#pills-biodata" type="button"><iconify-icon icon="solar:user-circle-bold-duotone" class="fs-5"></iconify-icon> Tahap 1: Cek Biodata</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link border rounded-pill d-flex align-items-center justify-content-center gap-2 py-2 fw-bold" id="pills-rapor-tab" data-bs-toggle="pill" data-bs-target="#pills-rapor" type="button"><iconify-icon icon="solar:document-text-bold-duotone" class="fs-5"></iconify-icon> Tahap 2: Isi Narasi</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link border rounded-pill d-flex align-items-center justify-content-center gap-2 py-2 fw-bold" id="pills-mulok-tab" data-bs-toggle="pill" data-bs-target="#pills-mulok" type="button"><iconify-icon icon="solar:checklist-minimalistic-bold-duotone" class="fs-5"></iconify-icon> Tahap 3: Isi Mulok</button>
+                </li>
             </ul>
 
-            <div class="tab-content bg-white border border-light rounded-4 p-4 shadow-sm" id="pills-tabContent">
+            <!-- ISI TABS -->
+            <div class="tab-content" id="pills-tabContent">
                 
                 {{-- TAB 1: BIODATA --}}
                 <div class="tab-pane fade show active" id="pills-biodata" role="tabpanel">
-                    <div class="row">
+                    <div class="row g-4">
                         <div class="col-md-9">
-                            <h6 class="text-dark fw-bold mb-3 border-bottom border-light pb-2">A. Identitas Peserta Didik</h6>
-                            <div class="mb-2 row align-items-center">
-                                <label class="col-sm-3 col-form-label fw-medium text-muted small">Nama Lengkap</label>
-                                <div class="col-sm-9"><input type="text" class="form-control-plaintext py-1 fw-bold text-primary" id="nama_lengkap" readonly value="-"></div>
+                            <h6 class="text-primary fw-bold mb-3 border-bottom border-light-subtle pb-2 text-uppercase" style="font-size: 12px; letter-spacing: 1px;">A. Identitas Peserta Didik</h6>
+                            
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">Nama Lengkap</label>
+                                <div class="col-sm-9"><input type="text" class="form-control bg-light border-0 py-2 fw-bold text-dark" id="nama_lengkap" readonly value="-"></div>
                             </div>
-                            <div class="mb-2 row align-items-center">
-                                <label class="col-sm-3 col-form-label fw-medium text-muted small">No Induk / NISN</label>
+                            
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">No Induk / NISN</label>
                                 <div class="col-sm-9 d-flex gap-2">
-                                    <input type="text" class="form-control-plaintext py-1 fw-semibold text-dark w-50" id="no_induk" readonly value="-" placeholder="No Induk">
-                                    <input type="text" class="form-control-plaintext py-1 fw-semibold text-dark w-50 border-start ps-3" id="nisn" readonly value="-" placeholder="NISN">
+                                    <input type="text" class="form-control bg-light border-0 py-2 fw-medium text-dark w-50" id="no_induk" readonly value="-" placeholder="No Induk">
+                                    <input type="text" class="form-control bg-light border-0 py-2 fw-medium text-dark w-50" id="nisn" readonly value="-" placeholder="NISN">
                                 </div>
                             </div>
-                            <div class="mb-2 row align-items-center">
-                                <label class="col-sm-3 col-form-label fw-medium text-muted small">Tempat, Tgl Lahir</label>
+                            
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">Tempat, Tgl Lahir</label>
                                 <div class="col-sm-9 d-flex gap-2">
-                                    <input type="text" class="form-control-plaintext py-1 fw-semibold text-dark w-50" id="tempat_lahir" readonly value="-">
-                                    <input type="text" class="form-control-plaintext py-1 fw-semibold text-dark w-50" id="tgl_lahir" readonly value="-">
+                                    <input type="text" class="form-control bg-light border-0 py-2 fw-medium text-dark w-50" id="tempat_lahir" readonly value="-">
+                                    <input type="text" class="form-control bg-light border-0 py-2 fw-medium text-dark w-50" id="tgl_lahir" readonly value="-">
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="col-md-3 text-center">
-                            <div class="border border-light rounded-4 p-2 mb-2 bg-light d-inline-block shadow-sm">
-                                <img id="foto_siswa" src="https://ui-avatars.com/api/?name=Pilih+Siswa&color=2d5cf7&background=e9ecef&size=150" 
-                                    class="img-fluid rounded-3" style="width: 130px; height: 160px; object-fit: cover;">
+                            <div class="border border-light-subtle rounded-4 p-2 bg-light d-inline-block shadow-sm">
+                                <img id="foto_siswa" src="https://ui-avatars.com/api/?name=Pilih+Siswa&color=2563eb&background=eff6ff&size=150" 
+                                    class="img-fluid rounded-3" style="width: 140px; height: 180px; object-fit: cover;">
                             </div>
                         </div>
                     </div>
 
-                    <h6 class="text-dark fw-bold mt-5 mb-3 border-bottom border-light pb-2">B. Rekap Kehadiran & Fisik</h6>
-                    <div class="row bg-primary-subtle p-3 rounded-4 border-0 mx-0">
-                        <div class="col-md-2 mb-2 text-center">
-                            <label class="small text-primary fw-bold text-uppercase d-block">Sakit</label>
-                            <input type="text" class="form-control-plaintext text-center fw-bold text-dark fs-4" id="db_sakit" value="-" readonly>
+                    <h6 class="text-primary fw-bold mt-5 mb-3 border-bottom border-light-subtle pb-2 text-uppercase" style="font-size: 12px; letter-spacing: 1px;">B. Rekap Data Otomatis (Kehadiran & Fisik)</h6>
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <div class="border border-light-subtle rounded-3 p-3 text-center bg-white h-100 shadow-sm">
+                                <span class="small text-muted fw-semibold d-block mb-1">SAKIT</span>
+                                <input type="text" class="form-control-plaintext text-center fw-bold text-dark fs-4 p-0" id="db_sakit" value="-" readonly>
+                            </div>
                         </div>
-                        <div class="col-md-2 mb-2 text-center border-start border-end border-light">
-                            <label class="small text-primary fw-bold text-uppercase d-block">Izin</label>
-                            <input type="text" class="form-control-plaintext text-center fw-bold text-dark fs-4" id="db_izin" value="-" readonly>
+                        <div class="col-md-2">
+                            <div class="border border-light-subtle rounded-3 p-3 text-center bg-white h-100 shadow-sm">
+                                <span class="small text-muted fw-semibold d-block mb-1">IZIN</span>
+                                <input type="text" class="form-control-plaintext text-center fw-bold text-dark fs-4 p-0" id="db_izin" value="-" readonly>
+                            </div>
                         </div>
-                        <div class="col-md-2 mb-2 text-center border-end border-light">
-                            <label class="small text-primary fw-bold text-uppercase d-block">Alfa</label>
-                            <input type="text" class="form-control-plaintext text-center fw-bold text-dark fs-4" id="db_alfa" value="-" readonly>
+                        <div class="col-md-2">
+                            <div class="border border-danger-subtle rounded-3 p-3 text-center bg-danger-subtle h-100 shadow-sm">
+                                <span class="small text-danger fw-bold d-block mb-1">ALFA</span>
+                                <input type="text" class="form-control-plaintext text-center fw-bold text-danger fs-4 p-0" id="db_alfa" value="-" readonly>
+                            </div>
                         </div>
-                        <div class="col-md-3 mb-2 text-center border-end border-light">
-                            <label class="small fw-bold text-primary text-uppercase mb-1">Tinggi Badan (cm)</label>
-                            <input type="text" class="form-control-plaintext text-center fw-bold text-dark fs-5" id="tinggi_badan" value="-" readonly>
+                        <div class="col-md-3">
+                            <div class="border border-primary-subtle rounded-3 p-3 text-center bg-primary-subtle h-100 shadow-sm">
+                                <span class="small text-primary fw-bold d-block mb-1">TINGGI BADAN</span>
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <input type="text" class="form-control-plaintext text-center fw-bold text-primary fs-4 p-0 w-auto" id="tinggi_badan" value="-" readonly>
+                                    <span class="text-primary fw-medium small">cm</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-3 mb-2 text-center">
-                            <label class="small fw-bold text-primary text-uppercase mb-1">Berat Badan (kg)</label>
-                            <input type="text" class="form-control-plaintext text-center fw-bold text-dark fs-5" id="berat_badan" value="-" readonly>
+                        <div class="col-md-3">
+                            <div class="border border-primary-subtle rounded-3 p-3 text-center bg-primary-subtle h-100 shadow-sm">
+                                <span class="small text-primary fw-bold d-block mb-1">BERAT BADAN</span>
+                                <div class="d-flex align-items-center justify-content-center gap-1">
+                                    <input type="text" class="form-control-plaintext text-center fw-bold text-primary fs-4 p-0 w-auto" id="berat_badan" value="-" readonly>
+                                    <span class="text-primary fw-medium small">kg</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {{-- TAB 2: NARASI (DINAMIS DARI DATABASE) --}}
                 <div class="tab-pane fade" id="pills-rapor" role="tabpanel">
-                    <h5 class="text-dark fw-bold mb-4 border-bottom border-light pb-2">Laporan Perkembangan Anak (Narasi)</h5>
-                    <div class="alert alert-light border text-muted small mb-4">
-                        <iconify-icon icon="solar:info-circle-bold" class="align-middle text-primary"></iconify-icon> Kolom narasi perkembangan anak di bawah ini <strong>wajib diisi seluruhnya</strong>.
+                    <div class="mb-4">
+                        <h4 class="fw-bolder text-dark mb-2">Laporan Perkembangan Anak</h4>
+                        <p class="text-muted small">Kolom narasi di bawah ini akan diisikan langsung ke format Rapor. <strong class="text-danger">Wajib diisi seluruhnya.</strong></p>
                     </div>
                     
                     @if($templateAktif)
@@ -204,9 +213,9 @@
                                 @endphp
                                 
                                 @if($hasNarasi)
-                                <div class="accordion-item mb-3 border shadow-sm rounded-4 overflow-hidden">
+                                <div class="accordion-item border border-light-subtle rounded-4 mb-3 shadow-sm overflow-hidden">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button fw-bold bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#narasi-{{ $bab->id }}">
+                                        <button class="accordion-button bg-light fw-bold text-dark shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#narasi-{{ $bab->id }}">
                                             {{ $bab->label }}
                                         </button>
                                     </h2>
@@ -214,11 +223,18 @@
                                         <div class="accordion-body bg-white p-4">
                                             @foreach($itemNarasi as $isian)
                                                 @if($isian->tipe == 'sub_judul')
-                                                    <h6 class="fw-bold mt-4 mb-3" style="color: #2d5cf7; border-bottom: 2px dashed #e0e8ff; padding-bottom: 5px;">{{ $isian->label }}</h6>
+                                                    <h6 class="fw-bold mt-4 mb-3 text-primary border-bottom border-light-subtle pb-2" style="font-size: 13px;">
+                                                        <iconify-icon icon="solar:chat-square-call-bold-duotone" class="align-middle me-1 fs-5"></iconify-icon> {{ $isian->label }}
+                                                    </h6>
                                                 @elseif($isian->tipe == 'textarea')
-                                                    <div class="mb-4 input-group-rapor">
-                                                        <label class="form-label fw-bold text-dark mb-2">{{ $isian->label }} <span class="text-danger">*</span></label>
-                                                        <textarea name="nilai[{{ $isian->id }}]" class="form-control border-1 text-dark shadow-none req-field" rows="3" placeholder="Ketik narasi di sini..."></textarea>
+                                                    <div class="mb-4 input-group-rapor bg-light p-3 rounded-3 border border-light-subtle">
+                                                        <label class="form-label fw-semibold text-dark mb-2 d-flex justify-content-between">
+                                                            <span>{{ $isian->label }}</span>
+                                                            <span class="text-danger small">* Wajib</span>
+                                                        </label>
+                                                        <!-- Murni pakai class form-control dan validasi Bootstrap (is-invalid) -->
+                                                        <textarea name="nilai[{{ $isian->id }}]" class="form-control border bg-white text-dark shadow-none req-field" rows="4" placeholder="Ketik penjabaran deskripsi / narasi perkembangan anak di sini..."></textarea>
+                                                        <div class="invalid-feedback">Kolom ini wajib diisi.</div>
                                                     </div>
                                                 @endif
                                             @endforeach
@@ -233,9 +249,9 @@
 
                 {{-- TAB 3: MULOK (DINAMIS DARI DATABASE) --}}
                 <div class="tab-pane fade" id="pills-mulok" role="tabpanel">
-                    <h5 class="text-dark fw-bold mb-4 border-bottom border-light pb-2">Penilaian Muatan Lokal</h5>
-                    <div class="alert alert-light border text-muted small mb-4">
-                        <iconify-icon icon="solar:mouse-circle-bold" class="align-middle text-primary"></iconify-icon> Klik masing-masing kategori di bawah ini untuk mengisi nilai secara spesifik.
+                    <div class="mb-4">
+                        <h4 class="fw-bolder text-dark mb-2">Penilaian Muatan Lokal</h4>
+                        <p class="text-muted small">Pilih salah satu skala penilaian untuk masing-masing indikator mata pelajaran.</p>
                     </div>
                     
                     @if($templateAktif)
@@ -248,25 +264,25 @@
                                 @endphp
                                 
                                 @if($hasMulok)
-                                <div class="accordion-item mb-3 border border-light shadow-sm rounded-4 overflow-hidden">
+                                <div class="accordion-item border border-light-subtle rounded-4 mb-3 shadow-sm overflow-hidden">
                                     <h2 class="accordion-header" id="heading{{ $accIndex }}">
-                                        <button class="accordion-button collapsed fw-bold fs-6 bg-light text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMulok{{ $accIndex }}">
+                                        <button class="accordion-button bg-light fw-bold text-dark shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMulok{{ $accIndex }}">
                                             {{ $bab->label }}
                                         </button>
                                     </h2>
                                     <div id="collapseMulok{{ $accIndex }}" class="accordion-collapse collapse show" data-bs-parent="#accordionMulok">
                                         <div class="accordion-body p-0">
                                             <div class="table-responsive">
-                                                <table class="table align-middle mb-0 text-nowrap table-hover">
-                                                    <thead class="table-light border-bottom border-primary border-3">
+                                                <table class="table align-middle mb-0 border-0">
+                                                    <thead>
                                                         <tr>
-                                                            <th width="5%" rowspan="2" class="text-dark fw-bold py-3 text-center align-middle">No</th>
-                                                            <th width="55%" rowspan="2" class="text-dark fw-bold py-3 align-middle">Mata Pelajaran</th>
-                                                            <th colspan="{{ count($templateAktif->opsi_mulok ?? []) }}" class="text-dark fw-bold py-3 text-center border-bottom">Hasil Penilaian <span class="text-danger">*</span></th>
+                                                            <th width="5%" rowspan="2" class="text-center align-middle border-end bg-light text-muted small fw-bold text-uppercase">No</th>
+                                                            <th width="55%" rowspan="2" class="align-middle border-end bg-light text-muted small fw-bold text-uppercase">Indikator Pembelajaran</th>
+                                                            <th colspan="{{ count($templateAktif->opsi_mulok ?? []) }}" class="text-center border-bottom bg-primary-subtle text-primary small fw-bold text-uppercase">Hasil Penilaian <span class="text-danger">*</span></th>
                                                         </tr>
                                                         <tr>
                                                             @foreach($templateAktif->opsi_mulok ?? [] as $opsi)
-                                                                <th class="fw-bold text-center bg-light" style="width: 10%;">{{ $opsi }}</th>
+                                                                <th class="text-center bg-white border-start text-muted small fw-bold">{{ $opsi }}</th>
                                                             @endforeach
                                                         </tr>
                                                     </thead>
@@ -275,17 +291,17 @@
                                                         @foreach($itemMulok as $isian)
                                                             @if($isian->tipe == 'sub_judul')
                                                                 <tr>
-                                                                    <td colspan="{{ 2 + count($templateAktif->opsi_mulok ?? []) }}" class="bg-primary-subtle text-primary fw-bold py-2 ps-4">
-                                                                        {{ $isian->label }}
+                                                                    <td colspan="{{ 2 + count($templateAktif->opsi_mulok ?? []) }}" class="bg-light text-dark fw-bold py-3 ps-4 border-bottom-0">
+                                                                        <iconify-icon icon="solar:folder-with-files-bold-duotone" class="text-primary fs-5 align-middle me-1"></iconify-icon> {{ $isian->label }}
                                                                     </td>
                                                                 </tr>
                                                             @elseif($isian->tipe == 'radio')
-                                                                <tr class="mulok-row border-bottom">
-                                                                    <td class="text-center py-3 text-muted">{{ $no++ }}</td>
-                                                                    <td class="ps-4 text-dark py-3 fw-medium" style="white-space: normal;">{{ $isian->label }}</td>
+                                                                <tr class="mulok-row border-bottom border-light-subtle bg-white">
+                                                                    <td class="text-center py-3 text-muted border-end fw-medium">{{ $no++ }}</td>
+                                                                    <td class="ps-4 text-dark py-3 fw-medium border-end" style="white-space: normal;">{{ $isian->label }}</td>
                                                                     @foreach($templateAktif->opsi_mulok ?? [] as $opsi)
-                                                                        <td class="text-center py-3 bg-light">
-                                                                            <input class="form-check-input req-radio border-primary" style="transform: scale(1.3);" type="radio" name="nilai[{{ $isian->id }}]" value="{{ $opsi }}">
+                                                                        <td class="text-center py-3 border-start" style="background-color: #fafafa;">
+                                                                            <input class="form-check-input req-radio border-secondary-subtle" style="transform: scale(1.4); cursor: pointer;" type="radio" name="nilai[{{ $isian->id }}]" value="{{ $opsi }}">
                                                                         </td>
                                                                     @endforeach
                                                                 </tr>
@@ -304,32 +320,37 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top">
+            <!-- KONTROL BAWAH (Navigasi Kiri & Kanan) -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 pt-3 gap-3">
                 <div>
-                    <button type="button" class="btn btn-outline-secondary rounded-pill fw-medium px-4 d-none shadow-none" id="btn-kembali">
-                        <iconify-icon icon="solar:arrow-left-bold" class="align-middle"></iconify-icon> Kembali
+                    <button type="button" class="btn bg-white border border-secondary-subtle text-dark rounded-pill fw-medium px-4 py-2 d-none shadow-sm d-flex align-items-center gap-2 hover-lift" id="btn-kembali">
+                        <iconify-icon icon="solar:arrow-left-bold" class="fs-5"></iconify-icon> Kembali
                     </button>
                 </div>
 
-                <div class="d-flex gap-2" id="area-simpan">
+                <div class="d-flex flex-wrap gap-2 justify-content-center" id="area-simpan">
                     @if(auth()->user()->school && auth()->user()->school->is_rapor_open)
-                        <button type="submit" name="action_type" value="draft" class="btn btn-warning text-dark rounded-pill fw-bold px-4 shadow-sm btn-submit-rapor">
-                            <iconify-icon icon="solar:diskette-bold-duotone" class="align-middle"></iconify-icon> Simpan Sementara
+                        <button type="submit" name="action_type" value="draft" class="btn btn-warning text-dark border-0 rounded-pill fw-bold px-4 py-2 shadow-sm btn-submit-rapor d-flex align-items-center gap-2">
+                            <iconify-icon icon="solar:diskette-bold-duotone" class="fs-5"></iconify-icon> Simpan Sementara
                         </button>
-                        <button type="submit" name="action_type" value="permanen" class="btn btn-success rounded-pill fw-bold px-4 shadow-sm btn-submit-rapor" onclick="return confirm('Yakin ingin Simpan Permanen? Rapor akan terkunci dan tidak dapat diubah lagi.')">
-                            <iconify-icon icon="solar:check-circle-bold-duotone" class="align-middle"></iconify-icon> Simpan Permanen
+                        <button type="submit" name="action_type" value="permanen" class="btn btn-success border-0 rounded-pill fw-bold px-4 py-2 shadow-sm btn-submit-rapor d-flex align-items-center gap-2" onclick="return confirm('Yakin ingin Simpan Permanen? Rapor akan terkunci dan tidak dapat diubah lagi.')">
+                            <iconify-icon icon="solar:check-circle-bold-duotone" class="fs-5"></iconify-icon> Simpan Permanen
                         </button>
                     @else
-                        <button type="button" class="btn btn-secondary rounded-pill fw-medium px-4" disabled>Rapor Ditutup Admin</button>
+                        <button type="button" class="btn bg-secondary text-white rounded-pill fw-medium px-4 py-2 opacity-50 d-flex align-items-center gap-2" disabled>
+                            <iconify-icon icon="solar:lock-keyhole-bold-duotone" class="fs-5"></iconify-icon> Rapor Ditutup Admin
+                        </button>
                     @endif
 
-                    <button type="button" class="btn btn-primary rounded-pill fw-bold px-5 shadow-sm" id="btn-next">
-                        Selanjutnya <iconify-icon icon="solar:arrow-right-bold" class="align-middle"></iconify-icon>
+                    <button type="button" class="btn btn-primary rounded-pill fw-bold px-5 py-2 shadow-sm d-flex align-items-center gap-2 hover-lift" id="btn-next">
+                        Selanjutnya <iconify-icon icon="solar:arrow-right-bold" class="fs-5"></iconify-icon>
                     </button>
                 </div>
             </div>
 
         </form>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
@@ -362,37 +383,44 @@
             
             if (isSiswaLocked) {
                 rowPilih.classList.add('d-none');
-                rowLocked.classList.remove('d-none');
+                rowLocked.classList.remove('d-none', 'd-md-flex');
+                rowLocked.classList.add('d-flex');
                 
-                // ISI DATA IDENTITAS TAMBAHAN KE BANNER BIRU ATAS
                 if(pilihSiswa.selectedIndex >= 0) {
                     const selectedOpt = pilihSiswa.options[pilihSiswa.selectedIndex];
-                    document.getElementById('locked_nama').textContent = selectedOpt.text.split(' - ')[0];
+                    document.getElementById('locked_nama').textContent = selectedOpt.text.split(' (Status:')[0];
                     document.getElementById('locked_kelas').textContent = selectedOpt.getAttribute('data-kelas') || '-';
                     
-                    // Gabungkan No Induk dan NISN
                     let noInduk = selectedOpt.getAttribute('data-noinduk') || '-';
                     let nisn = selectedOpt.getAttribute('data-nisn') || '-';
                     document.getElementById('locked_identitas').textContent = noInduk + ' / ' + nisn;
                 }
             } else {
                 rowPilih.classList.remove('d-none');
+                rowLocked.classList.remove('d-flex');
                 rowLocked.classList.add('d-none');
             }
 
             if (currentIndex === 0) {
+                btnKembali.classList.remove('d-flex');
                 btnKembali.classList.add('d-none');
                 btnNext.classList.remove('d-none');
-                btnSubmits.forEach(b => b.classList.add('d-none'));
+                btnNext.classList.add('d-flex');
+                btnSubmits.forEach(b => { b.classList.remove('d-flex'); b.classList.add('d-none'); });
             } else {
                 btnKembali.classList.remove('d-none');
-                btnSubmits.forEach(b => b.classList.remove('d-none'));
+                btnKembali.classList.add('d-flex');
+                btnSubmits.forEach(b => { b.classList.remove('d-none'); b.classList.add('d-flex'); });
             }
 
             if (currentIndex === tabs.length - 1) {
+                btnNext.classList.remove('d-flex');
                 btnNext.classList.add('d-none');
             } else {
-                if(currentIndex !== 0) btnNext.classList.remove('d-none');
+                if(currentIndex !== 0) {
+                    btnNext.classList.remove('d-none');
+                    btnNext.classList.add('d-flex');
+                }
             }
         }
 
@@ -440,6 +468,7 @@
             }
         });
 
+        // VALIDASI MENGGUNAKAN CLASS BOOTSTRAP: is-invalid
         btnSubmits.forEach(btn => {
             btn.addEventListener('click', function(e) {
                 let isValid = true;
@@ -448,10 +477,10 @@
                 document.querySelectorAll('.req-field').forEach(el => {
                     if (!el.value.trim()) {
                         isValid = false;
-                        el.classList.add('input-error');
+                        el.classList.add('is-invalid'); // Diganti ke class Bootstrap
                         if (!firstErrorElement) firstErrorElement = el;
                     } else {
-                        el.classList.remove('input-error');
+                        el.classList.remove('is-invalid');
                     }
                 });
 
@@ -465,7 +494,7 @@
                     
                     if (!checked) {
                         isValid = false;
-                        tr.classList.add('table-danger');
+                        tr.classList.add('bg-danger-subtle'); // Background merah soft dari bootstrap
                         if (!firstErrorElement) firstErrorElement = tr;
                         
                         let accordionCollapse = tr.closest('.accordion-collapse');
@@ -473,7 +502,7 @@
                             new bootstrap.Collapse(accordionCollapse, { toggle: false }).show();
                         }
                     } else {
-                        tr.classList.remove('table-danger');
+                        tr.classList.remove('bg-danger-subtle');
                     }
                 });
 
@@ -507,7 +536,7 @@
                     document.getElementById('tgl_lahir').value = siswa.tgl_lahir || '-';
                     
                     const fotoElement = document.getElementById('foto_siswa');
-                    fotoElement.src = siswa.foto_anak ? "/storage/" + siswa.foto_anak : "https://ui-avatars.com/api/?name=" + encodeURIComponent(siswa.nama_lengkap) + "&color=2d5cf7&background=e9ecef&size=150";
+                    fotoElement.src = siswa.foto_anak ? "/storage/" + siswa.foto_anak : "https://ui-avatars.com/api/?name=" + encodeURIComponent(siswa.nama_lengkap) + "&color=2563eb&background=eff6ff&size=150";
 
                     document.getElementById('db_sakit').value = (siswa.absensi_sakit || 0);
                     document.getElementById('db_izin').value = (siswa.absensi_izin || 0);
@@ -515,20 +544,22 @@
                     document.getElementById('tinggi_badan').value = siswa.tinggi_badan_db ? siswa.tinggi_badan_db : '-';
                     document.getElementById('berat_badan').value = siswa.berat_badan_db ? siswa.berat_badan_db : '-';
 
-                    document.querySelectorAll('.req-field').forEach(el => { el.value = ''; el.classList.remove('input-error'); });
-                    document.querySelectorAll('.req-radio').forEach(el => { el.checked = false; el.closest('tr').classList.remove('table-danger'); });
+                    document.querySelectorAll('.req-field').forEach(el => { el.value = ''; el.classList.remove('is-invalid'); });
+                    document.querySelectorAll('.req-radio').forEach(el => { el.checked = false; el.closest('tr').classList.remove('bg-danger-subtle'); });
+                    alertStatus.classList.remove('d-flex');
                     alertStatus.classList.add('d-none');
                     btnSubmits.forEach(b => b.disabled = false);
 
                     if (siswa.rapor_aktif) {
                         alertStatus.classList.remove('d-none', 'alert-warning', 'alert-success', 'alert-danger');
+                        alertStatus.classList.add('d-flex');
                         
                         if(siswa.rapor_aktif.status === 'permanen') {
-                            alertStatus.classList.add('alert-success');
+                            alertStatus.classList.add('alert-success', 'bg-success-subtle', 'text-success');
                             document.getElementById('teks-status-rapor').innerHTML = "Rapor siswa ini sudah berstatus <strong>PERMANEN</strong> dan terkunci. Tidak bisa disimpan ulang.";
                             btnSubmits.forEach(b => b.disabled = true);
                         } else {
-                            alertStatus.classList.add('alert-warning');
+                            alertStatus.classList.add('alert-warning', 'bg-warning-subtle', 'text-warning-emphasis');
                             document.getElementById('teks-status-rapor').innerHTML = "Menampilkan draf sebelumnya. Rapor ini masih berstatus <strong>SIMPAN SEMENTARA</strong>.";
                         }
 
@@ -571,12 +602,12 @@
                 document.getElementById('tinggi_badan').value = "-";
                 document.getElementById('berat_badan').value = "-";
                 
-                // Reset data identitas locked card
                 document.getElementById('locked_kelas').textContent = "-";
                 document.getElementById('locked_identitas').textContent = "-";
                 
                 document.querySelectorAll('.req-field').forEach(el => el.value = '');
                 document.querySelectorAll('.req-radio').forEach(el => el.checked = false);
+                alertStatus.classList.remove('d-flex');
                 alertStatus.classList.add('d-none');
             }
         }

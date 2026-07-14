@@ -8,10 +8,11 @@ class Siswa extends Model
 {
     protected $table = 'siswas';
 
+    // Menambahkan 'no_kk', 'lintang', 'bujur' ke dalam daftar fillable
     protected $fillable = [
-        'school_id', 'user_id', 'nama_lengkap', 'nik', 'nisn', 'no_induk',
+        'school_id', 'user_id', 'nama_lengkap', 'nik', 'no_kk', 'nisn', 'no_induk',
         'nama_ortu', 'foto_anak', 'tempat_lahir', 'tgl_lahir', 'jenis_kelamin',
-        'tinggi_badan', 'berat_badan', 'koordinat_rumah', 'status',
+        'tinggi_badan', 'berat_badan', 'koordinat_rumah', 'lintang', 'bujur', 'status',
         'alamat', 'rt', 'rw', 'dusun', 'kelurahan', 'kecamatan', 'kode_pos',
         'agama', 'anak_ke', 'jml_saudara', 'jenis_tinggal', 'alat_transportasi', 'telepon', 'hp', 'email', 'jarak_rumah', 'lingkar_kepala',
         'nama_ayah', 'nik_ayah', 'tahun_lahir_ayah', 'pendidikan_ayah', 'pekerjaan_ayah', 'penghasilan_ayah',
@@ -26,7 +27,6 @@ class Siswa extends Model
     public function school() { return $this->belongsTo(School::class); }
     public function user() { return $this->belongsTo(User::class); }
     
-    // 1. Relasi Banyak-ke-Banyak: Mengambil SEMUA riwayat kelas (TK A, TK B, dst)
     public function kelas()
     {
         return $this->belongsToMany(Kelas::class, 'anggota_kelas', 'siswa_id', 'kelas_id')
@@ -34,7 +34,6 @@ class Siswa extends Model
                     ->withTimestamps();
     }
     
-    // 2. Relasi Khusus: Mengambil objek Kelas HANYA pada semester yang AKTIF
     public function kelasAktif()
     {
         return $this->belongsToMany(Kelas::class, 'anggota_kelas', 'siswa_id', 'kelas_id')
@@ -43,8 +42,6 @@ class Siswa extends Model
                     ->select('kelas.*');
     }
 
-    // 3. JALAN PINTAS (ACCESSOR): Inilah sihirnya!
-    // Nanti di file Blade (HTML), kamu cukup ketik: {{ $siswa->nama_kelas_aktif }}
     public function getNamaKelasAktifAttribute()
     {
         $kelas = $this->kelasAktif()->first();
@@ -55,7 +52,6 @@ class Siswa extends Model
     public function absensis() { return $this->hasMany(Absensi::class, 'siswa_id'); }
     public function perkembanganFisiks() { return $this->hasMany(PerkembanganFisik::class, 'siswa_id'); }
 
-    // Relasi ke tabel arsip_rapors (Satu siswa bisa punya banyak arsip/semester)
     public function arsipRapors()
     {
         return $this->hasMany(ArsipRapor::class);

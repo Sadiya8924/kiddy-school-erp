@@ -22,7 +22,6 @@ class SiswaController extends Controller
         
         $query = Siswa::with('kelasAktif')->where('school_id', $schoolId);
 
-        // LOGIKA FILTER KELAS / STATUS
         if ($user->role === 'guru' && $user->kelas_id) {
             $query->whereHas('kelas', function($q) use ($user, $semesterAktif) {
                 $q->where('anggota_kelas.kelas_id', $user->kelas_id);
@@ -49,7 +48,6 @@ class SiswaController extends Controller
             }
         }
 
-        // ---> LOGIKA FILTER TAHUN PENDAFTARAN DINAMIS <---
         if ($request->filled('tahun_inden')) {
             $query->where('program_pilihan', 'LIKE', '%(Tahun: ' . $request->tahun_inden . ')%');
         }
@@ -57,12 +55,10 @@ class SiswaController extends Controller
         $siswas = $query->get();
         $list_kelas = Kelas::where('school_id', $schoolId)->get();
         
-        // CUMA nampilin list tahun pendaftaran yang bener-bener ada siswanya di database!
         $list_tahun_inden = Siswa::where('school_id', $schoolId)
             ->whereNotNull('program_pilihan')
             ->pluck('program_pilihan')
             ->map(function($prog) {
-                // Ambil text di dalam (Tahun: XXXX/YYYY)
                 preg_match('/\(Tahun: (.*?)\)/', $prog, $matches);
                 return isset($matches[1]) ? $matches[1] : null;
             })
@@ -74,7 +70,6 @@ class SiswaController extends Controller
         return view('data_siswa', compact('siswas', 'list_kelas', 'semesterAktif', 'list_tahun_inden'));
     }
 
-    // 2. TAMBAH SISWA BARU (MANUAL ADMIN)
     public function store(Request $request)
     {
         $request->validate([
@@ -105,7 +100,6 @@ class SiswaController extends Controller
         return back()->with('success', 'Siswa baru berhasil ditambahkan!');
     }
 
-    // 3. SET / PINDAH KELAS SISWA
     public function setKelas(Request $request)
     {
         $request->validate([
@@ -131,7 +125,6 @@ class SiswaController extends Controller
         return back()->with('success', 'Siswa berhasil dimasukkan ke kelas!');
     }
 
-    // FUNGSI UNTUK MENAUTKAN AKUN WALI MURID KE DATA SISWA
     public function tautkanOrtu(Request $request)
     {
         $request->validate([
@@ -147,7 +140,6 @@ class SiswaController extends Controller
         return back()->with('success', 'Akun orang tua berhasil ditautkan ke data ' . $siswa->nama_lengkap . '!');
     }
 
-    // 4. TAMPILKAN PROFIL / BIODATA DETAIL SISWA
     public function show($id)
     {
         $user = Auth::user();
@@ -157,7 +149,6 @@ class SiswaController extends Controller
         return view('siswa_detail', compact('siswa'));
     }
 
-    // 5. FUNGSI UNTUK MENAMPILKAN FORM PENDAFTARAN WALI MURID (GET)
     public function createPendaftaran(Request $request)
     {
         $user = Auth::user();
@@ -175,12 +166,11 @@ class SiswaController extends Controller
 
         $school = null;
         $list_tahun_inden = [];
-        $kuota_per_tahun = []; // Array khusus untuk menyimpan kuota berdasarkan tahun
+        $kuota_per_tahun = []; 
 
         if ($selected_school_id) {
             $school = DB::table('schools')->where('id', $selected_school_id)->first();
             if ($school) {
-                // ---> Generate Pilihan Tahun dan Hitung Kuota Masing-Masing Tahun <---
                 $tahunMulai = date('m') <= 6 ? date('Y') : date('Y') + 1;
                 $max_years = $school->max_indent_years ?? 3; 
                 
@@ -190,12 +180,10 @@ class SiswaController extends Controller
                     $tahunString = $thn1 . '/' . $thn2;
                     $list_tahun_inden[] = $tahunString;
 
-                    // Hitung jumlah yang sudah terdaftar KHUSUS di tahun tersebut (menggunakan LIKE agar anti-error spasi)
                     $terisi_tk_pagi = DB::table('siswas')->where('school_id', $school->id)->where('program_pilihan', 'LIKE', 'TK Pagi%'.$tahunString.'%')->where('status', '!=', 'lulus')->count();
                     $terisi_tk_siang = DB::table('siswas')->where('school_id', $school->id)->where('program_pilihan', 'LIKE', 'TK Siang%'.$tahunString.'%')->where('status', '!=', 'lulus')->count();
                     $terisi_paud = DB::table('siswas')->where('school_id', $school->id)->where('program_pilihan', 'LIKE', 'PAUD%'.$tahunString.'%')->where('status', '!=', 'lulus')->count();
 
-                    // Simpan ke array dengan key tahun tersebut
                     $kuota_per_tahun[$tahunString] = [
                         'tk_pagi' => max(0, $school->kuota_tk_pagi - $terisi_tk_pagi),
                         'tk_siang' => max(0, $school->kuota_tk_siang - $terisi_tk_siang),
@@ -208,18 +196,23 @@ class SiswaController extends Controller
         return view('pendaftaran', compact('schools', 'school', 'selected_school_id', 'is_locked', 'list_tahun_inden', 'kuota_per_tahun'));
     }
 
-    // 6. FUNGSI UNTUK MENYIMPAN DATA PENDAFTARAN WALI MURID (POST)
     public function storePendaftaran(Request $request)
     {
+        // Validasi disesuaikan dengan field Dapodik yang baru ditambahkan
         $request->validate([
             'school_id'        => 'required|exists:schools,id',
             'program_pilihan'  => 'required|string',
             'tahun_inden'      => 'required|string',
             'nama_lengkap'     => 'required|string|max:255',
             'nik'              => 'required|string',
+            'no_kk'            => 'required|string',
             'tempat_lahir'     => 'required|string|max:255',
             'tgl_lahir'        => 'required|date',
+            'lintang'          => 'required|string',
+            'bujur'            => 'required|string',
             'foto_anak'        => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_kk'          => 'required|mimes:jpeg,png,jpg,pdf|max:2048',
+            'foto_akte'        => 'required|mimes:jpeg,png,jpg,pdf|max:2048',
             'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -237,21 +230,23 @@ class SiswaController extends Controller
             return back()->withInput()->with('error', 'Maaf, kuota untuk ' . $program_gabungan . ' sudah penuh!');
         }
 
-        $fotoPath = null;
-        if ($request->hasFile('foto_anak')) {
-            $fotoPath = $request->file('foto_anak')->store('foto_siswa', 'public');
-        }
+        // Upload semua file (termasuk KK dan Akte yang baru ditambah)
+        $fotoPath = $request->hasFile('foto_anak') ? $request->file('foto_anak')->store('foto_siswa', 'public') : null;
+        $buktiPath = $request->hasFile('bukti_pembayaran') ? $request->file('bukti_pembayaran')->store('bukti_pendaftaran', 'public') : null;
+        
+        // Simpan file baru
+        if ($request->hasFile('foto_kk')) $request->file('foto_kk')->store('dokumen_siswa', 'public');
+        if ($request->hasFile('foto_akte')) $request->file('foto_akte')->store('dokumen_siswa', 'public');
 
-        $buktiPath = null;
-        if ($request->hasFile('bukti_pembayaran')) {
-            $buktiPath = $request->file('bukti_pembayaran')->store('bukti_pendaftaran', 'public');
-        }
+        // Gabungkan koordinat untuk ditampilkan di view lama, sambil nyimpen nilai aslinya di kolom lintang & bujur
+        $koordinat_gabungan = $request->lintang . ', ' . $request->bujur;
 
         DB::table('siswas')->insert([
             'school_id'       => $request->school_id,
             'program_pilihan' => $program_gabungan,
             'nama_lengkap'    => $request->nama_lengkap,
             'nik'             => $request->nik,
+            'no_kk'           => $request->no_kk, // Field Baru
             'jenis_kelamin'   => $request->jenis_kelamin,
             'tempat_lahir'    => $request->tempat_lahir,
             'tgl_lahir'       => $request->tgl_lahir,
@@ -286,10 +281,13 @@ class SiswaController extends Controller
             'pekerjaan_ibu'   => $request->pekerjaan_ibu,
             'penghasilan_ibu' => $request->penghasilan_ibu,
             
-            // Fisik & Berkas
+            // Fisik, Koordinat, & Berkas
             'tinggi_badan'    => $request->tinggi_badan,
             'berat_badan'     => $request->berat_badan,
             'lingkar_kepala'  => $request->lingkar_kepala,
+            'koordinat_rumah' => $koordinat_gabungan, // Backup lama
+            'lintang'         => $request->lintang,   // Field Baru Dapodik
+            'bujur'           => $request->bujur,     // Field Baru Dapodik
             'foto_anak'       => $fotoPath,
             'bukti_pembayaran'=> $buktiPath,
             'email'           => $request->email,
@@ -301,7 +299,6 @@ class SiswaController extends Controller
         return back()->with('success', 'Pendaftaran berhasil! Silakan tunggu konfirmasi dari pihak sekolah via WhatsApp atau Email.');
     }
 
-    // 7. IMPORT CSV DAPODIK
     public function importNisn(Request $request)
     {
         $request->validate([
@@ -358,7 +355,6 @@ class SiswaController extends Controller
         return back()->with('success', "Import Dapodik Selesai! Berhasil Update: $berhasil_update siswa. (Data tidak ada di database / dilewati: $di_skip siswa).");
     }
 
-    // FUNGSI UNTUK ADMIN MENERIMA PENDAFTARAN
     public function terimaPendaftaran($id)
     {
         DB::table('siswas')->where('id', $id)->update([

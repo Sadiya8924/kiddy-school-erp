@@ -1,79 +1,98 @@
 @extends('layouts.admin')
 
 @section('konten_halaman')
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-    <div>
-        <h2 class="fw-semibold text-dark mb-1">Cetak Rapor Siswa</h2>
-        <span class="text-muted fs-3">Pilih siswa untuk mencetak hasil pembelajaran.</span>
-    </div>
-</div>
-
-<div class="card w-100 border-0 shadow-sm mb-4">
-    <div class="card-body p-3">
-        <form action="/cetak-rapor" method="GET" class="row g-2 align-items-center">
-            @if(auth()->user()->role == 'admin')
-            <div class="col-md-3">
-                <select name="kelas_id" class="form-select border-1 text-dark shadow-none" onchange="this.form.submit()">
-                    <option value="all">-- Semua Kelas --</option>
-                    @foreach($list_kelas as $k)
-                        <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>{{ $k->nama_kelas }}</option>
-                    @endforeach
-                </select>
-            </div>
-            @endif
-            
-            <div class="col-md-{{ auth()->user()->role == 'admin' ? '7' : '10' }}">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><iconify-icon icon="solar:magnifer-linear" class="text-muted"></iconify-icon></span>
-                    <input type="text" name="search" class="form-control border-start-0 shadow-none" placeholder="Cari berdasarkan Nama Lengkap atau NIK..." value="{{ request('search') }}">
+<div class="row gx-3 gy-3 mt-0">
+    <div class="col-12">
+        <div class="card border shadow-none mb-0" style="background-color: var(--primary-blue-soft); border-color: var(--primary-blue-border) !important;">
+            <div class="card-body px-4 py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <h4 class="fw-bold text-dark mb-1">Cetak Rapor Siswa</h4>
+                    <p class="text-muted mb-0 small">Pilih siswa untuk mencetak hasil pembelajaran.</p>
+                </div>
+                <div class="d-flex align-items-center gap-2 text-muted small fw-medium">
+                    <iconify-icon icon="solar:printer-bold-duotone" class="fs-5 text-primary"></iconify-icon>
+                    <span>Siap dicetak ke PDF</span>
                 </div>
             </div>
-            
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100 rounded-2 fw-bold shadow-none">Cari Data</button>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
 
-<div class="card w-100 border-0 shadow-sm position-relative overflow-hidden">
-    <div class="card-body p-4">
-        <h5 class="fw-semibold mb-4 text-dark">Daftar Siswa</h5>
+    <div class="col-12">
+        <div class="card border shadow-none mb-0">
+            <div class="card-body p-4">
+                <form action="/cetak-rapor" method="GET" class="row g-3 align-items-end">
+                    @if(auth()->user()->role == 'admin')
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold text-dark small mb-2">Filter Kelas</label>
+                        <select name="kelas_id" class="form-select shadow-none border-light-subtle py-2" onchange="this.form.submit()">
+                            <option value="all">-- Semua Kelas --</option>
+                            @foreach($list_kelas as $k)
+                                <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>{{ $k->nama_kelas }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
 
-        <div class="table-responsive">
-            <table class="table align-middle mb-0">
-                <thead style="border-bottom: 2px solid #2d5cf7;">
-                    <tr>
-                        <th width="5%" class="border-0 bg-transparent text-dark fw-semibold py-3 ps-0 text-center">No</th>
-                        <th width="35%" class="border-0 bg-transparent text-dark fw-semibold py-3 text-start">Nama Siswa</th>
-                        <th width="20%" class="border-0 bg-transparent text-dark fw-semibold py-3 text-center">NIK</th>
-                        <th width="20%" class="border-0 bg-transparent text-dark fw-semibold py-3 text-center">Kelas</th>
-                        <th width="20%" class="border-0 bg-transparent text-dark fw-semibold py-3 text-center pe-0">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($siswas as $index => $s)
-                    <tr class="border-bottom" style="border-color: #f3f4f6;">
-                        <td class="text-center py-3 ps-0">{{ $index + 1 }}</td>
-                        <td class="fw-medium text-dark text-start py-3">{{ $s->nama_lengkap }}</td>
-                        <td class="text-center py-3">{{ $s->nik }}</td>
-                        <td class="text-center py-3">
-                            <span class="badge bg-info-subtle text-info px-3 py-2 rounded-pill">{{ $s->nama_kelas_aktif }}</span>
-                        </td>
-                        <td class="text-center py-3 pe-0">
-                            {{-- Target blank biar preview rapornya kebuka di tab baru --}}
-                            <a href="/rapor/{{ $s->id }}" class="btn btn-sm btn-danger rounded-pill px-4 mx-1 shadow-sm fw-medium">
-                                <iconify-icon icon="solar:printer-bold-duotone" class="align-middle"></iconify-icon> Cetak PDF
-                            </a>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">Data siswa tidak ditemukan.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    <div class="col-md-{{ auth()->user()->role == 'admin' ? '7' : '10' }}">
+                        <label class="form-label fw-semibold text-dark small mb-2">Cari Siswa</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-light-subtle border-end-0"><iconify-icon icon="solar:magnifer-linear" class="text-muted"></iconify-icon></span>
+                            <input type="text" name="search" class="form-control shadow-none border-light-subtle border-start-0 py-2" placeholder="Cari berdasarkan Nama Lengkap atau NIK..." value="{{ request('search') }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-primary rounded fw-bold shadow-none py-2">Cari Data</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card border shadow-none mb-0">
+            <div class="card-body p-0">
+                <div class="d-flex justify-content-between align-items-center px-4 py-3 border-bottom">
+                    <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                        <iconify-icon icon="solar:users-group-rounded-bold-duotone" class="text-primary fs-5"></iconify-icon> Daftar Siswa
+                    </h6>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light border-bottom border-light-subtle">
+                            <tr>
+                                <th width="5%" class="text-center py-3 ps-4 text-muted fw-semibold small">No</th>
+                                <th width="35%" class="py-3 text-dark fw-semibold small">Nama Siswa</th>
+                                <th width="20%" class="py-3 text-center text-dark fw-semibold small">NIK</th>
+                                <th width="20%" class="py-3 text-center text-dark fw-semibold small">Kelas</th>
+                                <th width="20%" class="py-3 text-center pe-4 text-dark fw-semibold small">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($siswas as $index => $s)
+                            <tr class="border-bottom border-light-subtle">
+                                <td class="text-center py-3 ps-4 text-muted fw-medium">{{ $index + 1 }}</td>
+                                <td class="fw-medium text-dark py-3">{{ $s->nama_lengkap }}</td>
+                                <td class="text-center py-3 text-muted">{{ $s->nik }}</td>
+                                <td class="text-center py-3">
+                                    <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">{{ $s->nama_kelas_aktif }}</span>
+                                </td>
+                                <td class="text-center py-3 pe-4">
+                                    <a href="/rapor/{{ $s->id }}" class="btn btn-sm btn-danger rounded-pill px-4 fw-medium shadow-none">
+                                        <iconify-icon icon="solar:printer-bold-duotone" class="align-middle"></iconify-icon> Cetak PDF
+                                    </a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">Data siswa tidak ditemukan.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

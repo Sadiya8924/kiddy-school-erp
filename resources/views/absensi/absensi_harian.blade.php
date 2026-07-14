@@ -1,56 +1,88 @@
 @extends('layouts.admin')
 
 @section('konten_halaman')
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-    <div>
-        <!-- Menggunakan h2 agar ukuran font judul halaman sama persis -->
-        <h2 class="fw-semibold text-dark mb-1">Absensi Harian Siswa</h2>
-        <span class="text-muted fs-3">Input kehadiran siswa hari ini.</span>
-    </div>
-    <div class="d-flex gap-2 align-items-center">
-        <label class="fw-medium text-dark small mb-0">Tanggal:</label>
-        <input type="date" class="form-control border-1 text-dark shadow-none" value="{{ date('Y-m-d') }}" style="width: auto;">
-    </div>
-</div>
+<!-- Form membungkus seluruh halaman agar input tanggal ikut ter-submit -->
+<form action="{{ route('absensi.store') }}" method="POST">
+    @csrf
+    <div class="row gx-3 gy-3 mt-0">
+        
+        <div class="col-12 mb-2">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <h4 class="fw-bold text-dark mb-1">Presensi Harian Siswa</h4>
+                    <p class="text-muted mb-0 small">Input kehadiran siswa kelas Anda untuk hari ini.</p>
+                </div>
+                
+                {{-- Input Tanggal --}}
+                <div class="d-flex gap-2 align-items-center bg-white border border-light-subtle px-3 py-2 rounded shadow-sm">
+                    <iconify-icon icon="solar:calendar-mark-bold-duotone" class="text-primary fs-5"></iconify-icon>
+                    <span class="fw-bold text-dark" style="font-size: 13px;">Tanggal:</span>
+                    <input type="date" name="tanggal" class="form-control form-control-sm border-0 shadow-none fw-medium text-primary bg-transparent" value="{{ date('Y-m-d') }}" style="width: 130px; cursor: pointer;" required>
+                </div>
+            </div>
+        </div>
 
-<div class="card w-100 border-0 shadow-sm position-relative overflow-hidden">
-    <div class="card-body p-4"> 
-        <!-- Ditambahkan judul agar spacing vertikal tabel sama persis dengan Data Siswa -->
-        <h5 class="fw-semibold mb-4 text-dark">Daftar Kehadiran</h5>
+        {{-- Notifikasi Sukses --}}
+        @if(session('success'))
+            <div class="col-12 mt-0">
+                <div class="alert alert-success border border-success-subtle shadow-none rounded py-2 px-3 mb-0 small fw-medium">{{ session('success') }}</div>
+            </div>
+        @endif
 
-        <div class="table-responsive">
-            <table class="table align-middle mb-0">
-                <thead style="border-bottom: 2px solid #2d5cf7;">
-                    <tr>
-                        <th width="5%" class="border-0 bg-transparent text-dark fw-semibold py-3 ps-0 text-center">No</th>
-                        <th width="30%" class="border-0 bg-transparent text-dark fw-semibold py-3">Nama Siswa</th>
-                        <th width="15%" class="border-0 bg-transparent text-dark fw-semibold py-3 text-center">Hadir</th>
-                        <th width="15%" class="border-0 bg-transparent text-dark fw-semibold py-3 text-center">Sakit</th>
-                        <th width="15%" class="border-0 bg-transparent text-dark fw-semibold py-3 text-center">Izin</th>
-                        <th width="15%" class="border-0 bg-transparent text-dark fw-semibold py-3 text-center">Alfa</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($siswas as $index => $siswa)
-                    <tr class="border-bottom" style="border-color: #f3f4f6;">
-                        <td class="text-center py-3 fw-medium ps-0">{{ $index + 1 }}</td>
-                        <td class="fw-medium py-3 text-dark">{{ $siswa->nama_lengkap }}</td>
-                        <td class="text-center py-3"><input type="radio" name="status_{{ $siswa->id }}" value="H" class="form-check-input mt-0 border-primary shadow-none" checked style="width:1.2em; height:1.2em;"></td>
-                        <td class="text-center py-3"><input type="radio" name="status_{{ $siswa->id }}" value="S" class="form-check-input mt-0 border-primary shadow-none" style="width:1.2em; height:1.2em;"></td>
-                        <td class="text-center py-3"><input type="radio" name="status_{{ $siswa->id }}" value="I" class="form-check-input mt-0 border-warning shadow-none" style="width:1.2em; height:1.2em;"></td>
-                        <td class="text-center py-3"><input type="radio" name="status_{{ $siswa->id }}" value="A" class="form-check-input mt-0 border-danger shadow-none" style="width:1.2em; height:1.2em;"></td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+        <div class="col-12">
+            <div class="card border shadow-none mb-0">
+                <div class="card-header bg-light border-bottom p-3">
+                    <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                        <iconify-icon icon="solar:clipboard-list-bold-duotone" class="text-primary fs-5"></iconify-icon> Daftar Kehadiran
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 border-0">
+                            <thead class="bg-white border-bottom border-light-subtle">
+                                <tr>
+                                    <th class="text-center text-muted fw-semibold py-3" style="width: 5%; font-size: 11px;">NO</th>
+                                    <th class="text-muted fw-semibold py-3" style="font-size: 11px;">NAMA SISWA</th>
+                                    <th class="text-center text-muted fw-semibold py-3" style="width: 10%; font-size: 11px;">HADIR</th>
+                                    <th class="text-center text-muted fw-semibold py-3" style="width: 10%; font-size: 11px;">SAKIT</th>
+                                    <th class="text-center text-muted fw-semibold py-3" style="width: 10%; font-size: 11px;">IZIN</th>
+                                    <th class="text-center text-muted fw-semibold py-3" style="width: 10%; font-size: 11px;">ALFA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($siswas as $index => $siswa)
+                                <tr class="border-bottom border-light-subtle">
+                                    <td class="text-center text-muted py-3" style="font-size: 13px;">{{ $index + 1 }}</td>
+                                    <td class="py-3 fw-bold text-dark" style="font-size: 14px;">{{ $siswa->nama_lengkap }}</td>
+                                    
+                                    {{-- Radio Buttons Absensi --}}
+                                    <td class="text-center py-3"><input type="radio" name="status_{{ $siswa->id }}" value="hadir" class="form-check-input mt-0 shadow-none border-primary" checked style="transform: scale(1.3); cursor: pointer;"></td>
+                                    <td class="text-center py-3"><input type="radio" name="status_{{ $siswa->id }}" value="sakit" class="form-check-input mt-0 shadow-none border-primary" style="transform: scale(1.3); cursor: pointer;"></td>
+                                    <td class="text-center py-3"><input type="radio" name="status_{{ $siswa->id }}" value="izin" class="form-check-input mt-0 shadow-none border-warning" style="transform: scale(1.3); cursor: pointer;"></td>
+                                    <td class="text-center py-3"><input type="radio" name="status_{{ $siswa->id }}" value="alfa" class="form-check-input mt-0 shadow-none border-danger" style="transform: scale(1.3); cursor: pointer;"></td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="text-center py-5 text-muted small">Belum ada data siswa di kelas ini.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                {{-- Tombol Simpan HANYA muncul jika ada siswa --}}
+                @if($siswas->count() > 0)
+                <div class="card-footer bg-light border-top p-3 text-end">
+                    <button type="submit" class="btn btn-primary rounded fw-bold px-4 shadow-none" style="font-size: 12px;">
+                        <iconify-icon icon="solar:diskette-bold-duotone" class="align-middle me-1"></iconify-icon> Simpan Presensi
+                    </button>
+                </div>
+                @endif
+                
+            </div>
         </div>
         
-        <!-- Button Simpan dipindah ke dalam card-body dan margin-nya disesuaikan -->
-        <div class="text-end mt-4">
-            <button class="btn btn-success fw-medium px-5 rounded-pill shadow-none" onclick="alert('Absensi hari ini berhasil disimpan!')">
-                Simpan Absensi
-            </button>
-        </div>
     </div>
-</div>
+</form>
 @endsection

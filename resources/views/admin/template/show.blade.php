@@ -1,38 +1,50 @@
 @extends('layouts.admin')
 
 @section('konten_halaman')
-<div class="d-flex justify-content-between mb-4">
-    <div>
-        <a href="/admin/template" class="btn btn-light btn-sm mb-2"><i class="ti ti-arrow-left"></i> Kembali</a>
-        <h3>Atur Layout Rapor: {{ $template->nama_template }}</h3>
+<div class="row gx-3 gy-3 mt-0">
+    <div class="col-12">
+        <div class="card border shadow-none mb-0" style="background-color: var(--primary-blue-soft); border-color: var(--primary-blue-border) !important;">
+            <div class="card-body px-4 py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <a href="/admin/template" class="btn btn-light btn-sm rounded-pill px-3 mb-2 shadow-none"><i class="ti ti-arrow-left me-1"></i> Kembali</a>
+                    <h4 class="fw-bold text-dark mb-1">Atur Layout Rapor: {{ $template->nama_template }}</h4>
+                    <p class="text-muted mb-0 small">Kelola struktur isi rapor, narasi, dan komponen mulok.</p>
+                </div>
+                <div class="d-flex align-items-center gap-2 text-muted small fw-medium">
+                    <iconify-icon icon="solar:settings-bold-duotone" class="fs-5 text-primary"></iconify-icon>
+                    <span>Struktur template aktif</span>
+                </div>
+            </div>
+        </div>
     </div>
+
 </div>
 
-<div class="row">
+<div class="row gx-3 gy-3 mt-0">
     <!-- KOLOM KIRI: FORM PENGATURAN -->
     <div class="col-md-4">
         
         <!-- PENGATURAN MULOK GLOBAL -->
-        <div class="card shadow-sm border-0 mb-3 border-start border-4 border-warning">
-            <div class="card-body">
-                <h6 class="fw-bold mb-3">⚙️ Pengaturan Pilihan Mulok</h6>
+        <div class="card border shadow-none mb-3 border-start border-4 border-warning">
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-3 border-bottom pb-2 text-dark d-flex align-items-center gap-2"><iconify-icon icon="solar:settings-minimalistic-bold-duotone" class="text-primary fs-5"></iconify-icon> Pengaturan Pilihan Mulok</h6>
                 <form action="/admin/template/{{ $template->id }}/opsi-mulok" method="POST">
                     @csrf
                     <div class="mb-2">
                         <small class="text-muted d-block mb-1">Ketik pilihan (pisahkan koma):</small>
-                        <input type="text" name="opsi_mulok" class="form-control" 
+                        <input type="text" name="opsi_mulok" class="form-control shadow-none" 
                                value="{{ is_array($template->opsi_mulok) ? implode(', ', $template->opsi_mulok) : '' }}" 
                                placeholder="Contoh: BB, MB, BSH, SB">
                     </div>
-                    <button type="submit" class="btn btn-sm btn-warning w-100">Simpan Opsi Mulok</button>
+                    <button type="submit" class="btn btn-warning rounded-pill w-100 fw-bold shadow-none">Simpan Opsi Mulok</button>
                 </form>
             </div>
         </div>
 
         <!-- FORM TAMBAH ITEM -->
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-primary text-white fw-bold">➕ Tambah Struktur Rapor</div>
-            <div class="card-body">
+        <div class="card border shadow-none">
+            <div class="card-header bg-light border-bottom fw-bold text-dark">Tambah Struktur Rapor</div>
+            <div class="card-body p-4">
                 <form action="/admin/template/{{ $template->id }}/items" method="POST">
                     @csrf
                     
@@ -68,11 +80,9 @@
 
     <!-- KOLOM KANAN: PREVIEW LAYOUT -->
     <div class="col-md-8">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-light fw-bold text-dark">
-                👁️ Preview Struktur Rapor
-            </div>
-            <div class="card-body">
+            <div class="card border shadow-none">
+            <div class="card-header bg-light fw-bold text-dark">Preview Struktur Rapor</div>
+            <div class="card-body p-4">
                 
                 @if($template->items->where('is_bab', true)->count() == 0)
                     <div class="text-center py-4 text-muted">Belum ada struktur.</div>

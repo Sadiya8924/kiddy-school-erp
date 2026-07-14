@@ -11,31 +11,47 @@ use Illuminate\Support\Facades\Auth;
 
 class PerkembanganFisikController extends Controller
 {
-    // 1. Menampilkan daftar siswa (DIFILTER SESUAI KELAS GURU & SEMESTER AKTIF)
-    public function index()
+    // 1. Menampilkan daftar siswa (DENGAN FILTER KELAS & PENCARIAN)
+    public function index(Request $request)
     {
         $user = Auth::user();
-        
-        // --- LOGIKA SAKTI SWITCHER ---
         $schoolId = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
-        
-        $semesterAktif = Semester::where('is_active', true)->first();
+        $semesterAktif = \App\Models\Semester::where('is_active', true)->first();
+
+        // Tarik data kelas untuk dropdown filter (khusus admin/kepsek)
+        $list_kelas = \App\Models\Kelas::where('school_id', $schoolId)->get();
 
         // Tarik data siswa dari sekolah yang sedang aktif
-        $query = Siswa::where('school_id', $schoolId)->where('status', 'aktif');
+        $query = \App\Models\Siswa::where('school_id', $schoolId)->where('status', 'aktif');
 
-        // Jika yang login adalah Guru dan dia punya kelas
+        // --- LOGIKA FILTER KELAS ---
         if ($user->role === 'guru' && $user->kelas_id) {
+            // Guru cuma bisa lihat kelasnya sendiri
             $query->whereHas('kelas', function($q) use ($user, $semesterAktif) {
                 $q->where('anggota_kelas.kelas_id', $user->kelas_id);
                 if ($semesterAktif) {
                     $q->where('anggota_kelas.semester_id', $semesterAktif->id);
                 }
             });
+        } else {
+            // Admin / Kepsek bisa filter berdasarkan dropdown kelas
+            if ($request->filled('kelas_id') && $request->kelas_id !== 'all') {
+                $query->whereHas('kelas', function($q) use ($request, $semesterAktif) {
+                    $q->where('anggota_kelas.kelas_id', $request->kelas_id);
+                    if ($semesterAktif) {
+                        $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                    }
+                });
+            }
+        }
+
+        // --- FILTER PENCARIAN NAMA (Berlaku untuk semua) ---
+        if ($request->filled('search')) {
+            $query->where('nama_lengkap', 'like', '%' . $request->search . '%');
         }
 
         $siswas = $query->get();
-        return view('perkembangan_fisik.index', compact('siswas'));
+        return view('perkembangan_fisik.index', compact('siswas', 'list_kelas'));
     }
 
     // 2. Menampilkan grafik dan form input untuk 1 siswa
@@ -43,7 +59,7 @@ class PerkembanganFisikController extends Controller
     {
         $user = Auth::user();
         
-        // --- LOGIKA SAKTI SWITCHER ---
+        // --- SWITCHER ---
         $schoolId = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
         
         // Proteksi tambahan: Pastikan siswa ini beneran ada di sekolah yang sedang dipantau

@@ -23,10 +23,6 @@ use App\Http\Controllers\JurnalHarianController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\MateriController;
 use Carbon\Carbon;
-
-Route::get('/dev-users', function() {
-    return \App\Models\User::all();
-});
 /*
 |--------------------------------------------------------------------------
 | PUBLIC & AUTH ROUTES

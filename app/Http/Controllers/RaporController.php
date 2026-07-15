@@ -70,6 +70,12 @@ class RaporController extends Controller
         $tb = $fisik ? $fisik->tinggi_badan : 0;
         $bb = $fisik ? $fisik->berat_badan : 0;
 
+        // Update Student Biodata if provided
+        if ($request->has('biodata')) {
+            $siswa = Siswa::findOrFail($request->siswa_id);
+            $siswa->update($request->input('biodata'));
+        }
+
         // Simpan / Update Database
         Rapor::updateOrCreate(
             ['siswa_id' => $request->siswa_id, 'semester_id' => $semesterAktif->id],

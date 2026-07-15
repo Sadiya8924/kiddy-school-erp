@@ -57,7 +57,7 @@
     @foreach($anak as $a)
     <div class="col-md-6 mt-3">
         <div class="card mb-0 h-100 border shadow-none">
-            <div class="card-body p-4 d-flex align-items-center gap-3">
+            <a href="/rapor-anak/{{ $a->id }}" class="card-body p-4 d-flex align-items-center gap-3 card-clickable text-decoration-none">
                 {{-- FIX: LOGIKA FOTO PROFIL ANAK --}}
                 @if($a->foto_anak)
                     <img src="{{ asset('storage/' . $a->foto_anak) }}" alt="Foto Anak" class="rounded object-fit-cover shadow-sm flex-shrink-0" style="width: 56px; height: 56px;">
@@ -78,7 +78,7 @@
                         Sekolah: <strong class="text-dark">{{ \App\Models\School::find($a->school_id)->nama_sekolah ?? '-' }}</strong>
                     </p>
                 </div>
-            </div>
+            </a>
             <div class="card-footer bg-light border-top pt-3 pb-3 px-4 d-flex gap-2 flex-wrap">
                 {{-- Selipkan ID Anak ke URL-nya --}}
                 <a href="/rapor-anak/{{ $a->id }}" class="btn btn-white border flex-grow-1 fw-semibold text-dark shadow-sm bg-white" style="font-size: 12px; padding: 8px;">Lihat Rapor</a>
@@ -128,4 +128,17 @@
     @endif
 
 </div>
+
+<style>
+    .card-clickable {
+        transition: all 0.2s ease-in-out !important;
+        cursor: pointer;
+    }
+    .card-clickable:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05) !important;
+        border-color: var(--primary-blue-border) !important;
+        background-color: var(--primary-blue-soft) !important;
+    }
+</style>
 @endsection

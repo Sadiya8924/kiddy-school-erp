@@ -6,6 +6,8 @@
   <title>Register - Yayasan Al-Hikmah</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body { background-color: #fafafa; font-family: 'Segoe UI', sans-serif; }
     .text-primary-custom { color: #2952ff; }
@@ -35,6 +37,32 @@
             </a>
             <p class="text-muted small mt-2">Silakan buat akun Anda</p>
           </div>
+
+          {{-- Alert Banners --}}
+          @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+              <div class="d-flex align-items-center gap-2">
+                <iconify-icon icon="solar:danger-bold" class="fs-5"></iconify-icon>
+                <span class="small fw-semibold">{{ session('error') }}</span>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          @endif
+
+          @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <iconify-icon icon="solar:danger-bold" class="fs-5"></iconify-icon>
+                <span class="small fw-bold">Ada beberapa kesalahan:</span>
+              </div>
+              <ul class="mb-0 ps-3 small text-start">
+                @foreach($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          @endif
           
           <form method="POST" action="/register">
             @csrf
@@ -43,7 +71,7 @@
               <label class="form-label fw-semibold small text-secondary">Nama Lengkap</label>
               <div class="input-group">
                 <span class="input-group-text bg-light border-end-0"><iconify-icon icon="solar:user-bold-duotone" class="text-muted"></iconify-icon></span>
-                <input type="text" name="name" class="form-control border-start-0 ps-0 bg-light" placeholder="Masukkan nama Anda" required>
+                <input type="text" name="name" class="form-control border-start-0 ps-0 bg-light" placeholder="Masukkan nama Anda" value="{{ old('name') }}" required>
               </div>
             </div>
 
@@ -51,7 +79,7 @@
               <label class="form-label fw-semibold small text-secondary">Alamat Email</label>
               <div class="input-group">
                 <span class="input-group-text bg-light border-end-0"><iconify-icon icon="solar:letter-bold-duotone" class="text-muted"></iconify-icon></span>
-                <input type="email" name="email" class="form-control border-start-0 ps-0 bg-light" placeholder="nama@email.com" required>
+                <input type="email" name="email" class="form-control border-start-0 ps-0 bg-light" placeholder="nama@email.com" value="{{ old('email') }}" required>
               </div>
             </div>
             
@@ -87,5 +115,31 @@
       </div>
     </div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  @if(session('error'))
+    <script>
+      Swal.fire({
+        icon: 'error',
+        title: 'Registrasi Gagal',
+        text: "{{ session('error') }}",
+        confirmButtonColor: '#2952ff',
+        confirmButtonText: 'Coba Lagi'
+      });
+    </script>
+  @endif
+
+  @if($errors->any())
+    <script>
+      Swal.fire({
+        icon: 'error',
+        title: 'Kesalahan Validasi',
+        html: '<ul class="text-start" style="font-size: 14px;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+        confirmButtonColor: '#2952ff',
+        confirmButtonText: 'Perbaiki'
+      });
+    </script>
+  @endif
 </body>
 </html>

@@ -14,7 +14,7 @@ class Siswa extends Model
         'nama_ortu', 'foto_anak', 'tempat_lahir', 'tgl_lahir', 'jenis_kelamin',
         'tinggi_badan', 'berat_badan', 'koordinat_rumah', 'lintang', 'bujur', 'status',
         'alamat', 'rt', 'rw', 'dusun', 'kelurahan', 'kecamatan', 'kode_pos',
-        'agama', 'anak_ke', 'jml_saudara', 'jenis_tinggal', 'alat_transportasi', 'telepon', 'hp', 'email', 'jarak_rumah', 'lingkar_kepala',
+        'agama', 'anak_ke', 'jml_saudara', 'jenis_tinggal', 'alat_transportasi', 'hp', 'email', 'jarak_rumah', 'lingkar_kepala',
         'nama_ayah', 'nik_ayah', 'tahun_lahir_ayah', 'pendidikan_ayah', 'pekerjaan_ayah', 'penghasilan_ayah',
         'nama_ibu', 'nik_ibu', 'tahun_lahir_ibu', 'pendidikan_ibu', 'pekerjaan_ibu', 'penghasilan_ibu'
     ];

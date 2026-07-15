@@ -139,6 +139,90 @@
     <!-- Library Chart (ApexCharts) untuk Grafik -->
     <script src="{{ asset('template2/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            // Sweep form onsubmit confirmations
+            $('form[onsubmit*="confirm"]').each(function() {
+                let form = $(this);
+                let onsubmitAttr = form.attr('onsubmit');
+                let match = onsubmitAttr.match(/confirm\(['"](.*?)['"]\)/);
+                let message = match ? match[1] : "Apakah Anda yakin ingin menghapus data ini?";
+                
+                form.removeAttr('onsubmit');
+                form.on('submit', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: message,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#2563eb',
+                        cancelButtonColor: '#64748b',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.off('submit').submit();
+                        }
+                    });
+                });
+            });
+
+            // Sweep button/link onclick confirmations
+            $('[onclick*="confirm"]').each(function() {
+                let element = $(this);
+                let onclickAttr = element.attr('onclick');
+                let match = onclickAttr.match(/confirm\(['"](.*?)['"]\)/);
+                let message = match ? match[1] : "Apakah Anda yakin?";
+                
+                element.removeAttr('onclick');
+                element.on('click', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: message,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#2563eb',
+                        cancelButtonColor: '#64748b',
+                        confirmButtonText: 'Ya, lanjutkan!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (element.is('button') || element.is('input')) {
+                                element.closest('form').submit();
+                            } else if (element.is('a')) {
+                                window.location.href = element.attr('href');
+                            }
+                        }
+                    });
+                });
+            });
+
+            // Global Flash Messages (Session Success/Error)
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: "{{ session('error') }}",
+                    confirmButtonColor: '#2563eb'
+                });
+            @endif
+        });
+    </script>
+
     <!-- Tempat untuk naruh Script JS tambahan per-halaman -->
     @stack('scripts')
 </body>

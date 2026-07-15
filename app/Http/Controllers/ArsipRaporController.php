@@ -69,14 +69,18 @@ class ArsipRaporController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'siswa_id'    => 'required|exists:siswas,id',
             'semester_id' => 'required', 
-            'file_arsip'  => 'required|file|mimes:pdf,zip,rar|max:10240', 
+            'file_arsip'  => 'required|file|mimes:pdf,zip,rar,jpg,jpeg,png|max:10240', 
         ]);
 
+        $siswa_id = $request->siswa_id;
         $semester_id = $request->semester_id;
 
-        // 1. Cek berdasarkan semester_id saja (karena school_id belum ada di tabel)
-        $arsipLama = ArsipRapor::where('semester_id', $semester_id)->first();
+        // 1. Cek berdasarkan siswa_id dan semester_id
+        $arsipLama = ArsipRapor::where('siswa_id', $siswa_id)
+                                ->where('semester_id', $semester_id)
+                                ->first();
 
         // 2. Kalau ADA, hapus file lamanya dari folder storage secara fisik
         if ($arsipLama && $arsipLama->file_path) {
@@ -87,15 +91,17 @@ class ArsipRaporController extends Controller
 
         // 3. Upload file yang baru
         $filePath = $request->file('file_arsip')->store('arsip_rapor', 'public');
+        $namaFile = $request->file('file_arsip')->getClientOriginalName();
 
         // 4. Update data di database (Timpa path file lamanya dengan yang baru)
         ArsipRapor::updateOrCreate(
             [
+                'siswa_id'    => $siswa_id,
                 'semester_id' => $semester_id,
             ],
             [
                 'file_path'   => $filePath,
-                'user_id'     => \Illuminate\Support\Facades\Auth::id(), 
+                'nama_file'   => $namaFile,
             ]
         );
 

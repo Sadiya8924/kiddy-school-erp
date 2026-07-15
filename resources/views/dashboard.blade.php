@@ -1,6 +1,13 @@
 @extends('layouts.admin')
 
 @section('konten_halaman')
+@php
+    $current_school_id = Auth::user()->role === 'super_admin' ? session('active_school_id') : Auth::user()->school_id;
+    $pendingMateriCount = 0;
+    if ($current_school_id) {
+        $pendingMateriCount = \App\Models\Materi::where('school_id', $current_school_id)->where('status', 'Pending')->count();
+    }
+@endphp
 <div class="row gx-3 gy-3 mt-0">
     
     @if(session('success'))
@@ -58,7 +65,7 @@
         </div>
 
         <div class="col-md-6 mt-3">
-            <div class="card mb-0 h-100 border shadow-none">
+            <a href="/data-siswa" class="card mb-0 h-100 border shadow-none card-clickable d-block text-decoration-none">
                 <div class="card-body p-4">
                     <h6 class="fw-bold mb-4 text-dark d-flex align-items-center gap-2 border-bottom pb-3" style="font-size: 15px;">
                         <iconify-icon icon="solar:black-hole-bold-duotone" class="text-primary fs-5"></iconify-icon> Info Kelas Anda
@@ -85,7 +92,7 @@
                         </div>
                     @endif
                 </div>
-            </div>
+            </a>
         </div>
 
     {{-- ========================================================== --}}
@@ -93,8 +100,8 @@
     {{-- ========================================================== --}}
     @elseif(in_array(Auth::user()->role, ['admin', 'kepsek', 'super_admin']))
         
-        <div class="col-md-4 mt-3">
-            <div class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between">
+        <div class="col-md-3 mt-3">
+            <a href="/data-siswa" class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between card-clickable text-decoration-none">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: var(--primary-blue-soft); color: var(--primary-blue-border);">
                         <iconify-icon icon="solar:users-group-rounded-bold-duotone" class="fs-4"></iconify-icon>
@@ -104,11 +111,11 @@
                     <h2 class="fw-bold text-dark mb-0">{{ $school->total_siswa_aktif ?? 0 }}</h2>
                     <span class="text-muted fw-medium" style="font-size: 13px;">Total Siswa Aktif</span>
                 </div>
-            </div>
+            </a>
         </div>
 
-        <div class="col-md-4 mt-3">
-            <div class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between">
+        <div class="col-md-3 mt-3">
+            <a href="/kelas" class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between card-clickable text-decoration-none">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #dcfce7; color: #86efac;">
                         <iconify-icon icon="solar:black-hole-bold-duotone" class="fs-4"></iconify-icon>
@@ -118,11 +125,11 @@
                     <h2 class="fw-bold text-dark mb-0">{{ $school->total_kelas ?? 0 }}</h2>
                     <span class="text-muted fw-medium" style="font-size: 13px;">Jumlah Rombel</span>
                 </div>
-            </div>
+            </a>
         </div>
 
-        <div class="col-md-4 mt-3">
-            <div class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between" style="background-color: {{ $school->is_rapor_open ? '#f0fdf4' : '#fef2f2' }}; border-color: {{ $school->is_rapor_open ? '#bbf7d0' : '#fecaca' }} !important;">
+        <div class="col-md-3 mt-3">
+            <div onclick="if(event.target.tagName !== 'BUTTON' && event.target.tagName !== 'FORM') window.location.href='/isi-rapor'" class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between card-clickable" style="background-color: {{ $school->is_rapor_open ? '#f0fdf4' : '#fef2f2' }}; border-color: {{ $school->is_rapor_open ? '#bbf7d0' : '#fecaca' }} !important; cursor: pointer;">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: {{ $school->is_rapor_open ? '#dcfce7' : '#fee2e2' }}; color: {{ $school->is_rapor_open ? '#166534' : '#991b1b' }};">
                         <iconify-icon icon="{{ $school->is_rapor_open ? 'solar:unlock-bold-duotone' : 'solar:lock-keyhole-bold-duotone' }}" class="fs-4"></iconify-icon>
@@ -141,6 +148,25 @@
             </div>
         </div>
 
+        <div class="col-md-3 mt-3">
+            <a href="{{ route('materi.kepsek.index') }}" class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between card-clickable text-decoration-none">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #fef3c7; color: #d97706;">
+                        <iconify-icon icon="solar:shield-check-bold-duotone" class="fs-4"></iconify-icon>
+                    </div>
+                    @if($pendingMateriCount > 0)
+                        <span class="badge bg-warning text-white rounded-pill px-2.5 py-1" style="font-size: 10px; font-weight: 600;">
+                            {{ $pendingMateriCount }} Menunggu
+                        </span>
+                    @endif
+                </div>
+                <div>
+                    <h2 class="fw-bold text-dark mb-0">{{ $pendingMateriCount }}</h2>
+                    <span class="text-muted fw-medium" style="font-size: 13px;">Persetujuan Materi</span>
+                </div>
+            </a>
+        </div>
+
         {{-- Row Distribusi Kelas --}}
         <div class="col-lg-7 mt-3">
             <div class="card mb-0 h-100 border shadow-none">
@@ -149,14 +175,14 @@
                     <div class="row gx-2 gy-2">
                         @forelse($kelas_stats as $k)
                         <div class="col-md-4 col-6">
-                            <div class="card mb-0 shadow-none" style="border: 1px solid var(--border-color) !important; background-color: #f8fafc;">
+                            <a href="/data-siswa?kelas_id={{ $k->id }}" class="card mb-0 shadow-none card-clickable text-decoration-none" style="border: 1px solid var(--border-color) !important; background-color: #f8fafc;">
                                 <div class="card-body p-3 d-flex flex-column align-items-center text-center">
                                     <h6 class="fw-bold mb-2 text-dark" style="font-size: 13px;">{{ $k->nama_kelas }}</h6>
                                     <span class="badge rounded px-3 py-1.5" style="background-color: var(--primary-blue-soft); color: var(--primary-blue-dark); font-size: 12px; font-weight: 600;">
                                         {{ $k->jumlah_siswa }} Anak
                                     </span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                         @empty
                         <div class="col-12"><p class="text-muted small py-3 text-center">Belum ada data kelas.</p></div>
@@ -203,4 +229,16 @@
     </div>
 
 </div>
+
+<style>
+    .card-clickable {
+        transition: all 0.2s ease-in-out !important;
+        cursor: pointer;
+    }
+    .card-clickable:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
+        border-color: var(--primary-blue-border) !important;
+    }
+</style>
 @endsection

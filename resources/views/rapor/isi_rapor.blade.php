@@ -128,22 +128,98 @@
                             
                             <div class="mb-3 row align-items-center">
                                 <label class="col-sm-3 col-form-label fw-semibold text-muted small">Nama Lengkap</label>
-                                <div class="col-sm-9"><input type="text" class="form-control bg-light border-0 py-2 fw-bold text-dark" id="nama_lengkap" readonly value="-"></div>
+                                <div class="col-sm-9"><input type="text" name="biodata[nama_lengkap]" class="form-control bg-white border py-2 fw-bold text-dark shadow-none" id="nama_lengkap" value=""></div>
                             </div>
                             
                             <div class="mb-3 row align-items-center">
                                 <label class="col-sm-3 col-form-label fw-semibold text-muted small">No Induk / NISN</label>
                                 <div class="col-sm-9 d-flex gap-2">
-                                    <input type="text" class="form-control bg-light border-0 py-2 fw-medium text-dark w-50" id="no_induk" readonly value="-" placeholder="No Induk">
-                                    <input type="text" class="form-control bg-light border-0 py-2 fw-medium text-dark w-50" id="nisn" readonly value="-" placeholder="NISN">
+                                    <input type="text" name="biodata[no_induk]" class="form-control bg-white border py-2 fw-medium text-dark shadow-none w-50" id="no_induk" value="" placeholder="No Induk">
+                                    <input type="text" name="biodata[nisn]" class="form-control bg-white border py-2 fw-medium text-dark shadow-none w-50" id="nisn" value="" placeholder="NISN">
                                 </div>
                             </div>
                             
                             <div class="mb-3 row align-items-center">
                                 <label class="col-sm-3 col-form-label fw-semibold text-muted small">Tempat, Tgl Lahir</label>
                                 <div class="col-sm-9 d-flex gap-2">
-                                    <input type="text" class="form-control bg-light border-0 py-2 fw-medium text-dark w-50" id="tempat_lahir" readonly value="-">
-                                    <input type="text" class="form-control bg-light border-0 py-2 fw-medium text-dark w-50" id="tgl_lahir" readonly value="-">
+                                    <input type="text" name="biodata[tempat_lahir]" class="form-control bg-white border py-2 fw-medium text-dark shadow-none w-50" id="tempat_lahir" value="" placeholder="Tempat Lahir">
+                                    <input type="date" name="biodata[tgl_lahir]" class="form-control bg-white border py-2 fw-medium text-dark shadow-none w-50" id="tgl_lahir" value="">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">Jenis Kelamin / Agama</label>
+                                <div class="col-sm-9 d-flex gap-2">
+                                    <select name="biodata[jenis_kelamin]" id="jenis_kelamin" class="form-select bg-white border py-2 text-dark shadow-none w-50">
+                                        <option value="">-- Jenis Kelamin --</option>
+                                        <option value="Laki-laki">Laki-laki</option>
+                                        <option value="Perempuan">Perempuan</option>
+                                    </select>
+                                    <select name="biodata[agama]" id="agama" class="form-select bg-white border py-2 text-dark shadow-none w-50">
+                                        <option value="">-- Agama --</option>
+                                        <option value="Islam">Islam</option>
+                                        <option value="Kristen">Kristen</option>
+                                        <option value="Katolik">Katolik</option>
+                                        <option value="Hindu">Hindu</option>
+                                        <option value="Budha">Budha</option>
+                                        <option value="Konghucu">Konghucu</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">Anak Ke / Jml Saudara</label>
+                                <div class="col-sm-9 d-flex gap-2">
+                                    <input type="number" name="biodata[anak_ke]" id="anak_ke" class="form-control bg-white border py-2 text-dark shadow-none w-50" placeholder="Anak Ke">
+                                    <input type="number" name="biodata[jml_saudara]" id="jml_saudara" class="form-control bg-white border py-2 text-dark shadow-none w-50" placeholder="Jumlah Saudara">
+                                </div>
+                            </div>
+
+                            <h6 class="text-primary fw-bold mt-4 mb-3 border-bottom border-light-subtle pb-2 text-uppercase" style="font-size: 12px; letter-spacing: 1px;">B. Alamat & Kontak Wali</h6>
+
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">Alamat Jalan</label>
+                                <div class="col-sm-9"><input type="text" name="biodata[alamat]" class="form-control bg-white border py-2 text-dark shadow-none" id="alamat" value="" placeholder="Alamat lengkap"></div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">RT / RW / Dusun</label>
+                                <div class="col-sm-9 d-flex gap-2">
+                                    <input type="text" name="biodata[rt]" id="rt" class="form-control bg-white border py-2 text-dark shadow-none" style="width: 20%;" placeholder="RT">
+                                    <input type="text" name="biodata[rw]" id="rw" class="form-control bg-white border py-2 text-dark shadow-none" style="width: 20%;" placeholder="RW">
+                                    <input type="text" name="biodata[dusun]" id="dusun" class="form-control bg-white border py-2 text-dark shadow-none" style="width: 60%;" placeholder="Dusun">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">Desa / Kec / Kode Pos</label>
+                                <div class="col-sm-9 d-flex gap-2">
+                                    <input type="text" name="biodata[kelurahan]" id="kelurahan" class="form-control bg-white border py-2 text-dark shadow-none w-35" placeholder="Kelurahan/Desa">
+                                    <input type="text" name="biodata[kecamatan]" id="kecamatan" class="form-control bg-white border py-2 text-dark shadow-none w-35" placeholder="Kecamatan">
+                                    <input type="number" name="biodata[kode_pos]" id="kode_pos" class="form-control bg-white border py-2 text-dark shadow-none w-30" placeholder="Kode Pos">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">No HP / WhatsApp</label>
+                                <div class="col-sm-9"><input type="text" name="biodata[hp]" class="form-control bg-white border py-2 text-dark shadow-none" id="hp" value="" placeholder="Contoh: 08123456789"></div>
+                            </div>
+
+                            <h6 class="text-primary fw-bold mt-4 mb-3 border-bottom border-light-subtle pb-2 text-uppercase" style="font-size: 12px; letter-spacing: 1px;">C. Data Orang Tua</h6>
+
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">Data Ayah</label>
+                                <div class="col-sm-9 d-flex gap-2">
+                                    <input type="text" name="biodata[nama_ayah]" id="nama_ayah" class="form-control bg-white border py-2 text-dark shadow-none w-50" placeholder="Nama Ayah">
+                                    <input type="text" name="biodata[pekerjaan_ayah]" id="pekerjaan_ayah" class="form-control bg-white border py-2 text-dark shadow-none w-50" placeholder="Pekerjaan Ayah">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row align-items-center">
+                                <label class="col-sm-3 col-form-label fw-semibold text-muted small">Data Ibu</label>
+                                <div class="col-sm-9 d-flex gap-2">
+                                    <input type="text" name="biodata[nama_ibu]" id="nama_ibu" class="form-control bg-white border py-2 text-dark shadow-none w-50" placeholder="Nama Ibu">
+                                    <input type="text" name="biodata[pekerjaan_ibu]" id="pekerjaan_ibu" class="form-control bg-white border py-2 text-dark shadow-none w-50" placeholder="Pekerjaan Ibu">
                                 </div>
                             </div>
                         </div>
@@ -529,11 +605,27 @@
             pilihSiswa.addEventListener('change', function() {
                 const siswa = originalSiswas.find(s => s.id == this.value);
                 if(siswa) {
-                    document.getElementById('nama_lengkap').value = siswa.nama_lengkap || '-';
-                    document.getElementById('no_induk').value = siswa.no_induk || '-';
-                    document.getElementById('nisn').value = siswa.nisn || '-';
-                    document.getElementById('tempat_lahir').value = siswa.tempat_lahir || '-';
-                    document.getElementById('tgl_lahir').value = siswa.tgl_lahir || '-';
+                    document.getElementById('nama_lengkap').value = siswa.nama_lengkap || '';
+                    document.getElementById('no_induk').value = siswa.no_induk || '';
+                    document.getElementById('nisn').value = siswa.nisn || '';
+                    document.getElementById('tempat_lahir').value = siswa.tempat_lahir || '';
+                    document.getElementById('tgl_lahir').value = siswa.tgl_lahir || '';
+                    document.getElementById('jenis_kelamin').value = siswa.jenis_kelamin || '';
+                    document.getElementById('agama').value = siswa.agama || '';
+                    document.getElementById('anak_ke').value = siswa.anak_ke || '';
+                    document.getElementById('jml_saudara').value = siswa.jml_saudara || '';
+                    document.getElementById('alamat').value = siswa.alamat || '';
+                    document.getElementById('rt').value = siswa.rt || '';
+                    document.getElementById('rw').value = siswa.rw || '';
+                    document.getElementById('dusun').value = siswa.dusun || '';
+                    document.getElementById('kelurahan').value = siswa.kelurahan || '';
+                    document.getElementById('kecamatan').value = siswa.kecamatan || '';
+                    document.getElementById('kode_pos').value = siswa.kode_pos || '';
+                    document.getElementById('nama_ayah').value = siswa.nama_ayah || '';
+                    document.getElementById('pekerjaan_ayah').value = siswa.pekerjaan_ayah || '';
+                    document.getElementById('nama_ibu').value = siswa.nama_ibu || '';
+                    document.getElementById('pekerjaan_ibu').value = siswa.pekerjaan_ibu || '';
+                    document.getElementById('hp').value = siswa.hp || '';
                     
                     const fotoElement = document.getElementById('foto_siswa');
                     fotoElement.src = siswa.foto_anak ? "/storage/" + siswa.foto_anak : "https://ui-avatars.com/api/?name=" + encodeURIComponent(siswa.nama_lengkap) + "&color=2563eb&background=eff6ff&size=150";
@@ -591,11 +683,27 @@
                 setTimeout(updateNavigation, 50);
                 
                 pilihSiswa.value = "";
-                document.getElementById('nama_lengkap').value = "-";
-                document.getElementById('no_induk').value = "-";
-                document.getElementById('nisn').value = "-";
-                document.getElementById('tempat_lahir').value = "-";
-                document.getElementById('tgl_lahir').value = "-";
+                document.getElementById('nama_lengkap').value = "";
+                document.getElementById('no_induk').value = "";
+                document.getElementById('nisn').value = "";
+                document.getElementById('tempat_lahir').value = "";
+                document.getElementById('tgl_lahir').value = "";
+                document.getElementById('jenis_kelamin').value = "";
+                document.getElementById('agama').value = "";
+                document.getElementById('anak_ke').value = "";
+                document.getElementById('jml_saudara').value = "";
+                document.getElementById('alamat').value = "";
+                document.getElementById('rt').value = "";
+                document.getElementById('rw').value = "";
+                document.getElementById('dusun').value = "";
+                document.getElementById('kelurahan').value = "";
+                document.getElementById('kecamatan').value = "";
+                document.getElementById('kode_pos').value = "";
+                document.getElementById('nama_ayah').value = "";
+                document.getElementById('pekerjaan_ayah').value = "";
+                document.getElementById('nama_ibu').value = "";
+                document.getElementById('pekerjaan_ibu').value = "";
+                document.getElementById('hp').value = "";
                 document.getElementById('db_sakit').value = "-";
                 document.getElementById('db_izin').value = "-";
                 document.getElementById('db_alfa').value = "-";

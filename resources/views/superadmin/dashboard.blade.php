@@ -27,7 +27,7 @@
 
   {{-- 2. EMPAT STAT CARDS --}}
   <div class="col-md-6 col-lg-3">
-    <div class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none">
+    <a href="{{ route('superadmin.schools.index') }}" class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none card-clickable text-decoration-none">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: var(--primary-blue-soft); color: var(--primary-blue-border);">
           <iconify-icon icon="solar:buildings-2-bold-duotone" class="fs-4"></iconify-icon>
@@ -38,11 +38,11 @@
         <h2 class="fw-bold text-dark mb-0">{{ $totalSchools }}</h2>
         <span class="text-muted fw-medium" style="font-size: 13px;">Sekolah terdaftar</span>
       </div>
-    </div>
+    </a>
   </div>
 
   <div class="col-md-6 col-lg-3">
-    <div class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none">
+    <a href="{{ route('superadmin.schools.index') }}" class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none card-clickable text-decoration-none">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #dcfce7; color: #86efac;">
           <iconify-icon icon="solar:check-circle-bold-duotone" class="fs-4"></iconify-icon>
@@ -53,11 +53,11 @@
         <h2 class="fw-bold text-dark mb-0">{{ $activeSchools }}</h2>
         <span class="text-muted fw-medium" style="font-size: 13px;">Sekolah aktif</span>
       </div>
-    </div>
+    </a>
   </div>
 
   <div class="col-md-6 col-lg-3">
-    <div class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none">
+    <a href="{{ route('superadmin.users.index') }}" class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none card-clickable text-decoration-none">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #ffedd5; color: #fdba74;">
           <iconify-icon icon="solar:users-group-two-rounded-bold-duotone" class="fs-4"></iconify-icon>
@@ -67,11 +67,11 @@
         <h2 class="fw-bold text-dark mb-0">{{ $totalUsers }}</h2>
         <span class="text-muted fw-medium" style="font-size: 13px;">Total pengguna</span>
       </div>
-    </div>
+    </a>
   </div>
 
   <div class="col-md-6 col-lg-3">
-    <div class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none">
+    <a href="{{ route('superadmin.schools.index') }}" class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none card-clickable text-decoration-none">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #f3e8ff; color: #d8b4fe;">
           <iconify-icon icon="solar:diploma-bold-duotone" class="fs-4"></iconify-icon>
@@ -81,7 +81,7 @@
         <h2 class="fw-bold text-dark mb-0">{{ $totalSiswa }}</h2>
         <span class="text-muted fw-medium" style="font-size: 13px;">Total siswa</span>
       </div>
-    </div>
+    </a>
   </div>
 
   {{-- 3. BAGIAN BAWAH: TABEL SEKOLAH & PENGUMUMAN --}}
@@ -182,4 +182,16 @@
   </div>
 
 </div>
+
+<style>
+    .card-clickable {
+        transition: all 0.2s ease-in-out !important;
+        cursor: pointer;
+    }
+    .card-clickable:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
+        border-color: var(--primary-blue-border) !important;
+    }
+</style>
 @endsection

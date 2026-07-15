@@ -155,19 +155,7 @@
 
         <div class="container-fluid">
 
-          {{-- Flash messages --}}
-          @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-              <i class="ti ti-circle-check me-2"></i>{{ session('success') }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-          @endif
-          @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-              <i class="ti ti-alert-circle me-2"></i>{{ session('error') }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-          @endif
+          {{-- Flash messages will be handled by SweetAlert2 --}}
 
           @yield('content')
         </div>
@@ -181,6 +169,8 @@
   <script src="/template2/js/app.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
   
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const togglers = document.querySelectorAll(".sidebartoggler");
@@ -190,6 +180,86 @@
           document.body.classList.toggle("sidebar-hidden");
         });
       });
+    });
+
+    $(document).ready(function() {
+        // Sweep form onsubmit confirmations
+        $('form[onsubmit*="confirm"]').each(function() {
+            let form = $(this);
+            let onsubmitAttr = form.attr('onsubmit');
+            let match = onsubmitAttr.match(/confirm\(['"](.*?)['"]\)/);
+            let message = match ? match[1] : "Apakah Anda yakin ingin menghapus data ini?";
+            
+            form.removeAttr('onsubmit');
+            form.on('submit', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: message,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2563eb',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.off('submit').submit();
+                    }
+                });
+            });
+        });
+
+        // Sweep button/link onclick confirmations
+        $('[onclick*="confirm"]').each(function() {
+            let element = $(this);
+            let onclickAttr = element.attr('onclick');
+            let match = onclickAttr.match(/confirm\(['"](.*?)['"]\)/);
+            let message = match ? match[1] : "Apakah Anda yakin?";
+            
+            element.removeAttr('onclick');
+            element.on('click', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: message,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2563eb',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, lanjutkan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (element.is('button') || element.is('input')) {
+                            element.closest('form').submit();
+                        } else if (element.is('a')) {
+                            window.location.href = element.attr('href');
+                        }
+                    }
+                });
+            });
+        });
+
+        // Global Flash Messages (Session Success/Error)
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#2563eb'
+            });
+        @endif
     });
   </script>
 

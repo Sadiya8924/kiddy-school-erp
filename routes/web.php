@@ -115,6 +115,7 @@ Route::middleware(['auth'])->group(function () {
             $totalSiswa    = DB::table('siswas')->count();
             $schools       = \App\Models\School::latest()->get();
             $pengumuman_global = \App\Models\Announcement::join('schools', 'announcements.school_id', '=', 'schools.id')
+                                ->whereDate('announcements.tanggal_kegiatan', '>=', Carbon::today())
                                 ->select('announcements.*', 'schools.nama_sekolah')
                                 ->latest('announcements.created_at')->take(5)->get();
             return view('superadmin.dashboard', compact('totalSchools', 'activeSchools', 'totalUsers', 'totalSiswa', 'schools', 'pengumuman_global'));

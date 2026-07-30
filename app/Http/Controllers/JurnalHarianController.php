@@ -12,29 +12,61 @@ use Illuminate\Support\Facades\DB;
 
 class JurnalHarianController extends Controller
 {
-    // 1. HALAMAN UTAMA (LIST MATERI / CARD)
+    // 1. HALAMAN UTAMA (LIST MATERI / CARD WITH FILTER)
     public function index(Request $request)
     {
+        MateriJurnal::syncAll();
+
         $user = Auth::user();
         $schoolId = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
         $pageType = $request->route() ? ($request->route()->getName() == 'lms.index' ? 'lms' : 'jurnal') : 'jurnal';
         
-        // Cari kelas & materi berdasarkan Role
+        $query = MateriJurnal::where('school_id', $schoolId);
+
+        // Cari kelas berdasarkan Role
         if ($user->role === 'guru' && $user->kelas_id) {
             $list_kelas = Kelas::where('id', $user->kelas_id)->get();
             $kelompoks = $list_kelas->pluck('kelompok')->filter()->toArray();
-            $materis = MateriJurnal::where('school_id', $schoolId)
-                        ->whereIn('kelompok', $kelompoks)
-                        ->latest('tanggal_dibuat')
-                        ->get();
+            $query->whereIn('kelompok', $kelompoks);
         } else {
             $list_kelas = Kelas::where('school_id', $schoolId)->get();
-            $materis = MateriJurnal::where('school_id', $schoolId)
-                        ->latest('tanggal_dibuat')
-                        ->get();
         }
 
-        return view('jurnal.index', compact('materis', 'list_kelas', 'pageType'));
+        // FILTER TANGGAL
+        if ($request->filled('tanggal')) {
+            $query->whereDate('tanggal_dibuat', $request->tanggal);
+        }
+
+        // FILTER KELOMPOK
+        if ($request->filled('kelompok') && $request->kelompok != 'semua') {
+            $query->where('kelompok', $request->kelompok);
+        }
+
+        // FILTER SEARCH
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('judul_materi', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+
+        $materis = $query->latest('tanggal_dibuat')->latest('id')->get();
+
+        // Count total filled journals per materi
+        foreach ($materis as $m) {
+            $m->total_jurnal = JurnalHarian::where('materi_id', $m->id)->count();
+        }
+
+        // Stats summary
+        $stats = [
+            'total' => MateriJurnal::where('school_id', $schoolId)->count(),
+            'today' => MateriJurnal::where('school_id', $schoolId)->whereDate('tanggal_dibuat', date('Y-m-d'))->count(),
+            'kelompok_a' => MateriJurnal::where('school_id', $schoolId)->where('kelompok', 'A')->count(),
+            'kelompok_b' => MateriJurnal::where('school_id', $schoolId)->where('kelompok', 'B')->count(),
+        ];
+
+        return view('jurnal.index', compact('materis', 'list_kelas', 'pageType', 'stats'));
     }
 
     // 2. ADMIN BIKIN MATERI BARU
@@ -48,7 +80,7 @@ class JurnalHarianController extends Controller
 
         $schoolId = Auth::user()->isSuperAdmin() ? session('active_school_id') : Auth::user()->school_id;
 
-        MateriJurnal::create([
+        $mj = MateriJurnal::create([
             'school_id'      => $schoolId,
             'kelompok'       => $request->kelompok,
             'judul_materi'   => $request->judul_materi,
@@ -56,12 +88,26 @@ class JurnalHarianController extends Controller
             'tanggal_dibuat' => $request->tanggal_dibuat,
         ]);
 
+        \App\Models\Materi::withoutGlobalScopes()->updateOrCreate(
+            ['id' => $mj->id],
+            [
+                'school_id'      => $schoolId,
+                'judul'          => $request->judul_materi,
+                'deskripsi'      => $request->deskripsi,
+                'mata_pelajaran' => 'Kegiatan Jurnal',
+                'kelas'          => "Kelompok {$request->kelompok}",
+                'created_by'     => Auth::id(),
+                'status'         => 'Published',
+            ]
+        );
+
         return back()->with('success', 'Materi Jurnal berhasil ditambahkan!');
     }
 
     public function destroyMateri($id)
     {
-        MateriJurnal::findOrFail($id)->delete();
+        MateriJurnal::where('id', $id)->delete();
+        \App\Models\Materi::withoutGlobalScopes()->where('id', $id)->delete();
         return back()->with('success', 'Materi berhasil dihapus!');
     }
 

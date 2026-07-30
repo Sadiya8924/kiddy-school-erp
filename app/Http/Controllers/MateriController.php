@@ -57,7 +57,7 @@ class MateriController extends Controller
             $path = $request->file('file')->store('materi_files', 'public');
         }
 
-        Materi::create([
+        $materi = Materi::create([
             'school_id' => $schoolId,
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
@@ -67,6 +67,8 @@ class MateriController extends Controller
             'created_by' => $user->id,
             'status' => 'Pending'
         ]);
+
+        \App\Models\MateriJurnal::syncFromLms($materi);
 
         return redirect()->route('materi.guru.index')->with('success', 'Materi berhasil dikirim dan menunggu persetujuan Kepala Sekolah.');
     }
@@ -98,6 +100,8 @@ class MateriController extends Controller
             'rejection_note' => null
         ]);
 
+        \App\Models\MateriJurnal::syncFromLms($materi);
+
         return back()->with('success', 'Materi disetujui dan berhasil dipublikasikan!');
     }
 
@@ -112,6 +116,8 @@ class MateriController extends Controller
             'approved_at' => Carbon::now(),
             'rejection_note' => $request->rejection_note
         ]);
+
+        \App\Models\MateriJurnal::where('id', $id)->delete();
 
         return back()->with('success', 'Materi ditolak dan dikembalikan ke guru.');
     }

@@ -139,7 +139,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/kelas/{id}', [KelasController::class, 'show'])->name('kelas.show');
         Route::get('/data-siswa', [SiswaController::class, 'index'])->name('data-siswa');
         Route::get('/siswa/{id}', [SiswaController::class, 'show'])->name('siswa.show');
-        Route::get('/manajemen-lms', [JurnalHarianController::class, 'index'])->name('lms.index');
+        Route::get('/manajemen-lms', [MateriController::class, 'indexGuru'])->name('lms.index');
         Route::get('/jurnal-harian', [JurnalHarianController::class, 'index'])->name('jurnal.index');
         Route::get('/jurnal-harian/materi/{materi_id}/kelas/{kelas_id}', [JurnalHarianController::class, 'showKelas'])->name('jurnal.kelas.show');
         Route::get('/jurnal-harian/download-zip', [JurnalHarianController::class, 'downloadZip'])->name('jurnal.zip');

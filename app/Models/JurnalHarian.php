@@ -26,4 +26,8 @@ class JurnalHarian extends Model
     public function materi() {
         return $this->belongsTo(MateriJurnal::class, 'materi_id');
     }
+
+    public function lmsMateri() {
+        return $this->belongsTo(Materi::class, 'materi_id');
+    }
 }

@@ -11,7 +11,7 @@ class Materi extends Model
     protected $table = 'materis';
     
     protected $fillable = [
-        'school_id', 'judul', 'deskripsi', 'mata_pelajaran', 'kelas',
+        'id', 'school_id', 'judul', 'deskripsi', 'mata_pelajaran', 'kelas',
         'file', 'created_by', 'status', 'approved_by', 'approved_at', 'rejection_note'
     ];
 
@@ -34,5 +34,9 @@ class Materi extends Model
 
     public function approver() {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function jurnals() {
+        return $this->hasMany(JurnalHarian::class, 'materi_id');
     }
 }

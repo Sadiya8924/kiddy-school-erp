@@ -43,6 +43,9 @@
     </div>
 @endif
 
+@include('partials.owner_stepped_filter')
+
+@if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
 {{-- RINGKASAN STATISTIK QUICK VIEW --}}
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
@@ -265,6 +268,7 @@
         </div>
     @endforelse
 </div>
+@endif
 
 {{-- MODAL TAMBAH MATERI (KHUSUS ADMIN/GURU) --}}
 @if(auth()->user()->role == 'admin' || auth()->user()->isSuperAdmin() || auth()->user()->role == 'guru')

@@ -13,6 +13,7 @@ use App\Http\Controllers\PerkembanganFisikController;
 use App\Http\Controllers\SuperAdmin\SchoolController;
 use App\Http\Controllers\SuperAdmin\UserController as SuperUserController;
 use App\Http\Controllers\SuperAdmin\ModuleManagementController;
+use App\Http\Controllers\Owner\YayasanController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\ProsesKelasController;
 use App\Http\Controllers\AnnouncementController;
@@ -106,8 +107,14 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboard', compact('school', 'pengumuman', 'semesterAktif', 'kelas_stats', 'guru_kelas'));
     })->name('dashboard');
 
-    // 2. AKSES SUPER ADMIN ONLY
-    Route::middleware('role:super_admin')->prefix('superadmin')->name('superadmin.')->group(function () {
+    // 1B. AKSES OWNER ONLY (MANAJEMEN YAYASAN)
+    Route::middleware('role:owner')->prefix('owner')->name('owner.')->group(function () {
+        Route::resource('yayasans', YayasanController::class);
+        Route::post('/switch-yayasan', [YayasanController::class, 'switchYayasan'])->name('switch_yayasan');
+    });
+
+    // 2. AKSES SUPER ADMIN & OWNER
+    Route::middleware('role:owner,super_admin')->prefix('superadmin')->name('superadmin.')->group(function () {
         Route::get('/dashboard', function () {
             $totalSchools  = \App\Models\School::count();
             $activeSchools = \App\Models\School::where('status', 'aktif')->count();
@@ -223,6 +230,24 @@ Route::middleware(['auth'])->group(function () {
                 $siswa->tinggi_badan_db = $perkembangan ? $perkembangan->tinggi_badan : null;
                 $siswa->berat_badan_db = $perkembangan ? $perkembangan->berat_badan : null;
                 $siswa->rapor_aktif = $semesterAktif ? Rapor::where('siswa_id', $siswa->id)->where('semester_id', $semesterAktif->id)->first() : null;
+
+                $jurnalsWithFoto = \App\Models\JurnalHarian::where('siswa_id', $siswa->id)
+                    ->whereNotNull('foto')
+                    ->where('foto', '!=', '')
+                    ->select('id', 'tanggal', 'tema', 'kegiatan', 'foto')
+                    ->orderBy('tanggal', 'desc')
+                    ->get();
+
+                $siswa->jurnal_fotos = $jurnalsWithFoto->map(function($j) {
+                    return [
+                        'id' => $j->id,
+                        'tanggal' => $j->tanggal ? \Carbon\Carbon::parse($j->tanggal)->translatedFormat('d M Y') : '',
+                        'tema' => $j->tema,
+                        'kegiatan' => \Illuminate\Support\Str::limit($j->kegiatan, 60),
+                        'foto' => $j->foto,
+                        'foto_url' => $j->foto_url
+                    ];
+                })->values();
             }
             return view('rapor.isi_rapor', compact('siswas', 'list_kelas'));
         })->name('rapor.isi');
@@ -270,6 +295,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/data-siswa/tautkan-ortu', [SiswaController::class, 'tautkanOrtu'])->name('siswa.tautkan-ortu');
         Route::post('/siswa/{id}/terima', [SiswaController::class, 'terimaPendaftaran'])->name('siswa.terima');
         Route::post('/jurnal-harian/materi', [JurnalHarianController::class, 'storeMateri'])->name('jurnal.materi.store');
+        Route::get('/jurnal-harian/materi/{id}', [JurnalHarianController::class, 'show'])->name('jurnal.show');
+        Route::get('/jurnal-media/{type}/{filename}', [JurnalHarianController::class, 'serveMedia'])->name('jurnal.media');
         Route::delete('/jurnal-harian/materi/{id}', [JurnalHarianController::class, 'destroyMateri'])->name('jurnal.materi.destroy');
         Route::post('/jurnal-harian/siswa', [JurnalHarianController::class, 'storeJurnalSiswa'])->name('jurnal.siswa.store');
         Route::delete('/jurnal-harian/siswa/{id}', [JurnalHarianController::class, 'destroyJurnalSiswa'])->name('jurnal.siswa.destroy');
@@ -306,22 +333,23 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/pengaturan', function () {
             $user = auth()->user();
-            if ($user->isSuperAdmin()) {
-                if (session('active_school_id')) $current_school_id = session('active_school_id');
-                else return redirect('/superadmin/dashboard')->with('error', 'Silakan pilih sekolah yang ingin dipantau terlebih dahulu di pojok kanan atas.');
+            $current_school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
+
+            if ($current_school_id) {
+                $school = \App\Models\School::find($current_school_id);
+                $gurus = User::where('role', 'guru')->where('school_id', $current_school_id)->get();
+                $list_kelas = Kelas::where('school_id', $current_school_id)->get();
             } else {
-                $current_school_id = $user->school_id;
+                $school = null;
+                $gurus = collect();
+                $list_kelas = collect();
             }
 
-            $school = \App\Models\School::findOrFail($current_school_id);
-            $gurus = User::where('role', 'guru')->where('school_id', $current_school_id)->get();
-            $list_kelas = Kelas::where('school_id', $current_school_id)->get(); 
             $semesters = Semester::orderBy('id', 'desc')->get();
-
             $belumPermanen = 0;
             $semesterAktif = Semester::where('is_active', true)->first();
             
-            if ($semesterAktif) {
+            if ($semesterAktif && $current_school_id) {
                 $totalSiswaAktif = Siswa::whereHas('kelas', function($q) use ($semesterAktif) {
                     $q->where('anggota_kelas.semester_id', $semesterAktif->id);
                 })->where('school_id', $current_school_id)->where('status', 'aktif')->count();

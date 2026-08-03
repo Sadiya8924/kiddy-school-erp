@@ -30,6 +30,9 @@
         </div>
     @endif
 
+    @include('partials.owner_stepped_filter')
+
+    @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
     {{-- KARTU DAFTAR KELAS --}}
     @forelse($list_kelas as $kelas)
         <div class="col-md-4">
@@ -93,6 +96,7 @@
             </div>
         </div>
     @endforelse
+    @endif
 </div>
 
 {{-- MODAL TAMBAH KELAS HANYA DI-RENDER JIKA BUKAN KEPSEK --}}

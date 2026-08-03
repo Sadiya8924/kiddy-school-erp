@@ -7,7 +7,7 @@ use App\Models\Scopes\SchoolScope;
 class Rapor extends Model
 {
     protected $fillable = [
-        'school_id', 'siswa_id', 'semester_id', 'status', 'template_id', 'nilai_json',
+        'school_id', 'siswa_id', 'semester_id', 'status', 'template_id', 'nilai_json', 'foto_kegiatan',
         'sakit', 'izin', 'alfa',
         'tinggi_badan', 'berat_badan',
     ];
@@ -15,7 +15,8 @@ class Rapor extends Model
     // nilai_json = array (bukan text biasa)
     protected $casts = [
         'mulok' => 'array', 
-        'nilai_json' => 'array'
+        'nilai_json' => 'array',
+        'foto_kegiatan' => 'array',
     ];
 
     protected static function booted(): void

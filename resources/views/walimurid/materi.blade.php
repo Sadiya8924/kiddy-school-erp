@@ -89,12 +89,12 @@
                             <h6 class="fw-bold text-dark border-bottom pb-2 mt-4 mb-3">Dokumentasi Media</h6>
                             <div class="d-flex gap-2 flex-wrap">
                                 @if($jurnal->foto)
-                                    <a href="{{ asset('storage/' . $jurnal->foto) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">
+                                    <a href="{{ $jurnal->foto_url }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">
                                         <iconify-icon icon="solar:gallery-bold-duotone" class="align-middle"></iconify-icon> Lihat Foto
                                     </a>
                                 @endif
                                 @if($jurnal->video)
-                                    <a href="{{ asset('storage/' . $jurnal->video) }}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill">
+                                    <a href="{{ $jurnal->video_url }}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill">
                                         <iconify-icon icon="solar:videocamera-record-bold-duotone" class="align-middle"></iconify-icon> Lihat Video
                                     </a>
                                 @endif

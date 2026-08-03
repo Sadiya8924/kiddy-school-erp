@@ -12,7 +12,27 @@
       <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
         
         <!-- ======================================================== -->
-        <!-- SCHOOL SWITCHER (HANYA MUNCUL UNTUK SUPER ADMIN) -->
+        <!-- YAYASAN SWITCHER (KHUSUS OWNER) -->
+        <!-- ======================================================== -->
+        @if(Auth::check() && Auth::user()->isOwner())
+        <li class="nav-item d-none d-md-block me-3">
+            <form action="{{ route('owner.switch_yayasan') }}" method="POST" id="formSwitchYayasan" class="d-flex align-items-center gap-2">
+                @csrf
+                <iconify-icon icon="solar:city-bold-duotone" class="fs-6 text-purple"></iconify-icon>
+                <select name="active_yayasan_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchYayasan').submit()" style="min-width: 190px; background-color: #f3e8ff; color: #7e22ce; border-radius: 8px;">
+                    <option value="">-- Semua Yayasan --</option>
+                    @foreach(\App\Models\Yayasan::where('status', 'aktif')->get() as $yayasan)
+                        <option value="{{ $yayasan->id }}" {{ session('active_yayasan_id') == $yayasan->id ? 'selected' : '' }}>
+                            Yayasan: {{ $yayasan->nama_yayasan }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        </li>
+        @endif
+
+        <!-- ======================================================== -->
+        <!-- SCHOOL SWITCHER (HANYA MUNCUL UNTUK SUPER ADMIN & OWNER) -->
         <!-- ======================================================== -->
         @if(Auth::check() && Auth::user()->isSuperAdmin())
         <li class="nav-item d-none d-md-block me-4 border-end pe-4">
@@ -21,7 +41,15 @@
                 <iconify-icon icon="solar:buildings-bold-duotone" class="fs-6 text-primary"></iconify-icon>
                 <select name="active_school_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchSchool').submit()" style="min-width: 200px; background-color: var(--primary-blue-soft); color: var(--primary-blue-dark); border-radius: 8px;">
                     <option value="">-- Mode Pusat (Semua Data) --</option>
-                    @foreach(\App\Models\School::where('status', 'aktif')->get() as $school)
+                    @php
+                        $querySchools = \App\Models\School::where('status', 'aktif');
+                        if (session('active_yayasan_id')) {
+                            $querySchools->where('yayasan_id', session('active_yayasan_id'));
+                        } elseif (!Auth::user()->isOwner() && Auth::user()->yayasan_id) {
+                            $querySchools->where('yayasan_id', Auth::user()->yayasan_id);
+                        }
+                    @endphp
+                    @foreach($querySchools->get() as $school)
                         <option value="{{ $school->id }}" {{ session('active_school_id') == $school->id ? 'selected' : '' }}>
                             Pantau: {{ $school->nama_sekolah }}
                         </option>

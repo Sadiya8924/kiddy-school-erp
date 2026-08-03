@@ -195,6 +195,36 @@
                     </div>
                 </div>
 
+                @php
+                    $fotoKegiatanList = [];
+                    if ($rapor && !empty($rapor->foto_kegiatan)) {
+                        $fotoKegiatanList = is_string($rapor->foto_kegiatan) ? json_decode($rapor->foto_kegiatan, true) : $rapor->foto_kegiatan;
+                    }
+                @endphp
+
+                @if(!empty($fotoKegiatanList) && is_array($fotoKegiatanList))
+                <div class="mt-4 pt-3 border-top">
+                    <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2 border-bottom pb-2" style="font-size: 14px;">
+                        <iconify-icon icon="solar:gallery-wide-bold-duotone" class="text-primary fs-5"></iconify-icon> Dokumentasi Foto Kegiatan Terbaik
+                    </h6>
+                    <div class="row row-cols-2 row-cols-md-3 g-3">
+                        @foreach($fotoKegiatanList as $fotoPath)
+                            @php
+                                $filename = basename($fotoPath);
+                                $url = str_starts_with($fotoPath, 'jurnal_media/foto/') 
+                                    ? route('jurnal.media', ['type' => 'foto', 'filename' => $filename]) 
+                                    : asset('storage/' . $fotoPath);
+                            @endphp
+                            <div class="col">
+                                <div class="p-2 border rounded-3 bg-white shadow-sm h-100">
+                                    <img src="{{ $url }}" class="img-fluid rounded-2 object-fit-cover w-100" style="max-height: 200px;" alt="Dokumentasi Kegiatan">
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
             </div>
         </div>
     </div>

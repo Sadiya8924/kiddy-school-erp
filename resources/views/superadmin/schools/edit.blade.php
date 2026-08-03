@@ -28,6 +28,19 @@
 
           <div class="row g-3">
 
+            <div class="col-12">
+              <label class="form-label fw-semibold">Yayasan <span class="text-danger">*</span></label>
+              <select name="yayasan_id" class="form-select @error('yayasan_id') is-invalid @enderror" required>
+                <option value="">-- Pilih Yayasan --</option>
+                @foreach($yayasans as $yayasan)
+                  <option value="{{ $yayasan->id }}" {{ (old('yayasan_id', $school->yayasan_id) == $yayasan->id) ? 'selected' : '' }}>
+                    {{ $yayasan->nama_yayasan }}
+                  </option>
+                @endforeach
+              </select>
+              @error('yayasan_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+
             <div class="col-md-8">
               <label class="form-label fw-semibold">Nama Sekolah <span class="text-danger">*</span></label>
               <input type="text" name="nama_sekolah" class="form-control @error('nama_sekolah') is-invalid @enderror"

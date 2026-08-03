@@ -25,6 +25,9 @@
         </div>
     </div>
 
+    @include('partials.owner_stepped_filter')
+
+    @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
     {{-- FILTER KELAS & TAHUN --}}
     <div class="col-12 mb-2">
         <div class="card border shadow-none bg-light mb-0">
@@ -259,6 +262,7 @@
         </div>
     </div>
 </div>
+@endif
 
 {{-- MODAL IMPORT CSV DAPODIK --}}
 @if(in_array(auth()->user()->role, ['admin', 'super_admin']))

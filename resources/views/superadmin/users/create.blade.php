@@ -29,9 +29,9 @@
           <div class="row g-3">
 
             <div class="col-12">
-              <label class="form-label fw-semibold">Sekolah <span class="text-danger">*</span></label>
-              <select name="school_id" class="form-select @error('school_id') is-invalid @enderror" required>
-                <option value="">-- Pilih Sekolah --</option>
+              <label class="form-label fw-semibold">Sekolah <small class="text-muted">(Pilih jika role berkaitan dengan sekolah tertentu)</small></label>
+              <select name="school_id" class="form-select @error('school_id') is-invalid @enderror">
+                <option value="">-- Tanpa Sekolah / Mode Yayasan --</option>
                 @foreach($schools as $school)
                   {{-- Logika otomatis memilih sekolah berdasarkan Session Switcher di Navbar --}}
                   <option value="{{ $school->id }}"
@@ -41,6 +41,20 @@
                 @endforeach
               </select>
               @error('school_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+
+            <div class="col-12">
+              <label class="form-label fw-semibold">Yayasan <small class="text-muted">(Pilih jika Super Admin Yayasan)</small></label>
+              <select name="yayasan_id" class="form-select @error('yayasan_id') is-invalid @enderror">
+                <option value="">-- Tanpa Yayasan / Mengikuti Sekolah --</option>
+                @foreach($yayasans as $yayasan)
+                  <option value="{{ $yayasan->id }}"
+                    {{ old('yayasan_id', session('active_yayasan_id')) == $yayasan->id ? 'selected' : '' }}>
+                    {{ $yayasan->nama_yayasan }}
+                  </option>
+                @endforeach
+              </select>
+              @error('yayasan_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <div class="col-12">
@@ -61,7 +75,11 @@
               <label class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
               <select name="role" class="form-select @error('role') is-invalid @enderror" required>
                 <option value="">-- Pilih Role --</option>
-                <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                @if(auth()->user()->isOwner())
+                  <option value="owner" {{ old('role') === 'owner' ? 'selected' : '' }}>Owner (Platform Master Admin)</option>
+                @endif
+                <option value="super_admin" {{ old('role') === 'super_admin' ? 'selected' : '' }}>Super Admin (Admin Yayasan)</option>
+                <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin Sekolah</option>
                 <option value="kepsek" {{ old('role') === 'kepsek' ? 'selected' : '' }}>Kepala Sekolah</option>
                 <option value="guru" {{ old('role') === 'guru' ? 'selected' : '' }}>Guru</option>
                 <option value="wali_murid" {{ old('role') === 'wali_murid' ? 'selected' : '' }}>Wali Murid</option>

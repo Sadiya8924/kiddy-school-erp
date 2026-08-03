@@ -291,6 +291,57 @@
             </div>
         @endif
     </div>
+
+    {{-- LAMPIRAN FOTO DOKUMENTASI KEGIATAN SISWA --}}
+    @php
+        $fotoKegiatanList = [];
+        if ($rapor && !empty($rapor->foto_kegiatan)) {
+            $fotoKegiatanList = is_string($rapor->foto_kegiatan) ? json_decode($rapor->foto_kegiatan, true) : $rapor->foto_kegiatan;
+        }
+    @endphp
+
+    @if(!empty($fotoKegiatanList) && is_array($fotoKegiatanList))
+        <div class="page-break"></div>
+        <div class="rapor-paper shadow-sm mx-auto bg-white border mb-4">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold text-uppercase title-playful" style="letter-spacing: 1px; font-size: 22px; text-decoration: underline;">DOKUMENTASI FOTO KEGIATAN SISWA</h3>
+                <p class="text-muted small">Lampiran Foto Kegiatan Terbaik Ananda <strong>{{ $siswa->nama_lengkap }}</strong></p>
+            </div>
+
+            <div class="row row-cols-2 g-4 my-3">
+                @foreach($fotoKegiatanList as $fotoPath)
+                    @php
+                        $filename = basename($fotoPath);
+                        $url = str_starts_with($fotoPath, 'jurnal_media/foto/') 
+                            ? route('jurnal.media', ['type' => 'foto', 'filename' => $filename]) 
+                            : asset('storage/' . $fotoPath);
+                    @endphp
+                    <div class="col text-center">
+                        <div class="p-2 border rounded-3 bg-light shadow-sm">
+                            <img src="{{ $url }}" class="img-fluid rounded-2 object-fit-cover w-100" style="max-height: 250px;" alt="Dokumentasi Kegiatan">
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- TANDA TANGAN DI HALAMAN LAMPIRAN --}}
+            <div class="row mt-5" style="font-size: 13px; font-family: 'Comic Sans MS', sans-serif;">
+                <div class="col-4 text-center">
+                    <p class="mb-5">Tanda Tangan Orang Tua/Wali</p>
+                    <p class="mb-0">( ................................... )</p>
+                </div>
+                <div class="col-4 text-center">
+                    <p class="mb-5">Kepala Sekolah</p>
+                    <p class="fw-bold mb-0" style="text-decoration: underline;">{{ $kepsekName }}</p>
+                </div>
+                <div class="col-4 text-center">
+                    <p class="mb-1">Malang, {{ date('d F Y') }}</p>
+                    <p class="mb-5">Guru Kelas</p>
+                    <p class="fw-bold mb-0" style="text-decoration: underline;">{{ auth()->user()->name }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
 
 <style>

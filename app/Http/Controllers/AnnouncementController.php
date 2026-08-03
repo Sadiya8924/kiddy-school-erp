@@ -48,10 +48,13 @@ class AnnouncementController extends Controller
             return view('pengumuman.index', compact('schools', 'pengumumanAktif', 'arsipPengumuman'));
         }
 
-        $schoolId = $user->role === 'super_admin' ? session('active_school_id') : $user->school_id;
+        $schoolId = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
 
         if (!$schoolId) {
-            return back()->with('error', 'Silakan pilih sekolah aktif terlebih dahulu.');
+            $school = null;
+            $pengumumanAktif = collect();
+            $arsipPengumuman = collect();
+            return view('pengumuman.index', compact('school', 'pengumumanAktif', 'arsipPengumuman'));
         }
 
         $school = School::find($schoolId);

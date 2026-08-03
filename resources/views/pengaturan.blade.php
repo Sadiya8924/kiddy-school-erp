@@ -13,12 +13,9 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="col-12 mt-0">
-            <div class="alert alert-success border border-success-subtle shadow-none rounded py-2 px-3 mb-0 small fw-medium">{{ session('success') }}</div>
-        </div>
-    @endif
+    @include('partials.owner_stepped_filter')
 
+    @if((!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id')) && $school)
     {{-- 1. PENGATURAN PENDAFTARAN & KUOTA (Form Baru!) --}}
     <div class="col-12">
         <div class="card border shadow-none mb-0">
@@ -315,4 +312,5 @@
     </div>
 
 </div>
+@endif
 @endsection

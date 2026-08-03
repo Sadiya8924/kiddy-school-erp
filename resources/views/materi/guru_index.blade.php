@@ -14,10 +14,11 @@
 @if(session('success'))
 <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-4" role="alert">
     {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+@include('partials.owner_stepped_filter')
 
+@if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
 <div class="row g-4 mb-4">
     <div class="col-6 col-md-3">
         <div class="card border-0 shadow-sm rounded-4">
@@ -170,4 +171,5 @@
         </div>
     </div>
 </div>
+@endif
 @endsection

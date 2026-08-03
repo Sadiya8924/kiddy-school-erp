@@ -9,7 +9,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['school_id', 'kelas_id', 'name', 'email', 'password', 'role'];
+    protected $fillable = ['yayasan_id', 'school_id', 'kelas_id', 'name', 'email', 'password', 'role'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -22,13 +22,16 @@ class User extends Authenticatable
     }
 
     // Definisi Role (Biar gampang dipanggil di Sidebar & Controller)
-    public function isSuperAdmin(): bool { return $this->role === 'super_admin'; }
+    public function isOwner(): bool { return $this->role === 'owner'; }
+    public function isSuperAdmin(): bool { return in_array($this->role, ['super_admin', 'owner']); }
+    public function isPureSuperAdmin(): bool { return $this->role === 'super_admin'; }
     public function isAdmin(): bool { return $this->role === 'admin'; }
     public function isGuru(): bool { return $this->role === 'guru'; }
     public function isKepsek(): bool { return $this->role === 'kepsek'; }
     public function isWaliMurid(): bool { return $this->role === 'wali_murid'; }
 
     // Relasi Database
+    public function yayasan() { return $this->belongsTo(Yayasan::class, 'yayasan_id'); }
     public function school() { return $this->belongsTo(School::class); }
     public function kelas() { return $this->belongsTo(Kelas::class, 'kelas_id'); } 
     public function siswas() { return $this->hasMany(Siswa::class); } 

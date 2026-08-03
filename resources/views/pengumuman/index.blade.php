@@ -9,8 +9,9 @@
     <div class="col-12 mb-4">
         <h2 class="fw-semibold text-dark mb-1">Pengumuman Sekolah</h2>
         <span class="text-muted fs-3">Informasi terbaru untuk seluruh warga sekolah.</span>
-    </div>
+    @include('partials.owner_stepped_filter')
 
+    @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
     {{-- Form Input (Hanya muncul untuk Admin) --}}
     @if(auth()->user()->role == 'admin')
     <div class="col-md-4">
@@ -188,4 +189,5 @@
         </div>
     </div>
 </div>
+@endif
 @endsection

@@ -159,8 +159,12 @@ class JurnalHarianController extends Controller
         
         $fotoPath = null;
         $videoPath = null;
-        if ($request->hasFile('foto')) $fotoPath = $request->file('foto')->store('jurnal_media/foto', 'public');
-        if ($request->hasFile('video')) $videoPath = $request->file('video')->store('jurnal_media/video', 'public');
+        if ($request->hasFile('foto')) {
+            $fotoPath = $this->processAndCompressFoto($request->file('foto'));
+        }
+        if ($request->hasFile('video')) {
+            $videoPath = $this->processVideo($request->file('video'));
+        }
 
         JurnalHarian::updateOrCreate(
             [
@@ -199,7 +203,7 @@ class JurnalHarianController extends Controller
         $schoolId = Auth::user()->isSuperAdmin() ? session('active_school_id') : Auth::user()->school_id;
 
         if ($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
-            $jurnals = JurnalHarian::with('materi')->where('school_id', $schoolId)
+            $jurnals = JurnalHarian::with('materi', 'siswa')->where('school_id', $schoolId)
                 ->where(function($q) {
                     $q->whereNotNull('foto')->orWhereNotNull('video');
                 })->get();
@@ -210,13 +214,27 @@ class JurnalHarianController extends Controller
                 $folder = $j->siswa_id ? 'Jurnal_Siswa/' . ($j->siswa->nama_lengkap ?? 'Unknown') : 'Jurnal_Umum';
                 $prefix = $j->tanggal . ' - ' . ($j->materi->judul_materi ?? 'Materi');
 
-                if ($j->foto && file_exists(storage_path('app/public/' . $j->foto))) {
-                    $zip->addFile(storage_path('app/public/' . $j->foto), $folder . '/' . $prefix . ' - Foto.jpg');
-                    $hasFiles = true;
+                if ($j->foto) {
+                    $fotoFile = storage_path('app/' . $j->foto);
+                    if (!file_exists($fotoFile)) {
+                        $fotoFile = storage_path('app/public/' . $j->foto);
+                    }
+                    if (file_exists($fotoFile)) {
+                        $ext = pathinfo($fotoFile, PATHINFO_EXTENSION) ?: 'jpg';
+                        $zip->addFile($fotoFile, $folder . '/' . $prefix . ' - Foto.' . $ext);
+                        $hasFiles = true;
+                    }
                 }
-                if ($j->video && file_exists(storage_path('app/public/' . $j->video))) {
-                    $zip->addFile(storage_path('app/public/' . $j->video), $folder . '/' . $prefix . ' - Video.mp4');
-                    $hasFiles = true;
+                if ($j->video) {
+                    $videoFile = storage_path('app/' . $j->video);
+                    if (!file_exists($videoFile)) {
+                        $videoFile = storage_path('app/public/' . $j->video);
+                    }
+                    if (file_exists($videoFile)) {
+                        $ext = pathinfo($videoFile, PATHINFO_EXTENSION) ?: 'mp4';
+                        $zip->addFile($videoFile, $folder . '/' . $prefix . ' - Video.' . $ext);
+                        $hasFiles = true;
+                    }
                 }
             }
             $zip->close();
@@ -229,6 +247,139 @@ class JurnalHarianController extends Controller
             }
         }
         return back()->with('error', 'Gagal membuat file ZIP.');
+    }
+
+    // SECURE SERVE MEDIA FROM PRIVATE STORAGE
+    public function serveMedia($type, $filename)
+    {
+        $filename = basename($filename);
+        $type = in_array($type, ['foto', 'video']) ? $type : 'foto';
+
+        // Check private app storage first, then fallback to public disk for legacy files
+        $path = storage_path('app/jurnal_media/' . $type . '/' . $filename);
+        if (!file_exists($path)) {
+            $path = storage_path('app/public/jurnal_media/' . $type . '/' . $filename);
+        }
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        $mimeType = @mime_content_type($path) ?: ($type === 'video' ? 'video/mp4' : 'image/jpeg');
+
+        return response()->file($path, [
+            'Content-Type'  => $mimeType,
+            'Cache-Control' => 'private, max-age=86400',
+        ]);
+    }
+
+    // HELPER: PROCESS & COMPRESS FOTO WITH HASHED FILENAME
+    private function processAndCompressFoto($file)
+    {
+        $extension = strtolower($file->getClientOriginalExtension() ?: 'jpg');
+        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $extension = 'jpg';
+        }
+
+        $hashName = md5(uniqid(rand(), true) . microtime()) . '.' . $extension;
+        $targetDir = storage_path('app/jurnal_media/foto');
+
+        if (!file_exists($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        $destination = $targetDir . '/' . $hashName;
+        $sourcePath = $file->getRealPath();
+
+        if (extension_loaded('gd') && function_exists('imagecreatefromstring')) {
+            $imageInfo = @getimagesize($sourcePath);
+            if ($imageInfo) {
+                $mime = $imageInfo['mime'];
+                $image = null;
+                switch ($mime) {
+                    case 'image/jpeg':
+                    case 'image/jpg':
+                        $image = @imagecreatefromjpeg($sourcePath);
+                        break;
+                    case 'image/png':
+                        $image = @imagecreatefrompng($sourcePath);
+                        break;
+                    case 'image/webp':
+                        $image = @imagecreatefromwebp($sourcePath);
+                        break;
+                    default:
+                        $image = @imagecreatefromstring(file_get_contents($sourcePath));
+                        break;
+                }
+
+                if ($image) {
+                    if (function_exists('exif_read_data') && in_array($mime, ['image/jpeg', 'image/jpg'])) {
+                        $exif = @exif_read_data($sourcePath);
+                        if (!empty($exif['Orientation'])) {
+                            switch ($exif['Orientation']) {
+                                case 8: $image = imagerotate($image, 90, 0); break;
+                                case 3: $image = imagerotate($image, 180, 0); break;
+                                case 6: $image = imagerotate($image, -90, 0); break;
+                            }
+                        }
+                    }
+
+                    $origWidth = imagesx($image);
+                    $origHeight = imagesy($image);
+                    $maxWidth = 1200;
+
+                    if ($origWidth > $maxWidth) {
+                        $newWidth = $maxWidth;
+                        $newHeight = (int) ($origHeight * ($maxWidth / $origWidth));
+                    } else {
+                        $newWidth = $origWidth;
+                        $newHeight = $origHeight;
+                    }
+
+                    $newImage = imagecreatetruecolor($newWidth, $newHeight);
+
+                    if ($mime === 'image/png') {
+                        imagealphablending($newImage, false);
+                        imagesavealpha($newImage, true);
+                        $transparent = imagecolorallocatealpha($newImage, 255, 255, 255, 127);
+                        imagefilledrectangle($newImage, 0, 0, $newWidth, $newHeight, $transparent);
+                    }
+
+                    imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+
+                    if ($mime === 'image/png') {
+                        imagepng($newImage, $destination, 7);
+                    } elseif ($mime === 'image/webp') {
+                        imagewebp($newImage, $destination, 75);
+                    } else {
+                        imagejpeg($newImage, $destination, 75);
+                    }
+
+                    imagedestroy($image);
+                    imagedestroy($newImage);
+
+                    return 'jurnal_media/foto/' . $hashName;
+                }
+            }
+        }
+
+        $file->move($targetDir, $hashName);
+        return 'jurnal_media/foto/' . $hashName;
+    }
+
+    // HELPER: PROCESS VIDEO WITH HASHED FILENAME
+    private function processVideo($file)
+    {
+        $extension = strtolower($file->getClientOriginalExtension() ?: 'mp4');
+        $hashName = md5(uniqid(rand(), true) . microtime()) . '.' . $extension;
+        $targetDir = storage_path('app/jurnal_media/video');
+
+        if (!file_exists($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        $file->move($targetDir, $hashName);
+        return 'jurnal_media/video/' . $hashName;
     }
 
     // 6. AKSES ORANG TUA (WALI MURID)

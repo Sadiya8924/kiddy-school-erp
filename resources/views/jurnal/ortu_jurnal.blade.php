@@ -78,7 +78,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="filter: invert(1);"></button>
                 </div>
                 <div class="modal-body text-center p-0">
-                    <img src="{{ asset('storage/' . $jurnal->foto) }}" class="img-fluid rounded-4 shadow" style="max-height: 80vh; object-fit: contain;">
+                    <img src="{{ $jurnal->foto_url }}" class="img-fluid rounded-4 shadow" style="max-height: 80vh; object-fit: contain;">
                 </div>
             </div>
         </div>

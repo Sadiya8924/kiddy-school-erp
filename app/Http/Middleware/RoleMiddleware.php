@@ -15,8 +15,8 @@ class RoleMiddleware
 
         $user = Auth::user();
 
-        // super_admin bypass semua role check
-        if ($user->role === 'super_admin') {
+        // owner & super_admin bypass semua role check
+        if (in_array($user->role, ['owner', 'super_admin'])) {
             return $next($request);
         }
 

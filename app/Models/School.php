@@ -6,12 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 class School extends Model
 {
     protected $fillable = [
+        'yayasan_id',
         'nama_sekolah', 'npsn', 'alamat', 'logo_sekolah',
         'kepala_sekolah', 'telepon',
         'tahun_ajaran_aktif', 'semester_aktif', 'status',
         'is_rapor_open' // <-- TAMBAHAN BARU
     ];
 
+    public function yayasan() { return $this->belongsTo(Yayasan::class, 'yayasan_id'); }
     public function users() { return $this->hasMany(User::class); }
     public function siswas() { return $this->hasMany(Siswa::class); }
     public function rapors() { return $this->hasMany(Rapor::class); }

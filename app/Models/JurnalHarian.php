@@ -30,4 +30,22 @@ class JurnalHarian extends Model
     public function lmsMateri() {
         return $this->belongsTo(Materi::class, 'materi_id');
     }
+
+    public function getFotoUrlAttribute() {
+        if (!$this->foto) return null;
+        $filename = basename($this->foto);
+        if (str_starts_with($this->foto, 'jurnal_media/foto/')) {
+            return route('jurnal.media', ['type' => 'foto', 'filename' => $filename]);
+        }
+        return asset('storage/' . $this->foto);
+    }
+
+    public function getVideoUrlAttribute() {
+        if (!$this->video) return null;
+        $filename = basename($this->video);
+        if (str_starts_with($this->video, 'jurnal_media/video/')) {
+            return route('jurnal.media', ['type' => 'video', 'filename' => $filename]);
+        }
+        return asset('storage/' . $this->video);
+    }
 }

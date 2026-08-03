@@ -50,7 +50,7 @@
             <span id="teks-status-rapor"></span>
         </div>
 
-        <form method="POST" action="/isi-rapor" id="formRapor">
+        <form method="POST" action="/isi-rapor" id="formRapor" enctype="multipart/form-data">
             @csrf
 
             {{-- BANNER BIRU KUNCI DATA SISWA (Murni pakai Utility Class) --}}
@@ -114,6 +114,9 @@
                 </li>
                 <li class="nav-item">
                     <button class="nav-link border rounded-pill d-flex align-items-center justify-content-center gap-2 py-2 fw-bold" id="pills-mulok-tab" data-bs-toggle="pill" data-bs-target="#pills-mulok" type="button"><iconify-icon icon="solar:checklist-minimalistic-bold-duotone" class="fs-5"></iconify-icon> Tahap 3: Isi Mulok</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link border rounded-pill d-flex align-items-center justify-content-center gap-2 py-2 fw-bold" id="pills-foto-tab" data-bs-toggle="pill" data-bs-target="#pills-foto" type="button"><iconify-icon icon="solar:gallery-wide-bold-duotone" class="fs-5"></iconify-icon> Tahap 4: Foto Kegiatan</button>
                 </li>
             </ul>
 
@@ -394,6 +397,33 @@
                         </div>
                     @endif
                 </div>
+
+                {{-- TAB 4: FOTO KEGIATAN (LAMPIRAN) --}}
+                <div class="tab-pane fade" id="pills-foto" role="tabpanel">
+                    <div class="border-start border-4 border-primary ps-3 mb-4">
+                        <h5 class="fw-bold text-dark mb-1">DOKUMENTASI FOTO KEGIATAN SISWA (LAMPIRAN)</h5>
+                        <p class="text-muted small mb-0">Pilih foto-foto kegiatan dari Jurnal Harian siswa yang ingin dilampirkan dalam Rapor. Pengisian bersifat <strong>Opsional (Tidak Wajib)</strong>.</p>
+                    </div>
+
+                    <div id="wrapper-foto-jurnal" class="mb-4">
+                        <div class="text-center text-muted py-5 border rounded-3 bg-light" id="empty-foto-jurnal">
+                            <iconify-icon icon="solar:gallery-wide-bold-duotone" class="fs-1 text-primary mb-2 opacity-50"></iconify-icon>
+                            <p class="mb-0 fw-medium text-dark" id="empty-foto-text">Silakan pilih siswa terlebih dahulu pada bagian atas.</p>
+                        </div>
+                        
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 d-none" id="grid-foto-jurnal">
+                            <!-- Will be populated via JS -->
+                        </div>
+                    </div>
+
+                    <div class="card border-primary-subtle bg-primary-subtle bg-opacity-10 border rounded-3 p-3 mt-4">
+                        <label class="form-label fw-bold text-dark mb-1">
+                            <iconify-icon icon="solar:upload-square-bold-duotone" class="align-middle me-1 fs-5 text-primary"></iconify-icon> Upload Foto Tambahan Lainnya (Opsional)
+                        </label>
+                        <p class="text-muted small mb-2">Jika foto yang diinginkan belum ada di Jurnal Harian, Anda dapat mengunggah file foto baru di sini.</p>
+                        <input type="file" name="foto_kegiatan_custom[]" class="form-control bg-white" multiple accept="image/*">
+                    </div>
+                </div>
             </div>
 
             <!-- KONTROL BAWAH (Navigasi Kiri & Kanan) -->
@@ -435,8 +465,8 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
 
-        const tabs = ['pills-biodata-tab', 'pills-rapor-tab', 'pills-mulok-tab'];
-        const panes = ['pills-biodata', 'pills-rapor', 'pills-mulok'];
+        const tabs = ['pills-biodata-tab', 'pills-rapor-tab', 'pills-mulok-tab', 'pills-foto-tab'];
+        const panes = ['pills-biodata', 'pills-rapor', 'pills-mulok', 'pills-foto'];
         const btnNext = document.getElementById('btn-next');
         const btnKembali = document.getElementById('btn-kembali');
         const pilihSiswa = document.getElementById('pilih_siswa');
@@ -553,7 +583,7 @@
                 document.querySelectorAll('.req-field').forEach(el => {
                     if (!el.value.trim()) {
                         isValid = false;
-                        el.classList.add('is-invalid'); // Diganti ke class Bootstrap
+                        el.classList.add('is-invalid');
                         if (!firstErrorElement) firstErrorElement = el;
                     } else {
                         el.classList.remove('is-invalid');
@@ -570,7 +600,7 @@
                     
                     if (!checked) {
                         isValid = false;
-                        tr.classList.add('bg-danger-subtle'); // Background merah soft dari bootstrap
+                        tr.classList.add('bg-danger-subtle');
                         if (!firstErrorElement) firstErrorElement = tr;
                         
                         let accordionCollapse = tr.closest('.accordion-collapse');
@@ -599,6 +629,61 @@
                 }
             });
         });
+
+        window.toggleFotoCardStyle = function(checkbox) {
+            const card = checkbox.closest('.card-foto-selectable');
+            if (card) {
+                if (checkbox.checked) {
+                    card.classList.add('border-primary', 'bg-primary-subtle');
+                } else {
+                    card.classList.remove('border-primary', 'bg-primary-subtle');
+                }
+            }
+        };
+
+        function renderFotoJurnal(siswa) {
+            const gridFoto = document.getElementById('grid-foto-jurnal');
+            const emptyFoto = document.getElementById('empty-foto-jurnal');
+            const emptyText = document.getElementById('empty-foto-text');
+            if (!gridFoto || !emptyFoto) return;
+
+            gridFoto.innerHTML = '';
+
+            let savedFotoKegiatan = [];
+            if (siswa.rapor_aktif && siswa.rapor_aktif.foto_kegiatan) {
+                savedFotoKegiatan = Array.isArray(siswa.rapor_aktif.foto_kegiatan) 
+                    ? siswa.rapor_aktif.foto_kegiatan 
+                    : (typeof siswa.rapor_aktif.foto_kegiatan === 'string' ? JSON.parse(siswa.rapor_aktif.foto_kegiatan) : []);
+            }
+
+            if (siswa.jurnal_fotos && siswa.jurnal_fotos.length > 0) {
+                emptyFoto.classList.add('d-none');
+                gridFoto.classList.remove('d-none');
+                
+                siswa.jurnal_fotos.forEach(j => {
+                    const isChecked = savedFotoKegiatan.includes(j.foto) ? 'checked' : '';
+                    const col = document.createElement('div');
+                    col.className = 'col';
+                    col.innerHTML = `
+                        <div class="card h-100 border shadow-sm rounded-3 overflow-hidden position-relative card-foto-selectable ${isChecked ? 'border-primary bg-primary-subtle' : ''}">
+                            <div class="position-absolute top-0 end-0 p-2 z-2">
+                                <input class="form-check-input check-foto-kegiatan fs-5 cursor-pointer shadow-sm" type="checkbox" name="foto_kegiatan[]" value="${j.foto}" ${isChecked} onchange="toggleFotoCardStyle(this)">
+                            </div>
+                            <img src="${j.foto_url}" class="card-img-top object-fit-cover" style="height: 140px;" alt="Foto Kegiatan">
+                            <div class="card-body p-2">
+                                <span class="badge bg-secondary-subtle text-dark small mb-1">${j.tanggal || 'Jurnal Harian'}</span>
+                                <p class="card-text text-dark fw-medium small mb-0 lh-sm text-truncate" title="${j.kegiatan || j.tema || ''}">${j.kegiatan || j.tema || 'Foto Jurnal'}</p>
+                            </div>
+                        </div>
+                    `;
+                    gridFoto.appendChild(col);
+                });
+            } else {
+                gridFoto.classList.add('d-none');
+                emptyFoto.classList.remove('d-none');
+                emptyText.innerHTML = `Belum ada foto kegiatan di Jurnal Harian untuk siswa <strong>${siswa.nama_lengkap}</strong>.<br><small class="text-muted">Anda tetap dapat mengunggah foto tambahan di bawah jika diperlukan.</small>`;
+            }
+        }
 
         const originalSiswas = @json($siswas);
         if(pilihSiswa) {
@@ -641,6 +726,9 @@
                     alertStatus.classList.remove('d-flex');
                     alertStatus.classList.add('d-none');
                     btnSubmits.forEach(b => b.disabled = false);
+
+                    // Render Tahap 4 Foto Kegiatan
+                    renderFotoJurnal(siswa);
 
                     if (siswa.rapor_aktif) {
                         alertStatus.classList.remove('d-none', 'alert-warning', 'alert-success', 'alert-danger');
@@ -713,6 +801,13 @@
                 document.getElementById('locked_kelas').textContent = "-";
                 document.getElementById('locked_identitas').textContent = "-";
                 
+                const gridFoto = document.getElementById('grid-foto-jurnal');
+                const emptyFoto = document.getElementById('empty-foto-jurnal');
+                const emptyText = document.getElementById('empty-foto-text');
+                if (gridFoto) gridFoto.innerHTML = '';
+                if (emptyFoto) emptyFoto.classList.remove('d-none');
+                if (emptyText) emptyText.textContent = 'Silakan pilih siswa terlebih dahulu pada bagian atas.';
+
                 document.querySelectorAll('.req-field').forEach(el => el.value = '');
                 document.querySelectorAll('.req-radio').forEach(el => el.checked = false);
                 alertStatus.classList.remove('d-flex');

@@ -15,7 +15,7 @@
             <ul id="sidebarnav">
                 @php 
                     $user = Auth::user(); 
-                    $akademik_roles = ['super_admin', 'admin', 'guru', 'kepsek'];
+                    $akademik_roles = ['owner', 'super_admin', 'admin', 'guru', 'kepsek'];
 
                     $allowed_modules = [];
                     // Tarik hak akses HANYA untuk Admin, Guru, & Kepsek (karena terikat sekolah)
@@ -33,12 +33,11 @@
                     // Fungsi penentu menu muncul atau tidak
                     $hasMenu = function($menuName) use ($allowed_modules, $user) {
                         if (!$user) return false;
-                        if ($user->isSuperAdmin()) return true; // Super admin bebas
+                        if ($user->isSuperAdmin() || $user->isOwner()) return true; // Super admin & owner bebas
                         if ($user->role === 'wali_murid') return true; // Wali murid bebas
                         
                         // Cek untuk Admin, Guru, Kepsek
                         foreach ($allowed_modules as $allowed) {
-                            // TYPO FIXED: Pakai $menuName, bukan $moduleName
                             if (strtolower(trim($allowed)) == strtolower(trim($menuName))) {
                                 return true;
                             }
@@ -60,7 +59,7 @@
                     </a>
                 </li>
 
-                @if($user && in_array($user->role, ['super_admin', 'admin']))
+                @if($user && in_array($user->role, ['owner', 'super_admin', 'admin']))
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
                         <span class="hide-menu">WEBSITE</span>
@@ -78,12 +77,22 @@
                         <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
                         <span class="hide-menu">MASTER DATA PUSAT</span>
                     </li>
+                    @if($user->isOwner())
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->is('owner/yayasans*') ? 'active' : '' }}" href="{{ route('owner.yayasans.index') }}">
+                            <span><iconify-icon icon="solar:buildings-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Data Yayasan</span>
+                        </a>
+                    </li>
+                    @endif
+                    @if(!$user->isOwner())
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->is('superadmin/schools*') ? 'active' : '' }}" href="{{ route('superadmin.schools.index') }}">
                             <span><iconify-icon icon="solar:buildings-2-bold-duotone" class="fs-6"></iconify-icon></span>
-                            <span class="hide-menu">Data Sekolah</span>
+                            <span class="hide-menu">Data Sekolah (TK)</span>
                         </a>
                     </li>
+                    @endif
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->is('superadmin/users*') ? 'active' : '' }}" href="{{ route('superadmin.users.index') }}">
                             <span><iconify-icon icon="solar:users-group-rounded-bold-duotone" class="fs-6"></iconify-icon></span>

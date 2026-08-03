@@ -27,7 +27,7 @@
 
   {{-- 2. EMPAT STAT CARDS --}}
   <div class="col-md-6 col-lg-3">
-    <a href="{{ route('superadmin.schools.index') }}" class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none card-clickable text-decoration-none">
+    <a href="{{ auth()->user()->isOwner() ? route('owner.yayasans.index') : route('superadmin.schools.index') }}" class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none card-clickable text-decoration-none">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: var(--primary-blue-soft); color: var(--primary-blue-border);">
           <iconify-icon icon="solar:buildings-2-bold-duotone" class="fs-4"></iconify-icon>
@@ -42,7 +42,7 @@
   </div>
 
   <div class="col-md-6 col-lg-3">
-    <a href="{{ route('superadmin.schools.index') }}" class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none card-clickable text-decoration-none">
+    <a href="{{ auth()->user()->isOwner() ? route('owner.yayasans.index') : route('superadmin.schools.index') }}" class="card p-4 mb-0 h-100 d-flex flex-column justify-content-between border shadow-none card-clickable text-decoration-none">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #dcfce7; color: #86efac;">
           <iconify-icon icon="solar:check-circle-bold-duotone" class="fs-4"></iconify-icon>

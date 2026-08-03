@@ -15,10 +15,15 @@ class MateriController extends Controller
         $user = Auth::user();
         $schoolId = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
         
-        $materis = Materi::where('school_id', $schoolId)
-                    ->where('created_by', $user->id)
-                    ->latest()
-                    ->get();
+        if ($schoolId) {
+            $query = Materi::where('school_id', $schoolId);
+            if ($user->role === 'guru') {
+                $query->where('created_by', $user->id);
+            }
+            $materis = $query->latest()->get();
+        } else {
+            $materis = collect();
+        }
 
         $stats = [
             'total' => $materis->count(),

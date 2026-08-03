@@ -9,8 +9,9 @@
                 <p class="text-muted mb-0 small">Kelola data berat badan, tinggi badan, dan lingkar kepala siswa.</p>
             </div>
         </div>
-    </div>
+    @include('partials.owner_stepped_filter')
 
+    @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
     <div class="col-12">
         <div class="card border shadow-none mb-0">
             <div class="card-body p-3">
@@ -87,4 +88,5 @@
         </div>
     </div>
 </div>
+@endif
 @endsection

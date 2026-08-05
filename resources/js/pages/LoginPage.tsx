@@ -8,6 +8,8 @@ interface Props { onNavigate: (p: Page) => void }
 export default function LoginPage({ onNavigate }: Props) {
   const [form, setForm] = useState({ email: '', password: '', remember: false })
   const [showPass, setShowPass] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const reduced = useReducedMotion()
   const leftRef = useRef<HTMLDivElement>(null)
   const csrfToken = (typeof document !== 'undefined' && document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')) || ''
@@ -23,6 +25,88 @@ export default function LoginPage({ onNavigate }: Props) {
     }, leftRef)
     return () => ctx.revert()
   }, [reduced])
+
+  const fillDemo = (email: string) => {
+    setForm({ email, password: 'password', remember: false })
+    setError('')
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+
+    try {
+      const formData = new FormData()
+      formData.append('_token', csrfToken)
+      formData.append('email', form.email)
+      formData.append('password', form.password)
+      if (form.remember) formData.append('remember', '1')
+
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json, text/html, */*'
+        },
+        body: formData
+      })
+
+      if (res.redirected) {
+        if (res.url.includes('/dashboard') || res.url.includes('/superadmin') || res.url.includes('/owner')) {
+          window.location.href = res.url
+          return
+        }
+        // If redirected back to login page, credentials failed
+        setError('Email atau password salah. Silakan periksa kembali.')
+        return
+      }
+
+      if (res.ok && (res.url.includes('/dashboard') || res.url.includes('/superadmin') || res.url.includes('/owner'))) {
+        window.location.href = res.url
+        return
+      }
+
+      // If text contains error message or status is unauthorized
+      const text = await res.text()
+      if (text.includes('Email atau password salah') || res.status === 422 || res.status === 401) {
+        setError('Email atau password salah. Silakan periksa kembali.')
+      } else {
+        // Fallback: programmatic form submit if backend handles standard redirect
+        const formEl = document.createElement('form')
+        formEl.method = 'POST'
+        formEl.action = '/login'
+
+        const csrfInput = document.createElement('input')
+        csrfInput.type = 'hidden'
+        csrfInput.name = '_token'
+        csrfInput.value = csrfToken
+        formEl.appendChild(csrfInput)
+
+        const emailInput = document.createElement('input')
+        emailInput.type = 'hidden'
+        emailInput.name = 'email'
+        emailInput.value = form.email
+        formEl.appendChild(emailInput)
+
+        const passInput = document.createElement('input')
+        passInput.type = 'hidden'
+        passInput.name = 'password'
+        passInput.value = form.password
+        formEl.appendChild(passInput)
+
+        document.body.appendChild(formEl)
+        formEl.submit()
+        return
+      }
+    } catch (err) {
+      setError('Terjadi kesalahan koneksi. Silakan coba lagi.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen flex" style={{ paddingTop: 64, background: '#F7F9FC' }}>
@@ -88,7 +172,14 @@ export default function LoginPage({ onNavigate }: Props) {
           <h1 className="text-2xl font-800 text-gray-900 mb-1" style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Login Portal</h1>
           <p className="text-sm mb-6" style={{ color: '#6B7280' }}>Masuk ke akun portal orang tua Anda.</p>
 
-          <form action="/login" method="POST" className="space-y-4">
+          {error && (
+            <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-500 flex items-center gap-2">
+              <span>⚠️</span>
+              <div>{error}</div>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
             <input type="hidden" name="_token" value={csrfToken} />
             <div>
               <label className="block text-xs font-600 text-gray-600 mb-1.5" style={{ fontWeight: 600 }}>Email</label>
@@ -116,11 +207,39 @@ export default function LoginPage({ onNavigate }: Props) {
               </label>
               <button type="button" className="text-xs font-600" style={{ color: '#365CF5', fontWeight: 600 }}>Lupa Password</button>
             </div>
-            <button type="submit" className="w-full py-3 rounded-xl text-white text-sm font-600 transition-all hover:opacity-90 cursor-pointer"
+            <button type="submit" disabled={loading} className="w-full py-3 rounded-xl text-white text-sm font-600 transition-all hover:opacity-90 disabled:opacity-60 flex items-center justify-center gap-2 cursor-pointer"
               style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)', fontWeight: 600, boxShadow: '0 6px 20px rgba(54,92,245,0.35)' }}>
-              Login
+              {loading ? 'Memproses Login...' : 'Login'}
             </button>
           </form>
+
+          {/* Quick Demo Login Accounts */}
+          <div className="mt-6 pt-5 border-t border-gray-200">
+            <p className="text-[11px] font-700 text-gray-500 uppercase tracking-wider mb-2" style={{ fontWeight: 700 }}>
+              💡 Demo Akun Tersedia di Database:
+            </p>
+            <div className="grid grid-cols-2 gap-1.5">
+              <button type="button" onClick={() => fillDemo('ortu@tk.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
+                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👨‍👩‍👧 Wali Murid</div>
+                <div className="text-[10px] text-gray-500 truncate">ortu@tk.com</div>
+              </button>
+              <button type="button" onClick={() => fillDemo('admin@tk.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
+                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>🏫 Admin TK</div>
+                <div className="text-[10px] text-gray-500 truncate">admin@tk.com</div>
+              </button>
+              <button type="button" onClick={() => fillDemo('naning@tk.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
+                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👩‍🏫 Guru</div>
+                <div className="text-[10px] text-gray-500 truncate">naning@tk.com</div>
+              </button>
+              <button type="button" onClick={() => fillDemo('superadmin@tkceria.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
+                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👑 Super Admin</div>
+                <div className="text-[10px] text-gray-500 truncate">superadmin@tkceria.com</div>
+              </button>
+            </div>
+            <p className="text-[10px] text-gray-400 mt-1.5 italic text-center">
+              Password bawaan semua akun: <strong className="text-gray-600">password</strong>
+            </p>
+          </div>
 
           <p className="text-center text-xs mt-5" style={{ color: '#6B7280' }}>
             Belum punya akun?{' '}

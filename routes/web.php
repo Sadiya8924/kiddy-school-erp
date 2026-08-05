@@ -43,13 +43,14 @@ Route::get('/register', fn() => view('auth.register'));
 Route::post('/register', [AuthController::class, 'register']);
 
 
+Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
+
 /*
 |--------------------------------------------------------------------------
 | PROTECTED ROUTES (WAJIB LOGIN)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // 1. DASHBOARD UMUM
     Route::get('/dashboard', function () {

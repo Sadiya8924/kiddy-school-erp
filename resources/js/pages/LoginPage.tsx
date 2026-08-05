@@ -12,6 +12,7 @@ export default function LoginPage({ onNavigate }: Props) {
   const [error, setError] = useState('')
   const reduced = useReducedMotion()
   const leftRef = useRef<HTMLDivElement>(null)
+  const csrfToken = (typeof document !== 'undefined' && document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')) || ''
 
   useEffect(() => {
     if (reduced || !leftRef.current) return
@@ -179,16 +180,17 @@ export default function LoginPage({ onNavigate }: Props) {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <input type="hidden" name="_token" value={csrfToken} />
             <div>
               <label className="block text-xs font-600 text-gray-600 mb-1.5" style={{ fontWeight: 600 }}>Email</label>
-              <input type="email" placeholder="nama@email.com" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+              <input type="email" name="email" placeholder="nama@email.com" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none bg-white"
                 style={{ borderColor: '#E5E7EB', fontFamily: 'inherit', color: '#111827' }} />
             </div>
             <div>
               <label className="block text-xs font-600 text-gray-600 mb-1.5" style={{ fontWeight: 600 }}>Password</label>
               <div className="relative">
-                <input type={showPass ? 'text' : 'password'} placeholder="Kata sandi Anda" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
+                <input type={showPass ? 'text' : 'password'} name="password" placeholder="Kata sandi Anda" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none bg-white pr-10"
                   style={{ borderColor: '#E5E7EB', fontFamily: 'inherit', color: '#111827' }} />
                 <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -200,7 +202,7 @@ export default function LoginPage({ onNavigate }: Props) {
             </div>
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={form.remember} onChange={(e) => setForm({ ...form, remember: e.target.checked })} style={{ accentColor: '#365CF5' }} />
+                <input type="checkbox" name="remember" checked={form.remember} onChange={(e) => setForm({ ...form, remember: e.target.checked })} style={{ accentColor: '#365CF5' }} />
                 <span className="text-xs text-gray-600">Ingat Saya</span>
               </label>
               <button type="button" className="text-xs font-600" style={{ color: '#365CF5', fontWeight: 600 }}>Lupa Password</button>

@@ -11,12 +11,49 @@ import RegisterPage from './pages/RegisterPage'
 type Page = 'home' | 'about' | 'registration' | 'contact' | 'login' | 'register'
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('home')
+  const getInitialPage = (): Page => {
+    if (typeof window === 'undefined') return 'home'
+    const path = window.location.pathname.toLowerCase()
+    if (path.includes('/login')) return 'login'
+    if (path.includes('/register')) return 'register'
+    if (path.includes('/about')) return 'about'
+    if (path.includes('/registration')) return 'registration'
+    if (path.includes('/contact')) return 'contact'
+    return 'home'
+  }
+
+  const [currentPage, setCurrentPage] = useState<Page>(getInitialPage)
 
   const navigate = (page: Page) => {
     setCurrentPage(page)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    const pagePaths: Record<Page, string> = {
+      home: '/',
+      about: '/about',
+      registration: '/registration',
+      contact: '/contact',
+      login: '/login',
+      register: '/register'
+    }
+    if (typeof window !== 'undefined') {
+      window.history.pushState(null, '', pagePaths[page] || '/')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname.toLowerCase()
+      if (path.includes('/login')) setCurrentPage('login')
+      else if (path.includes('/register')) setCurrentPage('register')
+      else if (path.includes('/about')) setCurrentPage('about')
+      else if (path.includes('/registration')) setCurrentPage('registration')
+      else if (path.includes('/contact')) setCurrentPage('contact')
+      else setCurrentPage('home')
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
 
   useEffect(() => {
     const titles: Record<Page, string> = {

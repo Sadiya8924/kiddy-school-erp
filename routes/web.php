@@ -37,10 +37,32 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
 Route::get('/pendaftaran-siswa', [SiswaController::class, 'createPendaftaran'])->name('pendaftaran');
 Route::post('/pendaftaran-siswa', [SiswaController::class, 'storePendaftaran'])->name('pendaftaran.store');
 
-Route::get('/login', fn() => view('auth.login'))->name('login');
+Route::get('/login', function (\Illuminate\Http\Request $request) {
+    $schools = DB::table('schools')->where('status', 'aktif')->get();
+    return view('welcome', compact('schools'));
+})->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/register', fn() => view('auth.register'));
+
+Route::get('/register', function (\Illuminate\Http\Request $request) {
+    $schools = DB::table('schools')->where('status', 'aktif')->get();
+    return view('welcome', compact('schools'));
+});
 Route::post('/register', [AuthController::class, 'register']);
+
+Route::get('/about', function (\Illuminate\Http\Request $request) {
+    $schools = DB::table('schools')->where('status', 'aktif')->get();
+    return view('welcome', compact('schools'));
+});
+
+Route::get('/contact', function (\Illuminate\Http\Request $request) {
+    $schools = DB::table('schools')->where('status', 'aktif')->get();
+    return view('welcome', compact('schools'));
+});
+
+Route::get('/registration', function (\Illuminate\Http\Request $request) {
+    $schools = DB::table('schools')->where('status', 'aktif')->get();
+    return view('welcome', compact('schools'));
+});
 
 
 Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');

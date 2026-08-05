@@ -1,0 +1,130 @@
+import type React from 'react'
+
+type Page = 'home' | 'about' | 'registration' | 'contact' | 'login' | 'register'
+
+interface FooterProps {
+  onNavigate: (page: Page) => void
+}
+
+export default function Footer({ onNavigate }: FooterProps) {
+  return (
+    <footer style={{ background: '#0F172A', color: '#E2E8F0' }}>
+      <div className="max-w-[1320px] mx-auto px-6 sm:px-10 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+          <div className="md:col-span-2">
+            <div className="flex items-center gap-2.5 mb-4">
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm"
+                style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}
+              >
+                AH
+              </div>
+              <span className="font-700 text-white text-sm" style={{ fontWeight: 700 }}>
+                Yayasan Al-Hikmah 2
+              </span>
+            </div>
+            <p className="text-sm leading-relaxed mb-6" style={{ color: '#94A3B8', maxWidth: 300 }}>
+              Ciptakan Generasi Cerdas, Ceria, & Berakhlak Mulia Sejali. Berdiri sejak 2010 dengan komitmen penuh untuk mencetak generasi Islami yang unggul.
+            </p>
+            <div className="flex gap-3">
+              {['instagram', 'facebook', 'youtube', 'whatsapp'].map((s) => (
+                <a
+                  key={s}
+                  href="#"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 hover:opacity-80"
+                  style={{ background: 'rgba(255,255,255,0.08)' }}
+                  aria-label={s}
+                >
+                  <SocialIcon name={s} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-white text-sm font-600 mb-4" style={{ fontWeight: 600 }}>
+              Tautan Cepat
+            </h4>
+            <ul className="space-y-2.5">
+              {[
+                { label: 'Beranda', page: 'home' as Page },
+                { label: 'Tentang Kami', page: 'about' as Page },
+                { label: 'Pendaftaran', page: 'registration' as Page },
+                { label: 'Hubungi Kami', page: 'contact' as Page },
+                { label: 'Login Portal', page: 'login' as Page },
+              ].map(({ label, page }) => (
+                <li key={page}>
+                  <button
+                    onClick={() => onNavigate(page)}
+                    className="text-sm transition-colors duration-200 hover:text-white text-left"
+                    style={{ color: '#94A3B8' }}
+                  >
+                    {label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-white text-sm font-600 mb-4" style={{ fontWeight: 600 }}>
+              Kontak
+            </h4>
+            <ul className="space-y-3">
+              {[
+                { icon: '📍', text: 'Jl. KH. Wahid Hasyim No. 45, Sukun, Malang 65117' },
+                { icon: '📞', text: '(0341) 567-8901' },
+                { icon: '💬', text: '0812-3456-78902' },
+                { icon: '✉️', text: 'admin@alhikmah.sch.id' },
+                { icon: '🕐', text: 'Senin–Sabtu, 07.00–15.00' },
+              ].map(({ icon, text }) => (
+                <li key={text} className="flex gap-2.5 text-sm" style={{ color: '#94A3B8' }}>
+                  <span className="flex-shrink-0">{icon}</span>
+                  <span>{text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div
+          className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.08)', color: '#475569' }}
+        >
+          <span>© 2026 Yayasan Al-Hikmah 2. Seluruh hak cipta dilindungi.</span>
+          <div className="flex gap-5">
+            <a href="#" className="hover:text-white transition-colors">Kebijakan Privasi</a>
+            <a href="#" className="hover:text-white transition-colors">Syarat & Ketentuan</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+function SocialIcon({ name }: { name: string }) {
+  const icons: Record<string, React.ReactElement> = {
+    instagram: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+      </svg>
+    ),
+    facebook: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+      </svg>
+    ),
+    youtube: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
+        <polygon fill="#0F172A" points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/>
+      </svg>
+    ),
+    whatsapp: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+      </svg>
+    ),
+  }
+  return icons[name] || null
+}

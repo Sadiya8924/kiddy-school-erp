@@ -21,6 +21,12 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const navRef = useRef<HTMLElement>(null)
   const [scrolled, setScrolled] = useState(false)
 
+  const settings = (typeof window !== 'undefined' && (window as any).APP_SETTINGS) || {}
+  const authUser = (typeof window !== 'undefined' && (window as any).AUTH_USER) || null
+
+  const siteTitle = settings.site_title || 'Yayasan Al-Hikmah 2'
+  const siteLogo = settings.site_logo
+
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 20
@@ -56,9 +62,13 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
       <div className="max-w-[1320px] mx-auto px-6 sm:px-10 w-full flex items-center justify-between">
         {/* Logo */}
         <button onClick={() => onNavigate('home')} className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-sm"
-            style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}>AH</div>
-          <span className="font-700 text-sm text-gray-900 hidden sm:block" style={{ fontWeight: 700 }}>Yayasan Al-Hikmah 2</span>
+          {siteLogo ? (
+            <img src={siteLogo} alt={siteTitle} style={{ height: 36, width: 'auto', objectFit: 'contain', borderRadius: 6 }} />
+          ) : (
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-sm"
+              style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}>AH</div>
+          )}
+          <span className="font-700 text-sm text-gray-900 hidden sm:block" style={{ fontWeight: 700 }}>{siteTitle}</span>
         </button>
 
         {/* Nav */}
@@ -74,16 +84,27 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
 
         {/* Right buttons */}
         <div className="flex items-center gap-2">
-          <button onClick={() => onNavigate('login')}
-            className="hidden sm:flex px-3.5 py-2 rounded-xl text-sm border transition-colors hover:bg-gray-50"
-            style={{ fontWeight: 500, color: '#374151', borderColor: '#E5E7EB' }}>
-            Login Portal
-          </button>
-          <button onClick={() => onNavigate('registration')}
-            className="px-4 py-2 rounded-xl text-sm text-white font-600 transition-all hover:opacity-90 active:scale-95"
-            style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)', fontWeight: 600, boxShadow: '0 3px 12px rgba(54,92,245,0.3)' }}>
-            Daftar Sekarang
-          </button>
+          {authUser ? (
+            <a href="/dashboard"
+              className="px-4 py-2 rounded-xl text-sm text-white font-600 transition-all hover:opacity-90 active:scale-95 flex items-center gap-2"
+              style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)', fontWeight: 600, boxShadow: '0 3px 12px rgba(54,92,245,0.3)', textDecoration: 'none' }}>
+              <span>Dashboard ({authUser.name})</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+            </a>
+          ) : (
+            <>
+              <button onClick={() => onNavigate('login')}
+                className="hidden sm:flex px-3.5 py-2 rounded-xl text-sm border transition-colors hover:bg-gray-50"
+                style={{ fontWeight: 500, color: '#374151', borderColor: '#E5E7EB' }}>
+                Login Portal
+              </button>
+              <button onClick={() => onNavigate('registration')}
+                className="px-4 py-2 rounded-xl text-sm text-white font-600 transition-all hover:opacity-90 active:scale-95"
+                style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)', fontWeight: 600, boxShadow: '0 3px 12px rgba(54,92,245,0.3)' }}>
+                Daftar Sekarang
+              </button>
+            </>
+          )}
         </div>
       </div>
     </header>

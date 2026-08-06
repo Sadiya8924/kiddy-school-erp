@@ -17,12 +17,14 @@ class SettingController extends Controller
     {
         $data = $request->except('_token', '_method');
 
-        $imageFields = ['yayasan_image', 'tk_image', 'paud_image', 'site_logo'];
+        $imageFields = ['yayasan_image', 'tk_image', 'paud_image', 'site_logo', 'hero_image'];
         foreach ($imageFields as $field) {
             if ($request->hasFile($field)) {
                 $file = $request->file($field);
                 $path = $file->store('landing', 'public');
                 $data[$field] = '/storage/' . $path;
+            } else {
+                unset($data[$field]);
             }
         }
 

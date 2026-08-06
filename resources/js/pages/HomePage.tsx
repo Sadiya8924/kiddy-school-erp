@@ -584,14 +584,13 @@ export default function HomePage({ onNavigate }: Props) {
 
               {/* HEADING */}
               <h1 style={{ fontWeight: 800, lineHeight: 1.12, letterSpacing: '-0.035em', marginBottom: 20, fontSize: 'clamp(3.2rem, 5.2vw, 4.8rem)', color: 'white' }}>
-                Ciptakan Generasi Gen Z<br />
-                <span style={{ color: '#60A5FA' }}>Cerdas &amp; Ceria</span>
+                {((typeof window !== 'undefined' && (window as any).APP_SETTINGS?.hero_title_1) || 'Ciptakan Generasi Gen Z')}<br />
+                <span style={{ color: '#60A5FA' }}>{((typeof window !== 'undefined' && (window as any).APP_SETTINGS?.hero_title_2) || 'Cerdas & Ceria')}</span>
               </h1>
 
               {/* DESCRIPTION */}
-              <p style={{ fontSize: '1.25rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.88)', marginBottom: 28, maxWidth: 580, fontWeight: 400 }}>
-                Memberikan pendidikan terbaik untuk generasi masa depan dengan fasilitas lengkap dan tenaga pengajar profesional. Amankan kuota putra-putri Anda sekarang.
-              </p>
+              <div style={{ fontSize: '1.25rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.88)', marginBottom: 28, maxWidth: 580, fontWeight: 400 }}
+                dangerouslySetInnerHTML={{ __html: (typeof window !== 'undefined' && (window as any).APP_SETTINGS?.hero_subtitle) || 'Memberikan pendidikan terbaik untuk generasi masa depan dengan fasilitas lengkap dan tenaga pengajar profesional. Amankan kuota putra-putri Anda sekarang.' }} />
 
               {/* BUTTONS */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 28 }}>
@@ -644,11 +643,21 @@ export default function HomePage({ onNavigate }: Props) {
               </div>
             </div>
 
-            {/* ── RIGHT COLUMN — Illustration ── */}
+            {/* ── RIGHT COLUMN — Illustration / Custom Uploaded Image ── */}
             <div ref={illusRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', opacity: reduced ? 1 : 0 }}>
               <div style={{ position: 'absolute', inset: '0%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(96,165,250,0.3) 0%, transparent 70%)', filter: 'blur(30px)', zIndex: 0 }} />
-              <div style={{ position: 'relative', zIndex: 1, width: '100%', transform: 'scale(1.05)' }}>
-                <HeroIllustration />
+              <div style={{ position: 'relative', zIndex: 1, width: '100%', display: 'flex', justifyContent: 'center' }}>
+                {((typeof window !== 'undefined' && (window as any).APP_SETTINGS?.hero_image)) ? (
+                  <img
+                    src={(window as any).APP_SETTINGS.hero_image}
+                    alt="Hero Promosi"
+                    style={{ maxWidth: '100%', maxHeight: 480, objectFit: 'contain', borderRadius: 24, boxShadow: '0 20px 40px rgba(0,0,0,0.25)' }}
+                  />
+                ) : (
+                  <div style={{ width: '100%', transform: 'scale(1.05)' }}>
+                    <HeroIllustration />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -673,11 +682,10 @@ export default function HomePage({ onNavigate }: Props) {
               PENDIDIKAN BERKUALITAS UNTUK ANANDA
             </span>
             <h2 className="font-800 text-gray-900 text-2xl sm:text-3xl tracking-tight mb-1" style={{ fontWeight: 800 }}>
-              Kenali Lebih Dekat
+              {(typeof window !== 'undefined' && (window as any).APP_SETTINGS?.profil_title) || 'Kenali Lebih Dekat'}
             </h2>
-            <p className="text-xs sm:text-sm text-gray-600 font-medium">
-              Pelajari lebih lanjut tentang institusi dan program unggulan kami untuk putra-putri Anda.
-            </p>
+            <div className="text-xs sm:text-sm text-gray-600 font-medium"
+              dangerouslySetInnerHTML={{ __html: (typeof window !== 'undefined' && (window as any).APP_SETTINGS?.profil_subtitle) || 'Pelajari lebih lanjut tentang institusi dan program unggulan kami untuk putra-putri Anda.' }} />
           </div>
 
           <ProfilSekolahSection />
@@ -711,6 +719,27 @@ export default function HomePage({ onNavigate }: Props) {
 {/* ── Sub-components: Profil Sekolah Tabs ── */ }
 function ProfilSekolahSection() {
   const [tab, setTab] = useState<'yayasan' | 'tk' | 'paud'>('yayasan')
+  const settings = (typeof window !== 'undefined' && (window as any).APP_SETTINGS) || {}
+
+  const yayasanName = settings.yayasan_profile_name || 'Dr. H. Fulan, M.Pd'
+  const yayasanRole = settings.yayasan_profile_title || 'Ketua Yayasan'
+  const yayasanImg = settings.yayasan_image
+  const yayasanHeader = settings.yayasan_title || 'Yayasan Pendidikan Al-Hikmah 2'
+  const yayasanDesc = settings.yayasan_desc || 'Yayasan kami berdiri sejak tahun 2010 dengan komitmen penuh untuk mencetak generasi Islami yang unggul, berakhlak mulia, dan siap menghadapi tantangan masa depan. Kami menaungi berbagai cabang pendidikan dengan standar pengajaran terpadu, fasilitas belajar yang modern, dan tenaga pendidik profesional.'
+  const yayasanVisi = settings.yayasan_visi || 'Mewujudkan lembaga pendidikan yang berpijak pada penanaman aqidah Islam dan kemuliaan karakter.'
+  const yayasanMisi = settings.yayasan_misi || 'Menyelenggarakan proses pembelajaran yang berkualitas, kreatif, inovatif, dan bermakna.'
+
+  const tkName = settings.tk_profile_name || 'Bunda Fatimah, S.Pd'
+  const tkRole = settings.tk_profile_title || 'Kepala Sekolah TK'
+  const tkImg = settings.tk_image
+  const tkHeader = settings.tk_title || 'Taman Kanak-Kanak (TK)'
+  const tkDesc = settings.tk_desc || 'Program Taman Kanak-Kanak dirancang untuk mengasah kognitif, motorik, dan sosio-emosional anak melalui pendekatan learning by playing. Tersedia pilihan jam belajar fleksibel: TK Pagi dan TK Siang untuk mendukung rutinitas keluarga Anda.'
+
+  const paudName = settings.paud_profile_name || 'Bunda Aisyah, S.Psi'
+  const paudRole = settings.paud_profile_title || 'Koordinator PAUD'
+  const paudImg = settings.paud_image
+  const paudHeader = settings.paud_title || 'Pendidikan Anak Usia Dini (PAUD)'
+  const paudDesc = settings.paud_desc || 'Program PAUD/Kelompok Bermain kami memfasilitasi masa emas (golden age) anak. Lingkungan sekolah dibuat senyaman dan seaman mungkin seperti di rumah (homely environment) untuk merangsang rasa ingin tahu dan keberanian anak bersosialisasi.'
 
   return (
     <div>
@@ -738,11 +767,15 @@ function ProfilSekolahSection() {
       {tab === 'yayasan' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
           <div className="lg:col-span-4 p-4 rounded-2xl border text-center flex flex-col justify-center bg-gray-50" style={{ borderColor: '#F1F5F9' }}>
-            <div className="w-16 h-16 rounded-full mx-auto mb-2 overflow-hidden border-2 border-blue-200 flex items-center justify-center bg-blue-100 text-blue-600 font-bold text-lg">
-              FK
-            </div>
-            <h4 className="font-700 text-gray-900 text-sm" style={{ fontWeight: 700 }}>Dr. H. Fulan, M.Pd</h4>
-            <p className="text-[11px] text-gray-500 mb-3">Ketua Yayasan</p>
+            {yayasanImg ? (
+              <img src={yayasanImg} alt={yayasanName} className="w-20 h-20 rounded-full mx-auto mb-2 object-cover border-2 border-blue-200 shadow-sm" />
+            ) : (
+              <div className="w-16 h-16 rounded-full mx-auto mb-2 overflow-hidden border-2 border-blue-200 flex items-center justify-center bg-blue-100 text-blue-600 font-bold text-lg">
+                FK
+              </div>
+            )}
+            <h4 className="font-700 text-gray-900 text-sm" style={{ fontWeight: 700 }}>{yayasanName}</h4>
+            <p className="text-[11px] text-gray-500 mb-3">{yayasanRole}</p>
             <div className="text-xs text-gray-600 space-y-1.5 text-left pt-2.5 border-t border-gray-200">
               <div>✓ Berdiri sejak 2010</div>
               <div>✓ Akreditasi A</div>
@@ -751,18 +784,17 @@ function ProfilSekolahSection() {
             </div>
           </div>
           <div className="lg:col-span-8 space-y-3">
-            <h3 className="font-800 text-gray-900 text-lg" style={{ fontWeight: 800 }}>Yayasan Pendidikan Al-Hikmah 2</h3>
-            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed italic">
-              Yayasan kami berdiri sejak tahun 2010 dengan komitmen penuh untuk mencetak generasi Islami yang unggul, berakhlak mulia, dan siap menghadapi tantangan masa depan. Kami menaungi berbagai cabang pendidikan dengan standar pengajaran terpadu, fasilitas belajar yang modern, dan tenaga pendidik profesional.
-            </p>
+            <h3 className="font-800 text-gray-900 text-lg" style={{ fontWeight: 800 }}>{yayasanHeader}</h3>
+            <div className="text-xs sm:text-sm text-gray-600 leading-relaxed italic"
+              dangerouslySetInnerHTML={{ __html: yayasanDesc }} />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
                 <h5 className="font-700 text-blue-700 text-[11px] uppercase mb-1">🎯 Visi</h5>
-                <p className="text-xs text-gray-700">Mewujudkan lembaga pendidikan yang berpijak pada penanaman aqidah Islam dan kemuliaan karakter.</p>
+                <div className="text-xs text-gray-700" dangerouslySetInnerHTML={{ __html: yayasanVisi }} />
               </div>
               <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
                 <h5 className="font-700 text-blue-700 text-[11px] uppercase mb-1">🚀 Misi</h5>
-                <p className="text-xs text-gray-700">Menyelenggarakan proses pembelajaran yang berkualitas, kreatif, inovatif, dan bermakna.</p>
+                <div className="text-xs text-gray-700" dangerouslySetInnerHTML={{ __html: yayasanMisi }} />
               </div>
             </div>
             <div>
@@ -783,11 +815,15 @@ function ProfilSekolahSection() {
       {tab === 'tk' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
           <div className="lg:col-span-4 p-4 rounded-2xl border text-center flex flex-col justify-center bg-gray-50" style={{ borderColor: '#F1F5F9' }}>
-            <div className="w-16 h-16 rounded-full mx-auto mb-2 overflow-hidden border-2 border-blue-200 flex items-center justify-center bg-blue-100 text-blue-600 font-bold text-lg">
-              BF
-            </div>
-            <h4 className="font-700 text-gray-900 text-sm" style={{ fontWeight: 700 }}>Bunda Fatimah, S.Pd</h4>
-            <p className="text-[11px] text-gray-500 mb-3">Kepala Sekolah TK</p>
+            {tkImg ? (
+              <img src={tkImg} alt={tkName} className="w-20 h-20 rounded-full mx-auto mb-2 object-cover border-2 border-blue-200 shadow-sm" />
+            ) : (
+              <div className="w-16 h-16 rounded-full mx-auto mb-2 overflow-hidden border-2 border-blue-200 flex items-center justify-center bg-blue-100 text-blue-600 font-bold text-lg">
+                BF
+              </div>
+            )}
+            <h4 className="font-700 text-gray-900 text-sm" style={{ fontWeight: 700 }}>{tkName}</h4>
+            <p className="text-[11px] text-gray-500 mb-3">{tkRole}</p>
             <div className="text-xs text-gray-600 space-y-1.5 text-left pt-2.5 border-t border-gray-200">
               <div>✓ Usia 4-6 Tahun</div>
               <div>✓ Kurikulum Tematik</div>
@@ -795,10 +831,9 @@ function ProfilSekolahSection() {
             </div>
           </div>
           <div className="lg:col-span-8 space-y-3">
-            <h3 className="font-800 text-gray-900 text-lg" style={{ fontWeight: 800 }}>Taman Kanak-Kanak (TK)</h3>
-            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-              Program Taman Kanak-Kanak dirancang untuk mengasah kognitif, motorik, dan sosio-emosional anak melalui pendekatan learning by playing. Tersedia pilihan jam belajar fleksibel: TK Pagi dan TK Siang untuk mendukung rutinitas keluarga Anda.
-            </p>
+            <h3 className="font-800 text-gray-900 text-lg" style={{ fontWeight: 800 }}>{tkHeader}</h3>
+            <div className="text-xs sm:text-sm text-gray-600 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: tkDesc }} />
             <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
               <h5 className="font-700 text-gray-900 text-xs mb-1.5">📋 Fokus Pembelajaran</h5>
               <ul className="text-xs text-gray-700 space-y-1 list-disc list-inside">
@@ -825,11 +860,15 @@ function ProfilSekolahSection() {
       {tab === 'paud' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
           <div className="lg:col-span-4 p-4 rounded-2xl border text-center flex flex-col justify-center bg-gray-50" style={{ borderColor: '#F1F5F9' }}>
-            <div className="w-16 h-16 rounded-full mx-auto mb-2 overflow-hidden border-2 border-blue-200 flex items-center justify-center bg-blue-100 text-blue-600 font-bold text-lg">
-              BA
-            </div>
-            <h4 className="font-700 text-gray-900 text-sm" style={{ fontWeight: 700 }}>Bunda Aisyah, S.Psi</h4>
-            <p className="text-[11px] text-gray-500 mb-3">Koordinator PAUD</p>
+            {paudImg ? (
+              <img src={paudImg} alt={paudName} className="w-20 h-20 rounded-full mx-auto mb-2 object-cover border-2 border-blue-200 shadow-sm" />
+            ) : (
+              <div className="w-16 h-16 rounded-full mx-auto mb-2 overflow-hidden border-2 border-blue-200 flex items-center justify-center bg-blue-100 text-blue-600 font-bold text-lg">
+                BA
+              </div>
+            )}
+            <h4 className="font-700 text-gray-900 text-sm" style={{ fontWeight: 700 }}>{paudName}</h4>
+            <p className="text-[11px] text-gray-500 mb-3">{paudRole}</p>
             <div className="text-xs text-gray-600 space-y-1.5 text-left pt-2.5 border-t border-gray-200">
               <div>✓ Usia 2-4 Tahun</div>
               <div>✓ Toilet Training</div>
@@ -837,10 +876,9 @@ function ProfilSekolahSection() {
             </div>
           </div>
           <div className="lg:col-span-8 space-y-3">
-            <h3 className="font-800 text-gray-900 text-lg" style={{ fontWeight: 800 }}>Pendidikan Anak Usia Dini (PAUD)</h3>
-            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
-              Program PAUD/Kelompok Bermain kami memfasilitasi masa emas (golden age) anak. Lingkungan sekolah dibuat senyaman dan seaman mungkin seperti di rumah (homely environment) untuk merangsang rasa ingin tahu dan keberanian anak bersosialisasi.
-            </p>
+            <h3 className="font-800 text-gray-900 text-lg" style={{ fontWeight: 800 }}>{paudHeader}</h3>
+            <div className="text-xs sm:text-sm text-gray-600 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: paudDesc }} />
             <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
               <h5 className="font-700 text-gray-900 text-xs mb-1.5">🎯 Target Perkembangan</h5>
               <ul className="text-xs text-gray-700 space-y-1 list-disc list-inside">

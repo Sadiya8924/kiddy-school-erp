@@ -115,9 +115,20 @@
                         <input type="text" class="form-control" name="hero_title_2" value="{{ $settings['hero_title_2'] ?? 'Cerdas & Ceria' }}">
                     </div>
                 </div>
-                <div>
+                <div class="mb-3">
                     <label class="form-label font-semibold text-dark small">Subjudul Teks Deskripsi Hero</label>
                     <textarea class="form-control summernote" name="hero_subtitle" rows="3">{{ $settings['hero_subtitle'] ?? 'Memberikan pendidikan terbaik untuk generasi masa depan dengan fasilitas lengkap dan tenaga pengajar profesional. Amankan kuota putra-putri Anda sekarang.' }}</textarea>
+                </div>
+                <div>
+                    <label class="form-label font-semibold text-dark small">Gambar Hero Utama / Kanan (Menggantikan Ilustrasi GSAP Bawaan)</label>
+                    <input type="file" class="form-control" name="hero_image" accept="image/*">
+                    @if(!empty($settings['hero_image']))
+                        <div class="mt-2 d-flex align-items-center gap-2">
+                            <img src="{{ $settings['hero_image'] }}" style="max-height: 80px; border-radius: 8px;" class="border p-1 bg-white">
+                            <span class="text-muted small">Gambar Hero Aktif Saat Ini</span>
+                        </div>
+                    @endif
+                    <span class="text-muted d-block mt-1" style="font-size: 11px;">Upload gambar kustom di sini jika ingin mengganti ilustrasi GSAP bawaan. Kosongkan jika ingin menggunakan ilustrasi animasi bawaan.</span>
                 </div>
             </div>
         </div>

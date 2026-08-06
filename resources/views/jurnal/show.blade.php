@@ -25,7 +25,15 @@
 
 <div class="card w-100 border-0 shadow-sm mb-4">
     <div class="card-body p-4">
-        <h5 class="fw-bold text-dark mb-4 border-bottom pb-3">Daftar Siswa & Pengisian Jurnal</h5>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 border-bottom pb-3">
+            <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                <iconify-icon icon="solar:clipboard-list-bold-duotone" class="text-primary fs-5"></iconify-icon>
+                Daftar Siswa & Pengisian Jurnal
+            </h5>
+            <button type="button" class="btn btn-info text-white rounded-pill px-4 shadow-sm fw-bold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalQuickViewSemuaJurnal">
+                <iconify-icon icon="solar:eye-bold-duotone" class="fs-5"></iconify-icon> Lihat Rekap Jurnal Kelas
+            </button>
+        </div>
         
         <div class="table-responsive">
             <table class="table table-hover align-middle border">
@@ -33,9 +41,9 @@
                     <tr>
                         <th width="5%" class="text-center">No</th>
                         <th width="20%">Nama Siswa</th>
-                        <th width="40%">Deskripsi Kegiatan & Media</th>
+                        <th width="35%">Deskripsi Kegiatan & Media</th>
                         <th width="20%">Catatan Khusus</th>
-                        <th width="15%" class="text-center">Aksi</th>
+                        <th width="20%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,19 +56,18 @@
                             <td class="fw-bold text-dark">{{ $siswa->nama_lengkap }}</td>
                             <td>
                                 @if($jurnal)
-                                    <span class="d-block small text-dark mb-2">{{ $jurnal->kegiatan }}</span>
+                                    <span class="d-block small text-dark mb-2">{!! nl2br(e($jurnal->kegiatan)) !!}</span>
                                     
-                                    {{-- TOMBOL LIHAT MEDIA & DISKUSI --}}
                                     <div class="d-flex gap-2 mt-1 flex-wrap">
                                         @if($jurnal->foto)
-                                            <button type="button" class="btn btn-xs btn-outline-info rounded-pill py-1 px-2 text-decoration-none border-0 bg-info-subtle text-info small" data-bs-toggle="modal" data-bs-target="#modalLihatFoto{{ $jurnal->id }}">
-                                                <iconify-icon icon="solar:gallery-bold-duotone" class="align-middle me-1"></iconify-icon> Lihat Foto
-                                            </button>
+                                            <span class="badge bg-info-subtle text-info border border-info-subtle small">
+                                                <iconify-icon icon="solar:gallery-bold-duotone" class="align-middle me-1"></iconify-icon> Ada Foto
+                                            </span>
                                         @endif
                                         @if($jurnal->video)
-                                            <button type="button" class="btn btn-xs btn-outline-danger rounded-pill py-1 px-2 text-decoration-none border-0 bg-danger-subtle text-danger small" data-bs-toggle="modal" data-bs-target="#modalLihatVideo{{ $jurnal->id }}">
-                                                <iconify-icon icon="solar:video-frame-bold-duotone" class="align-middle me-1"></iconify-icon> Lihat Video
-                                            </button>
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle small">
+                                                <iconify-icon icon="solar:video-frame-bold-duotone" class="align-middle me-1"></iconify-icon> Ada Video
+                                            </span>
                                         @endif
                                         <button type="button" class="btn btn-xs btn-outline-primary rounded-pill py-1 px-2 text-decoration-none border-0 bg-primary-subtle text-primary small" data-bs-toggle="modal" data-bs-target="#modalDetailJurnal{{ $siswa->id }}">
                                             <iconify-icon icon="solar:chat-line-bold-duotone" class="align-middle me-1"></iconify-icon> Chat / Diskusi
@@ -74,9 +81,14 @@
                                 <span class="small text-muted fst-italic">{{ $jurnal->catatan ?? '-' }}</span>
                             </td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-sm {{ $jurnal ? 'btn-outline-primary' : 'btn-primary' }} rounded-pill shadow-none px-3" data-bs-toggle="modal" data-bs-target="#modalJurnal{{ $siswa->id }}">
-                                    <iconify-icon icon="solar:pen-new-round-bold-duotone"></iconify-icon> {{ $jurnal ? 'Edit' : 'Isi' }}
-                                </button>
+                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                    <button type="button" class="btn btn-sm btn-info text-white rounded-pill px-3 shadow-none fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalDetailJurnal{{ $siswa->id }}">
+                                        <iconify-icon icon="solar:eye-bold-duotone" class="fs-5"></iconify-icon> Detail Jurnal
+                                    </button>
+                                    <button type="button" class="btn btn-sm {{ $jurnal ? 'btn-outline-primary' : 'btn-primary' }} rounded-pill shadow-none px-3 fw-semibold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#modalJurnal{{ $siswa->id }}">
+                                        <iconify-icon icon="solar:pen-new-round-bold-duotone" class="fs-5"></iconify-icon> {{ $jurnal ? 'Edit' : 'Isi' }}
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -144,17 +156,20 @@
         </div>
     </div>
 
-    @if($jurnal)
-        {{-- MODAL DETAIL JURNAL & CHAT DISKUSI WALI MURID --}}
-        <div class="modal fade text-start" id="modalDetailJurnal{{ $siswa->id }}" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-                <div class="modal-content border-0 shadow rounded-4">
-                    <div class="modal-header bg-info bg-gradient text-white">
-                        <h5 class="modal-title fw-bold text-white">Detail Jurnal & Chat Ortu: {{ $siswa->nama_lengkap }}</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <h6 class="fw-bold mb-2">Kegiatan Anak:</h6>
+    {{-- MODAL DETAIL JURNAL --}}
+    <div class="modal fade text-start" id="modalDetailJurnal{{ $siswa->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header bg-info bg-gradient text-white">
+                    <h5 class="modal-title fw-bold text-white d-flex align-items-center gap-2">
+                        <iconify-icon icon="solar:notebook-bold-duotone" class="fs-4"></iconify-icon>
+                        Detail Jurnal: {{ $siswa->nama_lengkap }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    @if($jurnal)
+                        <h6 class="fw-bold mb-2 text-dark">Kegiatan Anak:</h6>
                         <p class="text-dark mb-4" style="line-height: 1.6;">{!! nl2br(e($jurnal->kegiatan)) !!}</p>
                         
                         @if($jurnal->catatan)
@@ -164,6 +179,38 @@
                                 <span class="fw-bold text-warning-emphasis">Catatan Khusus:</span>
                             </div>
                             <span class="fst-italic">{{ $jurnal->catatan }}</span>
+                        </div>
+                        @endif
+
+                        {{-- FOTO & VIDEO LANGSUNG DITAMPILKAN DI SINI --}}
+                        @if($jurnal->foto || $jurnal->video)
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3 text-dark">Dokumentasi Foto & Media:</h6>
+                            <div class="row g-3">
+                                @if($jurnal->foto)
+                                    <div class="col-12 col-md-6">
+                                        <div class="card border-0 shadow-sm rounded-3 overflow-hidden bg-light">
+                                            <img src="{{ $jurnal->foto_url }}" class="img-fluid w-100" style="max-height: 320px; object-fit: contain; background-color: #f8fafc;" alt="Foto Kegiatan">
+                                            <div class="card-footer bg-white border-0 py-2 text-center">
+                                                <small class="text-muted fw-semibold"><iconify-icon icon="solar:gallery-bold-duotone" class="align-middle me-1 text-info"></iconify-icon> Foto Kegiatan</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if($jurnal->video)
+                                    <div class="col-12 col-md-6">
+                                        <div class="card border-0 shadow-sm rounded-3 overflow-hidden bg-dark">
+                                            <video controls class="w-100" style="max-height: 320px;">
+                                                <source src="{{ $jurnal->video_url }}" type="video/mp4">
+                                                Browser tidak mendukung pemutaran video.
+                                            </video>
+                                            <div class="card-footer bg-dark border-top border-secondary py-2 text-center">
+                                                <small class="text-white fw-semibold"><iconify-icon icon="solar:video-frame-bold-duotone" class="align-middle me-1 text-danger"></iconify-icon> Video Kegiatan</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         @endif
                         
@@ -203,46 +250,70 @@
                                 <button class="btn btn-primary rounded-end-pill px-4 shadow-sm" type="submit">Kirim Balasan</button>
                             </div>
                         </form>
-                    </div>
+                    @else
+                        <div class="text-center py-5">
+                            <iconify-icon icon="solar:notebook-square-bold-duotone" class="display-1 text-warning opacity-50 mb-3"></iconify-icon>
+                            <h5 class="fw-bold text-dark">Data Jurnal Belum Diisi</h5>
+                            <p class="text-muted small mb-4">Jurnal harian untuk {{ $siswa->nama_lengkap }} belum diisi oleh guru.</p>
+                            <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalJurnal{{ $siswa->id }}">
+                                <iconify-icon icon="solar:pen-new-round-bold-duotone" class="align-middle me-1"></iconify-icon> Isi Jurnal Sekarang
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
-        
-        {{-- MODAL LIHAT FOTO --}}
-        @if($jurnal->foto)
-        <div class="modal fade" id="modalLihatFoto{{ $jurnal->id }}" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content border-0 bg-transparent shadow-none">
-                    <div class="modal-header border-0 pb-0 justify-content-end">
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" style="filter: invert(1);"></button>
-                    </div>
-                    <div class="modal-body text-center p-0">
-                        <img src="{{ $jurnal->foto_url }}" class="img-fluid rounded-3 shadow" style="max-height: 80vh; object-fit: contain;">
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-
-        {{-- MODAL LIHAT VIDEO --}}
-        @if($jurnal->video)
-        <div class="modal fade" id="modalLihatVideo{{ $jurnal->id }}" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content border-0 bg-dark shadow">
-                    <div class="modal-header border-secondary">
-                        <h6 class="modal-title text-white">Video Kegiatan</h6>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body text-center p-0">
-                        <video controls class="w-100 rounded-bottom-3" style="max-height: 75vh;">
-                            <source src="{{ $jurnal->video_url }}" type="video/mp4">
-                            Browser Anda tidak mendukung tag video.
-                        </video>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-    @endif
+    </div>
 @endforeach
+
+{{-- MODAL QUICK VIEW SEMUA JURNAL KELAS --}}
+<div class="modal fade" id="modalQuickViewSemuaJurnal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow rounded-4">
+            <div class="modal-header bg-info text-white rounded-top-4 p-4">
+                <div class="d-flex align-items-center gap-2">
+                    <iconify-icon icon="solar:eye-bold-duotone" class="fs-3"></iconify-icon>
+                    <h5 class="modal-title fw-bold text-white mb-0">View Data Jurnal Kelas {{ $kelas->nama_kelas }}</h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3 text-muted small">
+                    Topik: <strong>{{ $materi->judul_materi }}</strong> | Tanggal: {{ \Carbon\Carbon::parse($materi->tanggal_dibuat)->translatedFormat('d F Y') }}
+                </div>
+                <div class="list-group rounded-3 shadow-sm border-0">
+                    @forelse($siswas as $siswa)
+                        @php $j = $jurnals[$siswa->id] ?? null; @endphp
+                        <div class="list-group-item p-3 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold text-dark mb-0">{{ $siswa->nama_lengkap }}</h6>
+                                @if($j)
+                                    <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1 fw-semibold">Sudah Diisi</span>
+                                @else
+                                    <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-1 fw-semibold">Belum Diisi</span>
+                                @endif
+                            </div>
+                            @if($j)
+                                <p class="text-dark small mb-2">{!! nl2br(e($j->kegiatan)) !!}</p>
+                                @if($j->catatan)
+                                    <small class="text-muted d-block fst-italic mb-2">Catatan: {{ $j->catatan }}</small>
+                                @endif
+                                <button type="button" class="btn btn-xs btn-outline-info rounded-pill px-3 py-1" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#modalDetailJurnal{{ $siswa->id }}">
+                                    <iconify-icon icon="solar:eye-bold-duotone" class="align-middle me-1"></iconify-icon> View Detail & Chat
+                                </button>
+                            @else
+                                <p class="text-muted small fst-italic mb-0">Belum ada jurnal terisi.</p>
+                            @endif
+                        </div>
+                    @empty
+                        <div class="p-4 text-center text-muted">Belum ada siswa di kelas ini.</div>
+                    @endforelse
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light rounded-bottom-4 p-3 px-4">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

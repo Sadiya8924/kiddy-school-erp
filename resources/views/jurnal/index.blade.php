@@ -18,6 +18,9 @@
                 <iconify-icon icon="solar:add-circle-bold-duotone" class="fs-5"></iconify-icon> Buat Topik Jurnal Baru
             </button>
         @endif
+        <button type="button" class="btn btn-info text-white rounded-pill px-4 shadow-sm fw-bold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalQuickViewJurnal">
+            <iconify-icon icon="solar:eye-bold-duotone" class="fs-5"></iconify-icon> Lihat Rekap Jurnal
+        </button>
         <a href="{{ route('jurnal.zip') }}" class="btn btn-warning rounded-pill px-4 shadow-sm fw-bold d-flex align-items-center gap-2">
             <iconify-icon icon="solar:archive-bold-duotone" class="fs-5"></iconify-icon> Unduh Arsip (ZIP)
         </a>
@@ -219,7 +222,7 @@
                     </div>
 
                     <h6 class="fw-bold text-dark small mb-2 d-flex align-items-center gap-1">
-                        <iconify-icon icon="solar:pen-new-round-bold-duotone" class="text-primary"></iconify-icon> Pilih Kelas Untuk Isi Jurnal:
+                        <iconify-icon icon="solar:eye-bold-duotone" class="text-primary"></iconify-icon> Detail Jurnal Per Kelas:
                     </h6>
                     
                     <div class="d-grid gap-2">
@@ -229,7 +232,7 @@
                         
                         @forelse($kelas_match as $kelas)
                             <a href="{{ route('jurnal.kelas.show', ['materi_id' => $materi->id, 'kelas_id' => $kelas->id]) }}" class="btn btn-outline-primary rounded-pill d-flex justify-content-between align-items-center px-3 py-2 fw-semibold">
-                                <span><iconify-icon icon="solar:black-hole-bold-duotone" class="align-middle me-1"></iconify-icon> Kelas {{ $kelas->nama_kelas }}</span>
+                                <span><iconify-icon icon="solar:eye-bold-duotone" class="align-middle me-1 text-primary"></iconify-icon> Lihat Jurnal - Kelas {{ $kelas->nama_kelas }}</span>
                                 <iconify-icon icon="solar:alt-arrow-right-bold-duotone" class="fs-5"></iconify-icon>
                             </a>
                         @empty
@@ -269,6 +272,49 @@
     @endforelse
 </div>
 @endif
+
+{{-- MODAL QUICK VIEW JURNAL HARIAN --}}
+<div class="modal fade" id="modalQuickViewJurnal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-info text-white rounded-top-4 p-4">
+                <div class="d-flex align-items-center gap-2">
+                    <iconify-icon icon="solar:eye-bold-duotone" class="fs-3"></iconify-icon>
+                    <h5 class="modal-title fw-bold text-white mb-0">Detail Jurnal Harian Siswa</h5>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-3">Pilih topik materi dan kelas di bawah ini untuk melihat seluruh isian jurnal perkembangan harian anak:</p>
+                <div class="list-group rounded-3 shadow-sm border-0">
+                    @forelse($materis as $m)
+                        @php $kMatch = $list_kelas->where('kelompok', $m->kelompok); @endphp
+                        @foreach($kMatch as $k)
+                            <a href="{{ route('jurnal.kelas.show', ['materi_id' => $m->id, 'kelas_id' => $k->id]) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3">
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-1">{{ $m->judul_materi }}</h6>
+                                    <small class="text-muted">
+                                        <iconify-icon icon="solar:calendar-bold-duotone" class="align-middle text-primary me-1"></iconify-icon> 
+                                        {{ \Carbon\Carbon::parse($m->tanggal_dibuat)->translatedFormat('d M Y') }} | 
+                                        <span class="badge bg-primary-subtle text-primary rounded-pill px-2">Kelas {{ $k->nama_kelas }}</span>
+                                    </small>
+                                </div>
+                                <span class="btn btn-sm btn-outline-info rounded-pill px-3 fw-semibold">
+                                    <iconify-icon icon="solar:eye-bold-duotone" class="align-middle me-1"></iconify-icon> Lihat Detail
+                                </span>
+                            </a>
+                        @endforeach
+                    @empty
+                        <div class="p-4 text-center text-muted">Belum ada data jurnal.</div>
+                    @endforelse
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light rounded-bottom-4 p-3 px-4">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {{-- MODAL TAMBAH MATERI (KHUSUS ADMIN/GURU) --}}
 @if(auth()->user()->role == 'admin' || auth()->user()->isSuperAdmin() || auth()->user()->role == 'guru')

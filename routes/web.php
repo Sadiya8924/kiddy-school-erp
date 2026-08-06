@@ -179,49 +179,122 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/rapor/{id}', [RaporController::class, 'show'])->name('rapor.detail');
         Route::get('/arsip-rapor', [ArsipRaporController::class, 'index'])->name('arsip.index');
 
-        Route::get('/absensi-harian', function () {
+        Route::get('/absensi-harian', function (\Illuminate\Http\Request $request) {
             $user = auth()->user();
             $current_school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
             $semesterAktif = Semester::where('is_active', true)->first();
             $query = Siswa::where('school_id', $current_school_id)->where('status', 'aktif');
-            if ($user->kelas_id && !$user->isSuperAdmin()) {
+
+            if ($user->role === 'guru' && $user->kelas_id) {
                 $query->whereHas('kelas', function($q) use ($user, $semesterAktif) {
                     $q->where('anggota_kelas.kelas_id', $user->kelas_id);
                     if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
                 });
+                $list_kelas = collect();
+            } else {
+                $list_kelas = Kelas::where('school_id', $current_school_id)->get();
+                if ($request->has('kelas_id') && $request->kelas_id != '' && $request->kelas_id != 'all') {
+                    $query->whereHas('kelas', function($q) use ($request, $semesterAktif) {
+                        $q->where('anggota_kelas.kelas_id', $request->kelas_id);
+                        if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                    });
+                }
             }
-            $siswas = $query->get();
-            return view('absensi.absensi_harian', compact('siswas'));
+
+            if ($request->has('search') && $request->search != '') {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('nama_lengkap', 'like', "%{$search}%")->orWhere('nik', 'like', "%{$search}%");
+                });
+            }
+
+            $siswas = $query->with('kelas')->get();
+            return view('absensi.absensi_harian', compact('siswas', 'list_kelas'));
         })->name('absensi.harian');
 
         Route::get('/rekap-absensi', function (\Illuminate\Http\Request $request) {
             $user = auth()->user();
             $current_school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
             $semesterAktif = Semester::where('is_active', true)->first();
-            $mulai = $request->query('tgl_mulai');
-            $selesai = $request->query('tgl_selesai');
+            $school = \App\Models\School::find($current_school_id);
+            
+            $mulai = $request->query('tgl_mulai', date('Y-m-01'));
+            $selesai = $request->query('tgl_selesai', date('Y-m-d'));
+            $kelas_id = $request->query('kelas_id');
+            $search = $request->query('search');
+
+            if ($kelas_id && $kelas_id != 'all') {
+                $target_kelas = Kelas::find($kelas_id);
+                if ($target_kelas && $target_kelas->school) {
+                    $school = $target_kelas->school;
+                }
+            }
+            if (!$school && $user->school) {
+                $school = $user->school;
+            }
+            if (!$school) {
+                $school = \App\Models\School::first();
+            }
+
+            $list_kelas = Kelas::where('school_id', $school->id ?? $current_school_id)->get();
+
             $rekap = []; $range_tanggal = [];
             if ($mulai && $selesai) {
                 $period = new \DatePeriod(new \DateTime($mulai), new \DateInterval('P1D'), (new \DateTime($selesai))->modify('+1 day'));
-                foreach ($period as $date) $range_tanggal[] = $date->format('Y-m-d');
-                $query = Siswa::where('school_id', $current_school_id)->where('status', 'aktif');
-                if ($user->kelas_id && !$user->isSuperAdmin()) {
+                foreach ($period as $date) {
+                    // Exclude Weekend / Tanggal Merah (Sabtu=6, Minggu=7)
+                    if ($date->format('N') < 6) {
+                        $range_tanggal[] = $date->format('Y-m-d');
+                    }
+                }
+                $query = Siswa::where('school_id', $school->id ?? $current_school_id)->where('status', 'aktif');
+
+                if ($user->role === 'guru' && $user->kelas_id) {
                     $query->whereHas('kelas', function($q) use ($user, $semesterAktif) {
                         $q->where('anggota_kelas.kelas_id', $user->kelas_id);
                         if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
                     });
+                } elseif ($kelas_id && $kelas_id != 'all') {
+                    $query->whereHas('kelas', function($q) use ($kelas_id, $semesterAktif) {
+                        $q->where('anggota_kelas.kelas_id', $kelas_id);
+                        if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                    });
                 }
-                $siswas = $query->get();
+
+                if ($search) {
+                    $query->where(function($q) use ($search) {
+                        $q->where('nama_lengkap', 'like', "%{$search}%")->orWhere('nik', 'like', "%{$search}%");
+                    });
+                }
+
+                $siswas = $query->with('kelas')->get();
                 foreach ($siswas as $siswa) {
                     $data_absen = [];
+                    $total_h = 0; $total_i = 0; $total_s = 0; $total_a = 0;
                     foreach ($range_tanggal as $tgl) {
                         $cek = \App\Models\Absensi::where('siswa_id', $siswa->id)->where('tanggal', $tgl)->first();
-                        $data_absen[$tgl] = $cek ? $cek->status : '-';
+                        $st = $cek ? $cek->status : '-';
+                        $data_absen[$tgl] = $st;
+                        if ($st === 'hadir') $total_h++;
+                        elseif ($st === 'izin') $total_i++;
+                        elseif ($st === 'sakit') $total_s++;
+                        elseif ($st === 'alfa') $total_a++;
                     }
-                    $rekap[] = ['nama' => $siswa->nama_lengkap, 'absen' => $data_absen];
+                    $rekap[] = [
+                        'siswa_id' => $siswa->id,
+                        'nama' => $siswa->nama_lengkap,
+                        'nik' => $siswa->nik,
+                        'nisn' => $siswa->nisn ?? $siswa->nik,
+                        'kelas' => $siswa->kelas->first()->nama_kelas ?? '-',
+                        'absen' => $data_absen,
+                        'total_h' => $total_h,
+                        'total_i' => $total_i,
+                        'total_s' => $total_s,
+                        'total_a' => $total_a,
+                    ];
                 }
             }
-            return view('absensi.rekap', compact('rekap', 'mulai', 'selesai', 'range_tanggal'));
+            return view('absensi.rekap', compact('rekap', 'mulai', 'selesai', 'range_tanggal', 'list_kelas', 'kelas_id', 'search', 'school'));
         })->name('absensi.rekap');
 
         Route::get('/isi-rapor', function (\Illuminate\Http\Request $request) {

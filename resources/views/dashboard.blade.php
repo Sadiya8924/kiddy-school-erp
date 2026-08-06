@@ -4,241 +4,240 @@
 @php
     $current_school_id = Auth::user()->role === 'super_admin' ? session('active_school_id') : Auth::user()->school_id;
     $pendingMateriCount = 0;
+    $totalGuruCount = 0;
     if ($current_school_id) {
         $pendingMateriCount = \App\Models\Materi::where('school_id', $current_school_id)->where('status', 'Pending')->count();
+        $totalGuruCount = \App\Models\User::where('school_id', $current_school_id)->where('role', 'guru')->count();
+    } else {
+        $pendingMateriCount = \App\Models\Materi::where('status', 'Pending')->count();
+        $totalGuruCount = \App\Models\User::where('role', 'guru')->count();
     }
+
+    $totalSiswaCount = $school->total_siswa_aktif ?? 0;
+    $maxSiswaInClass = $kelas_stats->max('jumlah_siswa') ?: 1;
 @endphp
-<div class="row gx-3 gy-3 mt-0">
-    
+
+<div class="d-flex flex-column gap-3.5 mt-0">
+
     @if(session('success'))
-        <div class="col-12 mb-0">
-            <div class="alert alert-success border border-success-subtle shadow-none rounded py-2 px-3 mb-0 small fw-medium"><i class="ti ti-check me-2"></i>{{ session('success') }}</div>
+        <div class="alert alert-success border border-success-subtle shadow-none rounded-3 py-2 px-3 mb-0 small fw-semibold d-flex align-items-center justify-content-between">
+            <div><i class="ti ti-check me-2"></i>{{ session('success') }}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
 
-    {{-- 1. HEADER WELCOME (Gaya Baru Solid) --}}
-    <div class="col-12">
-        <div class="card border mb-0 shadow-none" style="background-color: var(--primary-blue-soft); border-color: var(--primary-blue-border) !important;">
-            <div class="card-body px-4 py-3 d-flex justify-content-between align-items-center">
+    {{-- ========================================================== --}}
+    {{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
+    {{-- ========================================================== --}}
+    <div class="card border-0 shadow-sm overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
+        <div class="card-body p-4 text-white">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
+                
+                {{-- User Greeting & School Context --}}
                 <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 46px; height: 46px; background-color: var(--primary-blue); color: white;">
-                        <iconify-icon icon="solar:user-hands-bold-duotone" class="fs-3"></iconify-icon>
+                    <div class="position-relative">
+                        <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 52px; height: 52px; font-size: 20px; border: 2px solid rgba(255,255,255,0.4);">
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                        </div>
+                        <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle" style="width: 12px; height: 12px;"></span>
                     </div>
                     <div>
-                        <h6 class="fw-bold mb-1" style="color: var(--primary-blue-dark); font-size: 16px;">Selamat datang, {{ Auth::user()->name }}</h6>
-                        <p class="mb-0" style="color: var(--primary-blue); font-size: 13px;">
-                            TA Aktif: <strong class="fw-bold">{{ $semesterAktif ? $semesterAktif->tahun_ajaran . ' (' . $semesterAktif->jenis . ')' : 'Belum Diset' }}</strong>
+                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                            <h5 class="fw-bold mb-0 text-white" style="font-size: 18px; letter-spacing: -0.02em;">Selamat datang, {{ Auth::user()->name }} 👋</h5>
+                        </div>
+                        <p class="mb-0 text-white text-opacity-80 small d-flex align-items-center gap-2 flex-wrap" style="font-size: 12.5px;">
+                            <span>Sekolah: <strong class="text-white font-semibold">{{ $school->nama_sekolah ?? 'TK Ceria' }}</strong></span>
+                            <span>•</span>
+                            <span>Tahun Ajaran: <strong class="text-warning font-semibold">{{ $semesterAktif ? $semesterAktif->tahun_ajaran . ' (' . $semesterAktif->jenis . ')' : '2027/2028 (Ganjil)' }}</strong></span>
+                            <span>•</span>
+                            <span><iconify-icon icon="solar:calendar-mark-line-duotone" class="align-middle text-warning me-1"></iconify-icon>{{ \Carbon\Carbon::now()->translatedFormat('l, d M Y') }}</span>
                         </p>
                     </div>
                 </div>
-                <div class="d-none d-md-flex align-items-center gap-3">
-                    <div class="d-flex align-items-center gap-2" style="color: var(--primary-blue); font-size: 13px; font-weight: 500;">
-                        <iconify-icon icon="solar:calendar-mark-line-duotone" class="fs-5"></iconify-icon>
-                        <span>{{ \Carbon\Carbon::now()->translatedFormat('l, d M Y') }}</span>
-                    </div>
+
+                {{-- Action Controls --}}
+                <div class="d-flex align-items-center gap-2 flex-wrap ms-lg-auto">
                     @if(in_array(Auth::user()->role, ['admin', 'super_admin']))
-                        <a href="/pengaturan" class="btn btn-primary rounded btn-sm fw-medium px-3 py-1.5 d-flex align-items-center gap-1" style="font-size: 12px;">
-                            <iconify-icon icon="solar:settings-bold-duotone"></iconify-icon> Pengaturan
+                        <a href="/pengaturan" class="btn btn-light text-primary rounded-3 btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5 shadow-sm" style="font-size: 12px;">
+                            <iconify-icon icon="solar:settings-bold-duotone" class="fs-5"></iconify-icon> Pengaturan
+                        </a>
+                        <a href="/pendaftaran-siswa" class="btn btn-warning text-dark rounded-3 btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5 shadow-sm" style="font-size: 12px;">
+                            <iconify-icon icon="solar:user-plus-bold-duotone" class="fs-5"></iconify-icon> + Siswa
                         </a>
                     @endif
                 </div>
+
             </div>
         </div>
     </div>
 
     {{-- ========================================================== --}}
-    {{-- 2. DASHBOARD GURU --}}
+    {{-- 2. KPI STATISTICS CARDS WITH COLORED TOP BORDER --}}
     {{-- ========================================================== --}}
-    @if(Auth::user()->role == 'guru')
-        <div class="col-12 mt-3">
-            @if($school->is_rapor_open)
-                <div class="alert bg-success-subtle text-success border border-success-subtle shadow-none rounded py-2 px-3 d-flex align-items-center mb-0" style="font-size: 13px;">
-                    <iconify-icon icon="solar:unlock-bold-duotone" class="fs-5 me-2"></iconify-icon>
-                    <div><strong class="fw-bold">Akses Rapor Terbuka.</strong> Anda dapat mengisi nilai rapor saat ini.</div>
-                </div>
-            @else
-                <div class="alert bg-danger-subtle text-danger border border-danger-subtle shadow-none rounded py-2 px-3 d-flex align-items-center mb-0" style="font-size: 13px;">
-                    <iconify-icon icon="solar:lock-keyhole-bold-duotone" class="fs-5 me-2"></iconify-icon>
-                    <div><strong class="fw-bold">Akses Rapor Ditutup.</strong> Anda hanya dapat melihat data saat ini.</div>
-                </div>
-            @endif
-        </div>
-
-        <div class="col-md-6 mt-3">
-            <a href="/data-siswa" class="card mb-0 h-100 border shadow-none card-clickable d-block text-decoration-none">
-                <div class="card-body p-4">
-                    <h6 class="fw-bold mb-4 text-dark d-flex align-items-center gap-2 border-bottom pb-3" style="font-size: 15px;">
-                        <iconify-icon icon="solar:black-hole-bold-duotone" class="text-primary fs-5"></iconify-icon> Info Kelas Anda
-                    </h6>
-                    @if($guru_kelas)
-                        <h4 class="fw-bold text-dark mb-1">{{ $guru_kelas->nama_kelas }}</h4>
-                        <p class="text-muted fw-medium mb-4" style="font-size: 13px;">Tingkat {{ $guru_kelas->tingkat }} - Klp {{ $guru_kelas->kelompok }}</p>
-                        
-                        <div class="row text-center border-top pt-3 mt-1 g-2">
-                            <div class="col-6 border-end">
-                                <h3 class="fw-bold mb-0" style="color: var(--primary-blue);">{{ $guru_kelas->jumlah_siswa }}</h3>
-                                <span class="text-muted fw-medium" style="font-size: 12px;">Total Siswa</span>
-                            </div>
-                            <div class="col-6">
-                                @php $raporTerisi = $semesterAktif ? \App\Models\Rapor::whereHas('siswa', fn($q) => $q->whereHas('kelas', fn($q2) => $q2->where('kelas_id', $guru_kelas->id)))->where('semester_id', $semesterAktif->id)->count() : 0; @endphp
-                                <h3 class="fw-bold text-success mb-0">{{ $raporTerisi }}</h3>
-                                <span class="text-muted fw-medium" style="font-size: 12px;">Rapor Terisi</span>
-                            </div>
-                        </div>
-                    @else
-                        <div class="text-center py-4">
-                            <iconify-icon icon="solar:ghost-smile-bold-duotone" class="text-warning fs-1 mb-2"></iconify-icon>
-                            <p class="mb-0 text-muted small fw-medium">Anda belum ditugaskan ke kelas manapun.</p>
-                        </div>
-                    @endif
-                </div>
-            </a>
-        </div>
-
-    {{-- ========================================================== --}}
-    {{-- 3. DASHBOARD ADMIN / KEPSEK --}}
-    {{-- ========================================================== --}}
-    @elseif(in_array(Auth::user()->role, ['admin', 'kepsek', 'super_admin']))
+    <div class="row g-3">
         
-        <div class="col-md-3 mt-3">
-            <a href="/data-siswa" class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between card-clickable text-decoration-none">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: var(--primary-blue-soft); color: var(--primary-blue-border);">
-                        <iconify-icon icon="solar:users-group-rounded-bold-duotone" class="fs-4"></iconify-icon>
+        {{-- Total Siswa --}}
+        <div class="col-xl-3 col-md-6">
+            <a href="/data-siswa" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+                <div class="card-body p-3.5 d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted font-semibold d-block mb-1" style="font-size: 11.5px; letter-spacing: 0.02em;">TOTAL SISWA AKTIF</span>
+                        <h2 class="fw-bold text-dark mb-0" style="letter-spacing: -0.03em; font-size: 26px;">{{ $totalSiswaCount }}</h2>
+                        <span class="text-muted small mt-1 d-block" style="font-size: 11px;">Peserta didik terdaftar</span>
                     </div>
-                </div>
-                <div>
-                    <h2 class="fw-bold text-dark mb-0">{{ $school->total_siswa_aktif ?? 0 }}</h2>
-                    <span class="text-muted fw-medium" style="font-size: 13px;">Total Siswa Aktif</span>
+                    <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background-color: #eff6ff; color: #3b82f6; width: 54px; height: 54px;">
+                        <iconify-icon icon="solar:users-group-rounded-bold-duotone" class="fs-2"></iconify-icon>
+                    </div>
                 </div>
             </a>
         </div>
 
-        <div class="col-md-3 mt-3">
-            <a href="/kelas" class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between card-clickable text-decoration-none">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #dcfce7; color: #86efac;">
-                        <iconify-icon icon="solar:black-hole-bold-duotone" class="fs-4"></iconify-icon>
+        {{-- Total Kelas --}}
+        <div class="col-xl-3 col-md-6">
+            <a href="/kelas" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid #10b981 !important; border-radius: 16px !important;">
+                <div class="card-body p-3.5 d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted font-semibold d-block mb-1" style="font-size: 11.5px; letter-spacing: 0.02em;">ROMBONGAN BELAJAR</span>
+                        <h2 class="fw-bold text-dark mb-0" style="letter-spacing: -0.03em; font-size: 26px;">{{ $school->total_kelas ?? 0 }}</h2>
+                        <span class="text-muted small mt-1 d-block" style="font-size: 11px;">Total kelas aktif</span>
                     </div>
-                </div>
-                <div>
-                    <h2 class="fw-bold text-dark mb-0">{{ $school->total_kelas ?? 0 }}</h2>
-                    <span class="text-muted fw-medium" style="font-size: 13px;">Jumlah Rombel</span>
+                    <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background-color: #ecfdf5; color: #10b981; width: 54px; height: 54px;">
+                        <iconify-icon icon="solar:black-hole-bold-duotone" class="fs-2"></iconify-icon>
+                    </div>
                 </div>
             </a>
         </div>
 
-        <div class="col-md-3 mt-3">
-            <div onclick="if(event.target.tagName !== 'BUTTON' && event.target.tagName !== 'FORM') window.location.href='/isi-rapor'" class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between card-clickable" style="background-color: {{ $school->is_rapor_open ? '#f0fdf4' : '#fef2f2' }}; border-color: {{ $school->is_rapor_open ? '#bbf7d0' : '#fecaca' }} !important; cursor: pointer;">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: {{ $school->is_rapor_open ? '#dcfce7' : '#fee2e2' }}; color: {{ $school->is_rapor_open ? '#166534' : '#991b1b' }};">
-                        <iconify-icon icon="{{ $school->is_rapor_open ? 'solar:unlock-bold-duotone' : 'solar:lock-keyhole-bold-duotone' }}" class="fs-4"></iconify-icon>
+        {{-- Akses Rapor --}}
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100 border shadow-sm" style="border-top: 3.5px solid #f59e0b !important; border-radius: 16px !important;">
+                <div class="card-body p-3.5 d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted font-semibold d-block mb-1" style="font-size: 11.5px; letter-spacing: 0.02em;">AKSES PENGISIAN RAPOR</span>
+                        <h4 class="fw-bold mb-1" style="letter-spacing: -0.02em; color: {{ $school->is_rapor_open ? '#15803d' : '#b91c1c' }}; font-size: 20px;">
+                            {{ $school->is_rapor_open ? 'TERBUKA' : 'DITUTUP' }}
+                        </h4>
+                        @if(in_array(Auth::user()->role, ['admin', 'super_admin']))
+                            <form action="{{ route('rapor.toggle') }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="btn btn-xs rounded-2 font-semibold py-1 px-2.5 bg-slate-100 text-dark border shadow-xs" style="font-size: 10.5px;">Ganti Status</button>
+                            </form>
+                        @endif
                     </div>
-                    @if(in_array(Auth::user()->role, ['admin', 'super_admin']))
-                        <form action="{{ route('rapor.toggle') }}" method="POST" class="m-0">
-                            @csrf
-                            <button type="submit" class="btn btn-sm rounded fw-bold py-1 px-3" style="font-size: 11px; background-color: #fff; border: 1px solid {{ $school->is_rapor_open ? '#86efac' : '#fca5a5' }}; color: {{ $school->is_rapor_open ? '#166534' : '#991b1b' }};">Ubah</button>
-                        </form>
-                    @endif
-                </div>
-                <div>
-                    <h2 class="fw-bold mb-0" style="color: {{ $school->is_rapor_open ? '#166534' : '#991b1b' }};">{{ $school->is_rapor_open ? 'TERBUKA' : 'DITUTUP' }}</h2>
-                    <span class="fw-medium" style="font-size: 13px; color: {{ $school->is_rapor_open ? '#15803d' : '#b91c1c' }};">Status Pengisian Rapor</span>
+                    <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background-color: {{ $school->is_rapor_open ? '#f0fdf4' : '#fef2f2' }}; color: {{ $school->is_rapor_open ? '#16a34a' : '#dc2626' }}; width: 54px; height: 54px;">
+                        <iconify-icon icon="{{ $school->is_rapor_open ? 'solar:lock-keyhole-minimalistic-unlocked-bold-duotone' : 'solar:lock-keyhole-minimalistic-bold-duotone' }}" class="fs-2"></iconify-icon>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3 mt-3">
-            <a href="{{ route('materi.kepsek.index') }}" class="card p-4 mb-0 h-100 border shadow-none d-flex flex-column justify-content-between card-clickable text-decoration-none">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #fef3c7; color: #d97706;">
-                        <iconify-icon icon="solar:shield-check-bold-duotone" class="fs-4"></iconify-icon>
+        {{-- ACC Materi --}}
+        <div class="col-xl-3 col-md-6">
+            <a href="{{ route('materi.kepsek.index') }}" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid #8b5cf6 !important; border-radius: 16px !important;">
+                <div class="card-body p-3.5 d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted font-semibold d-block mb-1" style="font-size: 11.5px; letter-spacing: 0.02em;">ANTEAN ACC MATERI</span>
+                        <h2 class="fw-bold text-dark mb-0" style="letter-spacing: -0.03em; font-size: 26px;">{{ $pendingMateriCount }}</h2>
+                        <span class="text-muted small mt-1 d-block" style="font-size: 11px;">Menunggu persetujuan</span>
                     </div>
-                    @if($pendingMateriCount > 0)
-                        <span class="badge bg-warning text-white rounded-pill px-2.5 py-1" style="font-size: 10px; font-weight: 600;">
-                            {{ $pendingMateriCount }} Menunggu
-                        </span>
-                    @endif
-                </div>
-                <div>
-                    <h2 class="fw-bold text-dark mb-0">{{ $pendingMateriCount }}</h2>
-                    <span class="text-muted fw-medium" style="font-size: 13px;">Persetujuan Materi</span>
+                    <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background-color: #f3e8ff; color: #8b5cf6; width: 54px; height: 54px;">
+                        <iconify-icon icon="solar:shield-check-bold-duotone" class="fs-2"></iconify-icon>
+                    </div>
                 </div>
             </a>
         </div>
 
-        {{-- Row Distribusi Kelas --}}
-        <div class="col-lg-7 mt-3">
-            <div class="card mb-0 h-100 border shadow-none">
+    </div>
+
+    {{-- ========================================================== --}}
+    {{-- 3. STUDENT DISTRIBUTION WITH PROGRESS BARS & ANNOUNCEMENT EMPTY STATE --}}
+    {{-- ========================================================== --}}
+    <div class="row g-3">
+        
+        {{-- Student Distribution Analytics (Progress Bars) --}}
+        <div class="col-lg-7">
+            <div class="card h-100 border shadow-sm" style="border-radius: 16px !important;">
                 <div class="card-body p-4">
-                    <h6 class="fw-bold mb-3 text-dark border-bottom pb-3" style="font-size: 15px;">Distribusi Siswa per Kelas</h6>
-                    <div class="row gx-2 gy-2">
-                        @forelse($kelas_stats as $k)
-                        <div class="col-md-4 col-6">
-                            <a href="/data-siswa?kelas_id={{ $k->id }}" class="card mb-0 shadow-none card-clickable text-decoration-none" style="border: 1px solid var(--border-color) !important; background-color: #f8fafc;">
-                                <div class="card-body p-3 d-flex flex-column align-items-center text-center">
-                                    <h6 class="fw-bold mb-2 text-dark" style="font-size: 13px;">{{ $k->nama_kelas }}</h6>
-                                    <span class="badge rounded px-3 py-1.5" style="background-color: var(--primary-blue-soft); color: var(--primary-blue-dark); font-size: 12px; font-weight: 600;">
-                                        {{ $k->jumlah_siswa }} Anak
-                                    </span>
-                                </div>
-                            </a>
+                    <div class="d-flex justify-content-between align-items-center mb-3.5 border-bottom pb-3">
+                        <div>
+                            <h6 class="fw-bold text-dark mb-0.5 d-flex align-items-center gap-2" style="font-size: 15px;">
+                                <iconify-icon icon="solar:chart-2-bold-duotone" class="text-primary fs-5"></iconify-icon> Distribusi Siswa per Kelas
+                            </h6>
+                            <span class="text-muted small" style="font-size: 11.5px;">Proporsi pendaftaran rombongan belajar</span>
                         </div>
+                        <a href="/kelas" class="text-decoration-none text-primary font-semibold small" style="font-size: 12px;">Kelola Rombel →</a>
+                    </div>
+
+                    <div class="d-flex flex-column gap-3">
+                        @forelse($kelas_stats as $k)
+                            @php
+                                $percent = min(100, round(($k->jumlah_siswa / max(1, $maxSiswaInClass)) * 100));
+                            @endphp
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-bold text-dark" style="font-size: 13px;">{{ $k->nama_kelas }}</span>
+                                    <span class="badge bg-primary-subtle text-primary font-semibold" style="font-size: 11px;">{{ $k->jumlah_siswa }} Siswa</span>
+                                </div>
+                                <div class="progress" style="height: 10px; border-radius: 10px; background-color: #f1f5f9;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ max(10, $percent) }}%; border-radius: 10px; transition: width 0.6s ease;" aria-valuenow="{{ $percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
                         @empty
-                        <div class="col-12"><p class="text-muted small py-3 text-center">Belum ada data kelas.</p></div>
+                            <div class="text-center text-muted py-4 small">Belum ada data kelas terdaftar.</div>
                         @endforelse
                     </div>
                 </div>
             </div>
         </div>
-    @endif
 
-    {{-- ========================================================== --}}
-    {{-- 4. PENGUMUMAN WIDGET (Semua Role) --}}
-    {{-- ========================================================== --}}
-    <div class="col-lg-{{ Auth::user()->role == 'guru' ? '6' : '5' }} mt-3">
-        <div class="card mb-0 h-100 border shadow-none">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-                    <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
-                        <iconify-icon icon="solar:bell-line-duotone" class="text-warning fs-5"></iconify-icon> Papan Pengumuman
-                    </h6>
-                    @if(in_array(Auth::user()->role, ['admin', 'super_admin']))
-                        <a href="/pengumuman" class="btn btn-outline-light border rounded btn-sm px-3 py-1.5 text-muted fw-medium" style="font-size: 12px;">Kelola</a>
-                    @endif
-                </div>
-                
-                <div class="d-flex flex-column gap-3">
-                    @forelse($pengumuman->take(4) as $p)
-                        <div class="d-flex flex-column border-bottom border-light-subtle pb-3">
-                            <h6 class="fw-semibold mb-1 text-dark text-truncate" style="font-size: 13px;">{{ $p->judul }}</h6>
-                            <p class="text-muted mb-1 text-truncate" style="font-size: 12px;">{{ $p->isi }}</p>
-                            <div class="d-flex align-items-center gap-1 text-muted mt-1" style="font-size: 11px;">
-                                <iconify-icon icon="solar:calendar-mark-line-duotone"></iconify-icon>
-                                <span>{{ \Carbon\Carbon::parse($p->tanggal_kegiatan)->translatedFormat('d M Y') }}</span>
+        {{-- Announcement Section (With Beautiful Empty State) --}}
+        <div class="col-lg-5">
+            <div class="card h-100 border shadow-sm" style="border-radius: 16px !important;">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-3.5 border-bottom pb-3">
+                        <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2" style="font-size: 15px;">
+                            <iconify-icon icon="solar:bell-bold-duotone" class="text-warning fs-5"></iconify-icon> Pengumuman Sekolah
+                        </h6>
+                        <a href="/pengumuman" class="text-decoration-none text-primary font-semibold small" style="font-size: 12px;">Kelola →</a>
+                    </div>
+
+                    @if($pengumuman->count() > 0)
+                        <div class="d-flex flex-column gap-2.5">
+                            @foreach($pengumuman->take(3) as $p)
+                                <div class="p-3 rounded-3 border border-slate-100 bg-slate-50">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <h6 class="fw-bold text-dark mb-0 text-truncate" style="font-size: 13px; max-width: 220px;">{{ $p->judul }}</h6>
+                                        <span class="text-muted" style="font-size: 10.5px;">{{ \Carbon\Carbon::parse($p->tanggal_kegiatan)->translatedFormat('d M Y') }}</span>
+                                    </div>
+                                    <p class="text-muted mb-0 text-truncate" style="font-size: 11.5px;">{{ $p->isi }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        {{-- BEAUTIFUL EMPTY STATE --}}
+                        <div class="my-auto text-center py-4 px-2">
+                            <div class="rounded-circle bg-warning bg-opacity-10 text-warning d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 58px; height: 58px;">
+                                <iconify-icon icon="solar:bell-off-bold-duotone" class="fs-2"></iconify-icon>
                             </div>
+                            <h6 class="fw-bold text-dark mb-1" style="font-size: 14px;">Belum Ada Pengumuman</h6>
+                            <p class="text-muted small mb-3 mx-auto" style="max-width: 240px; font-size: 11.5px;">Tidak ada informasi kegiatan sekolah yang dipublikasikan saat ini.</p>
+                            <a href="/pengumuman" class="btn btn-outline-primary btn-sm rounded-3 font-semibold px-3 py-1.5" style="font-size: 11.5px;">
+                                + Buat Pengumuman
+                            </a>
                         </div>
-                    @empty
-                        <div class="text-center py-4">
-                            <p class="text-muted small fw-medium mb-0">Belum ada pengumuman.</p>
-                        </div>
-                    @endforelse
+                    @endif
                 </div>
             </div>
         </div>
+
     </div>
 
-</div>
+    {{-- ========================================================== --}}
+    {{-- 5. SUBTLE LOW-KEY FOOTER --}}
+    {{-- ========================================================== --}}
+    <footer class="text-center py-2 mt-2">
+        <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria Educational Management Platform • Internal Web System v1.0</span>
+    </footer>
 
-<style>
-    .card-clickable {
-        transition: all 0.2s ease-in-out !important;
-        cursor: pointer;
-    }
-    .card-clickable:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
-        border-color: var(--primary-blue-border) !important;
-    }
-</style>
+</div>
 @endsection

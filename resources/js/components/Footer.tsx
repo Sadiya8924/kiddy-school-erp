@@ -7,24 +7,36 @@ interface FooterProps {
 }
 
 export default function Footer({ onNavigate }: FooterProps) {
+  const settings = (typeof window !== 'undefined' && (window as any).APP_SETTINGS) || {}
+
+  const siteTitle = settings.site_title || 'Yayasan Al-Hikmah 2'
+  const siteLogo = settings.site_logo
+  const footerAddress = settings.footer_address || 'Jl. KH. Wahid Hasyim No. 45, Sukun, Malang 65117'
+  const footerPhone = settings.footer_phone || '(0341) 567-890'
+  const footerWhatsapp = settings.footer_whatsapp || '0812-3456-7890'
+
   return (
     <footer style={{ background: '#0F172A', color: '#E2E8F0' }}>
       <div className="max-w-[1320px] mx-auto px-6 sm:px-10 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2.5 mb-4">
-              <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm"
-                style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}
-              >
-                AH
-              </div>
+              {siteLogo ? (
+                <img src={siteLogo} alt={siteTitle} style={{ height: 36, width: 'auto', objectFit: 'contain', borderRadius: 6 }} />
+              ) : (
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm"
+                  style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}
+                >
+                  AH
+                </div>
+              )}
               <span className="font-700 text-white text-sm" style={{ fontWeight: 700 }}>
-                Yayasan Al-Hikmah 2
+                {siteTitle}
               </span>
             </div>
             <p className="text-sm leading-relaxed mb-6" style={{ color: '#94A3B8', maxWidth: 300 }}>
-              Ciptakan Generasi Cerdas, Ceria, & Berakhlak Mulia Sejali. Berdiri sejak 2010 dengan komitmen penuh untuk mencetak generasi Islami yang unggul.
+              Ciptakan Generasi Cerdas, Ceria, & Berakhlak Mulia Sejati. Berdiri sejak 2010 dengan komitmen penuh untuk mencetak generasi Islami yang unggul.
             </p>
             <div className="flex gap-3">
               {['instagram', 'facebook', 'youtube', 'whatsapp'].map((s) => (
@@ -72,9 +84,9 @@ export default function Footer({ onNavigate }: FooterProps) {
             </h4>
             <ul className="space-y-3">
               {[
-                { icon: '📍', text: 'Jl. KH. Wahid Hasyim No. 45, Sukun, Malang 65117' },
-                { icon: '📞', text: '(0341) 567-8901' },
-                { icon: '💬', text: '0812-3456-78902' },
+                { icon: '📍', text: footerAddress },
+                { icon: '📞', text: footerPhone },
+                { icon: '💬', text: footerWhatsapp },
                 { icon: '✉️', text: 'admin@alhikmah.sch.id' },
                 { icon: '🕐', text: 'Senin–Sabtu, 07.00–15.00' },
               ].map(({ icon, text }) => (

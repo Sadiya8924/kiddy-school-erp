@@ -31,37 +31,49 @@ use Carbon\Carbon;
 */
 Route::get('/pengumuman', [AnnouncementController::class, 'index'])->name('pengumuman.index');
 Route::get('/', function (\Illuminate\Http\Request $request) {
+    $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
     $schools = DB::table('schools')->where('status', 'aktif')->get();
-    return view('welcome', compact('schools'));
+    return view('welcome', compact('schools', 'settings'));
 });
 Route::get('/pendaftaran-siswa', [SiswaController::class, 'createPendaftaran'])->name('pendaftaran');
 Route::post('/pendaftaran-siswa', [SiswaController::class, 'storePendaftaran'])->name('pendaftaran.store');
 
 Route::get('/login', function (\Illuminate\Http\Request $request) {
+    if (Auth::check()) {
+        return redirect('/dashboard');
+    }
+    $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
     $schools = DB::table('schools')->where('status', 'aktif')->get();
-    return view('welcome', compact('schools'));
+    return view('welcome', compact('schools', 'settings'));
 })->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/register', function (\Illuminate\Http\Request $request) {
+    if (Auth::check()) {
+        return redirect('/dashboard');
+    }
+    $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
     $schools = DB::table('schools')->where('status', 'aktif')->get();
-    return view('welcome', compact('schools'));
+    return view('welcome', compact('schools', 'settings'));
 });
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/about', function (\Illuminate\Http\Request $request) {
+    $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
     $schools = DB::table('schools')->where('status', 'aktif')->get();
-    return view('welcome', compact('schools'));
+    return view('welcome', compact('schools', 'settings'));
 });
 
 Route::get('/contact', function (\Illuminate\Http\Request $request) {
+    $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
     $schools = DB::table('schools')->where('status', 'aktif')->get();
-    return view('welcome', compact('schools'));
+    return view('welcome', compact('schools', 'settings'));
 });
 
 Route::get('/registration', function (\Illuminate\Http\Request $request) {
+    $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
     $schools = DB::table('schools')->where('status', 'aktif')->get();
-    return view('welcome', compact('schools'));
+    return view('welcome', compact('schools', 'settings'));
 });
 
 

@@ -90,7 +90,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         $user = Auth::user();
         
-        if ($user->role === 'super_admin') {
+        if ($user->isSuperAdmin()) {
             if (session('active_school_id')) {
                 $current_school_id = session('active_school_id');
             } else {

@@ -194,6 +194,8 @@
     $teleponSekolah = !empty($school->telepon) ? '| Telp: ' . $school->telepon : '';
 @endphp
 
+<div class="d-flex flex-column gap-3.5 mt-0 pb-4">
+
 {{-- HEADER KOP UNTUK PRINT / CETAK KELAS (COMPACT & RINGKAS) --}}
 <div class="print-only print-header-kop text-center">
     <h4 class="fw-bold text-uppercase mb-1 text-dark">{{ $school->nama_sekolah ?? 'TK CERIA' }}</h4>
@@ -202,34 +204,59 @@
     <p class="small mb-0">Periode: {{ $formatTglIndo($mulai) }} s/d {{ $formatTglIndo($selesai) }}</p>
 </div>
 
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3 no-print">
-    <div>
-        <h2 class="fw-bold text-dark mb-1">Rekap Presensi Siswa</h2>
-        <span class="text-muted fs-3">
-            {{ $school->nama_sekolah ?? 'TK CERIA' }} — Pantau & cetak rekapitulasi kehadiran per kelas maupun per siswa.
-        </span>
-    </div>
+{{-- ========================================================== --}}
+{{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
+{{-- ========================================================== --}}
+<div class="card border-0 shadow-sm overflow-hidden no-print" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
+    <div class="card-body p-4 text-white">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
+            
+            {{-- User Greeting & Context --}}
+            <div class="d-flex align-items-center gap-3">
+                <div class="position-relative">
+                    <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 52px; height: 52px; font-size: 22px; border: 2px solid rgba(255,255,255,0.4);">
+                        <iconify-icon icon="solar:file-check-bold-duotone"></iconify-icon>
+                    </div>
+                    <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle" style="width: 12px; height: 12px;"></span>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                        <h5 class="fw-bold mb-0 text-white" style="font-size: 18px; letter-spacing: -0.02em;">Rekap Presensi Siswa</h5>
+                    </div>
+                    <p class="mb-0 text-white text-opacity-80 small d-flex align-items-center gap-2 flex-wrap" style="font-size: 12.5px;">
+                        <span>{{ $school->nama_sekolah ?? 'TK CERIA' }} — Pantau &amp; cetak rekapitulasi kehadiran per kelas maupun per siswa.</span>
+                    </p>
+                </div>
+            </div>
 
-    @if(isset($rekap) && count($rekap) > 0)
-    <div class="d-flex gap-2">
-        <button onclick="window.print()" class="btn btn-danger rounded-pill px-4 shadow-sm fw-bold d-flex align-items-center gap-2">
-            <iconify-icon icon="solar:printer-bold-duotone" class="fs-5"></iconify-icon> Cetak Rekap Semua Siswa
-        </button>
+            {{-- Action Controls --}}
+            @if(isset($rekap) && count($rekap) > 0)
+            <div class="d-flex align-items-center gap-2 flex-wrap ms-lg-auto">
+                <button onclick="window.print()" class="btn btn-warning text-dark rounded-3 btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5 shadow-sm" style="font-size: 12px;">
+                    <iconify-icon icon="solar:printer-bold-duotone" class="fs-5"></iconify-icon> Cetak Rekap Semua Siswa
+                </button>
+            </div>
+            @endif
+
+        </div>
     </div>
-    @endif
 </div>
 
+@include('partials.owner_stepped_filter')
+
+@if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
+
 <!-- FORM FILTER (KELAS, SEARCH SISWA, TANGGAL) -->
-<div class="card w-100 border-0 shadow-sm position-relative overflow-hidden mb-4 no-print card-filter rounded-4">
-    <div class="card-body p-4">
-        <h5 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-            <iconify-icon icon="solar:filter-bold-duotone" class="text-primary"></iconify-icon> Filter Data Presensi ({{ $school->nama_sekolah ?? 'TK CERIA' }})
-        </h5>
+<div class="card border shadow-sm no-print card-filter" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+    <div class="card-body p-3.5">
+        <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2" style="font-size: 14.5px;">
+            <iconify-icon icon="solar:filter-bold-duotone" class="text-primary fs-5"></iconify-icon> Filter Data Presensi ({{ $school->nama_sekolah ?? 'TK CERIA' }})
+        </h6>
         <form action="{{ route('absensi.rekap') }}" method="GET" class="row g-3 align-items-end">
             @if(isset($list_kelas) && count($list_kelas) > 0)
             <div class="col-md-3">
-                <label class="form-label fw-semibold text-dark small mb-1">Filter Kelas</label>
-                <select name="kelas_id" class="form-select border-secondary rounded-3 shadow-none">
+                <label class="form-label font-semibold text-dark small mb-1">Filter Kelas</label>
+                <select name="kelas_id" class="form-select rounded-3 text-dark shadow-none font-medium" style="font-size: 12.5px;">
                     <option value="all">-- Semua Kelas --</option>
                     @foreach($list_kelas as $k)
                         <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>Kelas {{ $k->nama_kelas }}</option>
@@ -239,25 +266,25 @@
             @endif
 
             <div class="col-md-3">
-                <label class="form-label fw-semibold text-dark small mb-1">Cari Nama Siswa / NIK</label>
+                <label class="form-label font-semibold text-dark small mb-1">Cari Nama Siswa / NIK</label>
                 <div class="input-group">
-                    <span class="input-group-text bg-light border-secondary"><iconify-icon icon="solar:magnifer-linear" class="text-muted"></iconify-icon></span>
-                    <input type="text" name="search" id="searchBackendInput" class="form-control border-secondary shadow-none" placeholder="Kata kunci nama..." value="{{ request('search') }}">
+                    <span class="input-group-text bg-light border-end-0"><iconify-icon icon="solar:magnifer-linear" class="text-muted"></iconify-icon></span>
+                    <input type="text" name="search" id="searchBackendInput" class="form-control border-start-0 shadow-none font-medium" placeholder="Kata kunci nama..." value="{{ request('search') }}" style="font-size: 12.5px;">
                 </div>
             </div>
 
             <div class="col-md-2">
-                <label class="form-label fw-semibold text-dark small mb-1">Dari Tanggal</label>
-                <input type="text" name="tgl_mulai" id="tglMulaiPicker" class="form-control border-secondary rounded-3 text-dark shadow-none bg-white" value="{{ $mulai ?? date('Y-m-01') }}" required readonly>
+                <label class="form-label font-semibold text-dark small mb-1">Dari Tanggal</label>
+                <input type="text" name="tgl_mulai" id="tglMulaiPicker" class="form-control rounded-3 text-dark shadow-none bg-white font-medium" value="{{ $mulai ?? date('Y-m-01') }}" required readonly style="font-size: 12.5px;">
             </div>
 
             <div class="col-md-2">
-                <label class="form-label fw-semibold text-dark small mb-1">Sampai Tanggal</label>
-                <input type="text" name="tgl_selesai" id="tglSelesaiPicker" class="form-control border-secondary rounded-3 text-dark shadow-none bg-white" value="{{ $selesai ?? date('Y-m-d') }}" required readonly>
+                <label class="form-label font-semibold text-dark small mb-1">Sampai Tanggal</label>
+                <input type="text" name="tgl_selesai" id="tglSelesaiPicker" class="form-control rounded-3 text-dark shadow-none bg-white font-medium" value="{{ $selesai ?? date('Y-m-d') }}" required readonly style="font-size: 12.5px;">
             </div>
 
             <div class="col-md-2 d-grid">
-                <button type="submit" class="btn btn-primary fw-bold rounded-pill py-2 shadow-sm">
+                <button type="submit" class="btn btn-primary font-semibold rounded-3 py-1.5 shadow-xs" style="font-size: 12.5px;">
                     Tampilkan Rekap
                 </button>
             </div>
@@ -282,27 +309,35 @@
 <!-- STATS SUMMARY CARDS (MODE DASHBOARD) -->
 <div class="row g-3 mb-4 no-print">
     <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-success">
-            <div class="text-muted small fw-bold mb-1 text-success">TOTAL HADIR</div>
-            <h3 class="fw-bold text-dark mb-0">{{ $totalH }} <span class="fs-4 fw-normal text-muted">kali</span></h3>
+        <div class="card border shadow-sm h-100" style="border-top: 3.5px solid #10b981 !important; border-radius: 16px !important;">
+            <div class="card-body p-3.5">
+                <span class="text-muted font-semibold d-block mb-1" style="font-size: 11px;">TOTAL HADIR</span>
+                <h3 class="fw-bold mb-0 text-success">{{ $totalH }} <span class="fs-6 font-normal text-muted">kali</span></h3>
+            </div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-warning">
-            <div class="text-muted small fw-bold mb-1 text-warning">TOTAL IZIN</div>
-            <h3 class="fw-bold text-dark mb-0">{{ $totalI }} <span class="fs-4 fw-normal text-muted">kali</span></h3>
+        <div class="card border shadow-sm h-100" style="border-top: 3.5px solid #f59e0b !important; border-radius: 16px !important;">
+            <div class="card-body p-3.5">
+                <span class="text-muted font-semibold d-block mb-1" style="font-size: 11px;">TOTAL IZIN</span>
+                <h3 class="fw-bold mb-0 text-warning">{{ $totalI }} <span class="fs-6 font-normal text-muted">kali</span></h3>
+            </div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-info">
-            <div class="text-muted small fw-bold mb-1 text-info">TOTAL SAKIT</div>
-            <h3 class="fw-bold text-dark mb-0">{{ $totalS }} <span class="fs-4 fw-normal text-muted">kali</span></h3>
+        <div class="card border shadow-sm h-100" style="border-top: 3.5px solid #06b6d4 !important; border-radius: 16px !important;">
+            <div class="card-body p-3.5">
+                <span class="text-muted font-semibold d-block mb-1" style="font-size: 11px;">TOTAL SAKIT</span>
+                <h3 class="fw-bold mb-0 text-info">{{ $totalS }} <span class="fs-6 font-normal text-muted">kali</span></h3>
+            </div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border-start border-4 border-danger">
-            <div class="text-muted small fw-bold mb-1 text-danger">TOTAL ALFA</div>
-            <h3 class="fw-bold text-dark mb-0">{{ $totalA }} <span class="fs-4 fw-normal text-muted">kali</span></h3>
+        <div class="card border shadow-sm h-100" style="border-top: 3.5px solid #ef4444 !important; border-radius: 16px !important;">
+            <div class="card-body p-3.5">
+                <span class="text-muted font-semibold d-block mb-1" style="font-size: 11px;">TOTAL ALFA</span>
+                <h3 class="fw-bold mb-0 text-danger">{{ $totalA }} <span class="fs-6 font-normal text-muted">kali</span></h3>
+            </div>
         </div>
     </div>
 </div>
@@ -314,12 +349,12 @@
 @endif
 
 <!-- TABEL REKAP & MATRIKS PRESENSI -->
-<div class="card w-100 border-0 shadow-sm position-relative overflow-hidden rounded-4 mb-4">
+<div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
     <div class="card-body p-4">
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3 no-print">
             <div class="d-flex align-items-center gap-3">
-                <h5 class="fw-bold text-dark mb-0">Matriks Presensi Kehadiran Siswa</h5>
-                <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 fw-semibold">
+                <h6 class="fw-bold text-dark mb-0" style="font-size: 15px;">Matriks Presensi Kehadiran Siswa</h6>
+                <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 font-semibold" style="font-size: 11.5px;">
                     Total: {{ count($rekap ?? []) }} Siswa
                 </span>
             </div>
@@ -585,6 +620,16 @@
         </div>
     </div>
     @endforeach
+@endif
+    
+    {{-- ========================================================== --}}
+    {{-- SUBTLE LOW-KEY FOOTER --}}
+    {{-- ========================================================== --}}
+    <footer class="text-center py-2 mt-2 no-print">
+        <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria - Web TK Al-Hidayah v1.0</span>
+    </footer>
+
+</div>
 @endif
 
 @push('scripts')

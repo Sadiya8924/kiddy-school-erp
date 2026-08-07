@@ -6,29 +6,52 @@
     $templateAktif = \App\Models\RaporTemplate::where('is_active', true)->with('items.anak_isian')->first();
 @endphp
 
-<div class="row gx-3 gy-3 mt-0">
-    <div class="col-12">
-        <div class="card border shadow-none mb-0" style="background-color: var(--primary-blue-soft); border-color: var(--primary-blue-border) !important;">
-            <div class="card-body px-4 py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-                <div>
-                    <h4 class="fw-bold text-dark mb-1">Form Pengisian Rapor</h4>
-                    <p class="text-muted mb-0 small">Input dan kelola nilai akademik peserta didik sesuai format yang ditetapkan.</p>
+<div class="d-flex flex-column gap-3.5 mt-0 pb-4">
+
+    {{-- ========================================================== --}}
+    {{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
+    {{-- ========================================================== --}}
+    <div class="card border-0 shadow-sm overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
+        <div class="card-body p-4 text-white">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
+                
+                {{-- User Greeting & Context --}}
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative">
+                        <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 52px; height: 52px; font-size: 22px; border: 2px solid rgba(255,255,255,0.4);">
+                            <iconify-icon icon="solar:pen-new-square-bold-duotone"></iconify-icon>
+                        </div>
+                        <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle" style="width: 12px; height: 12px;"></span>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                            <h5 class="fw-bold mb-0 text-white" style="font-size: 18px; letter-spacing: -0.02em;">Form Pengisian Rapor</h5>
+                        </div>
+                        <p class="mb-0 text-white text-opacity-80 small d-flex align-items-center gap-2 flex-wrap" style="font-size: 12.5px;">
+                            <span>Input dan kelola nilai akademik peserta didik sesuai format yang ditetapkan.</span>
+                        </p>
+                    </div>
                 </div>
+
+                {{-- Semester Badge --}}
                 @if($smtAktif)
-                <div class="text-md-end">
-                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill shadow-sm" style="font-size: 12px;">
-                        <iconify-icon icon="solar:calendar-bold-duotone" class="align-middle me-1 fs-6"></iconify-icon>
+                <div class="d-flex align-items-center gap-2 flex-wrap ms-lg-auto">
+                    <span class="badge bg-warning text-dark font-semibold px-3 py-2 rounded-3 shadow-sm d-flex align-items-center gap-1.5" style="font-size: 12px;">
+                        <iconify-icon icon="solar:calendar-bold-duotone" class="fs-5"></iconify-icon>
                         Semester Aktif: {{ $smtAktif->tahun_ajaran }} ({{ $smtAktif->jenis }})
                     </span>
                 </div>
                 @endif
+
             </div>
         </div>
     </div>
 
-    <div class="col-12">
-        <div class="card border shadow-none rounded-4 overflow-hidden mb-4">
-            <div class="card-body p-4 p-md-5"> 
+    @include('partials.owner_stepped_filter')
+
+    @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
+    <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+        <div class="card-body p-4 p-md-5"> 
         
         {{-- PERINGATAN JIKA RAPOR DITUTUP / TEMPLATE KOSONG --}}
         @if(auth()->user()->school && !auth()->user()->school->is_rapor_open)
@@ -458,6 +481,16 @@
             </div>
         </div>
     </div>
+
+    @endif
+
+    {{-- ========================================================== --}}
+    {{-- SUBTLE LOW-KEY FOOTER --}}
+    {{-- ========================================================== --}}
+    <footer class="text-center py-2 mt-2">
+        <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria - Web TK Al-Hidayah v1.0</span>
+    </footer>
+
 </div>
 @endsection
 

@@ -198,8 +198,6 @@
 
 {{-- HEADER KOP UNTUK PRINT / CETAK KELAS (COMPACT & RINGKAS) --}}
 <div class="print-only print-header-kop text-center">
-    <h4 class="fw-bold text-uppercase mb-1 text-dark">{{ $school->nama_sekolah ?? 'TK CERIA' }}</h4>
-    <p class="mb-1 text-muted small">{{ $alamatSekolah }} {{ $teleponSekolah }}</p>
     <h5 class="fw-bold mt-2 text-decoration-underline text-dark mb-1">REKAPITULASI PRESENSI KEHADIRAN SISWA</h5>
     <p class="small mb-0">Periode: {{ $formatTglIndo($mulai) }} s/d {{ $formatTglIndo($selesai) }}</p>
 </div>
@@ -247,7 +245,7 @@
 @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
 
 <!-- FORM FILTER (KELAS, SEARCH SISWA, TANGGAL) -->
-<div class="card border shadow-sm no-print card-filter" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+<div class="card border shadow-sm no-print card-filter mb-4" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
     <div class="card-body p-3.5">
         <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2" style="font-size: 14.5px;">
             <iconify-icon icon="solar:filter-bold-duotone" class="text-primary fs-5"></iconify-icon> Filter Data Presensi ({{ $school->nama_sekolah ?? 'TK CERIA' }})
@@ -491,8 +489,6 @@
                 <div class="modal-body p-4" id="printableRekapSiswa{{ $item['siswa_id'] }}">
                     {{-- KOP TK ASAL SISWA (DINAMIS DARI DATABASE) --}}
                     <div class="text-center border-bottom pb-3 mb-4">
-                        <h3 class="fw-bold text-uppercase mb-1 text-dark">{{ $school->nama_sekolah ?? 'TK CERIA' }}</h3>
-                        <p class="mb-1 text-muted small">{{ $alamatSekolah }} {{ $teleponSekolah }}</p>
                         <h5 class="fw-bold mt-3 text-decoration-underline text-dark">REKAPITULASI PRESENSI KEHADIRAN SISWA INDIVIDUAL</h5>
                         <span class="small text-muted">Periode: {{ $formatTglIndo($mulai) }} s/d {{ $formatTglIndo($selesai) }}</span>
                     </div>

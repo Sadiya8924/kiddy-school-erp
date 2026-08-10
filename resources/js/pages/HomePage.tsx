@@ -647,7 +647,7 @@ export default function HomePage({ onNavigate }: Props) {
             <div ref={illusRef} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', opacity: reduced ? 1 : 0 }}>
               <div style={{ position: 'absolute', inset: '0%', borderRadius: '50%', background: 'radial-gradient(circle, rgba(96,165,250,0.3) 0%, transparent 70%)', filter: 'blur(30px)', zIndex: 0 }} />
               <div style={{ position: 'relative', zIndex: 1, width: '100%', display: 'flex', justifyContent: 'center' }}>
-                {((typeof window !== 'undefined' && (window as any).APP_SETTINGS?.hero_image)) ? (
+                {((typeof window !== 'undefined' && (window as any).APP_SETTINGS?.hero_image && String((window as any).APP_SETTINGS.hero_image).trim() !== '')) ? (
                   <img
                     src={(window as any).APP_SETTINGS.hero_image}
                     alt="Hero Promosi"

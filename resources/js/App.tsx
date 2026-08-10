@@ -41,6 +41,15 @@ export default function App() {
   }
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isLogged = (window as any).isAuth || !!(window as any).AUTH_USER
+      if (isLogged && (currentPage === 'login' || currentPage === 'register')) {
+        window.location.href = '/dashboard'
+      }
+    }
+  }, [currentPage])
+
+  useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname.toLowerCase()
       if (path.includes('/login')) setCurrentPage('login')

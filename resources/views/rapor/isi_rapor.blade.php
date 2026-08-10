@@ -55,9 +55,9 @@
         
         {{-- PERINGATAN JIKA RAPOR DITUTUP / TEMPLATE KOSONG --}}
         @if(auth()->user()->school && !auth()->user()->school->is_rapor_open)
-            <div class="alert alert-danger bg-danger-subtle text-danger border-danger-subtle rounded-3 fw-medium mb-4 d-flex align-items-center small">
-                <iconify-icon icon="solar:danger-triangle-bold" class="fs-5 me-2"></iconify-icon> 
-                Perhatian: Akses pengisian rapor sedang <strong>DITUTUP</strong> oleh Admin Sekolah.
+            <div class="alert alert-danger bg-danger-subtle text-danger border-danger-subtle rounded-3 fw-medium mb-4 d-flex align-items-center small gap-2">
+                <iconify-icon icon="solar:danger-triangle-bold" class="fs-5 flex-shrink-0"></iconify-icon> 
+                <div>Perhatian: Akses pengisian rapor sedang <strong>DITUTUP</strong> oleh Admin Sekolah.</div>
             </div>
         @endif
 

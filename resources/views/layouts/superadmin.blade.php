@@ -40,6 +40,35 @@
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
             border-radius: 12px !important;
             background-color: #ffffff;
+            margin-bottom: 1.25rem;
+        }
+
+        /* Custom Fractional Spacing & Utility Fixes for Layout & Cards */
+        .gap-3\.5 { gap: 1.25rem !important; }
+        .gap-2\.5 { gap: 0.875rem !important; }
+        .gap-4 { gap: 1.5rem !important; }
+        .mb-3\.5 { margin-bottom: 1.25rem !important; }
+        .mt-3\.5 { margin-top: 1.25rem !important; }
+        .p-3\.5 { padding: 1.25rem !important; }
+        .px-3\.5 { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+        .py-3\.5 { padding-top: 1.25rem !important; padding-bottom: 1.25rem !important; }
+        .mb-0\.5 { margin-bottom: 0.25rem !important; }
+        .mb-1\.5 { margin-bottom: 0.5rem !important; }
+        .mb-2\.5 { margin-bottom: 0.875rem !important; }
+
+        /* Ensure card elements and card wrappers always maintain vertical separation */
+        .container-fluid > div > .card + .card,
+        .container-fluid > div > .card + form,
+        .container-fluid > div > form + .card,
+        .container-fluid > div > .card + .row,
+        .container-fluid > div > .row + .card,
+        .container-fluid > div > .card + .table-responsive,
+        .container-fluid > div > .card + div:not(.row) {
+            margin-top: 0.5rem;
+        }
+        
+        .row:has(> .col-12 > .card), .row:has(> [class*="col-"]) {
+            margin-bottom: 0.5rem;
         }
 
         /* Sidebar Styling (Lebih Rapi & Tegas) */

@@ -105,11 +105,66 @@
                Masuk Sekarang
             </button>
             
-            <div class="text-center small">
+            <div class="text-center small mb-3">
               <span class="text-muted">Belum punya akun?</span>
               <a class="text-primary-custom fw-bold text-decoration-none ms-1" href="/register">Daftar di sini</a>
             </div>
+
+            {{-- Quick Demo Login Accounts --}}
+            <div class="mt-4 pt-3 border-top">
+              <p class="text-uppercase text-muted fw-bold mb-2" style="font-size: 11px;">
+                💡 Demo Akun Tersedia di Database:
+              </p>
+              <div class="row g-2">
+                <div class="col-6">
+                  <button type="button" onclick="fillDemo('ortu.1A.1@gmail.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                    <div class="fw-bold text-dark" style="font-size: 11px;">👨‍👩‍👧 Wali Murid</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">ortu.1A.1@gmail.com</div>
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button type="button" onclick="fillDemo('guru.a1@tkpermata.sch.id')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                    <div class="fw-bold text-dark" style="font-size: 11px;">👩‍🏫 Guru TK</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">guru.a1@tkpermata.sch.id</div>
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button type="button" onclick="fillDemo('admin1@tkpermata.sch.id')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                    <div class="fw-bold text-dark" style="font-size: 11px;">🏫 Admin TK</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">admin1@tkpermata.sch.id</div>
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button type="button" onclick="fillDemo('kepsek1@tkpermata.sch.id')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                    <div class="fw-bold text-dark" style="font-size: 11px;">🎓 Kepsek</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">kepsek1@tkpermata.sch.id</div>
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button type="button" onclick="fillDemo('superadmin1@alhikmah.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                    <div class="fw-bold text-dark" style="font-size: 11px;">🏛️ Super Admin</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">superadmin1@alhikmah.com</div>
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button type="button" onclick="fillDemo('owner@demo.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                    <div class="fw-bold text-dark" style="font-size: 11px;">👑 Owner SaaS</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">owner@demo.com</div>
+                  </button>
+                </div>
+              </div>
+              <p class="text-muted text-center fst-italic mt-2 mb-0" style="font-size: 10px;">
+                Password bawaan semua akun: <strong class="text-dark">password</strong>
+              </p>
+            </div>
           </form>
+
+          <script>
+            function fillDemo(email) {
+              document.querySelector('input[name="email"]').value = email;
+              document.querySelector('input[name="password"]').value = 'password';
+            }
+          </script>
 
         </div>
       </div>

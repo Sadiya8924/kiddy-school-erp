@@ -195,14 +195,6 @@
                                 <iconify-icon icon="solar:users-group-two-rounded-bold-duotone" class="align-middle me-1"></iconify-icon>
                                 Kelompok {{ $materi->kelompok }}
                             </span>
-                            @if(auth()->user()->role == 'admin' || auth()->user()->role == 'guru' || auth()->user()->isSuperAdmin())
-                                <form action="{{ route('jurnal.materi.destroy', $materi->id) }}" method="POST" onsubmit="return confirm('Hapus topik ini? Semua jurnal siswa yang terhubung akan terhapus.');">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-light text-danger p-1 rounded-circle shadow-none" title="Hapus Topik">
-                                        <iconify-icon icon="solar:trash-bin-trash-bold-duotone" class="fs-5"></iconify-icon>
-                                    </button>
-                                </form>
-                            @endif
                         </div>
                         <h6 class="fw-bold text-dark mb-1 text-truncate" title="{{ $materi->judul_materi }}" style="font-size: 14.5px;">{{ $materi->judul_materi }}</h6>
                         <div class="d-flex align-items-center gap-1.5 text-muted font-medium" style="font-size: 11.5px;">

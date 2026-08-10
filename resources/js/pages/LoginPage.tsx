@@ -228,21 +228,29 @@ export default function LoginPage({ onNavigate }: Props) {
               💡 Demo Akun Tersedia di Database:
             </p>
             <div className="grid grid-cols-2 gap-1.5">
-              <button type="button" onClick={() => fillDemo('ortu@tk.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
+              <button type="button" onClick={() => fillDemo('ortu.1A.1@gmail.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
                 <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👨‍👩‍👧 Wali Murid</div>
-                <div className="text-[10px] text-gray-500 truncate">ortu@tk.com</div>
+                <div className="text-[10px] text-gray-500 truncate">ortu.1A.1@gmail.com</div>
               </button>
-              <button type="button" onClick={() => fillDemo('admin@tk.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
+              <button type="button" onClick={() => fillDemo('guru.a1@tkpermata.sch.id')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
+                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👩‍🏫 Guru TK</div>
+                <div className="text-[10px] text-gray-500 truncate">guru.a1@tkpermata.sch.id</div>
+              </button>
+              <button type="button" onClick={() => fillDemo('admin1@tkpermata.sch.id')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
                 <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>🏫 Admin TK</div>
-                <div className="text-[10px] text-gray-500 truncate">admin@tk.com</div>
+                <div className="text-[10px] text-gray-500 truncate">admin1@tkpermata.sch.id</div>
               </button>
-              <button type="button" onClick={() => fillDemo('naning@tk.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
-                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👩‍🏫 Guru</div>
-                <div className="text-[10px] text-gray-500 truncate">naning@tk.com</div>
+              <button type="button" onClick={() => fillDemo('kepsek1@tkpermata.sch.id')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
+                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>🎓 Kepsek</div>
+                <div className="text-[10px] text-gray-500 truncate">kepsek1@tkpermata.sch.id</div>
               </button>
-              <button type="button" onClick={() => fillDemo('superadmin@tkceria.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
-                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👑 Super Admin</div>
-                <div className="text-[10px] text-gray-500 truncate">superadmin@tkceria.com</div>
+              <button type="button" onClick={() => fillDemo('superadmin1@alhikmah.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
+                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>🏛️ Super Admin</div>
+                <div className="text-[10px] text-gray-500 truncate">superadmin1@alhikmah.com</div>
+              </button>
+              <button type="button" onClick={() => fillDemo('owner@demo.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
+                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👑 Owner SaaS</div>
+                <div className="text-[10px] text-gray-500 truncate">owner@demo.com</div>
               </button>
             </div>
             <p className="text-[10px] text-gray-400 mt-1.5 italic text-center">

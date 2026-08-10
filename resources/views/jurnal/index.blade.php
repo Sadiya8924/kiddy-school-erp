@@ -111,7 +111,7 @@
     </div>
 
     {{-- FILTER BAR --}}
-    <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+    <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
         <div class="card-body p-3.5">
             <form method="GET" action="{{ route('jurnal.index') }}" class="row g-3 align-items-end">
                 <div class="col-md-3">

@@ -131,7 +131,8 @@
             </div>
         </div>
 
-        {{-- ACC Materi --}}
+        {{-- ACC Materi (Kepsek/Admin) vs Manajemen Materi (Guru) --}}
+        @if(in_array(Auth::user()->role, ['kepsek', 'admin', 'super_admin', 'owner']))
         <div class="col-xl-3 col-md-6">
             <a href="{{ route('materi.kepsek.index') }}" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid #8b5cf6 !important; border-radius: 16px !important;">
                 <div class="card-body p-3.5 d-flex justify-content-between align-items-center">
@@ -146,6 +147,22 @@
                 </div>
             </a>
         </div>
+        @else
+        <div class="col-xl-3 col-md-6">
+            <a href="{{ route('materi.guru.index') }}" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid #8b5cf6 !important; border-radius: 16px !important;">
+                <div class="card-body p-3.5 d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted font-semibold d-block mb-1" style="font-size: 11.5px; letter-spacing: 0.02em;">MANAJEMEN MATERI</span>
+                        <h2 class="fw-bold text-dark mb-0" style="letter-spacing: -0.03em; font-size: 26px;">Upload</h2>
+                        <span class="text-muted small mt-1 d-block" style="font-size: 11px;">Kelola materi pelajaran</span>
+                    </div>
+                    <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background-color: #f3e8ff; color: #8b5cf6; width: 54px; height: 54px;">
+                        <iconify-icon icon="solar:document-add-bold-duotone" class="fs-2"></iconify-icon>
+                    </div>
+                </div>
+            </a>
+        </div>
+        @endif
 
     </div>
 
@@ -165,7 +182,10 @@
                             </h6>
                             <span class="text-muted small" style="font-size: 11.5px;">Proporsi pendaftaran rombongan belajar</span>
                         </div>
-                        <a href="/kelas" class="text-decoration-none text-primary font-semibold small" style="font-size: 12px;">Kelola Rombel →</a>
+                        {{-- TM-13: "Kelola Rombel" hanya tampil untuk admin/kepsek/super_admin, bukan guru --}}
+                        @if(in_array(Auth::user()->role, ['admin', 'super_admin', 'kepsek', 'owner']))
+                        <a href="/kelas" class="text-decoration-none text-primary font-semibold small" style="font-size: 12px;">Kelola Rombel &rarr;</a>
+                        @endif
                     </div>
 
                     <div class="d-flex flex-column gap-3">
@@ -198,7 +218,10 @@
                         <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2" style="font-size: 15px;">
                             <iconify-icon icon="solar:bell-bold-duotone" class="text-warning fs-5"></iconify-icon> Pengumuman Sekolah
                         </h6>
-                        <a href="/pengumuman" class="text-decoration-none text-primary font-semibold small" style="font-size: 12px;">Kelola →</a>
+                        {{-- TM-13: "Kelola" pengumuman hanya untuk admin/kepsek/super_admin --}}
+                        @if(in_array(Auth::user()->role, ['admin', 'super_admin', 'kepsek', 'owner']))
+                        <a href="/pengumuman" class="text-decoration-none text-primary font-semibold small" style="font-size: 12px;">Kelola &rarr;</a>
+                        @endif
                     </div>
 
                     @if($pengumuman->count() > 0)
@@ -221,9 +244,11 @@
                             </div>
                             <h6 class="fw-bold text-dark mb-1" style="font-size: 14px;">Belum Ada Pengumuman</h6>
                             <p class="text-muted small mb-3 mx-auto" style="max-width: 240px; font-size: 11.5px;">Tidak ada informasi kegiatan sekolah yang dipublikasikan saat ini.</p>
+                            @if(in_array(Auth::user()->role, ['admin', 'super_admin', 'owner']))
                             <a href="/pengumuman" class="btn btn-outline-primary btn-sm rounded-3 font-semibold px-3 py-1.5" style="font-size: 11.5px;">
                                 + Buat Pengumuman
                             </a>
+                            @endif
                         </div>
                     @endif
                 </div>

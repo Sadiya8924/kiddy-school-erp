@@ -75,6 +75,11 @@ Route::get('/register', function (\Illuminate\Http\Request $request) {
 })->name('register');
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
 
+// TM-34: Password Reset — GET = halaman form, POST = proses kirim email
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->name('password.request')->middleware('guest');
+
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email')->middleware('throttle:3,1');
 
 // TM-35: Legal Pages
@@ -448,9 +453,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/jurnal-harian/materi', [JurnalHarianController::class, 'storeMateri'])->name('jurnal.materi.store');
         Route::get('/jurnal-harian/materi/{id}', [JurnalHarianController::class, 'show'])->name('jurnal.show');
         Route::get('/jurnal-media/{type}/{filename}', [JurnalHarianController::class, 'serveMedia'])->name('jurnal.media');
-        Route::delete('/jurnal-harian/materi/{id}', [JurnalHarianController::class, 'destroyMateri'])->name('jurnal.materi.destroy');
-        Route::post('/jurnal-harian/siswa', [JurnalHarianController::class, 'storeJurnalSiswa'])->name('jurnal.siswa.store');
-        Route::delete('/jurnal-harian/siswa/{id}', [JurnalHarianController::class, 'destroyJurnalSiswa'])->name('jurnal.siswa.destroy');
+        // TM-30: Route destroy SENGAJA TIDAK ADA untuk data transaksional.
+        // Jurnal, Absensi, Perkembangan, Rapor tidak boleh dihapus permanen.
+        // Koreksi dilakukan via EDIT (audit trail di record_revisions).
+        // --- ROUTE DELETE BERIKUT DINONAKTIFKAN ---
+        // Route::delete('/jurnal-harian/materi/{id}', [...]);
+        // Route::delete('/jurnal-harian/siswa/{id}', [...]);
+        // (perkembangan-fisik delete juga tidak didaftarkan)
         Route::post('/jurnal-harian/{id}/comment', [JurnalHarianController::class, 'storeMateriComment'])->name('jurnal.comment.store');
         Route::post('/perkembangan-fisik', [PerkembanganFisikController::class, 'store'])->name('perkembangan.store');
         Route::post('/isi-rapor', [RaporController::class, 'store']);

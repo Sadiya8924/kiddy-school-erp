@@ -3,6 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\Siswa;
+use App\Models\Kelas;
+use App\Policies\SiswaPolicy;
+use App\Policies\KelasPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,9 +21,14 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
+     * TM-04: Daftarkan Policy secara eksplisit untuk mencegah IDOR.
      */
     public function boot(): void
     {
-        //
+        // TM-04: IDOR Protection — Siswa hanya bisa diakses oleh role yang berwenang
+        Gate::policy(Siswa::class, SiswaPolicy::class);
+
+        // TM-04: IDOR Protection — Kelas hanya bisa diakses oleh role yang berwenang
+        Gate::policy(Kelas::class, KelasPolicy::class);
     }
 }

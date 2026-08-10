@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login - Yayasan Al-Hikmah</title>
+  {{-- TM-11: Title dinamis dari Setting, bukan hardcode nama sekolah --}}
+  <title>Masuk — {{ \App\Models\Setting::get('site_title', 'Sistem Sekolah') }}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
   <!-- SweetAlert2 -->
@@ -35,8 +36,17 @@
                 @endif
                 <h4 class="fw-bold text-primary-custom mb-0 mt-2">{{ \App\Models\Setting::get('site_title', 'Yayasan Al-Hikmah') }}</h4>
             </a>
-            <p class="text-muted small mt-2">Silakan masuk ke akun Anda</p>
+            {{-- TM-11: Kalimat sambutan netral — tidak mengasumsikan peran 'Orang Tua' saja --}}
+            <p class="text-muted small mt-2">Masuk untuk mengakses sistem sesuai peran Anda —<br><span class="text-primary-custom fw-semibold">Admin, Guru, Kepala Sekolah, atau Wali Murid.</span></p>
           </div>
+
+          {{-- TM-03: Banner Sistem Beta --}}
+          @if(app()->environment('local', 'staging', 'demo', 'production'))
+          <div class="alert alert-warning border-0 rounded-3 py-2 px-3 mb-3 d-flex align-items-center gap-2 small">
+            <iconify-icon icon="solar:danger-triangle-bold" class="fs-6 text-warning"></iconify-icon>
+            <span><strong>Sistem Beta</strong> — Akun di bawah untuk demonstrasi. Jangan masukkan data pribadi nyata.</span>
+          </div>
+          @endif
 
           {{-- Alert Banners --}}
           @if(session('error'))
@@ -87,7 +97,8 @@
                 <input class="form-check-input" type="checkbox" name="remember" id="rememberCheck">
                 <label class="form-check-label text-muted small" for="rememberCheck">Ingat Saya</label>
               </div>
-              <a class="text-primary-custom fw-semibold small text-decoration-none" href="#">Lupa Sandi?</a>
+              {{-- TM-34: Link ke halaman forgot password yang nyata --}}
+              <a class="text-primary-custom fw-semibold small text-decoration-none" href="/forgot-password">Lupa Sandi?</a>
             </div>
             
             <button type="submit" class="btn btn-primary-custom w-100 py-2 rounded-pill fw-bold shadow-sm mb-4">

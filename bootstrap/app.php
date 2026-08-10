@@ -3,7 +3,10 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Middleware\RoleMiddleware;
+use App\Models\Siswa;
+use App\Policies\SiswaPolicy;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,5 +26,6 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // TM-04: Daftarkan Policy IDOR untuk model Siswa
+        Gate::policy(Siswa::class, SiswaPolicy::class);
     })->create();

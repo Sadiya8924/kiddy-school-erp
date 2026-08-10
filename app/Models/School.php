@@ -15,7 +15,9 @@ class School extends Model
     ];
 
     public function yayasan() { return $this->belongsTo(Yayasan::class, 'yayasan_id'); }
+    // TM-23: Kepala Sekolah via FK (bukan teks bebas) — untuk rapor & approver
     public function kepalaSekolahUser() { return $this->belongsTo(User::class, 'kepala_sekolah_user_id'); }
+    public function kepalaSekolah() { return $this->kepalaSekolahUser(); } // alias singkat
     public function users() { return $this->hasMany(User::class); }
     public function siswas() { return $this->hasMany(Siswa::class); }
     public function rapors() { return $this->hasMany(Rapor::class); }

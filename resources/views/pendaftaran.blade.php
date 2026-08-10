@@ -1,4 +1,7 @@
-@extends('layouts.app') 
+{{-- TM-31: Layout adaptif berdasarkan status autentikasi --}}
+{{-- Admin/Staff yang sudah login akan melihat layout admin (sidebar tetap ada) --}}
+{{-- Calon siswa baru (publik) akan melihat layout marketing/publik --}}
+@extends(Auth::check() && !Auth::user()->isWaliMurid() ? 'layouts.admin' : 'layouts.app')
 
 @section('konten_halaman')
 

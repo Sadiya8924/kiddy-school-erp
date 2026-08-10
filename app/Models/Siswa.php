@@ -56,4 +56,16 @@ class Siswa extends Model
     {
         return $this->hasMany(ArsipRapor::class);
     }
+
+    /**
+     * TM-28: Relasi many-to-many siswa → wali via pivot student_guardian.
+     * Satu siswa bisa punya banyak wali: ayah, ibu, dan/atau wali resmi.
+     * Sebelumnya: relasi hanya satu arah via email match di AuthController.
+     */
+    public function guardians()
+    {
+        return $this->belongsToMany(User::class, 'student_guardian', 'siswa_id', 'user_id')
+                    ->withPivot('peran', 'is_wali_utama')
+                    ->withTimestamps();
+    }
 }

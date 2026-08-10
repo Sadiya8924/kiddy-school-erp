@@ -230,7 +230,28 @@
                                                                     </h6>
                                                                     <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
                                                                 </div>
+                                                                {{-- TM-24: Tampilkan nama ortu dari data pendaftaran yang sudah ada --}}
                                                                 <div class="modal-body p-4">
+                                                                    @if($siswa->nama_ayah || $siswa->nama_ibu)
+                                                                    <div class="alert alert-info border-info-subtle bg-info-subtle rounded-3 p-3 mb-3 small">
+                                                                        <div class="fw-semibold text-info-emphasis mb-1 d-flex align-items-center gap-1">
+                                                                            <iconify-icon icon="solar:info-circle-bold-duotone"></iconify-icon> Data Orang Tua dari Pendaftaran:
+                                                                        </div>
+                                                                        @if($siswa->nama_ayah)
+                                                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                                                            <iconify-icon icon="solar:user-bold-duotone" class="text-info-emphasis"></iconify-icon>
+                                                                            <span><strong>Ayah:</strong> {{ $siswa->nama_ayah }}</span>
+                                                                        </div>
+                                                                        @endif
+                                                                        @if($siswa->nama_ibu)
+                                                                        <div class="d-flex align-items-center gap-2">
+                                                                            <iconify-icon icon="solar:user-bold-duotone" class="text-info-emphasis"></iconify-icon>
+                                                                            <span><strong>Ibu:</strong> {{ $siswa->nama_ibu }}</span>
+                                                                        </div>
+                                                                        @endif
+                                                                        <div class="mt-2 text-muted" style="font-size: 10.5px;">Masukkan email akun wali murid yang telah terdaftar di sistem. Nama di atas akan tersimpan otomatis.</div>
+                                                                    </div>
+                                                                    @endif
                                                                     <p class="text-muted small mb-3">Masukkan email akun Wali Murid yang sudah terdaftar di sistem untuk menautkan data <strong>{{ $siswa->nama_lengkap }}</strong> ke Dashboard mereka.</p>
                                                                     <div class="mb-2">
                                                                         <label class="form-label font-semibold text-dark small">Email Akun Wali Murid</label>

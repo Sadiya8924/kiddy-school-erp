@@ -42,9 +42,19 @@
                     <li class="nav-item"><a class="nav-link fw-medium text-muted px-2" href="#kontak">Hubungi Kami</a></li>
                 </ul>
 
+                {{-- TM-14: Tombol navigasi adaptif berdasarkan status autentikasi --}}
                 <div class="d-flex gap-3 mt-3 mt-lg-0 align-items-center">
-                    <a href="/login" class="text-decoration-none text-dark fw-medium px-2">Login Portal</a>
-                    <a href="/register" class="btn btn-primary fw-semibold rounded px-4 py-2 shadow-sm">Mulai Daftar</a>
+                    @auth
+                        {{-- User sudah login: tampilkan tombol "Ke Dashboard" --}}
+                        <a href="/dashboard" class="btn btn-primary fw-semibold rounded px-4 py-2 shadow-sm d-flex align-items-center gap-2">
+                            <iconify-icon icon="solar:home-smile-bold-duotone"></iconify-icon>
+                            Ke Dashboard
+                        </a>
+                    @else
+                        {{-- User belum login: tampilkan Login Portal dan Mulai Daftar --}}
+                        <a href="/login" class="text-decoration-none text-dark fw-medium px-2">Login Portal</a>
+                        <a href="/register" class="btn btn-primary fw-semibold rounded px-4 py-2 shadow-sm">Mulai Daftar</a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -110,8 +120,9 @@
             <div class="border-top pt-4 mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center text-white opacity-50" style="font-size: 0.8rem; border-color: rgba(255,255,255,0.1) !important;">
                 <p class="mb-2 mb-md-0">© {{ date('Y') }} {{ \App\Models\Setting::get('footer_title', 'Yayasan Al-Hikmah') }}. Seluruh hak cipta dilindungi.</p>
                 <div class="d-flex gap-4">
-                    <a href="#" class="text-white text-decoration-none">Kebijakan Privasi</a>
-                    <a href="#" class="text-white text-decoration-none">Syarat & Ketentuan</a>
+                    {{-- TM-35: Link ke halaman legal yang nyata (bukan href="#") --}}
+                    <a href="{{ route('legal.privacy') }}" class="text-white text-decoration-none">Kebijakan Privasi</a>
+                    <a href="{{ route('legal.terms') }}" class="text-white text-decoration-none">Syarat & Ketentuan</a>
                 </div>
             </div>
         </div>

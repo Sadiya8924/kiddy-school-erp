@@ -9,7 +9,9 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['yayasan_id', 'school_id', 'kelas_id', 'name', 'email', 'password', 'role'];
+    // TM-33: 'role' SENGAJA TIDAK ada di $fillable — cegah mass-assignment role dari request user.
+    // Set role hanya melalui: $user->role = 'xxx'; $user->save(); (eksplisit)
+    protected $fillable = ['yayasan_id', 'school_id', 'kelas_id', 'name', 'email', 'password'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -33,6 +35,29 @@ class User extends Authenticatable
     // Relasi Database
     public function yayasan() { return $this->belongsTo(Yayasan::class, 'yayasan_id'); }
     public function school() { return $this->belongsTo(School::class); }
-    public function kelas() { return $this->belongsTo(Kelas::class, 'kelas_id'); } 
-    public function siswas() { return $this->hasMany(Siswa::class); } 
+    public function kelas() { return $this->belongsTo(Kelas::class, 'kelas_id'); }
+    public function siswas() { return $this->hasMany(Siswa::class); }
+
+    /**
+     * TM-28: Relasi many-to-many wali → siswa via pivot student_guardian.
+     * children() = hanya anak aktif (status = aktif) — default untuk dashboard wali.
+     * allChildren() = semua anak termasuk alumni — untuk riwayat.
+     *
+     * Sebelumnya: wali hanya bisa punya 1 anak via email match.
+     * Sesudah: satu akun wali bisa punya banyak anak & satu anak bisa punya ayah+ibu.
+     */
+    public function children()
+    {
+        return $this->belongsToMany(Siswa::class, 'student_guardian', 'user_id', 'siswa_id')
+                    ->withPivot('peran', 'is_wali_utama')
+                    ->withTimestamps()
+                    ->where('siswas.status', 'aktif');
+    }
+
+    public function allChildren()
+    {
+        return $this->belongsToMany(Siswa::class, 'student_guardian', 'user_id', 'siswa_id')
+                    ->withPivot('peran', 'is_wali_utama')
+                    ->withTimestamps();
+    }
 }

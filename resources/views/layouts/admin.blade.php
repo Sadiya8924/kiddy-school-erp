@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sistem Informasi TK Ceria</title>
+    <title>{{ \App\Models\Setting::get('site_title', 'Sistem Informasi TK Ceria') }}</title>
     
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/png" href="{{ asset('template2/images/logos/seodashlogo.png') }}" />

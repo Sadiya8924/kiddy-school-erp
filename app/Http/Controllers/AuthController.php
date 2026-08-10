@@ -53,13 +53,17 @@ class AuthController extends Controller
             'terms.accepted' => 'Anda harus menyetujui Kebijakan Privasi dan Syarat & Ketentuan.',
         ]);
 
-        // TM-33: FORCED role wali_murid on server-side
+        // TM-33: Buat user TANPA role di array create() (role tidak ada di $fillable)
+        // Lalu set role secara eksplisit — tidak bisa di-bypass lewat form apapun
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'wali_murid', // Server-side enforcement
         ]);
+
+        // Paksa role wali_murid server-side — tidak bergantung pada input client
+        $user->role = 'wali_murid';
+        $user->save();
 
         // TM-35: Track consent metadata
         session([

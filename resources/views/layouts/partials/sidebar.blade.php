@@ -2,8 +2,8 @@
     <div>
         <div class="brand-logo d-flex align-items-center justify-content-between px-4 py-3">
             <a href="/dashboard" class="text-nowrap logo-img text-decoration-none">
-                <h4 class="fw-bold text-primary mb-0">
-                    <iconify-icon icon="solar:masks-bold-duotone" class="fs-6 align-middle me-1"></iconify-icon> TK CERIA
+                <h4 class="fw-bold text-primary mb-0 text-truncate" style="max-width: 190px;" title="{{ \App\Models\Setting::get('site_title', 'TK CERIA') }}">
+                    <iconify-icon icon="solar:diploma-bold-duotone" class="fs-6 align-middle me-1"></iconify-icon> {{ strtoupper(\App\Models\Setting::get('site_title', 'TK CERIA')) }}
                 </h4>
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">

@@ -99,8 +99,8 @@
               </div>
             </div>
 
-            <input type="hidden" name="role" value="wali_murid">
-            
+            {{-- TM-33: JANGAN tambahkan field "role" di sini. Role dipaksa server-side (wali_murid). --}}
+
             <button type="submit" class="btn btn-primary-custom w-100 py-2 rounded-pill fw-bold shadow-sm mb-4 mt-2">
                Daftar Akun
             </button>

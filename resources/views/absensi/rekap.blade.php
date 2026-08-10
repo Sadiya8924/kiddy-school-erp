@@ -198,8 +198,6 @@
 
 {{-- HEADER KOP UNTUK PRINT / CETAK KELAS (COMPACT & RINGKAS) --}}
 <div class="print-only print-header-kop text-center">
-    <h4 class="fw-bold text-uppercase mb-1 text-dark">{{ $school->nama_sekolah ?? 'TK CERIA' }}</h4>
-    <p class="mb-1 text-muted small">{{ $alamatSekolah }} {{ $teleponSekolah }}</p>
     <h5 class="fw-bold mt-2 text-decoration-underline text-dark mb-1">REKAPITULASI PRESENSI KEHADIRAN SISWA</h5>
     <p class="small mb-0">Periode: {{ $formatTglIndo($mulai) }} s/d {{ $formatTglIndo($selesai) }}</p>
 </div>
@@ -491,8 +489,6 @@
                 <div class="modal-body p-4" id="printableRekapSiswa{{ $item['siswa_id'] }}">
                     {{-- KOP TK ASAL SISWA (DINAMIS DARI DATABASE) --}}
                     <div class="text-center border-bottom pb-3 mb-4">
-                        <h3 class="fw-bold text-uppercase mb-1 text-dark">{{ $school->nama_sekolah ?? 'TK CERIA' }}</h3>
-                        <p class="mb-1 text-muted small">{{ $alamatSekolah }} {{ $teleponSekolah }}</p>
                         <h5 class="fw-bold mt-3 text-decoration-underline text-dark">REKAPITULASI PRESENSI KEHADIRAN SISWA INDIVIDUAL</h5>
                         <span class="small text-muted">Periode: {{ $formatTglIndo($mulai) }} s/d {{ $formatTglIndo($selesai) }}</span>
                     </div>

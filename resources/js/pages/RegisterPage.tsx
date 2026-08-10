@@ -85,7 +85,6 @@ export default function RegisterPage({ onNavigate }: Props) {
 
               <form action="/register" method="POST" className="space-y-4">
                 <input type="hidden" name="_token" value={csrfToken} />
-                <input type="hidden" name="role" value="wali_murid" />
                 <div>
                   <label className="block text-xs font-600 text-gray-600 mb-1.5" style={{ fontWeight: 600 }}>Nama Lengkap</label>
                   <input type="text" name="name" placeholder="Nama Lengkap Anda" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -110,6 +109,15 @@ export default function RegisterPage({ onNavigate }: Props) {
                     className="w-full px-4 py-2.5 rounded-xl text-sm border outline-none bg-white"
                     style={{ borderColor: '#E5E7EB', fontFamily: 'inherit', color: '#111827' }} />
                 </div>
+                
+                {/* TM-35: Consent Checkbox */}
+                <div className="flex items-start gap-2 pt-1">
+                  <input type="checkbox" name="terms" value="1" required id="termsCheck" className="mt-1" style={{ accentColor: '#365CF5' }} />
+                  <label htmlFor="termsCheck" className="text-xs text-gray-600 leading-snug">
+                    Saya menyetujui <a href="/kebijakan-privasi" target="_blank" className="text-blue-600 underline">Kebijakan Privasi</a> & <a href="/syarat-ketentuan" target="_blank" className="text-blue-600 underline">Syarat Ketentuan</a>.
+                  </label>
+                </div>
+
                 <button type="submit" className="w-full py-3 rounded-xl text-white text-sm font-600 transition-all hover:opacity-90 cursor-pointer"
                   style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)', fontWeight: 600, boxShadow: '0 6px 20px rgba(54,92,245,0.35)' }}>
                   Daftar

@@ -118,9 +118,40 @@
                 <!-- Konten Halaman Utama -->
                 @yield('konten_halaman')
 
+                <!-- Modal Tautkan Anak via NISN -->
+                @if(auth()->check() && auth()->user()->isWaliMurid())
+                <div class="modal fade" id="modalTautkanAnak" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content rounded-4 border-0 shadow">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title fw-bold">Tautkan Data Anak (NISN)</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="{{ route('tautkan-anak') }}" method="POST">
+                                @csrf
+                                <div class="modal-body py-4">
+                                    <p class="text-muted small mb-3">Masukkan NISN putra/putri Anda yang lain untuk menautkan data ke akun portal ini.</p>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold small">NISN Siswa</label>
+                                        <input type="text" name="nisn" class="form-control rounded-3" placeholder="Contoh: 0123456789" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer border-0 pt-0">
+                                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4">Tautkan Anak</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Footer -->
                 <div class="py-6 px-6 text-center mt-5">
-                    <p class="mb-0 fs-4 text-muted">© {{ date('Y') }} TK Ceria - Web TK Al-Hidayah v1.0</p>
+                    @php
+                        $activeSchoolName = optional(\App\Models\School::find(session('active_school_id') ?? optional(auth()->user())->school_id))->nama_sekolah ?? \App\Models\Setting::get('site_title', 'Kiddy School ERP');
+                    @endphp
+                    <p class="mb-0 fs-4 text-muted">© {{ date('Y') }} {{ $activeSchoolName }} — Kiddy School ERP v2.0</p>
                 </div>
             </div>
         </div>

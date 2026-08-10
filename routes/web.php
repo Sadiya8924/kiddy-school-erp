@@ -46,7 +46,7 @@ Route::get('/login', function (\Illuminate\Http\Request $request) {
     $schools = DB::table('schools')->where('status', 'aktif')->get();
     return view('welcome', compact('schools', 'settings'));
 })->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
 Route::get('/register', function (\Illuminate\Http\Request $request) {
     if (Auth::check()) {
@@ -55,8 +55,35 @@ Route::get('/register', function (\Illuminate\Http\Request $request) {
     $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
     $schools = DB::table('schools')->where('status', 'aktif')->get();
     return view('welcome', compact('schools', 'settings'));
+})->name('register');
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email')->middleware('throttle:3,1');
+
+// TM-35: Legal Pages
+Route::get('/kebijakan-privasi', function() {
+    return view('legal.privacy');
+})->name('legal.privacy');
+
+Route::get('/syarat-ketentuan', function() {
+    return view('legal.terms');
+})->name('legal.terms');
+
+// TM-32: Check domain endpoint for Caddy/Nginx TLS provisioning
+Route::get('/check-domain', function(\Illuminate\Http\Request $request) {
+    $domain = $request->query('domain');
+    $exists = DB::table('domains')->where('domain', $domain)->where('is_verified', true)->exists();
+    return $exists ? response('OK', 200) : response('Forbidden', 403);
 });
-Route::post('/register', [AuthController::class, 'register']);
+
+// TM-05 & TM-20: Storage fallback asset server
+Route::get('/storage/{path}', function($path) {
+    $filePath = storage_path('app/public/' . $path);
+    if (!file_exists($filePath)) {
+        abort(404);
+    }
+    return response()->file($filePath);
+})->where('path', '.*')->name('storage.fallback');
 
 Route::get('/about', function (\Illuminate\Http\Request $request) {
     $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
@@ -75,7 +102,6 @@ Route::get('/registration', function (\Illuminate\Http\Request $request) {
     $schools = DB::table('schools')->where('status', 'aktif')->get();
     return view('welcome', compact('schools', 'settings'));
 });
-
 
 Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -497,8 +523,15 @@ Route::middleware(['auth'])->group(function () {
             Semester::query()->update(['is_active' => false]);
             $sem = Semester::findOrFail($request->semester_id);
             $sem->update(['is_active' => true]);
+            session(['active_semester_id' => $sem->id]);
             return back()->with('success', 'Sukses mengaktifkan Tahun Ajaran baru!');
         })->name('pengaturan.semester.aktifkan');
+
+        Route::post('/pengaturan/semester/switch', function (\Illuminate\Http\Request $request) {
+            $request->validate(['semester_id' => 'required|exists:semesters,id']);
+            session(['active_semester_id' => $request->semester_id]);
+            return back()->with('success', 'Berhasil beralih konteks semester!');
+        })->name('pengaturan.semester.switch');
 
         Route::post('/pengaturan/update-guru', function (\Illuminate\Http\Request $request) {
             $request->validate(['user_id' => 'required', 'kelas_id' => 'nullable']);
@@ -516,32 +549,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/materi/{id}/reject', [MateriController::class, 'reject'])->name('materi.reject');
     });
 
-    // 5. AKSES WALI MURID (Ortu)
+    // 5. AKSES WALI MURID (Ortu Multi-Anak TM-18 & TM-37)
     Route::middleware('role:wali_murid')->group(function () {
-        Route::get('/rapor-anak/{id?}', function($id = null) {
-            $user = auth()->user();
-            if ($id) {
-                $siswa = \App\Models\Siswa::where('id', $id)->where('email', $user->email)->firstOrFail();
-            } else {
-                $siswa = \App\Models\Siswa::where('email', $user->email)->first();
-                if (!$siswa) return redirect('/dashboard')->with('error', 'Belum ada data anak.');
-            }
-            $semesterAktif = \App\Models\Semester::where('is_active', true)->first();
-            $rapor = $semesterAktif ? \App\Models\Rapor::where('siswa_id', $siswa->id)->where('semester_id', $semesterAktif->id)->first() : null;
-            return view('walimurid.rapor', compact('siswa', 'rapor', 'semesterAktif'));
-        })->name('walimurid.rapor');
-        
-        Route::get('/perkembangan-anak/{id?}', function($id = null) {
-            $user = auth()->user();
-            if ($id) {
-                $siswa = \App\Models\Siswa::where('id', $id)->where('email', $user->email)->firstOrFail();
-            } else {
-                $siswa = \App\Models\Siswa::where('email', $user->email)->first();
-                if (!$siswa) return redirect('/dashboard')->with('error', 'Belum ada data anak.');
-            }
-            $riwayat = \App\Models\PerkembanganFisik::where('siswa_id', $siswa->id)->orderBy('tgl_periksa', 'desc')->get();
-            return view('walimurid.perkembangan', compact('siswa', 'riwayat'));
-        })->name('walimurid.perkembangan');
+        Route::post('/switch-child', [\App\Http\Controllers\WaliMuridController::class, 'switchChild'])->name('switch-child');
+        Route::post('/tautkan-anak', [\App\Http\Controllers\WaliMuridController::class, 'storeTautkanAnak'])->name('tautkan-anak');
+        Route::get('/rapor-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'rapor'])->name('walimurid.rapor');
+        Route::get('/perkembangan-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'perkembangan'])->name('walimurid.perkembangan');
+        Route::get('/jurnal-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'jurnal'])->name('walimurid.jurnal');
         
         Route::get('/materi-anak', [JurnalHarianController::class, 'waliMuridMateri'])->name('walimurid.materi');
         Route::post('/materi-anak/{id}/read', [JurnalHarianController::class, 'markMateriRead'])->name('walimurid.materi.read');

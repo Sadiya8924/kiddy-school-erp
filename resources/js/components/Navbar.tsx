@@ -84,12 +84,11 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
 
         {/* Right buttons */}
         <div className="flex items-center gap-2">
-          {authUser ? (
+          {(authUser || (typeof window !== 'undefined' && (window as any).isAuth)) ? (
             <a href="/dashboard"
-              className="px-4 py-2 rounded-xl text-sm text-white font-600 transition-all hover:opacity-90 active:scale-95 flex items-center gap-2"
-              style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)', fontWeight: 600, boxShadow: '0 3px 12px rgba(54,92,245,0.3)', textDecoration: 'none' }}>
-              <span>Dashboard ({authUser.name})</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+              className="px-4 py-2 rounded-xl text-sm text-white font-600 transition-all hover:opacity-90 active:scale-95 flex items-center gap-1.5"
+              style={{ background: 'linear-gradient(135deg, #10B981, #059669)', fontWeight: 600, boxShadow: '0 3px 12px rgba(16,185,129,0.3)', textDecoration: 'none' }}>
+              <span>🚀</span> Ke Dashboard {authUser ? `(${authUser.name})` : ''}
             </a>
           ) : (
             <>

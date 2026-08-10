@@ -10,6 +10,55 @@
     
     <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
       <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+
+        <!-- ======================================================== -->
+        <!-- TM-37: WALI MURID CHILD SWITCHER -->
+        <!-- ======================================================== -->
+        @if(Auth::check() && Auth::user()->isWaliMurid())
+        @php
+            $anakList = \App\Models\Siswa::where('email', Auth::user()->email)
+                ->orWhere('user_id', Auth::user()->id)->get();
+            $activeChildId = session('active_child_id') ?: optional($anakList->first())->id;
+        @endphp
+        @if($anakList->count() > 0)
+        <li class="nav-item d-none d-md-block me-3">
+            <form action="{{ route('switch-child') }}" method="POST" id="formSwitchChild" class="d-flex align-items-center gap-2">
+                @csrf
+                <iconify-icon icon="solar:user-speak-bold-duotone" class="fs-6 text-primary"></iconify-icon>
+                <select name="child_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchChild').submit()" style="min-width: 210px; background-color: #eff6ff; color: #1e40af; border-radius: 8px;">
+                    @foreach($anakList as $anak)
+                        <option value="{{ $anak->id }}" {{ $activeChildId == $anak->id ? 'selected' : '' }}>
+                            Anak: {{ $anak->nama_lengkap }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        </li>
+        @endif
+        @endif
+
+        <!-- ======================================================== -->
+        <!-- TM-25: SEMESTER SWITCHER FOR STAFF -->
+        <!-- ======================================================== -->
+        @if(Auth::check() && !Auth::user()->isWaliMurid())
+        @php
+            $semesters = \App\Models\Semester::all();
+            $activeSemId = session('active_semester_id') ?: optional(\App\Models\Semester::where('is_active', true)->first())->id;
+        @endphp
+        <li class="nav-item d-none d-md-block me-3">
+            <form action="{{ route('pengaturan.semester.switch') }}" method="POST" id="formSwitchSemester" class="d-flex align-items-center gap-2">
+                @csrf
+                <iconify-icon icon="solar:calendar-mark-bold-duotone" class="fs-6 text-success"></iconify-icon>
+                <select name="semester_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchSemester').submit()" style="min-width: 170px; background-color: #f0fdf4; color: #166534; border-radius: 8px;">
+                    @foreach($semesters as $sem)
+                        <option value="{{ $sem->id }}" {{ $activeSemId == $sem->id ? 'selected' : '' }}>
+                            {{ $sem->tahun_ajaran }} ({{ ucfirst($sem->jenis) }})
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        </li>
+        @endif
         
         <!-- ======================================================== -->
         <!-- YAYASAN SWITCHER (KHUSUS OWNER) -->
@@ -32,7 +81,7 @@
         @endif
 
         <!-- ======================================================== -->
-        <!-- SCHOOL SWITCHER (HANYA MUNCUL UNTUK SUPER ADMIN & OWNER) -->
+        <!-- SCHOOL SWITCHER (SUPER ADMIN) -->
         <!-- ======================================================== -->
         @if(Auth::check() && Auth::user()->isSuperAdmin())
         <li class="nav-item d-none d-md-block me-4 border-end pe-4">
@@ -65,20 +114,17 @@
             <img src="{{ asset('template2/images/profile/user-1.jpg') }}" alt="Profile" width="40" height="40" class="rounded-circle border border-2 border-white shadow-sm">
           </a>
           
-          <!-- Menu Dropdown dengan UI Modern -->
           <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up border-0 shadow-sm rounded-4 mt-2" aria-labelledby="drop2" style="min-width: 240px;">
             <div class="message-body">
               
-              <!-- Info User di dalam dropdown -->
               <div class="d-flex align-items-center px-4 py-3 border-bottom" style="border-color: #f3f4f6;">
                 <img src="{{ asset('template2/images/profile/user-1.jpg') }}" alt="Profile" width="45" height="45" class="rounded-circle object-fit-cover me-3 shadow-sm">
                 <div>
                   <h6 class="mb-0 fs-5 fw-semibold text-dark">{{ Auth::user()->name ?? 'Administrator' }}</h6>
-                  <p class="mb-0 text-muted fw-medium text-capitalize small">{{ Auth::user()->role ?? 'admin' }}</p>
+                  <p class="mb-0 text-muted fw-medium text-capitalize small">{{ str_replace('_', ' ', Auth::user()->role ?? 'admin') }}</p>
                 </div>
               </div>
               
-              <!-- Form Logout Real ke Backend Laravel -->
               <div class="px-4 py-3">
                 <form action="/logout" method="POST" class="d-block m-0">
                   @csrf

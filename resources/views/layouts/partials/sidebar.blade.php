@@ -292,6 +292,13 @@
                             <span class="hide-menu">Jurnal Harian Anak</span>
                         </a>
                     </li>
+
+                    <li class="sidebar-item mt-3">
+                        <a class="sidebar-link text-primary fw-bold" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalTautkanAnak">
+                            <span><iconify-icon icon="solar:user-plus-bold-duotone" class="fs-6 text-primary"></iconify-icon></span>
+                            <span class="hide-menu">Tautkan Anak (NISN)</span>
+                        </a>
+                    </li>
                 @endif
                 
             </ul>

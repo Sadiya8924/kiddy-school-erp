@@ -141,13 +141,13 @@ export default function LoginPage({ onNavigate }: Props) {
         <div className="relative z-10 max-w-sm">
           <div className="text-4xl mb-6">👋</div>
           <h2 className="text-3xl font-800 text-white mb-3" style={{ fontWeight: 800, letterSpacing: '-0.025em' }}>Selamat Datang Kembali!</h2>
-          <p className="text-white/75 text-sm mb-8 leading-relaxed">Masuk ke portal orang tua untuk memantau perkembangan putra-putri Anda.</p>
+          <p className="text-white/75 text-sm mb-8 leading-relaxed">Masuk ke Sistem Informasi Kiddy School ERP untuk mengelola data dan perkembangan sekolah.</p>
           <div className="space-y-3">
             {[
-              { icon: '📊', label: 'Informasi Akademik', desc: 'Pantau nilai dan perkembangan belajar' },
-              { icon: '🔔', label: 'Pemberitahuan Sekolah', desc: 'Terima notifikasi kegiatan sekolah' },
-              { icon: '📢', label: 'Pengumuman Guru', desc: 'Baca pesan langsung dari guru kelas' },
-              { icon: '🔗', label: 'Terhubung', desc: 'Jalin komunikasi dengan pihak sekolah' },
+              { icon: '📊', label: 'Informasi Akademik', desc: 'Pantau nilai, perkembangan, dan laporan' },
+              { icon: '🔔', label: 'Pemberitahuan Sistem', desc: 'Terima notifikasi presensi dan pengumuman' },
+              { icon: '📢', label: 'Jurnal & Materi', desc: 'Kelola jurnal harian dan materi pembelajaran' },
+              { icon: '🔗', label: 'Terintegrasi', desc: 'Platform multi-sekolah yang aman dan handal' },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)' }}>
                 <span className="text-xl flex-shrink-0">{item.icon}</span>
@@ -165,12 +165,21 @@ export default function LoginPage({ onNavigate }: Props) {
       <div className="flex-1 lg:max-w-md flex items-center justify-center p-8">
         <div className="w-full max-w-sm">
           <div className="lg:hidden flex items-center gap-2.5 mb-8">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}>AH</div>
-            <span className="font-700 text-sm text-gray-900" style={{ fontWeight: 700 }}>Yayasan Al-Hikmah 2</span>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}>KS</div>
+            <span className="font-700 text-sm text-gray-900" style={{ fontWeight: 700 }}>Kiddy School ERP</span>
           </div>
 
-          <h1 className="text-2xl font-800 text-gray-900 mb-1" style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Login Portal</h1>
-          <p className="text-sm mb-6" style={{ color: '#6B7280' }}>Masuk ke akun portal orang tua Anda.</p>
+          <h1 className="text-2xl font-800 text-gray-900 mb-1" style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Masuk Sistem</h1>
+          <p className="text-sm mb-4" style={{ color: '#6B7280' }}>Masuk ke akun Kiddy School ERP Anda.</p>
+
+          {/* TM-03: Demo / Beta Environment Security Banner */}
+          <div className="mb-5 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-500 flex items-start gap-2">
+            <span className="text-base leading-none">⚠️</span>
+            <div>
+              <strong className="font-600">Lingkungan Demo / Beta</strong>
+              <p className="text-[11px] text-amber-700 mt-0.5 mb-0">Data pada halaman ini hanya untuk pengujian. Jangan gunakan password pribadi nyata.</p>
+            </div>
+          </div>
 
           {error && (
             <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-500 flex items-center gap-2">

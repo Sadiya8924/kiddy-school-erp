@@ -17,9 +17,7 @@
         </div>
     @endif
 
-    {{-- ========================================================== --}}
-    {{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
-    {{-- ========================================================== --}}
+    {{-- HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
     <div class="card border-0 shadow-sm overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
         <div class="card-body p-4 text-white">
             <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
@@ -93,7 +91,10 @@
                     @endforeach
                 </select>
 
-                @if(request('kelas_id') || request('tahun_inden'))
+                {{-- Search Input (TM-38) --}}
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Nama / NIK / NISN..." class="form-control form-control-sm border-light-subtle shadow-none w-auto" style="font-size: 13px; min-width: 200px;">
+
+                @if(request('kelas_id') || request('tahun_inden') || request('q'))
                     <a href="/data-siswa" class="btn btn-outline-secondary rounded-3 px-3 py-1.5 font-semibold" style="font-size: 12px;">Reset Filter</a>
                 @endif
             </form>
@@ -298,13 +299,15 @@
                     </tbody>
                 </table>
             </div>
+            {{-- Pagination Footer (TM-26, TM-38) --}}
+            <div class="card-footer bg-white border-top border-light-subtle py-3 px-4">
+                {{ $siswas->links() }}
+            </div>
         </div>
     </div>
     @endif
 
-    {{-- ========================================================== --}}
     {{-- SUBTLE LOW-KEY FOOTER --}}
-    {{-- ========================================================== --}}
     <footer class="text-center py-2 mt-2">
         <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria Educational Management Platform • Internal Web System v1.0</span>
     </footer>

@@ -89,6 +89,28 @@ return new class extends Migration
                 $table->unsignedBigInteger('kepala_sekolah_user_id')->nullable()->after('status');
             });
         }
+
+        // 7. Semesters Table
+        if (!Schema::hasTable('semesters')) {
+            Schema::create('semesters', function (Blueprint $table) {
+                $table->id();
+                $table->string('tahun_ajaran');
+                $table->string('jenis')->default('Ganjil');
+                $table->boolean('is_active')->default(true);
+                $table->timestamps();
+            });
+        }
+
+        // 8. Anggota Kelas Table
+        if (!Schema::hasTable('anggota_kelas')) {
+            Schema::create('anggota_kelas', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('kelas_id')->constrained('kelas')->onDelete('cascade');
+                $table->foreignId('siswa_id')->constrained('siswas')->onDelete('cascade');
+                $table->foreignId('semester_id')->nullable()->constrained('semesters')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void

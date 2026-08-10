@@ -30,6 +30,23 @@ use Carbon\Carbon;
 |--------------------------------------------------------------------------
 */
 Route::get('/pengumuman', [AnnouncementController::class, 'index'])->name('pengumuman.index');
+Route::get('/auto-seed-db', function () {
+    \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'MasterFreshDatabaseSeeder', '--force' => true]);
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Database berhasil dihapus bersih dan diisi ulang dengan data master fresh!',
+        'summary' => [
+            'tenants' => '2 Yayasan (Yayasan Al-Hikmah 2 & Yayasan Bina Insani Ceria)',
+            'schools' => '4 Sekolah TK (TK Permata, TK Matahari, TK Bintang, TK Cendekia)',
+            'classes' => '6 Kelas Rombel',
+            'students' => '120 Siswa Aktif (Tepat 20 anak per kelas)',
+            'users' => 'Owner SaaS, 2 Super Admin, 4 Admin, 4 Kepsek, 6 Guru, 120 Wali Murid',
+            'password_all_users' => 'password',
+            'features_populated' => ['Absensi 5 hari', 'Jurnal Harian', 'Perkembangan Fisik', 'Materi Pelajaran', 'Rapor Nilai', 'Media Kegiatan', 'Pengumuman', 'Domains', 'Settings']
+        ]
+    ]);
+});
+
 Route::get('/', function (\Illuminate\Http\Request $request) {
     $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
     $schools = DB::table('schools')->where('status', 'aktif')->get();

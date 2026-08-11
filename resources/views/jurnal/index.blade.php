@@ -195,7 +195,6 @@
                                 <iconify-icon icon="solar:users-group-two-rounded-bold-duotone" class="align-middle me-1"></iconify-icon>
                                 Kelompok {{ $materi->kelompok }}
                             </span>
-                            {{-- TM-30: Tombol hapus transaksional dinonaktifkan --}}
                         </div>
                         <h6 class="fw-bold text-dark mb-1 text-truncate" title="{{ $materi->judul_materi }}" style="font-size: 14.5px;">{{ $materi->judul_materi }}</h6>
                         <div class="d-flex align-items-center gap-1.5 text-muted font-medium" style="font-size: 11.5px;">

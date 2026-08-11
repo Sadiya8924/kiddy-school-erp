@@ -137,7 +137,7 @@
             <a href="{{ route('materi.kepsek.index') }}" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid #8b5cf6 !important; border-radius: 16px !important;">
                 <div class="card-body p-3.5 d-flex justify-content-between align-items-center">
                     <div>
-                        <span class="text-muted font-semibold d-block mb-1" style="font-size: 11.5px; letter-spacing: 0.02em;">ANTEAN ACC MATERI</span>
+                        <span class="text-muted font-semibold d-block mb-1" style="font-size: 11.5px; letter-spacing: 0.02em;">ANTREAN ACC MATERI</span>
                         <h2 class="fw-bold text-dark mb-0" style="letter-spacing: -0.03em; font-size: 26px;">{{ $pendingMateriCount }}</h2>
                         <span class="text-muted small mt-1 d-block" style="font-size: 11px;">Menunggu persetujuan</span>
                     </div>

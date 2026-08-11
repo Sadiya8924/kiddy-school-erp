@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Pagination\Paginator;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Policies\SiswaPolicy;
@@ -25,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useBootstrapFive();
+
         // TM-04: IDOR Protection — Siswa hanya bisa diakses oleh role yang berwenang
         Gate::policy(Siswa::class, SiswaPolicy::class);
 

@@ -122,6 +122,17 @@
             font-weight: 600;
             letter-spacing: 0.5px;
         }
+
+        /* Pagination SVG Overflow Fix */
+        .pagination svg {
+            width: 1rem !important;
+            height: 1rem !important;
+            max-width: 100%;
+            display: inline-block;
+        }
+        .pagination {
+            margin-bottom: 0 !important;
+        }
     </style>
 
     <!-- Tempat untuk naruh CSS tambahan per-halaman -->

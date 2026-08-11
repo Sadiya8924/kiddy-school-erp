@@ -23,6 +23,7 @@ use App\Http\Controllers\ArsipRaporController;
 use App\Http\Controllers\JurnalHarianController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\MateriController;
+use App\Http\Controllers\LandingYayasanController;
 use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,9 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
 });
 Route::get('/pendaftaran-siswa', [SiswaController::class, 'createPendaftaran'])->name('pendaftaran');
 Route::post('/pendaftaran-siswa', [SiswaController::class, 'storePendaftaran'])->name('pendaftaran.store');
+
+// Landing page publik per yayasan — diakses via /y/{kode_yayasan}
+Route::get('/y/{kode_yayasan}', [LandingYayasanController::class, 'show'])->name('yayasan.landing');
 
 Route::get('/login', function (\Illuminate\Http\Request $request) {
     if (Auth::check()) {

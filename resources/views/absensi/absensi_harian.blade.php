@@ -39,78 +39,80 @@
 @endpush
 
 @section('konten_halaman')
-<!-- Form membungkus seluruh halaman agar input tanggal ikut ter-submit -->
-<form action="{{ route('absensi.store') }}" method="POST">
-    @csrf
-    <div class="d-flex flex-column gap-3.5 mt-0 pb-4">
+<div class="d-flex flex-column gap-3.5 mt-0 pb-4">
 
-        @if(session('success'))
-            <div class="alert alert-success border border-success-subtle shadow-none rounded-3 py-2 px-3 mb-0 small fw-semibold d-flex align-items-center justify-content-between">
-                <div><i class="ti ti-check me-2"></i>{{ session('success') }}</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+    @if(session('success'))
+        <div class="alert alert-success border border-success-subtle shadow-none rounded-3 py-2 px-3 mb-0 small fw-semibold d-flex align-items-center justify-content-between">
+            <div><i class="ti ti-check me-2"></i>{{ session('success') }}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
-        {{-- ========================================================== --}}
-        {{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
-        {{-- ========================================================== --}}
-        <div class="card border-0 shadow-sm overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
-            <div class="card-body p-4 text-white">
-                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
-                    
-                    {{-- User Greeting & Context --}}
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="position-relative">
-                            <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 52px; height: 52px; font-size: 22px; border: 2px solid rgba(255,255,255,0.4);">
-                                <iconify-icon icon="solar:user-check-bold-duotone"></iconify-icon>
-                            </div>
-                            <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle" style="width: 12px; height: 12px;"></span>
+    {{-- ========================================================== --}}
+    {{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
+    {{-- ========================================================== --}}
+    <div class="card border-0 shadow-sm overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
+        <div class="card-body p-4 text-white">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
+                
+                {{-- User Greeting & Context --}}
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative">
+                        <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 52px; height: 52px; font-size: 22px; border: 2px solid rgba(255,255,255,0.4);">
+                            <iconify-icon icon="solar:user-check-bold-duotone"></iconify-icon>
                         </div>
-                        <div>
-                            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                                <h5 class="fw-bold mb-0 text-white" style="font-size: 18px; letter-spacing: -0.02em;">Presensi Harian Siswa</h5>
-                            </div>
-                            <p class="mb-0 text-white text-opacity-80 small d-flex align-items-center gap-2 flex-wrap" style="font-size: 12.5px;">
-                                <span>Input kehadiran siswa kelas Anda untuk hari ini.</span>
-                            </p>
-                        </div>
+                        <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle" style="width: 12px; height: 12px;"></span>
                     </div>
-
-                    {{-- Action Controls: Filter & Datepicker --}}
-                    <div class="d-flex align-items-center gap-2 flex-wrap ms-lg-auto">
-                        @if(isset($list_kelas) && count($list_kelas) > 0)
-                        <div class="bg-white rounded-3 px-3 py-1.5 shadow-sm">
-                            <select name="kelas_id_filter" class="form-select form-select-sm border-0 shadow-none font-semibold text-dark bg-transparent p-0" onchange="window.location.href='{{ route('absensi.harian') }}?kelas_id=' + this.value" style="font-size: 12px; min-width: 130px;">
-                                <option value="all">-- Semua Kelas --</option>
-                                @foreach($list_kelas as $k)
-                                    <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>Kelas {{ $k->nama_kelas }}</option>
-                                @endforeach
-                            </select>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                            <h5 class="fw-bold mb-0 text-white" style="font-size: 18px; letter-spacing: -0.02em;">Presensi Harian Siswa</h5>
                         </div>
-                        @endif
-
-                        @php
-                            $selectedTanggal = request('tanggal', date('Y-m-d'));
-                            $isWeekendHarian = date('N', strtotime($selectedTanggal)) >= 6;
-                        @endphp
-                        <div class="d-flex gap-2 align-items-center bg-white rounded-3 px-3 py-1.5 shadow-sm position-relative">
-                            <iconify-icon icon="solar:calendar-mark-bold-duotone" class="text-primary fs-5"></iconify-icon>
-                            <span class="font-semibold text-dark" style="font-size: 12px;">Tanggal:</span>
-                            <input type="text" name="tanggal" id="datepickerHarian" class="form-control form-control-sm border-0 shadow-none font-semibold text-primary bg-transparent p-0" value="{{ $selectedTanggal }}" style="width: 125px; cursor: pointer; font-size: 12px;" required readonly>
-                        </div>
+                        <p class="mb-0 text-white text-opacity-80 small d-flex align-items-center gap-2 flex-wrap" style="font-size: 12.5px;">
+                            <span>Input kehadiran siswa kelas Anda untuk hari ini.</span>
+                        </p>
                     </div>
-
                 </div>
+
+                {{-- Action Controls: Filter & Datepicker --}}
+                <div class="d-flex align-items-center gap-2 flex-wrap ms-lg-auto">
+                    @if(isset($list_kelas) && count($list_kelas) > 0)
+                    <div class="bg-white rounded-3 px-3 py-1.5 shadow-sm">
+                        <select name="kelas_id_filter" class="form-select form-select-sm border-0 shadow-none font-semibold text-dark bg-transparent p-0" onchange="window.location.href='{{ route('absensi.harian') }}?kelas_id=' + this.value" style="font-size: 12px; min-width: 130px;">
+                            <option value="all">-- Semua Kelas --</option>
+                            @foreach($list_kelas as $k)
+                                <option value="{{ $k->id }}" {{ request('kelas_id') == $k->id ? 'selected' : '' }}>Kelas {{ $k->nama_kelas }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+
+                    @php
+                        $selectedTanggal = request('tanggal', date('Y-m-d'));
+                        $isWeekendHarian = date('N', strtotime($selectedTanggal)) >= 6;
+                    @endphp
+                    <div class="d-flex gap-2 align-items-center bg-white rounded-3 px-3 py-1.5 shadow-sm position-relative">
+                        <iconify-icon icon="solar:calendar-mark-bold-duotone" class="text-primary fs-5"></iconify-icon>
+                        <span class="font-semibold text-dark" style="font-size: 12px;">Tanggal:</span>
+                        <input type="text" id="datepickerHarian" class="form-control form-control-sm border-0 shadow-none font-semibold text-primary bg-transparent p-0" value="{{ $selectedTanggal }}" style="width: 125px; cursor: pointer; font-size: 12px;" required readonly>
+                    </div>
+                </div>
+
             </div>
         </div>
+    </div>
 
-        @include('partials.owner_stepped_filter')
+    @include('partials.owner_stepped_filter')
 
-        @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
+    @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
+
+    <!-- Form simpan absensi membungkus khusus area presensi -->
+    <form action="{{ route('absensi.store') }}" method="POST">
+        @csrf
+        <input type="hidden" name="tanggal" value="{{ $selectedTanggal }}">
 
         {{-- Notifikasi Hari Libur / Akhir Pekan --}}
         @if($isWeekendHarian)
-            <div class="alert alert-warning border border-warning-subtle shadow-sm rounded-3 p-3.5 mb-0 d-flex align-items-center gap-3">
+            <div class="alert alert-warning border border-warning-subtle shadow-sm rounded-3 p-3.5 mb-3.5 d-flex align-items-center gap-3">
                 <iconify-icon icon="solar:calendar-minimalistic-bold-duotone" class="fs-2 text-warning flex-shrink-0"></iconify-icon>
                 <div>
                     <h6 class="fw-bold text-dark mb-0.5" style="font-size: 14px;">Hari Libur Akhir Pekan (Sabtu / Minggu)</h6>
@@ -185,17 +187,17 @@
                 @endif
             </div>
         </div>
-        @endif
+    </form>
+    @endif
 
-        {{-- ========================================================== --}}
-        {{-- SUBTLE LOW-KEY FOOTER --}}
-        {{-- ========================================================== --}}
-        <footer class="text-center py-2 mt-2">
-            <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria - Web TK Al-Hidayah v1.0</span>
-        </footer>
+    {{-- ========================================================== --}}
+    {{-- SUBTLE LOW-KEY FOOTER --}}
+    {{-- ========================================================== --}}
+    <footer class="text-center py-2 mt-2">
+        <span class="text-muted" style="font-size: 11px;">© {{ date('Y') }} {{ \App\Models\Setting::get('site_title', 'Kiddy School ERP') }}</span>
+    </footer>
 
-    </div>
-</form>
+</div>
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

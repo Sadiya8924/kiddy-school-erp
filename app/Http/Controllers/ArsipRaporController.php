@@ -16,6 +16,7 @@ class ArsipRaporController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+        $schoolId = session('active_school_id') ?? $user->school_id;
         $semesterAktif = Semester::where('is_active', true)->first();
         $semesters = Semester::orderBy('id', 'desc')->get(); 
 
@@ -25,7 +26,7 @@ class ArsipRaporController extends Controller
         $status_arsip = $request->get('status_arsip', 'all');
 
         // Query Dasar
-        $query = Siswa::where('school_id', $user->school_id)->where('status', 'aktif');
+        $query = Siswa::where('school_id', $schoolId)->where('status', 'aktif');
 
         // 2. Filter Kelas (Beda logic untuk Guru dan Admin)
         if ($user->role === 'guru' && $user->kelas_id) {
@@ -34,7 +35,7 @@ class ArsipRaporController extends Controller
             });
             $list_kelas = [];
         } else {
-            $list_kelas = Kelas::where('school_id', $user->school_id)->get();
+            $list_kelas = Kelas::where('school_id', $schoolId)->get();
             if ($filter_kelas != 'all') {
                 $query->whereHas('kelas', function($q) use ($filter_kelas) {
                     $q->where('anggota_kelas.kelas_id', $filter_kelas);

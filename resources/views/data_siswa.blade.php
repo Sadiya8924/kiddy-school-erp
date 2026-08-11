@@ -68,7 +68,8 @@
                     <iconify-icon icon="solar:filter-bold-duotone" class="text-primary fs-5 align-middle me-1"></iconify-icon> Filter Data:
                 </label>
                 
-                {{-- Dropdown Filter Status / Kelas --}}
+                {{-- Dropdown Filter Status / Kelas & Tahun Pendaftaran (Hanya untuk Admin, Kepsek, SuperAdmin, Owner) --}}
+                @if(Auth::user()->role !== 'guru')
                 <select name="kelas_id" class="form-select rounded-3 text-dark shadow-none w-auto font-medium" onchange="this.form.submit()" style="font-size: 12.5px;">
                     <option value="">-- Semua Siswa Aktif --</option>
                     <optgroup label="Data Kelas">
@@ -83,16 +84,16 @@
                     </optgroup>
                 </select>
 
-                {{-- Dropdown Filter Tahun Pendaftaran --}}
                 <select name="tahun_inden" class="form-select rounded-3 text-dark shadow-none w-auto font-medium" onchange="this.form.submit()" style="font-size: 12.5px;">
                     <option value="">-- Semua Tahun Pendaftaran --</option>
                     @foreach($list_tahun_inden as $tahun)
                         <option value="{{ $tahun }}" {{ request('tahun_inden') == $tahun ? 'selected' : '' }}>Pendaftaran {{ $tahun }}</option>
                     @endforeach
                 </select>
+                @endif
 
                 {{-- Search Input (TM-38) --}}
-                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Nama / NIK / NISN..." class="form-control form-control-sm border-light-subtle shadow-none w-auto" style="font-size: 13px; min-width: 200px;">
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Nama / NIK / NISN..." class="form-control form-control-sm border-light-subtle shadow-none w-auto" style="font-size: 13px; min-width: 220px;">
 
                 @if(request('kelas_id') || request('tahun_inden') || request('q'))
                     <a href="/data-siswa" class="btn btn-outline-secondary rounded-3 px-3 py-1.5 font-semibold" style="font-size: 12px;">Reset Filter</a>
@@ -163,6 +164,9 @@
                             </td>
                             <td class="py-3 text-end pe-0">
                                 <div class="d-flex justify-content-end gap-1.5 flex-wrap" onclick="event.stopPropagation();">
+                                    <a href="/siswa/{{ $siswa->id }}" class="btn btn-sm btn-outline-primary rounded-3 px-2.5 py-1 font-semibold shadow-xs" style="font-size: 11.5px;">
+                                        <iconify-icon icon="solar:eye-bold-duotone" class="align-middle me-1"></iconify-icon> Lihat Detail
+                                    </a>
                                     
                                     @auth
                                         @if(in_array(auth()->user()->role, ['admin', 'super_admin']) && $siswa->status != 'lulus')

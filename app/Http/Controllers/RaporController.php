@@ -101,7 +101,7 @@ class RaporController extends Controller
         Rapor::updateOrCreate(
             ['siswa_id' => $request->siswa_id, 'semester_id' => $semesterAktif->id],
             [
-                'school_id' => $user->school_id,
+                'school_id' => session('active_school_id') ?? $user->school_id,
                 'status' => $statusSimpan,
                 'template_id' => $templateAktif ? $templateAktif->id : null,
                 'nilai_json' => $nilaiData, 

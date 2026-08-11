@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Gate;
 
 class SiswaController extends Controller
 {
@@ -190,7 +191,7 @@ class SiswaController extends Controller
         $siswa = Siswa::with('kelasAktif')->findOrFail($id);
         
         // IDOR Authorization check
-        $this->authorize('view', $siswa);
+        Gate::authorize('view', $siswa);
 
         return view('siswa_detail', compact('siswa'));
     }

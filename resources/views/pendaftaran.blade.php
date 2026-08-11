@@ -149,17 +149,22 @@
                         {{-- PETA INTERAKTIF --}}
                         <div class="row gx-3 mb-3">
                             <div class="col-12 mb-2">
-                                <label class="form-label fw-bold text-dark" style="font-size: 13px;"><iconify-icon icon="solar:map-point-bold-duotone" class="text-primary"></iconify-icon> Cari Lokasi Rumah di Peta (Wajib Dapodik) <span class="text-danger">*</span></label>
+                                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                                    <label class="form-label fw-bold text-dark mb-0" style="font-size: 13px;"><iconify-icon icon="solar:map-point-bold-duotone" class="text-primary"></iconify-icon> Cari Lokasi Rumah di Peta (Wajib Dapodik) <span class="text-danger">*</span></label>
+                                    <button type="button" id="btnGps" class="btn btn-sm btn-outline-primary rounded-pill font-semibold px-3 py-1 d-inline-flex align-items-center gap-1.5" style="font-size: 11.5px;">
+                                        <iconify-icon icon="solar:gps-bold-duotone" class="fs-6"></iconify-icon> Deteksi Lokasi Saya (GPS)
+                                    </button>
+                                </div>
                                 <p class="small text-muted mb-2">Gunakan kotak pencarian atau klik/geser pin merah di peta untuk menentukan lokasi rumah Anda. Lintang & Bujur akan terisi otomatis.</p>
                                 <div id="map" class="rounded border shadow-sm" style="height: 300px; width: 100%; z-index: 1;"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Garis Lintang (Latitude) <span class="text-danger">*</span></label>
-                                <input type="text" id="lintang" name="lintang" class="form-control bg-light border shadow-none" value="{{ old('lintang') }}" style="font-size: 13px;" readonly required placeholder="Otomatis dari Peta">
+                                <input type="text" id="lintang" name="lintang" class="form-control bg-light border shadow-none font-semibold text-primary" value="{{ old('lintang') }}" style="font-size: 13px;" readonly required placeholder="Otomatis dari Peta">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Garis Bujur (Longitude) <span class="text-danger">*</span></label>
-                                <input type="text" id="bujur" name="bujur" class="form-control bg-light border shadow-none" value="{{ old('bujur') }}" style="font-size: 13px;" readonly required placeholder="Otomatis dari Peta">
+                                <input type="text" id="bujur" name="bujur" class="form-control bg-light border shadow-none font-semibold text-primary" value="{{ old('bujur') }}" style="font-size: 13px;" readonly required placeholder="Otomatis dari Peta">
                             </div>
                         </div>
 
@@ -326,9 +331,12 @@
                             var marker = L.marker([defaultLat, defaultLng], {draggable: true}).addTo(map);
 
                             function updateCoordinates(lat, lng) {
-                                document.getElementById('lintang').value = lat;
-                                document.getElementById('bujur').value = lng;
+                                document.getElementById('lintang').value = typeof lat === 'number' ? lat.toFixed(6) : lat;
+                                document.getElementById('bujur').value = typeof lng === 'number' ? lng.toFixed(6) : lng;
                             }
+
+                            // Auto-set nilai awal saat pertama kali dimuat
+                            updateCoordinates(defaultLat, defaultLng);
 
                             map.on('click', function(e) {
                                 marker.setLatLng(e.latlng);
@@ -338,6 +346,29 @@
                             marker.on('dragend', function(e) {
                                 var position = marker.getLatLng();
                                 updateCoordinates(position.lat, position.lng);
+                            });
+
+                            // Tombol Deteksi Lokasi GPS
+                            document.getElementById('btnGps').addEventListener('click', function() {
+                                if (navigator.geolocation) {
+                                    this.disabled = true;
+                                    this.innerHTML = '<iconify-icon icon="solar:spinner-line-duotone" class="fs-6 spin"></iconify-icon> Mendeteksi...';
+                                    navigator.geolocation.getCurrentPosition(function(position) {
+                                        var lat = position.coords.latitude;
+                                        var lng = position.coords.longitude;
+                                        map.setView([lat, lng], 16);
+                                        marker.setLatLng([lat, lng]);
+                                        updateCoordinates(lat, lng);
+                                        document.getElementById('btnGps').disabled = false;
+                                        document.getElementById('btnGps').innerHTML = '<iconify-icon icon="solar:gps-bold-duotone" class="fs-6"></iconify-icon> Deteksi Lokasi Saya (GPS)';
+                                    }, function(error) {
+                                        alert('Gagal mendeteksi lokasi GPS: ' + error.message);
+                                        document.getElementById('btnGps').disabled = false;
+                                        document.getElementById('btnGps').innerHTML = '<iconify-icon icon="solar:gps-bold-duotone" class="fs-6"></iconify-icon> Deteksi Lokasi Saya (GPS)';
+                                    }, { enableHighAccuracy: true });
+                                } else {
+                                    alert('Browser Anda tidak mendukung deteksi GPS.');
+                                }
                             });
 
                             // 2. Script Ganti Kuota Otomatis

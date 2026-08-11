@@ -15,8 +15,9 @@ class ProsesKelasController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+        $schoolId = session('active_school_id') ?? $user->school_id;
         $kelas_id = $request->query('kelas_id');
-        $list_kelas = Kelas::where('school_id', $user->school_id)->get();
+        $list_kelas = Kelas::where('school_id', $schoolId)->get();
         $semesterAktif = Semester::where('is_active', true)->first();
         
         // Ambil siswa AKTIF di kelas tersebut lewat tabel pivot (anggota_kelas)
@@ -25,7 +26,7 @@ class ProsesKelasController extends Controller
             $siswas = Siswa::with('kelasAktif')->whereHas('kelas', function($q) use ($kelas_id, $semesterAktif) {
                 $q->where('anggota_kelas.kelas_id', $kelas_id)
                   ->where('anggota_kelas.semester_id', $semesterAktif->id);
-            })->where('school_id', $user->school_id)->where('status', 'aktif')->get();
+            })->where('school_id', $schoolId)->where('status', 'aktif')->get();
         } else {
             $siswas = collect();
         }

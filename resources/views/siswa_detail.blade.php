@@ -107,6 +107,42 @@
                             
                             <div class="col-md-4"><span class="d-block small text-muted">No. HP / WhatsApp</span><strong class="text-dark">{{ $siswa->hp ?? '-' }}</strong></div>
                             <div class="col-md-8"><span class="d-block small text-muted">Email Wali Murid</span><strong class="text-dark">{{ $siswa->email ?? '-' }}</strong></div>
+
+                            @php
+                                $latVal = $siswa->lintang;
+                                $lngVal = $siswa->bujur;
+
+                                // Fallback jika lintang/bujur belum terisi terpisah tetapi koordinat_rumah berisi pasangan angka "lat, lng"
+                                if ((!$latVal || $latVal == '0' || $latVal == '-') && $siswa->koordinat_rumah && str_contains($siswa->koordinat_rumah, ',')) {
+                                    $parts = explode(',', $siswa->koordinat_rumah);
+                                    if (count($parts) >= 2 && is_numeric(trim($parts[0])) && is_numeric(trim($parts[1]))) {
+                                        $latVal = trim($parts[0]);
+                                        $lngVal = trim($parts[1]);
+                                    }
+                                }
+                            @endphp
+
+                            <div class="col-md-12 border-top pt-3 mt-2">
+                                <div class="row gy-3">
+                                    <div class="col-md-4">
+                                        <span class="d-block small text-muted"><iconify-icon icon="solar:map-point-wave-bold-duotone" class="text-primary me-1 align-middle fs-6"></iconify-icon> Garis Lintang (Latitude)</span>
+                                        <strong class="text-dark font-monospace" style="font-size: 13.5px;">{{ ($latVal && $latVal != '0') ? $latVal : '-' }}</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span class="d-block small text-muted"><iconify-icon icon="solar:map-point-wave-bold-duotone" class="text-primary me-1 align-middle fs-6"></iconify-icon> Garis Bujur (Longitude)</span>
+                                        <strong class="text-dark font-monospace" style="font-size: 13.5px;">{{ ($lngVal && $lngVal != '0') ? $lngVal : '-' }}</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span class="d-block small text-muted">Koordinat / Lokasi Peta</span>
+                                        <strong class="text-dark d-block" style="font-size: 12.5px;">{{ $siswa->koordinat_rumah && $siswa->koordinat_rumah != '-' ? $siswa->koordinat_rumah : '-' }}</strong>
+                                        @if(($latVal && $latVal != '0') && ($lngVal && $lngVal != '0'))
+                                            <a href="https://www.google.com/maps?q={{ $latVal }},{{ $lngVal }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill font-semibold px-2.5 py-0.5 mt-1.5 d-inline-flex align-items-center gap-1" style="font-size: 11px;">
+                                                <iconify-icon icon="solar:map-point-bold-duotone"></iconify-icon> Buka di Google Maps ↗
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

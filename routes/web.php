@@ -24,6 +24,7 @@ use App\Http\Controllers\JurnalHarianController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\MateriController;
 use App\Http\Controllers\LandingYayasanController;
+use App\Http\Controllers\YayasanRegistrationController;
 use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
@@ -48,16 +49,20 @@ Route::get('/auto-seed-db', function () {
     ]);
 });
 
-Route::get('/', function (\Illuminate\Http\Request $request) {
-    $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
-    $schools = DB::table('schools')->where('status', 'aktif')->get();
-    return view('welcome', compact('schools', 'settings'));
-});
+// Landing page utama SaaS Yayasan
+Route::get('/', [YayasanRegistrationController::class, 'landing'])->name('home');
+// Halaman form pendaftaran yayasan baru
+Route::get('/daftar-yayasan', [YayasanRegistrationController::class, 'showForm'])->name('yayasan.daftar');
+Route::post('/daftar-yayasan', [YayasanRegistrationController::class, 'store'])->name('yayasan.register.store')->middleware('throttle:5,1');
 Route::get('/pendaftaran-siswa', [SiswaController::class, 'createPendaftaran'])->name('pendaftaran');
 Route::post('/pendaftaran-siswa', [SiswaController::class, 'storePendaftaran'])->name('pendaftaran.store');
 
 // Landing page publik per yayasan — diakses via /y/{kode_yayasan}
 Route::get('/y/{kode_yayasan}', [LandingYayasanController::class, 'show'])->name('yayasan.landing');
+// Halaman khusus pendaftaran PPDB siswa & registrasi wali murid per yayasan
+Route::get('/y/{kode_yayasan}/daftar', [LandingYayasanController::class, 'pendaftaranPage'])->name('yayasan.pendaftaran');
+// Daftar akun wali murid terikat ke yayasan tertentu
+Route::post('/y/{kode_yayasan}/register', [LandingYayasanController::class, 'register'])->name('yayasan.register')->middleware('throttle:5,1');
 
 Route::get('/login', function (\Illuminate\Http\Request $request) {
     if (Auth::check()) {
@@ -69,15 +74,10 @@ Route::get('/login', function (\Illuminate\Http\Request $request) {
 })->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
-Route::get('/register', function (\Illuminate\Http\Request $request) {
-    if (Auth::check()) {
-        return redirect('/dashboard');
-    }
-    $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
-    $schools = DB::table('schools')->where('status', 'aktif')->get();
-    return view('welcome', compact('schools', 'settings'));
+// /register tidak lagi tersedia secara umum — daftar akun hanya lewat /y/{kode_yayasan}
+Route::get('/register', function () {
+    return redirect('/login')->with('info', 'Untuk mendaftar akun, silakan akses halaman yayasan Anda terlebih dahulu.');
 })->name('register');
-Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
 
 // TM-34: Password Reset — GET = halaman form, POST = proses kirim email
 Route::get('/forgot-password', function () {
@@ -199,6 +199,19 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('yayasans', YayasanController::class);
         Route::post('/switch-yayasan', [YayasanController::class, 'switchYayasan'])->name('switch_yayasan');
     });
+
+    // 1C. OWNER ONLY — Edit landing page utama/global
+    Route::middleware('role:owner')->group(function () {
+        Route::get('/settings/landing-page', [SettingController::class, 'editLandingPage'])->name('settings.landing.edit');
+        Route::post('/settings/landing-page', [SettingController::class, 'updateLandingPage'])->name('settings.landing.update');
+
+        // Manajemen Pendaftaran Yayasan Baru
+        Route::get('/owner/yayasan-registrations', [\App\Http\Controllers\YayasanRegistrationController::class, 'index'])->name('owner.yayasan_reg.index');
+        Route::post('/owner/yayasan-registrations/{id}/approve', [\App\Http\Controllers\YayasanRegistrationController::class, 'approve'])->name('owner.yayasan_reg.approve');
+        Route::post('/owner/yayasan-registrations/{id}/reject', [\App\Http\Controllers\YayasanRegistrationController::class, 'reject'])->name('owner.yayasan_reg.reject');
+    });
+
+
 
     // 2. AKSES SUPER ADMIN & OWNER
     Route::middleware('role:owner,super_admin')->prefix('superadmin')->name('superadmin.')->group(function () {
@@ -479,8 +492,9 @@ Route::middleware(['auth'])->group(function () {
 
     // 4. AKSES ADMIN & SUPER ADMIN ONLY
     Route::middleware('role:super_admin,admin')->group(function () {
-        Route::get('/settings/landing-page', [SettingController::class, 'editLandingPage'])->name('settings.landing.edit');
-        Route::post('/settings/landing-page', [SettingController::class, 'updateLandingPage'])->name('settings.landing.update');
+        // Landing page yayasan — hanya super_admin (non-owner) yang bisa edit
+        Route::get('/superadmin/landing-page', [SettingController::class, 'editYayasanLanding'])->name('superadmin.landing.edit');
+        Route::post('/superadmin/landing-page', [SettingController::class, 'updateYayasanLanding'])->name('superadmin.landing.update');
         
         Route::get('/kenaikan-kelas', [ProsesKelasController::class, 'index'])->name('kenaikan.index');
         Route::post('/kenaikan-kelas/proses', [ProsesKelasController::class, 'proses'])->name('kenaikan.proses');

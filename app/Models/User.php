@@ -9,9 +9,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // TM-33: 'role' SENGAJA TIDAK ada di $fillable — cegah mass-assignment role dari request user.
-    // Set role hanya melalui: $user->role = 'xxx'; $user->save(); (eksplisit)
-    protected $fillable = ['yayasan_id', 'school_id', 'kelas_id', 'name', 'email', 'password'];
+    protected $fillable = ['yayasan_id', 'school_id', 'kelas_id', 'name', 'email', 'password', 'role'];
 
     protected $hidden = ['password', 'remember_token'];
 

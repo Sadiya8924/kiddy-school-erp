@@ -18,8 +18,14 @@ class Yayasan extends Model
         'telepon',
         'alamat',
         'logo_yayasan',
+        'landing_content',
         'status',
     ];
+
+    protected $casts = [
+        'landing_content' => 'array',
+    ];
+
 
     public function schools()
     {

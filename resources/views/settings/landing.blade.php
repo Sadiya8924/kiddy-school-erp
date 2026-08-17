@@ -31,6 +31,40 @@
         box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.15);
         border: 1px solid #e2e8f0;
     }
+
+    .template-card-option {
+        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        background: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+    .template-card-option:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+        border-color: #93c5fd;
+    }
+    .template-card-option.active {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+    .template-card-option input[type="radio"] {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 20px;
+        height: 20px;
+        accent-color: #2563eb;
+    }
+    .color-swatch {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: inline-block;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
 </style>
 @endpush
 
@@ -75,6 +109,104 @@
 
     <form action="{{ route('settings.landing.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
+
+        @php
+            $currentTemplate = $settings['landing_template'] ?? 'ocean';
+        @endphp
+
+        {{-- SECTION TEMPLATE CHOOSER --}}
+        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+            <div class="card-header bg-white border-bottom p-4">
+                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
+                    <iconify-icon icon="solar:palette-bold-duotone" class="text-primary fs-5"></iconify-icon> Pilih Template Desain Landing Page Utama
+                </h6>
+                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Pilih tema visual yang akan digunakan pada landing page utama portal web SaaS.</span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    
+                    {{-- 1. OCEAN --}}
+                    <div class="col-md-6 col-xl-3">
+                        <label class="template-card-option p-3 h-100 d-block {{ $currentTemplate === 'ocean' ? 'active' : '' }}">
+                            <input type="radio" name="landing_template" value="ocean" {{ $currentTemplate === 'ocean' ? 'checked' : '' }}>
+                            <div class="rounded-3 p-3 text-white mb-2" style="background: linear-gradient(135deg, #0f172a, #2563eb); height: 90px;">
+                                <span class="badge bg-white text-dark font-semibold rounded-pill px-2 py-0.5" style="font-size: 9.5px;">Ocean Gradient</span>
+                                <h6 class="fw-bold text-white mb-0 mt-2" style="font-size: 13px;">Modern Ocean</h6>
+                                <span class="small text-white-50" style="font-size: 10.5px;">Sleek, elegan &amp; modern</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between pt-1">
+                                <span class="fw-bold text-dark" style="font-size: 12px;">Modern Ocean</span>
+                                <div class="d-flex gap-1">
+                                    <span class="color-swatch" style="background: #0f172a;"></span>
+                                    <span class="color-swatch" style="background: #2563eb;"></span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    {{-- 2. CERIA --}}
+                    <div class="col-md-6 col-xl-3">
+                        <label class="template-card-option p-3 h-100 d-block {{ $currentTemplate === 'ceria' ? 'active' : '' }}">
+                            <input type="radio" name="landing_template" value="ceria" {{ $currentTemplate === 'ceria' ? 'checked' : '' }}>
+                            <div class="rounded-3 p-3 mb-2" style="background: #FDFBF7; border: 1px solid #F0EAE1; height: 90px;">
+                                <span class="badge rounded-pill px-2 py-0.5" style="font-size: 9.5px; background: #F0997B; color: #fff;">Playful &amp; Ceria</span>
+                                <h6 class="fw-bold mb-0 mt-2" style="font-size: 13px; color: #7A5310;">Ceria Playful</h6>
+                                <span class="small" style="font-size: 10.5px; color: #9A7B45;">Warm, energik &amp; ramah anak</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between pt-1">
+                                <span class="fw-bold text-dark" style="font-size: 12px;">Ceria Playful</span>
+                                <div class="d-flex gap-1">
+                                    <span class="color-swatch" style="background: #EF9F27;"></span>
+                                    <span class="color-swatch" style="background: #F0997B;"></span>
+                                    <span class="color-swatch" style="background: #378ADD;"></span>
+                                    <span class="color-swatch" style="background: #D4537E;"></span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    {{-- 3. TRUSTWORTHY --}}
+                    <div class="col-md-6 col-xl-3">
+                        <label class="template-card-option p-3 h-100 d-block {{ $currentTemplate === 'trustworthy' ? 'active' : '' }}">
+                            <input type="radio" name="landing_template" value="trustworthy" {{ $currentTemplate === 'trustworthy' ? 'checked' : '' }}>
+                            <div class="rounded-3 p-3 mb-2" style="background: #ffffff; border: 1px solid #e2e8f0; height: 90px;">
+                                <span class="badge rounded-pill px-2 py-0.5" style="font-size: 9.5px; background: #185FA5; color: #fff;">Corporate Navy</span>
+                                <h6 class="fw-bold mb-0 mt-2" style="font-size: 13px; color: #185FA5;">Trustworthy Navy</h6>
+                                <span class="small text-muted" style="font-size: 10.5px;">Bersih, kredibel &amp; terpercaya</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between pt-1">
+                                <span class="fw-bold text-dark" style="font-size: 12px;">Trustworthy</span>
+                                <div class="d-flex gap-1">
+                                    <span class="color-swatch" style="background: #185FA5;"></span>
+                                    <span class="color-swatch" style="background: #f8fafc;"></span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    {{-- 4. NATURAL --}}
+                    <div class="col-md-6 col-xl-3">
+                        <label class="template-card-option p-3 h-100 d-block {{ $currentTemplate === 'natural' ? 'active' : '' }}">
+                            <input type="radio" name="landing_template" value="natural" {{ $currentTemplate === 'natural' ? 'checked' : '' }}>
+                            <div class="rounded-3 p-3 mb-2" style="background: #F6F3EC; border: 1px solid #E6DFC5; height: 90px;">
+                                <span class="badge rounded-pill px-2 py-0.5" style="font-size: 9.5px; background: #639922; color: #fff;">Sage Montessori</span>
+                                <h6 class="fw-bold mb-0 mt-2" style="font-size: 13px; color: #355312;">Natural Sage</h6>
+                                <span class="small" style="font-size: 10.5px; color: #566D38;">Organik, Montessori &amp; alam</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between pt-1">
+                                <span class="fw-bold text-dark" style="font-size: 12px;">Natural Sage</span>
+                                <div class="d-flex gap-1">
+                                    <span class="color-swatch" style="background: #639922;"></span>
+                                    <span class="color-swatch" style="background: #F6F3EC;"></span>
+                                    <span class="color-swatch" style="background: #FAC775;"></span>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
         {{-- ========================================================== --}}
         {{-- SECTION 0: IDENTITAS & LOGO WEB --}}
@@ -143,14 +275,62 @@
                 </div>
                 <div>
                     <label class="form-label font-semibold text-dark small">Gambar Hero Utama / Kanan (Menggantikan Ilustrasi GSAP Bawaan)</label>
-                    <input type="file" class="form-control rounded-3" name="hero_image" accept="image/*">
-                    @if(!empty($settings['hero_image']))
-                        <div class="mt-2.5 d-flex align-items-center gap-2.5">
-                            <img src="{{ $settings['hero_image'] }}" style="max-height: 80px; border-radius: 10px;" class="border p-1 bg-white shadow-xs">
-                            <span class="badge bg-success-subtle text-success rounded-pill px-2.5 py-1" style="font-size: 11px;">Gambar Hero Aktif saat ini</span>
+
+                    {{-- Upload area --}}
+                    <div class="upload-drag-area position-relative mb-2" style="cursor:pointer;" onclick="document.getElementById('hero_image_input').click()">
+                        <input type="file" id="hero_image_input" name="hero_image" accept="image/*"
+                               class="d-none"
+                               onchange="previewHeroImage(this)">
+                        <div class="d-flex align-items-center justify-content-center gap-3">
+                            <div class="rounded-circle bg-warning bg-opacity-10 text-warning p-2 d-flex align-items-center justify-content-center">
+                                <iconify-icon icon="solar:gallery-add-bold-duotone" class="fs-4"></iconify-icon>
+                            </div>
+                            <div class="text-start">
+                                <span class="fw-bold text-dark d-block" style="font-size: 12.5px;">Klik untuk pilih gambar hero baru</span>
+                                <span class="text-muted" style="font-size: 11px;">Format PNG/JPG/WebP. Upload untuk mengganti ilustrasi animasi GSAP bawaan.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Preview gambar baru yang dipilih (belum disimpan) --}}
+                    <div id="hero-new-preview" class="d-none mt-2 p-2 border rounded-3 bg-light">
+                        <div class="d-flex align-items-center gap-3">
+                            <img id="hero-preview-img" src="" style="max-height: 90px; border-radius: 10px; border: 1px solid #e2e8f0; background: #fff; padding: 4px;">
+                            <div>
+                                <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill px-2 py-1 d-block mb-1" style="font-size: 11px;">
+                                    Preview — Belum Disimpan
+                                </span>
+                                <span class="text-muted" style="font-size: 10.5px;">Gambar ini akan menggantikan ilustrasi GSAP setelah klik Simpan</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Gambar hero aktif saat ini --}}
+                    @php $activeHero = $settings['hero_image'] ?? null; @endphp
+                    <input type="hidden" name="delete_hero_image" id="delete_hero_image_flag" value="0">
+
+                    @if(!empty($activeHero) && $activeHero !== 'null')
+                        <div id="hero-current-preview" class="mt-2 p-3 border border-success-subtle rounded-3" style="background: #f0fdf4;">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="{{ $activeHero }}" style="max-height: 90px; border-radius: 10px; border: 1px solid #d1fae5; background: #fff; padding: 4px;">
+                                <div class="flex-grow-1">
+                                    <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1 d-block mb-1" style="font-size: 11px;">
+                                        <iconify-icon icon="solar:check-circle-bold" class="align-middle me-1"></iconify-icon>Gambar Hero Aktif Saat Ini
+                                    </span>
+                                    <span class="text-muted d-block" style="font-size: 10.5px;">Upload baru di atas untuk mengganti, atau hapus untuk kembali ke ilustrasi animasi</span>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger rounded-3" style="font-size: 11px; white-space: nowrap; flex-shrink: 0;"
+                                        onclick="deleteHeroImage()">
+                                    <iconify-icon icon="solar:trash-bin-2-bold-duotone" class="me-1"></iconify-icon>Hapus &amp; Kembali ke Ilustrasi GSAP
+                                </button>
+                            </div>
+                        </div>
+                    @else
+                        <div class="mt-1.5 d-flex align-items-center gap-2">
+                            <iconify-icon icon="solar:info-circle-bold-duotone" class="text-info fs-6"></iconify-icon>
+                            <span class="text-muted" style="font-size: 11px;">Saat ini menggunakan <strong>ilustrasi animasi GSAP bawaan</strong>. Upload gambar di atas untuk menggantinya.</span>
                         </div>
                     @endif
-                    <span class="text-muted d-block mt-1" style="font-size: 11px;">Upload gambar kustom di sini jika ingin mengganti ilustrasi GSAP bawaan. Kosongkan jika ingin menggunakan ilustrasi animasi bawaan.</span>
                 </div>
             </div>
         </div>
@@ -345,5 +525,36 @@
             ]
         });
     });
+
+    function previewHeroImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('hero-preview-img').src = e.target.result;
+                document.getElementById('hero-new-preview').classList.remove('d-none');
+                document.getElementById('hero-new-preview').classList.add('d-flex');
+                // Reset delete flag if uploading new image
+                document.getElementById('delete_hero_image_flag').value = '0';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function deleteHeroImage() {
+        if (!confirm('Hapus gambar hero ini? Landing page akan kembali menggunakan ilustrasi animasi GSAP bawaan.')) return;
+        document.getElementById('delete_hero_image_flag').value = '1';
+        // Clear the file input
+        document.getElementById('hero_image_input').value = '';
+        document.getElementById('hero-new-preview').classList.add('d-none');
+        // Hide current preview
+        var currentPreview = document.getElementById('hero-current-preview');
+        if (currentPreview) {
+            currentPreview.innerHTML = '<div class="d-flex align-items-center gap-2"><iconify-icon icon="solar:trash-bin-2-bold-duotone" class="text-danger fs-6"></iconify-icon><span class="text-danger fw-semibold" style="font-size: 12px;">Gambar akan dihapus setelah klik Simpan — Landing page akan pakai ilustrasi GSAP bawaan.</span></div>';
+            currentPreview.style.background = '#fff5f5';
+            currentPreview.classList.remove('border-success-subtle');
+            currentPreview.classList.add('border-danger-subtle');
+        }
+    }
 </script>
 @endpush
+

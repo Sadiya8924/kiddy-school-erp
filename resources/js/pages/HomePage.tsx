@@ -433,9 +433,114 @@ function HeroIllustration() {
   )
 }
 
+// ── Theme Config ───────────────────────────────────────────────────────────────
+const THEMES: Record<string, {
+  heroGradient: string
+  heroBlob1: string
+  heroBlob2: string
+  heroBadgeBg: string
+  heroBadgeBorder: string
+  accentColor: string
+  accentLight: string
+  accentMid: string
+  sectionBg: string
+  sectionAlt: string
+  statsBg: string
+  ctaBg: string
+  btnBg: string
+  btnHover: string
+  tagColor: string
+  tagBg: string
+  headingColor: string
+}> = {
+  ocean: {
+    heroGradient: 'linear-gradient(135deg, #060F2E 0%, #0B1E4E 28%, #1E3A8A 62%, #1D4ED8 100%)',
+    heroBlob1: 'radial-gradient(circle, rgba(59,130,246,0.38) 0%, transparent 70%)',
+    heroBlob2: 'radial-gradient(circle, rgba(99,102,241,0.35) 0%, transparent 70%)',
+    heroBadgeBg: 'rgba(59,130,246,0.25)',
+    heroBadgeBorder: 'rgba(59,130,246,0.5)',
+    accentColor: '#2563EB',
+    accentLight: '#EFF6FF',
+    accentMid: '#BFDBFE',
+    sectionBg: '#FFFFFF',
+    sectionAlt: '#F8FAFF',
+    statsBg: 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%)',
+    ctaBg: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #2563EB 100%)',
+    btnBg: '#2563EB',
+    btnHover: '#1D4ED8',
+    tagColor: '#2563EB',
+    tagBg: '#EFF6FF',
+    headingColor: '#0F172A',
+  },
+  ceria: {
+    heroGradient: 'linear-gradient(135deg, #7A3F00 0%, #B45309 30%, #D97706 65%, #F59E0B 100%)',
+    heroBlob1: 'radial-gradient(circle, rgba(251,191,36,0.4) 0%, transparent 70%)',
+    heroBlob2: 'radial-gradient(circle, rgba(249,115,22,0.35) 0%, transparent 70%)',
+    heroBadgeBg: 'rgba(251,191,36,0.25)',
+    heroBadgeBorder: 'rgba(251,191,36,0.55)',
+    accentColor: '#D97706',
+    accentLight: '#FFFBEB',
+    accentMid: '#FDE68A',
+    sectionBg: '#FDFBF7',
+    sectionAlt: '#FFF8ED',
+    statsBg: 'linear-gradient(135deg, #7C2D12 0%, #EA580C 50%, #F97316 100%)',
+    ctaBg: 'linear-gradient(135deg, #451A03 0%, #92400E 50%, #D97706 100%)',
+    btnBg: '#D97706',
+    btnHover: '#B45309',
+    tagColor: '#92400E',
+    tagBg: '#FEF3C7',
+    headingColor: '#78350F',
+  },
+  trustworthy: {
+    heroGradient: 'linear-gradient(135deg, #0C1A2E 0%, #1A3253 30%, #185FA5 65%, #1A73C0 100%)',
+    heroBlob1: 'radial-gradient(circle, rgba(26,115,192,0.4) 0%, transparent 70%)',
+    heroBlob2: 'radial-gradient(circle, rgba(14,78,145,0.35) 0%, transparent 70%)',
+    heroBadgeBg: 'rgba(26,115,192,0.22)',
+    heroBadgeBorder: 'rgba(26,115,192,0.5)',
+    accentColor: '#185FA5',
+    accentLight: '#EBF4FF',
+    accentMid: '#BFDBFE',
+    sectionBg: '#FFFFFF',
+    sectionAlt: '#F5F9FF',
+    statsBg: 'linear-gradient(135deg, #0C1A2E 0%, #185FA5 100%)',
+    ctaBg: 'linear-gradient(135deg, #0C1A2E 0%, #185FA5 60%, #1A73C0 100%)',
+    btnBg: '#185FA5',
+    btnHover: '#0E4891',
+    tagColor: '#185FA5',
+    tagBg: '#EBF4FF',
+    headingColor: '#0C1A2E',
+  },
+  natural: {
+    heroGradient: 'linear-gradient(135deg, #1A2E0A 0%, #2D5016 30%, #4A7C1E 65%, #639922 100%)',
+    heroBlob1: 'radial-gradient(circle, rgba(99,153,34,0.4) 0%, transparent 70%)',
+    heroBlob2: 'radial-gradient(circle, rgba(74,124,30,0.38) 0%, transparent 70%)',
+    heroBadgeBg: 'rgba(99,153,34,0.22)',
+    heroBadgeBorder: 'rgba(99,153,34,0.5)',
+    accentColor: '#4A7C1E',
+    accentLight: '#F0F7E6',
+    accentMid: '#C5E39A',
+    sectionBg: '#F6F3EC',
+    sectionAlt: '#EDF5E0',
+    statsBg: 'linear-gradient(135deg, #1A2E0A 0%, #4A7C1E 60%, #639922 100%)',
+    ctaBg: 'linear-gradient(135deg, #1A2E0A 0%, #355312 50%, #4A7C1E 100%)',
+    btnBg: '#4A7C1E',
+    btnHover: '#355312',
+    tagColor: '#355312',
+    tagBg: '#ECFCCB',
+    headingColor: '#1A2E0A',
+  },
+}
+
+function getTheme() {
+  const tpl = (typeof window !== 'undefined' && (window as any).APP_SETTINGS?.landing_template) || 'ocean'
+  return THEMES[tpl] || THEMES.ocean
+}
+
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function HomePage({ onNavigate }: Props) {
+
   const reduced = useReducedMotion()
+  const theme = getTheme()
   const heroRef = useRef<HTMLElement>(null)
   const leftRef = useRef<HTMLDivElement>(null)
   const illusRef = useRef<HTMLDivElement>(null)
@@ -555,14 +660,14 @@ export default function HomePage({ onNavigate }: Props) {
       ════════════════════════════════════════════════════ */}
       <section ref={heroRef} style={{
         paddingTop: 84, paddingBottom: 0,
-        background: 'linear-gradient(135deg, #060F2E 0%, #0B1E4E 28%, #1E3A8A 62%, #1D4ED8 100%)',
+        background: theme.heroGradient,
         position: 'relative', overflow: 'hidden',
         display: 'flex', flexDirection: 'column',
       }}>
         {/* Animated blobs */}
-        <div ref={blob1Ref} className="absolute pointer-events-none" style={{ top: '-15%', left: '-8%', width: 560, height: 560, borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.38) 0%, transparent 70%)', filter: 'blur(50px)' }} />
-        <div ref={blob2Ref} className="absolute pointer-events-none" style={{ bottom: '-18%', right: '-10%', width: 640, height: 640, borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.35) 0%, transparent 70%)', filter: 'blur(60px)' }} />
-        <div ref={blob3Ref} className="absolute pointer-events-none" style={{ top: '30%', left: '30%', width: 450, height: 450, borderRadius: '50%', background: 'radial-gradient(circle, rgba(14,165,233,0.18) 0%, transparent 70%)', filter: 'blur(70px)' }} />
+        <div ref={blob1Ref} className="absolute pointer-events-none" style={{ top: '-15%', left: '-8%', width: 560, height: 560, borderRadius: '50%', background: theme.heroBlob1, filter: 'blur(50px)' }} />
+        <div ref={blob2Ref} className="absolute pointer-events-none" style={{ bottom: '-18%', right: '-10%', width: 640, height: 640, borderRadius: '50%', background: theme.heroBlob2, filter: 'blur(60px)' }} />
+        <div ref={blob3Ref} className="absolute pointer-events-none" style={{ top: '30%', left: '30%', width: 450, height: 450, borderRadius: '50%', background: theme.heroBlob1, filter: 'blur(70px)' }} />
         {/* Dot pattern */}
         <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)', backgroundSize: '26px 26px' }} />
         {/* Glowing accent line */}
@@ -576,7 +681,7 @@ export default function HomePage({ onNavigate }: Props) {
 
               {/* BADGE */}
               <div style={{ marginBottom: 18 }}>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '9px 20px', borderRadius: 999, background: 'rgba(59,130,246,0.25)', border: '1px solid rgba(59,130,246,0.5)', backdropFilter: 'blur(10px)' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '9px 20px', borderRadius: 999, background: theme.heroBadgeBg, border: `1px solid ${theme.heroBadgeBorder}`, backdropFilter: 'blur(10px)' }}>
                   <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#4ADE80', boxShadow: '0 0 8px #4ADE80', flexShrink: 0, display: 'inline-block' }} />
                   <span style={{ fontSize: 14, fontWeight: 700, color: '#93C5FD', letterSpacing: '0.02em' }}>📢 Pendaftaran & Inden Dibuka — TA 2027/2028</span>
                 </div>
@@ -595,7 +700,7 @@ export default function HomePage({ onNavigate }: Props) {
               {/* BUTTONS */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 28 }}>
                 <button onClick={() => onNavigate('registration')}
-                  style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '16px 36px', borderRadius: 18, background: 'white', color: '#1E3A8A', fontSize: 18, fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 10px 36px rgba(0,0,0,0.3)', transition: 'all 0.2s' }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '16px 36px', borderRadius: 18, background: 'white', color: theme.accentColor, fontSize: 18, fontWeight: 800, border: 'none', cursor: 'pointer', boxShadow: '0 10px 36px rgba(0,0,0,0.3)', transition: 'all 0.2s' }}
                   onMouseEnter={(e) => { if (!reduced) gsap.to(e.currentTarget, { scale: 1.05, boxShadow: '0 14px 44px rgba(0,0,0,0.4)', duration: 0.2 }) }}
                   onMouseLeave={(e) => { if (!reduced) gsap.to(e.currentTarget, { scale: 1, boxShadow: '0 10px 36px rgba(0,0,0,0.3)', duration: 0.2 }) }}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
@@ -667,7 +772,7 @@ export default function HomePage({ onNavigate }: Props) {
         {/* Bottom wave */}
         <div style={{ lineHeight: 0, marginTop: 24 }}>
           <svg viewBox="0 0 1440 44" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ display: 'block', width: '100%', height: 44 }}>
-            <path d="M0 44L1440 44L1440 22C1200 44 960 0 720 0C480 0 240 44 0 22L0 44Z" fill="white" />
+            <path d="M0 44L1440 44L1440 22C1200 44 960 0 720 0C480 0 240 44 0 22L0 44Z" fill={theme.sectionBg} />
           </svg>
         </div>
       </section>
@@ -675,10 +780,10 @@ export default function HomePage({ onNavigate }: Props) {
       {/* ════════════════════════════════════════════════════
           PROFIL SEKOLAH
       ════════════════════════════════════════════════════ */}
-      <section id="profil-sekolah" className="js-section" style={{ background: 'white', padding: '24px 0 20px 0' }}>
+      <section id="profil-sekolah" className="js-section" style={{ background: theme.sectionBg, padding: '24px 0 20px 0' }}>
         <div className="max-w-[1320px] mx-auto px-6 sm:px-10">
           <div className="mb-4 text-start">
-            <span className="text-xs font-700 uppercase tracking-widest text-blue-600 block mb-1" style={{ fontWeight: 700 }}>
+            <span className="text-xs font-700 uppercase tracking-widest block mb-1" style={{ fontWeight: 700, color: theme.accentColor }}>
               PENDIDIKAN BERKUALITAS UNTUK ANANDA
             </span>
             <h2 className="font-800 text-gray-900 text-2xl sm:text-3xl tracking-tight mb-1" style={{ fontWeight: 800 }}>
@@ -695,10 +800,10 @@ export default function HomePage({ onNavigate }: Props) {
       {/* ════════════════════════════════════════════════════
           INFORMASI SISA KUOTA PENDAFTARAN 
       ════════════════════════════════════════════════════ */}
-      <section id="info-kuota" className="js-section" style={{ background: '#F8FAFF', padding: '24px 0 28px 0', borderTop: '1px solid #E2E8F0' }}>
+      <section id="info-kuota" className="js-section" style={{ background: theme.sectionAlt, padding: '24px 0 28px 0', borderTop: '1px solid #E2E8F0' }}>
         <div className="max-w-[1320px] mx-auto px-6 sm:px-10">
           <div className="text-center mb-4">
-            <span className="text-xs font-700 uppercase tracking-widest text-blue-600 block mb-1" style={{ fontWeight: 700 }}>
+            <span className="text-xs font-700 uppercase tracking-widest block mb-1" style={{ fontWeight: 700, color: theme.accentColor }}>
               INFO ONLINE
             </span>
             <h2 className="font-800 text-gray-900 text-2xl sm:text-3xl tracking-tight mb-1" style={{ fontWeight: 800 }}>

@@ -3,35 +3,102 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Setting;
+use App\Models\Yayasan;
 
 class SettingController extends Controller
 {
+    // ── OWNER ONLY: Edit landing page utama (global) ──────────────────
     public function editLandingPage()
     {
+        abort_unless(auth()->user()->isOwner(), 403, 'Hanya Owner yang dapat mengedit landing page utama.');
         $settings = Setting::pluck('value', 'key')->toArray();
         return view('settings.landing', compact('settings'));
     }
 
     public function updateLandingPage(Request $request)
     {
-        $data = $request->except('_token', '_method');
+        abort_unless(auth()->user()->isOwner(), 403, 'Hanya Owner yang dapat mengedit landing page utama.');
 
         $imageFields = ['yayasan_image', 'tk_image', 'paud_image', 'site_logo', 'hero_image'];
-        foreach ($imageFields as $field) {
-            if ($request->hasFile($field)) {
-                $file = $request->file($field);
-                $path = $file->store('landing', 'public');
-                $data[$field] = '/storage/' . $path;
-            } else {
-                unset($data[$field]);
-            }
-        }
 
-        foreach ($data as $key => $value) {
+        // 1. Save all text/textarea inputs — exclude file fields, CSRF, and delete flags
+        $textData = $request->except(array_merge(['_token', '_method', 'delete_hero_image'], $imageFields));
+        foreach ($textData as $key => $value) {
             Setting::set($key, $value);
         }
 
-        return redirect()->back()->with('success', 'Konten landing page berhasil diperbarui!');
+        // 2. Handle hero_image delete request (revert to GSAP illustration)
+        if ($request->input('delete_hero_image') == '1') {
+            $oldPath = Setting::get('hero_image');
+            if ($oldPath && Storage::disk('public')->exists(str_replace('/storage/', '', $oldPath))) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $oldPath));
+            }
+            Setting::set('hero_image', null);
+        }
+
+        // 3. Handle each image field separately with old-file cleanup
+        foreach ($imageFields as $field) {
+            if ($request->hasFile($field) && $request->file($field)->isValid()) {
+                // Delete old file if exists
+                $oldPath = Setting::get($field);
+                if ($oldPath && Storage::disk('public')->exists(str_replace('/storage/', '', $oldPath))) {
+                    Storage::disk('public')->delete(str_replace('/storage/', '', $oldPath));
+                }
+                // Store new file
+                $path = $request->file($field)->store('landing', 'public');
+                Setting::set($field, '/storage/' . $path);
+            }
+            // If no new file uploaded, keep existing value (don't touch it)
+        }
+
+        return redirect()->back()->with('success', 'Konten landing page utama berhasil diperbarui!');
+    }
+
+
+    // ── SUPER ADMIN: Edit landing page yayasan sendiri ────────────────
+    public function editYayasanLanding()
+    {
+        $user = auth()->user();
+        abort_unless($user->isPureSuperAdmin(), 403, 'Akses ditolak.');
+
+        $yayasan = Yayasan::findOrFail($user->yayasan_id);
+        $content = $yayasan->landing_content ?? [];
+
+        return view('superadmin.landing', compact('yayasan', 'content'));
+    }
+
+    public function updateYayasanLanding(Request $request)
+    {
+        $user = auth()->user();
+        abort_unless($user->isPureSuperAdmin(), 403, 'Akses ditolak.');
+
+        $yayasan = Yayasan::findOrFail($user->yayasan_id);
+        $content = $yayasan->landing_content ?? [];
+
+        // Save all text inputs
+        $inputs = $request->except('_token', '_method', 'yayasan_image', 'tk_image', 'paud_image', 'site_logo', 'hero_image');
+        foreach ($inputs as $key => $val) {
+            $content[$key] = $val;
+        }
+
+        // Save image uploads
+        $imageFields = ['yayasan_image', 'tk_image', 'paud_image', 'site_logo', 'hero_image'];
+        foreach ($imageFields as $field) {
+            if ($request->hasFile($field)) {
+                if (!empty($content[$field])) {
+                    $old = str_replace('/storage/', '', $content[$field]);
+                    Storage::disk('public')->delete($old);
+                }
+                $path = $request->file($field)->store('landing/yayasan', 'public');
+                $content[$field] = '/storage/' . $path;
+            }
+        }
+
+        $yayasan->landing_content = $content;
+        $yayasan->save();
+
+        return redirect()->back()->with('success', 'Konten landing page yayasan berhasil diperbarui!');
     }
 }

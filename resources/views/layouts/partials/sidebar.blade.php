@@ -59,18 +59,46 @@
                     </a>
                 </li>
 
-                @if($user && in_array($user->role, ['owner', 'super_admin', 'admin']))
+                @if($user && ($user->isOwner() || $user->isPureSuperAdmin()))
                     <li class="nav-small-cap">
                         <i class="ti ti-dots nav-small-cap-icon fs-6"></i>
                         <span class="hide-menu">WEBSITE</span>
                     </li>
+
+                    @if($user->isOwner())
+                    {{-- Owner: edit landing page utama/global --}}
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('settings/landing-page*') ? 'active' : '' }}" href="/settings/landing-page">
+                        <a class="sidebar-link {{ request()->is('settings/landing-page*') ? 'active' : '' }}" href="{{ route('settings.landing.edit') }}">
                             <span><iconify-icon icon="solar:monitor-bold-duotone" class="fs-6"></iconify-icon></span>
-                            <span class="hide-menu">Edit Landing Page</span>
+                            <span class="hide-menu">Edit Landing Page Utama</span>
                         </a>
                     </li>
+                    {{-- Owner: Pendaftaran Yayasan Baru --}}
+                    <li class="sidebar-item">
+                        @php $regCount = \App\Models\YayasanRegistration::where('status','menunggu')->count(); @endphp
+                        <a class="sidebar-link {{ request()->is('owner/yayasan-registrations*') ? 'active' : '' }}" href="{{ route('owner.yayasan_reg.index') }}">
+                            <span><iconify-icon icon="solar:buildings-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">
+                                Pendaftaran Yayasan
+                                @if($regCount > 0)
+                                    <span class="badge rounded-pill ms-1" style="background:#f59e0b; color:#fff; font-size:10px;">{{ $regCount }}</span>
+                                @endif
+                            </span>
+                        </a>
+                    </li>
+                    @endif
+
+                    @if($user->isPureSuperAdmin())
+                    {{-- Super Admin: edit landing page yayasan sendiri --}}
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ request()->is('superadmin/landing-page*') ? 'active' : '' }}" href="{{ route('superadmin.landing.edit') }}">
+                            <span><iconify-icon icon="solar:monitor-bold-duotone" class="fs-6"></iconify-icon></span>
+                            <span class="hide-menu">Edit Landing Page Yayasan</span>
+                        </a>
+                    </li>
+                    @endif
                 @endif
+
 
                 @if($user && $user->isSuperAdmin())
                     <li class="nav-small-cap">

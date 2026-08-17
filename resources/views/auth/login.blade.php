@@ -9,13 +9,33 @@
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  @php
+    $activeYayasan = \App\Models\Yayasan::where('status', 'aktif')->first();
+    $template = ($activeYayasan && isset($activeYayasan->landing_content['template'])) 
+        ? $activeYayasan->landing_content['template'] 
+        : \App\Models\Setting::get('landing_template', 'ocean');
+    
+    $themeColor = '#2563eb';
+    $themeBg    = '#F7F9FC';
+    
+    if ($template === 'ceria') {
+        $themeColor = '#EF9F27';
+        $themeBg    = '#FDFBF7';
+    } elseif ($template === 'trustworthy') {
+        $themeColor = '#185FA5';
+        $themeBg    = '#f8fafc';
+    } elseif ($template === 'natural') {
+        $themeColor = '#639922';
+        $themeBg    = '#F6F3EC';
+    }
+  @endphp
   <style>
-    body { background-color: #fafafa; font-family: 'Segoe UI', sans-serif; }
-    .text-primary-custom { color: #2952ff; }
-    .btn-primary-custom { background-color: #2952ff; color: #fff; transition: 0.3s; border: none; }
-    .btn-primary-custom:hover { background-color: #193199; color: #fff; }
-    .form-control:focus { border-color: #2952ff; box-shadow: 0 0 0 0.25rem rgba(41, 82, 255, 0.25); }
-    .bg-primary-custom { background-color: #2952ff !important; color: white !important; }
+    body { background-color: {{ $themeBg }}; font-family: 'Segoe UI', sans-serif; }
+    .text-primary-custom { color: {{ $themeColor }} !important; }
+    .btn-primary-custom { background-color: {{ $themeColor }} !important; color: #fff !important; transition: 0.3s; border: none; }
+    .btn-primary-custom:hover { opacity: 0.9; color: #fff !important; }
+    .form-control:focus { border-color: {{ $themeColor }}; box-shadow: 0 0 0 0.25rem {{ $themeColor }}33; }
+    .bg-primary-custom { background-color: {{ $themeColor }} !important; color: white !important; }
   </style>
 </head>
 
@@ -117,39 +137,39 @@
               </p>
               <div class="row g-2">
                 <div class="col-6">
-                  <button type="button" onclick="fillDemo('ortu.1A.1@gmail.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                  <button type="button" onclick="fillDemo('ortu@tkceria.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
                     <div class="fw-bold text-dark" style="font-size: 11px;">👨‍👩‍👧 Wali Murid</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">ortu.1A.1@gmail.com</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">ortu@tkceria.com</div>
                   </button>
                 </div>
                 <div class="col-6">
-                  <button type="button" onclick="fillDemo('guru.a1@tkpermata.sch.id')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                  <button type="button" onclick="fillDemo('naning@tk.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
                     <div class="fw-bold text-dark" style="font-size: 11px;">👩‍🏫 Guru TK</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">guru.a1@tkpermata.sch.id</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">naning@tk.com</div>
                   </button>
                 </div>
                 <div class="col-6">
-                  <button type="button" onclick="fillDemo('admin1@tkpermata.sch.id')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                  <button type="button" onclick="fillDemo('admin@tk.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
                     <div class="fw-bold text-dark" style="font-size: 11px;">🏫 Admin TK</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">admin1@tkpermata.sch.id</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">admin@tk.com</div>
                   </button>
                 </div>
                 <div class="col-6">
-                  <button type="button" onclick="fillDemo('kepsek1@tkpermata.sch.id')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                  <button type="button" onclick="fillDemo('kepsek@tk.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
                     <div class="fw-bold text-dark" style="font-size: 11px;">🎓 Kepsek</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">kepsek1@tkpermata.sch.id</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">kepsek@tk.com</div>
                   </button>
                 </div>
                 <div class="col-6">
-                  <button type="button" onclick="fillDemo('superadmin1@alhikmah.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                  <button type="button" onclick="fillDemo('superadmin@tkceria.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
                     <div class="fw-bold text-dark" style="font-size: 11px;">🏛️ Super Admin</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">superadmin1@alhikmah.com</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">superadmin@tkceria.com</div>
                   </button>
                 </div>
                 <div class="col-6">
-                  <button type="button" onclick="fillDemo('owner@demo.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
+                  <button type="button" onclick="fillDemo('owner@yayasan.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
                     <div class="fw-bold text-dark" style="font-size: 11px;">👑 Owner SaaS</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">owner@demo.com</div>
+                    <div class="text-muted text-truncate" style="font-size: 10px;">owner@yayasan.com</div>
                   </button>
                 </div>
               </div>

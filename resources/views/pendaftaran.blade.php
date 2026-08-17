@@ -1,7 +1,5 @@
-{{-- TM-31: Layout adaptif berdasarkan status autentikasi --}}
-{{-- Admin/Staff yang sudah login akan melihat layout admin (sidebar tetap ada) --}}
-{{-- Calon siswa baru (publik) akan melihat layout marketing/publik --}}
-@extends(Auth::check() && !Auth::user()->isWaliMurid() ? 'layouts.admin' : 'layouts.app')
+{{-- Halaman pendaftaran selalu pakai layout bersih: tanpa navbar, sidebar, atau footer --}}
+@extends('layouts.pendaftaran')
 
 @section('konten_halaman')
 
@@ -12,6 +10,40 @@
 {{-- PANGGIL LIBRARY LEAFLET GEOCODER (Buat fitur cari alamat) --}}
 <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+@php
+    $activeYayasan = null;
+    if (isset($school) && !empty($school->yayasan_id)) {
+        $activeYayasan = \App\Models\Yayasan::find($school->yayasan_id);
+    }
+    if (!$activeYayasan) {
+        $activeYayasan = \App\Models\Yayasan::where('status', 'aktif')->first();
+    }
+    $template = ($activeYayasan && isset($activeYayasan->landing_content['template'])) 
+        ? $activeYayasan->landing_content['template'] 
+        : \App\Models\Setting::get('landing_template', 'ocean');
+    
+    $themeColor = '#2563eb';
+    $themeBg    = '#F7F9FC';
+    
+    if ($template === 'ceria') {
+        $themeColor = '#EF9F27';
+        $themeBg    = '#FDFBF7';
+    } elseif ($template === 'trustworthy') {
+        $themeColor = '#185FA5';
+        $themeBg    = '#f8fafc';
+    } elseif ($template === 'natural') {
+        $themeColor = '#639922';
+        $themeBg    = '#F6F3EC';
+    }
+@endphp
+<style>
+    body { background-color: {{ $themeBg }} !important; }
+    .bg-primary { background-color: {{ $themeColor }} !important; }
+    .btn-primary { background-color: {{ $themeColor }} !important; border-color: {{ $themeColor }} !important; }
+    .border-primary { border-color: {{ $themeColor }} !important; }
+    .text-primary { color: {{ $themeColor }} !important; }
+</style>
 
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
@@ -420,7 +452,5 @@
     </div>
 </div>
 
-<style>
-    footer, .footer, #footer { display: none !important; }
-</style>
+
 @endsection

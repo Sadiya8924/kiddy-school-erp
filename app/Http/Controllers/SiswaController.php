@@ -199,7 +199,16 @@ class SiswaController extends Controller
     public function createPendaftaran(Request $request)
     {
         $user = Auth::user();
-        $schools = \App\Models\School::where('status', 'aktif')->get();
+
+        // Filter sekolah berdasarkan yayasan user yang login (isolasi per-yayasan)
+        // Wali murid hanya melihat sekolah dari yayasan tempat mereka mendaftar
+        if ($user && $user->yayasan_id) {
+            $schools = \App\Models\School::where('status', 'aktif')
+                ->where('yayasan_id', $user->yayasan_id)
+                ->get();
+        } else {
+            $schools = \App\Models\School::where('status', 'aktif')->get();
+        }
 
         $selected_school_id = $request->query('school_id');
         $is_locked = false;

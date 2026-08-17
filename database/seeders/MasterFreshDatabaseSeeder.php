@@ -141,9 +141,9 @@ class MasterFreshDatabaseSeeder extends Seeder
         // A. Owner Platform SaaS
         $ownerId = DB::table('users')->insertGetId([
             'name' => 'Owner Platform SaaS',
-            'email' => 'owner@demo.com',
+            'email' => 'owner@yayasan.com',
             'password' => $defaultPassword,
-            'role' => 'super_admin',
+            'role' => 'owner',
             'yayasan_id' => null,
             'school_id' => null,
             'created_at' => $now,
@@ -175,7 +175,7 @@ class MasterFreshDatabaseSeeder extends Seeder
 
         $kepsek1Id = DB::table('users')->insertGetId([
             'name' => 'Dr. Hj. Rahmawati, M.Pd (Kepsek Permata)',
-            'email' => 'kepsek1@tkpermata.sch.id',
+            'email' => 'kepsek@tk.com',
             'password' => $defaultPassword,
             'role' => 'kepsek',
             'yayasan_id' => $yayasan1Id,

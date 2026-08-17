@@ -1,13 +1,7 @@
 @extends('layouts.admin')
 
 @push('styles')
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 <style>
-    .note-editor .note-editing-area { font-family: 'Inter', sans-serif; font-size: 13px; }
-    .note-editor.note-frame { border-radius: 12px !important; overflow: hidden; border-color: #e2e8f0 !important; box-shadow: none !important; }
-    .note-toolbar { background-color: #f8fafc !important; border-bottom: 1px solid #e2e8f0 !important; padding: 6px 10px !important; }
-    .note-btn { border-radius: 6px !important; background: white !important; border: 1px solid #e2e8f0 !important; font-size: 12px !important; }
-
     .upload-drag-area {
         border: 2px dashed #cbd5e1;
         border-radius: 12px;
@@ -31,39 +25,14 @@
         box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.15);
         border: 1px solid #e2e8f0;
     }
-
-    .template-card-option {
-        border: 2px solid #e2e8f0;
-        border-radius: 16px;
-        cursor: pointer;
-        transition: all 0.25s ease;
-        background: #fff;
-        position: relative;
-        overflow: hidden;
-    }
-    .template-card-option:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(0,0,0,0.08);
-        border-color: #93c5fd;
-    }
-    .template-card-option.active {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-    }
-    .template-card-option input[type="radio"] {
-        position: absolute;
-        top: 14px;
-        right: 14px;
-        width: 20px;
-        height: 20px;
-        accent-color: #2563eb;
-    }
-    .color-swatch {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        display: inline-block;
-        border: 1px solid rgba(0,0,0,0.1);
+    .section-icon-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
     }
 </style>
 @endpush
@@ -79,13 +48,12 @@
     @endif
 
     {{-- ========================================================== --}}
-    {{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
+    {{-- 1. HERO WELCOME CARD --}}
     {{-- ========================================================== --}}
     <div class="card border-0 shadow-sm overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
         <div class="card-body p-4 text-white">
             <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
                 
-                {{-- Title & Subtitle Context --}}
                 <div class="d-flex align-items-center gap-3">
                     <div class="position-relative">
                         <div class="rounded-circle bg-white text-primary d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 52px; height: 52px; font-size: 22px; border: 2px solid rgba(255,255,255,0.4);">
@@ -95,12 +63,19 @@
                     </div>
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                            <h5 class="fw-bold mb-0 text-white" style="font-size: 18px; letter-spacing: -0.02em;">Pengaturan Konten Landing Page</h5>
+                            <h5 class="fw-bold mb-0 text-white" style="font-size: 18px; letter-spacing: -0.02em;">Edit Landing Page Platform Utama (SaaS Owner)</h5>
+                            <span class="badge bg-warning text-dark font-bold rounded-pill px-2.5 py-1" style="font-size:11px;">Owner Only</span>
                         </div>
                         <p class="mb-0 text-white text-opacity-80 small d-flex align-items-center gap-2 flex-wrap" style="font-size: 12.5px;">
-                            <span>Kelola informasi publik, profil sekolah &amp; teks promosi tanpa perlu pengodean HTML</span>
+                            <span>Kelola teks, branding, statistik, dan cara kerja yang tampil di website utama (http://127.0.0.1:8000/)</span>
                         </p>
                     </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 flex-wrap ms-lg-auto">
+                    <a href="/" target="_blank" class="btn btn-light rounded-3 btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5 shadow-sm text-primary" style="font-size: 12.5px;">
+                        <iconify-icon icon="solar:plain-bold-duotone" class="fs-5"></iconify-icon> Pratinjau Landing Page ↗
+                    </a>
                 </div>
 
             </div>
@@ -110,451 +85,287 @@
     <form action="{{ route('settings.landing.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        @php
-            $currentTemplate = $settings['landing_template'] ?? 'ocean';
-        @endphp
-
-        {{-- SECTION TEMPLATE CHOOSER --}}
-        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+        {{-- ========================================================== --}}
+        {{-- 2. IDENTITAS & BRANDING UTAMA (NAVBAR & HEADER) --}}
+        {{-- ========================================================== --}}
+        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #2563eb !important; border-radius: 16px !important;">
             <div class="card-header bg-white border-bottom p-4">
                 <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
-                    <iconify-icon icon="solar:palette-bold-duotone" class="text-primary fs-5"></iconify-icon> Pilih Template Desain Landing Page Utama
+                    <span class="section-icon-badge bg-primary-subtle text-primary">
+                        <iconify-icon icon="solar:buildings-2-bold-duotone"></iconify-icon>
+                    </span>
+                    1. Identitas & Branding Platform (Top Bar)
                 </h6>
-                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Pilih tema visual yang akan digunakan pada landing page utama portal web SaaS.</span>
-            </div>
-            <div class="card-body p-4">
-                <div class="row g-3">
-                    
-                    {{-- 1. OCEAN --}}
-                    <div class="col-md-6 col-xl-3">
-                        <label class="template-card-option p-3 h-100 d-block {{ $currentTemplate === 'ocean' ? 'active' : '' }}">
-                            <input type="radio" name="landing_template" value="ocean" {{ $currentTemplate === 'ocean' ? 'checked' : '' }}>
-                            <div class="rounded-3 p-3 text-white mb-2" style="background: linear-gradient(135deg, #0f172a, #2563eb); height: 90px;">
-                                <span class="badge bg-white text-dark font-semibold rounded-pill px-2 py-0.5" style="font-size: 9.5px;">Ocean Gradient</span>
-                                <h6 class="fw-bold text-white mb-0 mt-2" style="font-size: 13px;">Modern Ocean</h6>
-                                <span class="small text-white-50" style="font-size: 10.5px;">Sleek, elegan &amp; modern</span>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between pt-1">
-                                <span class="fw-bold text-dark" style="font-size: 12px;">Modern Ocean</span>
-                                <div class="d-flex gap-1">
-                                    <span class="color-swatch" style="background: #0f172a;"></span>
-                                    <span class="color-swatch" style="background: #2563eb;"></span>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-
-                    {{-- 2. CERIA --}}
-                    <div class="col-md-6 col-xl-3">
-                        <label class="template-card-option p-3 h-100 d-block {{ $currentTemplate === 'ceria' ? 'active' : '' }}">
-                            <input type="radio" name="landing_template" value="ceria" {{ $currentTemplate === 'ceria' ? 'checked' : '' }}>
-                            <div class="rounded-3 p-3 mb-2" style="background: #FDFBF7; border: 1px solid #F0EAE1; height: 90px;">
-                                <span class="badge rounded-pill px-2 py-0.5" style="font-size: 9.5px; background: #F0997B; color: #fff;">Playful &amp; Ceria</span>
-                                <h6 class="fw-bold mb-0 mt-2" style="font-size: 13px; color: #7A5310;">Ceria Playful</h6>
-                                <span class="small" style="font-size: 10.5px; color: #9A7B45;">Warm, energik &amp; ramah anak</span>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between pt-1">
-                                <span class="fw-bold text-dark" style="font-size: 12px;">Ceria Playful</span>
-                                <div class="d-flex gap-1">
-                                    <span class="color-swatch" style="background: #EF9F27;"></span>
-                                    <span class="color-swatch" style="background: #F0997B;"></span>
-                                    <span class="color-swatch" style="background: #378ADD;"></span>
-                                    <span class="color-swatch" style="background: #D4537E;"></span>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-
-                    {{-- 3. TRUSTWORTHY --}}
-                    <div class="col-md-6 col-xl-3">
-                        <label class="template-card-option p-3 h-100 d-block {{ $currentTemplate === 'trustworthy' ? 'active' : '' }}">
-                            <input type="radio" name="landing_template" value="trustworthy" {{ $currentTemplate === 'trustworthy' ? 'checked' : '' }}>
-                            <div class="rounded-3 p-3 mb-2" style="background: #ffffff; border: 1px solid #e2e8f0; height: 90px;">
-                                <span class="badge rounded-pill px-2 py-0.5" style="font-size: 9.5px; background: #185FA5; color: #fff;">Corporate Navy</span>
-                                <h6 class="fw-bold mb-0 mt-2" style="font-size: 13px; color: #185FA5;">Trustworthy Navy</h6>
-                                <span class="small text-muted" style="font-size: 10.5px;">Bersih, kredibel &amp; terpercaya</span>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between pt-1">
-                                <span class="fw-bold text-dark" style="font-size: 12px;">Trustworthy</span>
-                                <div class="d-flex gap-1">
-                                    <span class="color-swatch" style="background: #185FA5;"></span>
-                                    <span class="color-swatch" style="background: #f8fafc;"></span>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-
-                    {{-- 4. NATURAL --}}
-                    <div class="col-md-6 col-xl-3">
-                        <label class="template-card-option p-3 h-100 d-block {{ $currentTemplate === 'natural' ? 'active' : '' }}">
-                            <input type="radio" name="landing_template" value="natural" {{ $currentTemplate === 'natural' ? 'checked' : '' }}>
-                            <div class="rounded-3 p-3 mb-2" style="background: #F6F3EC; border: 1px solid #E6DFC5; height: 90px;">
-                                <span class="badge rounded-pill px-2 py-0.5" style="font-size: 9.5px; background: #639922; color: #fff;">Sage Montessori</span>
-                                <h6 class="fw-bold mb-0 mt-2" style="font-size: 13px; color: #355312;">Natural Sage</h6>
-                                <span class="small" style="font-size: 10.5px; color: #566D38;">Organik, Montessori &amp; alam</span>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between pt-1">
-                                <span class="fw-bold text-dark" style="font-size: 12px;">Natural Sage</span>
-                                <div class="d-flex gap-1">
-                                    <span class="color-swatch" style="background: #639922;"></span>
-                                    <span class="color-swatch" style="background: #F6F3EC;"></span>
-                                    <span class="color-swatch" style="background: #FAC775;"></span>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        {{-- ========================================================== --}}
-        {{-- SECTION 0: IDENTITAS & LOGO WEB --}}
-        {{-- ========================================================== --}}
-        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
-            <div class="card-header bg-white border-bottom p-4">
-                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
-                    <iconify-icon icon="solar:globus-bold-duotone" class="text-primary fs-5"></iconify-icon> Identitas &amp; Branding Utama Web
-                </h6>
-                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Pengaturan nama institusi dan logo utama yang muncul pada header portal web</span>
+                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Pengaturan nama platform, tagline, logo utama, dan tombol aksi di navbar atas.</span>
             </div>
             <div class="card-body p-4">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label font-semibold text-dark small">Nama Situs / Institusi</label>
-                        <input type="text" class="form-control rounded-3" name="site_title" value="{{ $settings['site_title'] ?? 'Yayasan Al-Hikmah' }}" placeholder="Contoh: Yayasan Al-Hikmah">
-                        <span class="text-muted d-block mt-1" style="font-size: 11px;">Nama ini akan tampil di bagian header, footer, dan tab browser portal.</span>
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Nama Platform SaaS <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_platform_name" class="form-control bg-white border shadow-none fw-medium" value="{{ $settings['saas_platform_name'] ?? 'Kiddy School ERP' }}" required placeholder="Contoh: Kiddy School ERP">
+                        <span class="text-muted small" style="font-size: 11px;">Tampil di kiri atas navbar dan tab browser.</span>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label font-semibold text-dark small">Logo Utama Website</label>
-                        <div class="upload-drag-area position-relative">
-                            <input type="file" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer" name="site_logo" accept="image/*">
-                            <div class="d-flex align-items-center justify-content-center gap-3">
-                                @if(isset($settings['site_logo']))
-                                    <img src="{{ $settings['site_logo'] }}" width="44" height="44" class="rounded object-fit-contain border p-1 bg-white shadow-xs">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Tagline Platform <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_platform_tagline" class="form-control bg-white border shadow-none fw-medium" value="{{ $settings['saas_platform_tagline'] ?? 'MULTI-TENANT PLATFORM' }}" required placeholder="Contoh: MULTI-TENANT PLATFORM">
+                        <span class="text-muted small" style="font-size: 11px;">Teks kecil di bawah nama platform pada navbar.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Teks Tombol Aksi Navbar (CTA) <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_header_cta_text" class="form-control bg-white border shadow-none fw-medium" value="{{ $settings['saas_header_cta_text'] ?? 'Daftar Sekarang' }}" required placeholder="Contoh: Daftar Sekarang">
+                        <span class="text-muted small" style="font-size: 11px;">Tombol biru di kanan atas navbar yang mengarahkan ke form pendaftaran yayasan.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Logo Utama Platform</label>
+                        <div class="upload-drag-area p-2.5 d-flex align-items-center justify-content-between gap-3" onclick="document.getElementById('site_logo_input').click();">
+                            <div class="d-flex align-items-center gap-3">
+                                @if(!empty($settings['site_logo']))
+                                    <img src="{{ $settings['site_logo'] }}" alt="Logo" class="rounded object-fit-contain bg-white p-1 border shadow-xs" style="width: 44px; height: 44px;">
                                 @else
-                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-2 d-flex align-items-center justify-content-center">
-                                        <iconify-icon icon="solar:upload-bold-duotone" class="fs-4"></iconify-icon>
+                                    <div class="rounded bg-primary text-white d-flex align-items-center justify-content-center shadow-xs" style="width: 44px; height: 44px; font-size: 20px;">
+                                        🏫
                                     </div>
                                 @endif
                                 <div class="text-start">
-                                    <span class="fw-bold text-dark d-block" style="font-size: 12.5px;">Klik atau seret file gambar logo di sini</span>
-                                    <span class="text-muted" style="font-size: 11px;">Format PNG/JPG transparan (Maks. 2MB)</span>
+                                    <div class="fw-bold text-dark small">Pilih Logo Baru</div>
+                                    <div class="text-muted" style="font-size: 11px;">Format PNG / JPG transparan (Maks. 2MB)</div>
                                 </div>
                             </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3">Pilih File</button>
                         </div>
+                        <input type="file" name="site_logo" id="site_logo_input" class="d-none" accept="image/*">
                     </div>
                 </div>
             </div>
         </div>
 
         {{-- ========================================================== --}}
-        {{-- SECTION 1: HERO ATAS --}}
+        {{-- 3. HERO SECTION (BAGIAN UTAMA ATAS) --}}
         {{-- ========================================================== --}}
         <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #f59e0b !important; border-radius: 16px !important;">
             <div class="card-header bg-white border-bottom p-4">
                 <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
-                    <iconify-icon icon="solar:star-bold-duotone" class="text-warning fs-5"></iconify-icon> Bagian Hero Promosi (Atas)
+                    <span class="section-icon-badge bg-warning-subtle text-warning">
+                        <iconify-icon icon="solar:star-bold-duotone"></iconify-icon>
+                    </span>
+                    2. Bagian Hero Promosi (Focal Point Atas)
                 </h6>
-                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Teks judul utama, slogan promosi, dan gambar banner halaman depan</span>
+                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Teks judul utama, badge jaminan, deskripsi promosi, dan tombol aksi di banner biru depan.</span>
             </div>
             <div class="card-body p-4">
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label font-semibold text-dark small">Judul Hero Utama (Teks Hitam)</label>
-                        <input type="text" class="form-control rounded-3" name="hero_title_1" value="{{ $settings['hero_title_1'] ?? 'Ciptakan Generasi' }}">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Badge Jaminan Kepercayaan (Paling Atas) <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_hero_badge" class="form-control bg-white border shadow-none fw-medium" value="{{ $settings['saas_hero_badge'] ?? 'SaaS Multi-Tenant Terpercaya Khusus Yayasan & Sekolah Anak Usia Dini' }}" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label font-semibold text-dark small">Judul Tambahan (Teks Biru Bawah)</label>
-                        <input type="text" class="form-control rounded-3" name="hero_title_2" value="{{ $settings['hero_title_2'] ?? 'Cerdas & Ceria' }}">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Judul Utama Baris 1 (Teks Putih) <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_hero_title_1" class="form-control bg-white border shadow-none fw-medium" value="{{ $settings['saas_hero_title_1'] ?? 'Solusi ERP Modern & Terpadu untuk' }}" required placeholder="Solusi ERP Modern & Terpadu untuk">
                     </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label font-semibold text-dark small">Subjudul Teks Deskripsi Hero</label>
-                    <textarea class="form-control summernote" name="hero_subtitle" rows="3">{{ $settings['hero_subtitle'] ?? 'Memberikan pendidikan terbaik untuk generasi masa depan dengan fasilitas lengkap dan tenaga pengajar profesional. Amankan kuota putra-putri Anda sekarang.' }}</textarea>
-                </div>
-                <div>
-                    <label class="form-label font-semibold text-dark small">Gambar Hero Utama / Kanan (Menggantikan Ilustrasi GSAP Bawaan)</label>
-
-                    {{-- Upload area --}}
-                    <div class="upload-drag-area position-relative mb-2" style="cursor:pointer;" onclick="document.getElementById('hero_image_input').click()">
-                        <input type="file" id="hero_image_input" name="hero_image" accept="image/*"
-                               class="d-none"
-                               onchange="previewHeroImage(this)">
-                        <div class="d-flex align-items-center justify-content-center gap-3">
-                            <div class="rounded-circle bg-warning bg-opacity-10 text-warning p-2 d-flex align-items-center justify-content-center">
-                                <iconify-icon icon="solar:gallery-add-bold-duotone" class="fs-4"></iconify-icon>
-                            </div>
-                            <div class="text-start">
-                                <span class="fw-bold text-dark d-block" style="font-size: 12.5px;">Klik untuk pilih gambar hero baru</span>
-                                <span class="text-muted" style="font-size: 11px;">Format PNG/JPG/WebP. Upload untuk mengganti ilustrasi animasi GSAP bawaan.</span>
-                            </div>
-                        </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Judul Highlight Baris 2 (Teks Biru Muda Gradient) <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_hero_title_highlight" class="form-control bg-white border shadow-none fw-medium text-primary font-bold" value="{{ $settings['saas_hero_title_highlight'] ?? 'Manajemen Yayasan TK & PAUD' }}" required placeholder="Manajemen Yayasan TK & PAUD">
                     </div>
-
-                    {{-- Preview gambar baru yang dipilih (belum disimpan) --}}
-                    <div id="hero-new-preview" class="d-none mt-2 p-2 border rounded-3 bg-light">
-                        <div class="d-flex align-items-center gap-3">
-                            <img id="hero-preview-img" src="" style="max-height: 90px; border-radius: 10px; border: 1px solid #e2e8f0; background: #fff; padding: 4px;">
-                            <div>
-                                <span class="badge bg-warning-subtle text-warning-emphasis rounded-pill px-2 py-1 d-block mb-1" style="font-size: 11px;">
-                                    Preview — Belum Disimpan
-                                </span>
-                                <span class="text-muted" style="font-size: 10.5px;">Gambar ini akan menggantikan ilustrasi GSAP setelah klik Simpan</span>
-                            </div>
-                        </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Teks Deskripsi / Slogan Hero <span class="text-danger">*</span></label>
+                        <textarea name="saas_hero_desc" class="form-control bg-white border shadow-none" rows="3" required style="font-size: 13px;">{{ $settings['saas_hero_desc'] ?? 'Kelola seluruh cabang sekolah, ribuan siswa, e-rapor Kurikulum Merdeka, presensi harian, hingga portal mandiri orang tua dalam satu sistem cloud terintegrasi dengan jaminan isolasi data penuh.' }}</textarea>
                     </div>
-
-                    {{-- Gambar hero aktif saat ini --}}
-                    @php $activeHero = $settings['hero_image'] ?? null; @endphp
-                    <input type="hidden" name="delete_hero_image" id="delete_hero_image_flag" value="0">
-
-                    @if(!empty($activeHero) && $activeHero !== 'null')
-                        <div id="hero-current-preview" class="mt-2 p-3 border border-success-subtle rounded-3" style="background: #f0fdf4;">
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="{{ $activeHero }}" style="max-height: 90px; border-radius: 10px; border: 1px solid #d1fae5; background: #fff; padding: 4px;">
-                                <div class="flex-grow-1">
-                                    <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1 d-block mb-1" style="font-size: 11px;">
-                                        <iconify-icon icon="solar:check-circle-bold" class="align-middle me-1"></iconify-icon>Gambar Hero Aktif Saat Ini
-                                    </span>
-                                    <span class="text-muted d-block" style="font-size: 10.5px;">Upload baru di atas untuk mengganti, atau hapus untuk kembali ke ilustrasi animasi</span>
-                                </div>
-                                <button type="button" class="btn btn-sm btn-outline-danger rounded-3" style="font-size: 11px; white-space: nowrap; flex-shrink: 0;"
-                                        onclick="deleteHeroImage()">
-                                    <iconify-icon icon="solar:trash-bin-2-bold-duotone" class="me-1"></iconify-icon>Hapus &amp; Kembali ke Ilustrasi GSAP
-                                </button>
-                            </div>
-                        </div>
-                    @else
-                        <div class="mt-1.5 d-flex align-items-center gap-2">
-                            <iconify-icon icon="solar:info-circle-bold-duotone" class="text-info fs-6"></iconify-icon>
-                            <span class="text-muted" style="font-size: 11px;">Saat ini menggunakan <strong>ilustrasi animasi GSAP bawaan</strong>. Upload gambar di atas untuk menggantinya.</span>
-                        </div>
-                    @endif
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Teks Tombol Utama (Biru Terang) <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_hero_btn_primary" class="form-control bg-white border shadow-none fw-medium" value="{{ $settings['saas_hero_btn_primary'] ?? 'Daftarkan Yayasan Anda' }}" required>
+                        <span class="text-muted small" style="font-size: 11px;">Mengarahkan pengunjung ke form pendaftaran yayasan baru.</span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Teks Tombol Kedua (Outline Transparan) <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_hero_btn_secondary" class="form-control bg-white border shadow-none fw-medium" value="{{ $settings['saas_hero_btn_secondary'] ?? 'Pelajari Fitur & Modul' }}" required>
+                        <span class="text-muted small" style="font-size: 11px;">Scroll halus ke bagian fitur dan modul lengkap.</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         {{-- ========================================================== --}}
-        {{-- SECTION 2: PROFIL & PROGRAM (3 COLUMN GRID) --}}
-        {{-- ========================================================== --}}
-        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #8b5cf6 !important; border-radius: 16px !important;">
-            <div class="card-header bg-white border-bottom p-4">
-                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
-                    <iconify-icon icon="solar:users-group-two-rounded-bold-duotone" class="text-primary fs-5"></iconify-icon> Bagian Profil &amp; Program Unggulan
-                </h6>
-                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Profil institusi, program TK, PAUD, serta pimpinan unit</span>
-            </div>
-            <div class="card-body p-4">
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <label class="form-label font-semibold text-dark small">Judul Seksi Profil</label>
-                        <input type="text" class="form-control rounded-3" name="profil_title" value="{{ $settings['profil_title'] ?? 'Kenali Lebih Dekat' }}">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label font-semibold text-dark small">Subjudul Seksi Profil</label>
-                        <textarea class="form-control summernote" name="profil_subtitle" rows="2">{{ $settings['profil_subtitle'] ?? 'Pelajari lebih lanjut tentang institusi dan program unggulan kami untuk putra-putri Anda.' }}</textarea>
-                    </div>
-                </div>
-
-                {{-- 3 Column Tabs Grid --}}
-                <div class="row g-4 border-top pt-4">
-                    {{-- Tab Yayasan --}}
-                    <div class="col-lg-4">
-                        <div class="p-3.5 rounded-3 border bg-slate-50 h-100" style="border-radius: 14px !important; border-top: 3px solid #2563eb !important;">
-                            <h6 class="fw-bold mb-3 text-primary d-flex align-items-center gap-2" style="font-size: 14px;">
-                                <iconify-icon icon="solar:buildings-bold-duotone" class="fs-5"></iconify-icon> Profil Tab Yayasan
-                            </h6>
-                            <div class="mb-3">
-                                <label class="form-label font-semibold text-dark small">Nama Yayasan</label>
-                                <input type="text" class="form-control rounded-3" name="yayasan_title" value="{{ $settings['yayasan_title'] ?? 'Yayasan Pendidikan Al-Hikmah' }}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label font-semibold text-dark small">Deskripsi Singkat</label>
-                                <textarea class="form-control summernote" name="yayasan_desc" rows="4">{{ $settings['yayasan_desc'] ?? 'Yayasan kami berdiri sejak tahun 2010 dengan komitmen penuh untuk mencetak generasi Islami yang unggul.' }}</textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label font-semibold text-dark small">Visi</label>
-                                <textarea class="form-control summernote" name="yayasan_visi" rows="2">{{ $settings['yayasan_visi'] ?? 'Mewujudkan lembaga pendidikan yang berpijak pada penanaman aqidah Islam.' }}</textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label font-semibold text-dark small">Misi</label>
-                                <textarea class="form-control summernote" name="yayasan_misi" rows="2">{{ $settings['yayasan_misi'] ?? 'Menyelenggarakan proses pembelajaran yang berkualitas.' }}</textarea>
-                            </div>
-                            <hr class="my-3 text-muted">
-                            <div class="mb-2">
-                                <label class="form-label font-semibold text-dark small">Nama Profil Pimpinan</label>
-                                <input type="text" class="form-control rounded-3" name="yayasan_profile_name" value="{{ $settings['yayasan_profile_name'] ?? 'Dr. H. Fulan, M.Pd' }}">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label font-semibold text-dark small">Jabatan</label>
-                                <input type="text" class="form-control rounded-3" name="yayasan_profile_title" value="{{ $settings['yayasan_profile_title'] ?? 'Ketua Yayasan' }}">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label font-semibold text-dark small">Foto Pimpinan</label>
-                                <input type="file" class="form-control rounded-3" name="yayasan_image" accept="image/*">
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Tab Program TK --}}
-                    <div class="col-lg-4">
-                        <div class="p-3.5 rounded-3 border bg-slate-50 h-100" style="border-radius: 14px !important; border-top: 3px solid #10b981 !important;">
-                            <h6 class="fw-bold mb-3 text-success d-flex align-items-center gap-2" style="font-size: 14px;">
-                                <iconify-icon icon="solar:black-hole-bold-duotone" class="fs-5"></iconify-icon> Profil Tab Program TK
-                            </h6>
-                            <div class="mb-3">
-                                <label class="form-label font-semibold text-dark small">Judul Program TK</label>
-                                <input type="text" class="form-control rounded-3" name="tk_title" value="{{ $settings['tk_title'] ?? 'Taman Kanak-Kanak (TK)' }}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label font-semibold text-dark small">Deskripsi Program TK</label>
-                                <textarea class="form-control summernote" name="tk_desc" rows="6">{{ $settings['tk_desc'] ?? 'Program Taman Kanak-Kanak dirancang untuk mengasah kognitif, motorik, dan sosio-emosional anak melalui pendekatan learning by playing.' }}</textarea>
-                            </div>
-                            <hr class="my-3 text-muted">
-                            <div class="mb-2">
-                                <label class="form-label font-semibold text-dark small">Nama Kepala Sekolah</label>
-                                <input type="text" class="form-control rounded-3" name="tk_profile_name" value="{{ $settings['tk_profile_name'] ?? 'Bunda Fatimah, S.Pd' }}">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label font-semibold text-dark small">Jabatan</label>
-                                <input type="text" class="form-control rounded-3" name="tk_profile_title" value="{{ $settings['tk_profile_title'] ?? 'Kepala Sekolah TK' }}">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label font-semibold text-dark small">Foto Kepala Sekolah</label>
-                                <input type="file" class="form-control rounded-3" name="tk_image" accept="image/*">
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Tab Program PAUD --}}
-                    <div class="col-lg-4">
-                        <div class="p-3.5 rounded-3 border bg-slate-50 h-100" style="border-radius: 14px !important; border-top: 3px solid #f59e0b !important;">
-                            <h6 class="fw-bold mb-3 text-warning d-flex align-items-center gap-2" style="font-size: 14px;">
-                                <iconify-icon icon="solar:heart-bold-duotone" class="fs-5"></iconify-icon> Profil Tab Program PAUD
-                            </h6>
-                            <div class="mb-3">
-                                <label class="form-label font-semibold text-dark small">Judul Program PAUD</label>
-                                <input type="text" class="form-control rounded-3" name="paud_title" value="{{ $settings['paud_title'] ?? 'Pendidikan Anak Usia Dini (PAUD)' }}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label font-semibold text-dark small">Deskripsi Program PAUD</label>
-                                <textarea class="form-control summernote" name="paud_desc" rows="6">{{ $settings['paud_desc'] ?? 'Program PAUD memfasilitasi masa emas golden age anak dalam lingkungan aman dan nyaman.' }}</textarea>
-                            </div>
-                            <hr class="my-3 text-muted">
-                            <div class="mb-2">
-                                <label class="form-label font-semibold text-dark small">Nama Koordinator</label>
-                                <input type="text" class="form-control rounded-3" name="paud_profile_name" value="{{ $settings['paud_profile_name'] ?? 'Bunda Aisyah, S.Psi' }}">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label font-semibold text-dark small">Jabatan</label>
-                                <input type="text" class="form-control rounded-3" name="paud_profile_title" value="{{ $settings['paud_profile_title'] ?? 'Koordinator PAUD' }}">
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label font-semibold text-dark small">Foto Koordinator</label>
-                                <input type="file" class="form-control rounded-3" name="paud_image" accept="image/*">
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        {{-- ========================================================== --}}
-        {{-- SECTION 3: FOOTER & KONTAK --}}
+        {{-- 4. STATISTIK UTAMA (4 ANGKA PENCAPAIAN) --}}
         {{-- ========================================================== --}}
         <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #10b981 !important; border-radius: 16px !important;">
             <div class="card-header bg-white border-bottom p-4">
                 <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
-                    <iconify-icon icon="solar:phone-bold-duotone" class="text-primary fs-5"></iconify-icon> Kontak &amp; Footer Website
+                    <span class="section-icon-badge bg-success-subtle text-success">
+                        <iconify-icon icon="solar:chart-square-bold-duotone"></iconify-icon>
+                    </span>
+                    3. Angka Statistik Pencapaian Platform
                 </h6>
-                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Alamat sekolah, nomor kontak pusat, dan tautan WhatsApp publik</span>
+                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">4 angka metrik kredibilitas yang tampil di bawah tombol hero.</span>
             </div>
             <div class="card-body p-4">
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label font-semibold text-dark small">Alamat Lengkap Sekolah</label>
-                        <textarea class="form-control rounded-3" name="footer_address" rows="3">{{ $settings['footer_address'] ?? 'Jl. KH. Wahid Hasyim No. 45, Malang, Jawa Timur' }}</textarea>
+                    <div class="col-md-3">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <label class="form-label fw-bold text-dark" style="font-size: 11.5px;">Statistik 1: Angka</label>
+                            <input type="text" name="saas_stat_1_num" class="form-control bg-white border shadow-none fw-bold text-primary mb-2" value="{{ $settings['saas_stat_1_num'] ?? '500+' }}" required>
+                            <label class="form-label fw-bold text-dark" style="font-size: 11.5px;">Statistik 1: Label</label>
+                            <input type="text" name="saas_stat_1_label" class="form-control bg-white border shadow-none" value="{{ $settings['saas_stat_1_label'] ?? 'Cabang Sekolah Terdaftar' }}" required>
+                        </div>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label font-semibold text-dark small">Nomor Telepon Kantor</label>
-                        <input type="text" class="form-control rounded-3" name="footer_phone" value="{{ $settings['footer_phone'] ?? '(0341) 567-890' }}">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <label class="form-label fw-bold text-dark" style="font-size: 11.5px;">Statistik 2: Angka</label>
+                            <input type="text" name="saas_stat_2_num" class="form-control bg-white border shadow-none fw-bold text-primary mb-2" value="{{ $settings['saas_stat_2_num'] ?? '15.000+' }}" required>
+                            <label class="form-label fw-bold text-dark" style="font-size: 11.5px;">Statistik 2: Label</label>
+                            <input type="text" name="saas_stat_2_label" class="form-control bg-white border shadow-none" value="{{ $settings['saas_stat_2_label'] ?? 'Siswa Aktif & Alumni' }}" required>
+                        </div>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label font-semibold text-dark small">Nomor WhatsApp Resmi</label>
-                        <input type="text" class="form-control rounded-3" name="footer_whatsapp" value="{{ $settings['footer_whatsapp'] ?? '0812-3456-7890' }}">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <label class="form-label fw-bold text-dark" style="font-size: 11.5px;">Statistik 3: Angka</label>
+                            <input type="text" name="saas_stat_3_num" class="form-control bg-white border shadow-none fw-bold text-primary mb-2" value="{{ $settings['saas_stat_3_num'] ?? '100%' }}" required>
+                            <label class="form-label fw-bold text-dark" style="font-size: 11.5px;">Statistik 3: Label</label>
+                            <input type="text" name="saas_stat_3_label" class="form-control bg-white border shadow-none" value="{{ $settings['saas_stat_3_label'] ?? 'Isolasi Data Antar-Tenant' }}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <label class="form-label fw-bold text-dark" style="font-size: 11.5px;">Statistik 4: Angka</label>
+                            <input type="text" name="saas_stat_4_num" class="form-control bg-white border shadow-none fw-bold text-primary mb-2" value="{{ $settings['saas_stat_4_num'] ?? '99.9%' }}" required>
+                            <label class="form-label fw-bold text-dark" style="font-size: 11.5px;">Statistik 4: Label</label>
+                            <input type="text" name="saas_stat_4_label" class="form-control bg-white border shadow-none" value="{{ $settings['saas_stat_4_label'] ?? 'Cloud Server Uptime' }}" required>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- STICKY SAVE BUTTON BAR --}}
-        <div class="sticky-save-bar p-3 border d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-            <div class="d-flex align-items-center gap-2">
-                <iconify-icon icon="solar:info-circle-bold-duotone" class="text-primary fs-4"></iconify-icon>
-                <span class="fw-medium text-dark small">Pastikan seluruh informasi publik sudah terverifikasi sebelum menyimpan.</span>
+        {{-- ========================================================== --}}
+        {{-- 5. CARA KERJA (4 LANGKAH PROSES) --}}
+        {{-- ========================================================== --}}
+        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #8b5cf6 !important; border-radius: 16px !important;">
+            <div class="card-header bg-white border-bottom p-4">
+                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
+                    <span class="section-icon-badge bg-primary-subtle text-primary" style="background: rgba(139,92,246,0.1) !important; color: #8b5cf6 !important;">
+                        <iconify-icon icon="solar:route-bold-duotone"></iconify-icon>
+                    </span>
+                    4. Alur "Cara Kerja" (4 Langkah Menuju Go-Live)
+                </h6>
+                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Penjelasan alur 4 langkah dari pendaftaran hingga sistem siap dipakai yayasan.</span>
             </div>
-            <button type="submit" class="btn btn-primary px-4 py-2 font-semibold rounded-3 shadow-sm d-flex align-items-center gap-2 text-nowrap">
-                <iconify-icon icon="solar:diskette-bold-duotone" class="fs-5"></iconify-icon> Simpan Perubahan Landing Page
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-light h-100">
+                            <label class="form-label fw-bold text-dark" style="font-size: 12px;">Langkah 1: Judul</label>
+                            <input type="text" name="saas_step_1_title" class="form-control bg-white border shadow-none fw-bold mb-2" value="{{ $settings['saas_step_1_title'] ?? '1. Daftarkan Yayasan' }}" required>
+                            <label class="form-label fw-bold text-dark" style="font-size: 12px;">Langkah 1: Deskripsi</label>
+                            <textarea name="saas_step_1_desc" class="form-control bg-white border shadow-none" rows="2" style="font-size: 12px;">{{ $settings['saas_step_1_desc'] ?? 'Isi formulir identitas yayasan dan lokasi GPS melalui portal pendaftaran.' }}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-light h-100">
+                            <label class="form-label fw-bold text-dark" style="font-size: 12px;">Langkah 2: Judul</label>
+                            <input type="text" name="saas_step_2_title" class="form-control bg-white border shadow-none fw-bold mb-2" value="{{ $settings['saas_step_2_title'] ?? '2. Verifikasi & Aktivasi' }}" required>
+                            <label class="form-label fw-bold text-dark" style="font-size: 12px;">Langkah 2: Deskripsi</label>
+                            <textarea name="saas_step_2_desc" class="form-control bg-white border shadow-none" rows="2" style="font-size: 12px;">{{ $settings['saas_step_2_desc'] ?? 'Admin platform memverifikasi data dan akun Super Admin otomatis dibuat.' }}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-light h-100">
+                            <label class="form-label fw-bold text-dark" style="font-size: 12px;">Langkah 3: Judul</label>
+                            <input type="text" name="saas_step_3_title" class="form-control bg-white border shadow-none fw-bold mb-2" value="{{ $settings['saas_step_3_title'] ?? '3. Atur Cabang & Guru' }}" required>
+                            <label class="form-label fw-bold text-dark" style="font-size: 12px;">Langkah 3: Deskripsi</label>
+                            <textarea name="saas_step_3_desc" class="form-control bg-white border shadow-none" rows="2" style="font-size: 12px;">{{ $settings['saas_step_3_desc'] ?? 'Super Admin menambahkan cabang TK/PAUD, akun guru, dan kelas.' }}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-light h-100">
+                            <label class="form-label fw-bold text-dark" style="font-size: 12px;">Langkah 4: Judul</label>
+                            <input type="text" name="saas_step_4_title" class="form-control bg-white border shadow-none fw-bold mb-2" value="{{ $settings['saas_step_4_title'] ?? '4. Siap Digunakan' }}" required>
+                            <label class="form-label fw-bold text-dark" style="font-size: 12px;">Langkah 4: Deskripsi</label>
+                            <textarea name="saas_step_4_desc" class="form-control bg-white border shadow-none" rows="2" style="font-size: 12px;">{{ $settings['saas_step_4_desc'] ?? 'Sistem siap melayani PPDB, absensi, e-rapor, dan portal wali murid.' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ========================================================== --}}
+        {{-- 6. BANNER AJAKAN BAWAH (BOTTOM CTA) --}}
+        {{-- ========================================================== --}}
+        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #0284c7 !important; border-radius: 16px !important;">
+            <div class="card-header bg-white border-bottom p-4">
+                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
+                    <span class="section-icon-badge bg-info-subtle text-info">
+                        <iconify-icon icon="solar:rocket-2-bold-duotone"></iconify-icon>
+                    </span>
+                    5. Banner Ajakan Bawah (Bottom Call-to-Action)
+                </h6>
+                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Banner biru besar sebelum footer untuk mendorong yayasan segera mendaftar.</span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Judul Banner Ajakan <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_cta_title" class="form-control bg-white border shadow-none fw-bold" value="{{ $settings['saas_cta_title'] ?? 'Siap Mentransformasi Digital Yayasan & Sekolah Anda?' }}" required>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Teks Deskripsi Banner <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_cta_desc" class="form-control bg-white border shadow-none" value="{{ $settings['saas_cta_desc'] ?? 'Bergabunglah bersama puluhan yayasan pendidikan lainnya yang telah menggunakan platform Kiddy School ERP.' }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Teks Tombol Aksi <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_cta_btn_text" class="form-control bg-white border shadow-none fw-bold text-primary" value="{{ $settings['saas_cta_btn_text'] ?? 'Daftarkan Yayasan Anda Sekarang' }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ========================================================== --}}
+        {{-- 7. INFORMASI KONTAK & FOOTER --}}
+        {{-- ========================================================== --}}
+        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #475569 !important; border-radius: 16px !important;">
+            <div class="card-header bg-white border-bottom p-4">
+                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
+                    <span class="section-icon-badge bg-secondary-subtle text-secondary">
+                        <iconify-icon icon="solar:mailbox-bold-duotone"></iconify-icon>
+                    </span>
+                    6. Informasi Kontak Resmi & Footer
+                </h6>
+                <span class="text-muted small d-block mt-0.5" style="font-size: 11.5px;">Kontak bantuan, email support, dan ringkasan platform pada footer bawah.</span>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Ringkasan Tentang Platform (Footer About) <span class="text-danger">*</span></label>
+                        <textarea name="saas_footer_about" class="form-control bg-white border shadow-none" rows="2" style="font-size: 12.5px;" required>{{ $settings['saas_footer_about'] ?? 'Platform SaaS ERP Manajemen Yayasan TK & PAUD terintegrasi dengan arsitektur multi-tenant modern.' }}</textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Email Support / Kontak <span class="text-danger">*</span></label>
+                        <input type="email" name="saas_contact_email" class="form-control bg-white border shadow-none fw-medium" value="{{ $settings['saas_contact_email'] ?? 'support@kiddyschool.id' }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Nomor Telepon / WhatsApp <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_contact_phone" class="form-control bg-white border shadow-none fw-medium" value="{{ $settings['saas_contact_phone'] ?? '+62 812-3456-7890' }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold text-dark" style="font-size: 12.5px;">Alamat Kantor / Operasional <span class="text-danger">*</span></label>
+                        <input type="text" name="saas_contact_address" class="form-control bg-white border shadow-none fw-medium" value="{{ $settings['saas_contact_address'] ?? 'Gedung Cyber Tech Lt. 5, Jakarta, Indonesia' }}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- STICKY SAVE BAR --}}
+        <div class="sticky-save-bar p-3 d-flex align-items-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="p-2 rounded-circle bg-success-subtle text-success d-inline-flex">
+                    <iconify-icon icon="solar:check-read-bold" class="fs-5"></iconify-icon>
+                </span>
+                <span class="text-dark small fw-semibold">Pastikan seluruh data platform sudah sesuai sebelum menyimpan.</span>
+            </div>
+            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-bold d-inline-flex align-items-center gap-2 shadow-sm">
+                <iconify-icon icon="solar:diskette-bold" class="fs-5"></iconify-icon> Simpan Perubahan Landing Page
             </button>
         </div>
 
     </form>
 
-    {{-- ========================================================== --}}
-    {{-- 4. SUBTLE LOW-KEY FOOTER --}}
-    {{-- ========================================================== --}}
-    <footer class="text-center py-2 mt-2">
-        <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria Educational Management Platform • Internal Web System v1.0</span>
-    </footer>
-
 </div>
 @endsection
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('.summernote').summernote({
-            height: 140,
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link']]
-            ]
-        });
-    });
-
-    function previewHeroImage(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('hero-preview-img').src = e.target.result;
-                document.getElementById('hero-new-preview').classList.remove('d-none');
-                document.getElementById('hero-new-preview').classList.add('d-flex');
-                // Reset delete flag if uploading new image
-                document.getElementById('delete_hero_image_flag').value = '0';
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function deleteHeroImage() {
-        if (!confirm('Hapus gambar hero ini? Landing page akan kembali menggunakan ilustrasi animasi GSAP bawaan.')) return;
-        document.getElementById('delete_hero_image_flag').value = '1';
-        // Clear the file input
-        document.getElementById('hero_image_input').value = '';
-        document.getElementById('hero-new-preview').classList.add('d-none');
-        // Hide current preview
-        var currentPreview = document.getElementById('hero-current-preview');
-        if (currentPreview) {
-            currentPreview.innerHTML = '<div class="d-flex align-items-center gap-2"><iconify-icon icon="solar:trash-bin-2-bold-duotone" class="text-danger fs-6"></iconify-icon><span class="text-danger fw-semibold" style="font-size: 12px;">Gambar akan dihapus setelah klik Simpan — Landing page akan pakai ilustrasi GSAP bawaan.</span></div>';
-            currentPreview.style.background = '#fff5f5';
-            currentPreview.classList.remove('border-success-subtle');
-            currentPreview.classList.add('border-danger-subtle');
-        }
-    }
-</script>
-@endpush
-

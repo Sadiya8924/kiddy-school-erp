@@ -56,6 +56,7 @@ Route::get('/daftar-yayasan', [YayasanRegistrationController::class, 'showForm']
 Route::post('/daftar-yayasan', [YayasanRegistrationController::class, 'store'])->name('yayasan.register.store')->middleware('throttle:5,1');
 Route::get('/pendaftaran-siswa', [SiswaController::class, 'createPendaftaran'])->name('pendaftaran');
 Route::post('/pendaftaran-siswa', [SiswaController::class, 'storePendaftaran'])->name('pendaftaran.store');
+Route::match(['get', 'post'], '/api/check-parent-email', [SiswaController::class, 'checkParentEmail'])->name('api.check_parent_email');
 
 // Landing page publik per yayasan — diakses via /y/{kode_yayasan}
 Route::get('/y/{kode_yayasan}', [LandingYayasanController::class, 'show'])->name('yayasan.landing');
@@ -149,7 +150,9 @@ Route::middleware(['auth'])->group(function () {
                 return redirect('/superadmin/dashboard');
             }
         } else if ($user->role == 'wali_murid') {
-            $anak = \App\Models\Siswa::where('email', $user->email)->get();
+            $anak = \App\Models\Siswa::where('email', $user->email)
+                            ->orWhere('user_id', $user->id)
+                            ->get();
             $school_ids = $anak->pluck('school_id')->unique();
             $pengumuman = \App\Models\Announcement::whereIn('school_id', $school_ids)
                             ->whereIn('target', ['semua', 'wali_murid'])

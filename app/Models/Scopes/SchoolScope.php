@@ -14,9 +14,11 @@ class SchoolScope implements Scope
         /** @var \App\Models\User|null $user */
         $user = Auth::user();
 
-        // Super admin bisa lihat semua, user lain hanya lihat sekolahnya sendiri
-        if ($user && !$user->isSuperAdmin()) {
-            $builder->where($model->getTable() . '.school_id', $user->school_id);
+        // Super admin, owner, dan wali murid tidak dibatasi ke satu school_id tertentu
+        if ($user && !$user->isSuperAdmin() && !$user->isWaliMurid()) {
+            if ($user->school_id) {
+                $builder->where($model->getTable() . '.school_id', $user->school_id);
+            }
         }
     }
 }

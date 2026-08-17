@@ -1,11 +1,51 @@
+@php
+    $platformName = \App\Models\Setting::get('saas_platform_name', 'Kiddy School ERP');
+    $platformTagline = \App\Models\Setting::get('saas_platform_tagline', 'MULTI-TENANT PLATFORM');
+    $platformLogo = \App\Models\Setting::get('site_logo');
+    $headerCta = \App\Models\Setting::get('saas_header_cta_text', 'Daftar Sekarang');
+
+    $heroBadge = \App\Models\Setting::get('saas_hero_badge', 'SaaS Multi-Tenant Terpercaya Khusus Yayasan & Sekolah Anak Usia Dini');
+    $heroTitle1 = \App\Models\Setting::get('saas_hero_title_1', 'Solusi ERP Modern & Terpadu untuk');
+    $heroTitleHighlight = \App\Models\Setting::get('saas_hero_title_highlight', 'Manajemen Yayasan TK & PAUD');
+    $heroDesc = \App\Models\Setting::get('saas_hero_desc', 'Kelola seluruh cabang sekolah, ribuan siswa, e-rapor Kurikulum Merdeka, presensi harian, hingga portal mandiri orang tua dalam satu sistem cloud terintegrasi dengan jaminan isolasi data penuh.');
+    $heroBtnPrimary = \App\Models\Setting::get('saas_hero_btn_primary', 'Daftarkan Yayasan Anda');
+    $heroBtnSecondary = \App\Models\Setting::get('saas_hero_btn_secondary', 'Pelajari Fitur & Modul');
+
+    $stat1Num = \App\Models\Setting::get('saas_stat_1_num', '500+');
+    $stat1Lbl = \App\Models\Setting::get('saas_stat_1_label', 'Cabang Sekolah Terdaftar');
+    $stat2Num = \App\Models\Setting::get('saas_stat_2_num', '15.000+');
+    $stat2Lbl = \App\Models\Setting::get('saas_stat_2_label', 'Siswa Aktif & Alumni');
+    $stat3Num = \App\Models\Setting::get('saas_stat_3_num', '100%');
+    $stat3Lbl = \App\Models\Setting::get('saas_stat_3_label', 'Isolasi Data Antar-Tenant');
+    $stat4Num = \App\Models\Setting::get('saas_stat_4_num', '99.9%');
+    $stat4Lbl = \App\Models\Setting::get('saas_stat_4_label', 'Cloud Server Uptime');
+
+    $step1Title = \App\Models\Setting::get('saas_step_1_title', '1. Daftarkan Yayasan');
+    $step1Desc = \App\Models\Setting::get('saas_step_1_desc', 'Isi formulir identitas yayasan dan lokasi GPS melalui portal pendaftaran.');
+    $step2Title = \App\Models\Setting::get('saas_step_2_title', '2. Verifikasi & Aktivasi');
+    $step2Desc = \App\Models\Setting::get('saas_step_2_desc', 'Admin platform memverifikasi data dan akun Super Admin otomatis dibuat.');
+    $step3Title = \App\Models\Setting::get('saas_step_3_title', '3. Atur Cabang & Guru');
+    $step3Desc = \App\Models\Setting::get('saas_step_3_desc', 'Super Admin menambahkan cabang TK/PAUD, akun guru, dan kelas.');
+    $step4Title = \App\Models\Setting::get('saas_step_4_title', '4. Siap Digunakan');
+    $step4Desc = \App\Models\Setting::get('saas_step_4_desc', 'Sistem siap melayani PPDB, absensi, e-rapor, dan portal wali murid.');
+
+    $ctaTitle = \App\Models\Setting::get('saas_cta_title', 'Siap Mentransformasi Digital Yayasan & Sekolah Anda?');
+    $ctaDesc = \App\Models\Setting::get('saas_cta_desc', 'Bergabunglah bersama puluhan yayasan pendidikan lainnya yang telah menggunakan platform Kiddy School ERP.');
+    $ctaBtn = \App\Models\Setting::get('saas_cta_btn_text', 'Daftarkan Yayasan Anda Sekarang');
+
+    $footerAbout = \App\Models\Setting::get('saas_footer_about', 'Platform SaaS ERP Manajemen Yayasan TK & PAUD terintegrasi dengan arsitektur multi-tenant modern.');
+    $contactEmail = \App\Models\Setting::get('saas_contact_email', 'support@kiddyschool.id');
+    $contactPhone = \App\Models\Setting::get('saas_contact_phone', '+62 812-3456-7890');
+    $contactAddress = \App\Models\Setting::get('saas_contact_address', 'Gedung Cyber Tech Lt. 5, Jakarta, Indonesia');
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Kiddy School ERP — Platform Manajemen Yayasan TK & PAUD Terpadu</title>
-    <meta name="description" content="Platform Cloud ERP Manajemen Yayasan TK & PAUD terlengkap di Indonesia. Kelola seluruh cabang sekolah, e-rapor, presensi, jurnal, dan portal orang tua dengan jaminan isolasi data penuh.">
+    <title>{{ $platformName }} — Platform Manajemen Yayasan TK & PAUD Terpadu</title>
+    <meta name="description" content="{{ $heroDesc }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -698,10 +738,14 @@
 <!-- Top Navigation -->
 <nav class="top-nav">
     <a href="/" class="brand-logo">
-        <div class="brand-icon">🏫</div>
+        @if(!empty($platformLogo))
+            <img src="{{ $platformLogo }}" alt="Logo" class="rounded object-fit-contain" style="width:38px;height:38px;">
+        @else
+            <div class="brand-icon">🏫</div>
+        @endif
         <div>
-            Kiddy School ERP
-            <div style="font-size:10px; font-weight:600; color:#2563EB; letter-spacing:0.04em;">MULTI-TENANT PLATFORM</div>
+            {{ $platformName }}
+            <div style="font-size:10px; font-weight:600; color:#2563EB; letter-spacing:0.04em;">{{ $platformTagline }}</div>
         </div>
     </a>
 
@@ -716,7 +760,7 @@
     <!-- Header CTA Button -> Navigates to dedicated registration page -->
     <a href="{{ route('yayasan.daftar') }}" class="btn-header-cta">
         <iconify-icon icon="solar:rocket-bold-duotone" style="font-size:18px;"></iconify-icon>
-        Daftar Sekarang
+        {{ $headerCta }}
     </a>
 </nav>
 
@@ -724,41 +768,41 @@
 <section class="hero-section">
     <div class="hero-badge">
         <iconify-icon icon="solar:shield-check-bold" style="font-size:16px; color:#60A5FA;"></iconify-icon>
-        SaaS Multi-Tenant Terpercaya Khusus Yayasan & Sekolah Anak Usia Dini
+        {{ $heroBadge }}
     </div>
     <h1 class="hero-title">
-        Solusi ERP Modern & Terpadu<br>untuk <span>Manajemen Yayasan TK & PAUD</span>
+        {{ $heroTitle1 }}<br><span>{{ $heroTitleHighlight }}</span>
     </h1>
     <p class="hero-sub">
-        Kelola seluruh cabang sekolah, ribuan siswa, e-rapor Kurikulum Merdeka, presensi harian, hingga portal mandiri orang tua dalam satu sistem cloud terintegrasi dengan jaminan isolasi data penuh.
+        {{ $heroDesc }}
     </p>
 
     <div class="hero-actions">
         <a href="{{ route('yayasan.daftar') }}" class="btn-hero-main">
             <iconify-icon icon="solar:pen-new-square-bold-duotone" style="font-size:19px;"></iconify-icon>
-            Daftarkan Yayasan Anda
+            {{ $heroBtnPrimary }}
         </a>
         <a href="#fitur" class="btn-hero-outline">
-            Pelajari Fitur & Modul
+            {{ $heroBtnSecondary }}
         </a>
     </div>
 
     <div class="hero-stats-grid">
         <div class="hero-stat-card">
-            <div class="num">500+</div>
-            <div class="lbl">Cabang Sekolah Terdaftar</div>
+            <div class="num">{{ $stat1Num }}</div>
+            <div class="lbl">{{ $stat1Lbl }}</div>
         </div>
         <div class="hero-stat-card">
-            <div class="num">15.000+</div>
-            <div class="lbl">Siswa Aktif & Alumni</div>
+            <div class="num">{{ $stat2Num }}</div>
+            <div class="lbl">{{ $stat2Lbl }}</div>
         </div>
         <div class="hero-stat-card">
-            <div class="num">100%</div>
-            <div class="lbl">Isolasi Data Antar-Tenant</div>
+            <div class="num">{{ $stat3Num }}</div>
+            <div class="lbl">{{ $stat3Lbl }}</div>
         </div>
         <div class="hero-stat-card">
-            <div class="num">99.9%</div>
-            <div class="lbl">Cloud Server Uptime</div>
+            <div class="num">{{ $stat4Num }}</div>
+            <div class="lbl">{{ $stat4Lbl }}</div>
         </div>
     </div>
 </section>
@@ -799,26 +843,26 @@
     <div class="steps-grid">
         <div class="step-card">
             <div class="step-number">1</div>
-            <h3 class="step-title">Isi Form Pendaftaran</h3>
-            <p class="step-desc">Lengkapi identitas yayasan, kontak penanggung jawab, serta titik lokasi peta yayasan Anda di halaman pendaftaran.</p>
+            <h3 class="step-title">{{ $step1Title }}</h3>
+            <p class="step-desc">{{ $step1Desc }}</p>
         </div>
 
         <div class="step-card">
             <div class="step-number">2</div>
-            <h3 class="step-title">Verifikasi & ACC Owner</h3>
-            <p class="step-desc">Tim pusat akan memverifikasi data dan langsung meng-ACC pendaftaran serta men-generate akun <strong>Super Admin Yayasan</strong>.</p>
+            <h3 class="step-title">{{ $step2Title }}</h3>
+            <p class="step-desc">{{ $step2Desc }}</p>
         </div>
 
         <div class="step-card">
             <div class="step-number">3</div>
-            <h3 class="step-title">Setup Cabang & Guru</h3>
-            <p class="step-desc">Masuk ke dasbor yayasan, daftarkan cabang TK/PAUD Anda, buat rombel kelas, dan undang akun guru serta kepala sekolah.</p>
+            <h3 class="step-title">{{ $step3Title }}</h3>
+            <p class="step-desc">{{ $step3Desc }}</p>
         </div>
 
         <div class="step-card">
             <div class="step-number">4</div>
-            <h3 class="step-title">Sistem Siap Digunakan!</h3>
-            <p class="step-desc">Gunakan link unik <code>/y/kode-yayasan</code> untuk pendaftaran siswa baru secara online, pencatatan absensi, dan penerbitan e-rapor.</p>
+            <h3 class="step-title">{{ $step4Title }}</h3>
+            <p class="step-desc">{{ $step4Desc }}</p>
         </div>
     </div>
 </section>
@@ -1068,11 +1112,11 @@
 <!-- Bottom CTA Banner Section -->
 <section class="cta-banner-section">
     <div class="cta-banner-container">
-        <h2 class="cta-banner-title">Siap Mendigitalkan Manajemen Yayasan & TK Anda?</h2>
-        <p class="cta-banner-desc">Bergabunglah bersama ratusan yayasan pendidikan anak usia dini lainnya di platform Kiddy School ERP hari ini.</p>
+        <h2 class="cta-banner-title">{{ $ctaTitle }}</h2>
+        <p class="cta-banner-desc">{{ $ctaDesc }}</p>
         <a href="{{ route('yayasan.daftar') }}" class="btn-cta-large">
             <iconify-icon icon="solar:pen-new-square-bold-duotone" style="font-size:22px; color:#2563EB;"></iconify-icon>
-            Daftarkan Yayasan Sekarang
+            {{ $ctaBtn }}
         </a>
     </div>
 </section>
@@ -1082,10 +1126,14 @@
     <div class="footer-grid">
         <div class="footer-brand">
             <div class="d-flex align-items-center gap-2 mb-3">
-                <div class="brand-icon" style="width:32px;height:32px;font-size:16px;">🏫</div>
-                <h4 style="margin:0;">Kiddy School ERP</h4>
+                @if(!empty($platformLogo))
+                    <img src="{{ $platformLogo }}" alt="Logo" class="rounded object-fit-contain" style="width:32px;height:32px;">
+                @else
+                    <div class="brand-icon" style="width:32px;height:32px;font-size:16px;">🏫</div>
+                @endif
+                <h4 style="margin:0;">{{ $platformName }}</h4>
             </div>
-            <p>Platform Cloud SaaS Manajemen Yayasan Pendidikan Anak Usia Dini (TK, PAUD, KB) terdepan dengan teknologi multi-tenant terisolasi.</p>
+            <p>{{ $footerAbout }}</p>
         </div>
 
         <div class="footer-col">
@@ -1112,16 +1160,16 @@
         <div class="footer-col">
             <h5>Kontak & Layanan</h5>
             <p style="font-size:13px; line-height:1.7; color:#94A3B8;">
-                Konsultasi & demo sistem:<br>
-                <strong class="text-white">halo@kiddyschool.id</strong><br>
-                WhatsApp: <strong class="text-white">0812-3456-7890</strong><br>
-                Senin – Jumat, 08.00 – 17.00 WIB
+                Email Dukungan:<br>
+                <strong class="text-white">{{ $contactEmail }}</strong><br>
+                WhatsApp: <strong class="text-white">{{ $contactPhone }}</strong><br>
+                Alamat: <span class="text-white text-opacity-75">{{ $contactAddress }}</span>
             </p>
         </div>
     </div>
 
     <div class="footer-bottom">
-        © {{ date('Y') }} Kiddy School ERP. Seluruh Hak Cipta Dilindungi Undang-Undang.
+        © {{ date('Y') }} {{ $platformName }}. Seluruh Hak Cipta Dilindungi Undang-Undang.
     </div>
 </footer>
 

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 
 class SiswaController extends Controller
 {
@@ -200,57 +201,122 @@ class SiswaController extends Controller
     {
         $user = Auth::user();
 
-        // Filter sekolah berdasarkan yayasan user yang login (isolasi per-yayasan)
-        // Wali murid hanya melihat sekolah dari yayasan tempat mereka mendaftar
+        // 1. Tentukan yayasan_id:
+        // Dari user yang login (wali_murid / admin / super_admin)
+        // ATAU dari query parameter ?yayasan_id=... / ?kode_yayasan=... / ?school_id=...
+        $yayasan_id = null;
         if ($user && $user->yayasan_id) {
-            $schools = \App\Models\School::where('status', 'aktif')
-                ->where('yayasan_id', $user->yayasan_id)
-                ->get();
-        } else {
-            $schools = \App\Models\School::where('status', 'aktif')->get();
+            $yayasan_id = $user->yayasan_id;
+        } elseif ($request->filled('yayasan_id')) {
+            $yayasan_id = $request->yayasan_id;
+        } elseif ($request->filled('kode_yayasan')) {
+            $y = DB::table('yayasans')->where('kode_yayasan', $request->kode_yayasan)->first();
+            if ($y) $yayasan_id = $y->id;
+        } elseif ($request->filled('school_id')) {
+            $sch = DB::table('schools')->where('id', $request->school_id)->first();
+            if ($sch) $yayasan_id = $sch->yayasan_id;
         }
 
+        // 2. Query sekolah HANYA dari yayasan tersebut (jika terdeteksi)
+        if ($yayasan_id) {
+            $schools = \App\Models\School::where('status', 'aktif')
+                ->where('yayasan_id', $yayasan_id)
+                ->get();
+            $yayasan = DB::table('yayasans')->where('id', $yayasan_id)->first();
+        } else {
+            $schools = \App\Models\School::where('status', 'aktif')->get();
+            $yayasan = null;
+        }
+
+        // 3. Tentukan selected_school_id default:
         $selected_school_id = $request->query('school_id');
         $is_locked = false;
 
-        // TM-31: Admin Context — lock school_id to current admin's school
-        if ($user && !$user->isSuperAdmin()) {
-            if ($user->school_id) {
-                $selected_school_id = $user->school_id;
-                $is_locked = true;
-            }
+        // Jika user admin/staff internal sekolah
+        if ($user && !$user->isSuperAdmin() && !$user->isWaliMurid() && $user->school_id) {
+            $selected_school_id = $user->school_id;
+            $is_locked = true;
         }
 
-        $school = null;
-        $list_tahun_inden = [];
-        $kuota_per_tahun = [];
-
-        if ($selected_school_id) {
-            $school = DB::table('schools')->where('id', $selected_school_id)->first();
-            if ($school) {
-                $tahunMulai = date('m') <= 6 ? date('Y') : date('Y') + 1;
-                $max_years = $school->max_indent_years ?? 3;
-
-                for ($i = 0; $i < $max_years; $i++) {
-                    $thn1 = $tahunMulai + $i;
-                    $thn2 = $thn1 + 1;
-                    $tahunString = $thn1 . '/' . $thn2;
-                    $list_tahun_inden[] = $tahunString;
-
-                    $terisi_tk_pagi = DB::table('siswas')->where('school_id', $school->id)->where('program_pilihan', 'LIKE', 'TK Pagi%'.$tahunString.'%')->where('status', '!=', 'lulus')->count();
-                    $terisi_tk_siang = DB::table('siswas')->where('school_id', $school->id)->where('program_pilihan', 'LIKE', 'TK Siang%'.$tahunString.'%')->where('status', '!=', 'lulus')->count();
-                    $terisi_paud = DB::table('siswas')->where('school_id', $school->id)->where('program_pilihan', 'LIKE', 'PAUD%'.$tahunString.'%')->where('status', '!=', 'lulus')->count();
-
-                    $kuota_per_tahun[$tahunString] = [
-                        'tk_pagi' => max(0, ($school->kuota_tk_pagi ?? 30) - $terisi_tk_pagi),
-                        'tk_siang' => max(0, ($school->kuota_tk_siang ?? 30) - $terisi_tk_siang),
-                        'paud' => max(0, ($school->kuota_paud ?? 30) - $terisi_paud),
-                    ];
-                }
-            }
+        // Jika belum ada school_id terpilih tapi ada sekolah, pilih sekolah pertama
+        if (!$selected_school_id && $schools->count() > 0) {
+            $selected_school_id = $schools->first()->id;
         }
 
-        return view('pendaftaran', compact('schools', 'school', 'selected_school_id', 'is_locked', 'list_tahun_inden', 'kuota_per_tahun'));
+        // 4. Siapkan data kuota & tahun inden untuk SETIAP sekolah (agar ganti sekolah instant tanpa reload 1-way)
+        $schools_data = [];
+        $tahunMulai = date('m') <= 6 ? date('Y') : date('Y') + 1;
+
+        foreach ($schools as $s) {
+            $max_years = $s->max_indent_years ?? 3;
+            $list_tahun = [];
+            $kuota_tahun = [];
+
+            for ($i = 0; $i < $max_years; $i++) {
+                $thn1 = $tahunMulai + $i;
+                $thn2 = $thn1 + 1;
+                $tahunString = $thn1 . '/' . $thn2;
+                $list_tahun[] = $tahunString;
+
+                $terisi_tk_pagi = DB::table('siswas')->where('school_id', $s->id)->where('program_pilihan', 'LIKE', 'TK Pagi%'.$tahunString.'%')->where('status', '!=', 'lulus')->count();
+                $terisi_tk_siang = DB::table('siswas')->where('school_id', $s->id)->where('program_pilihan', 'LIKE', 'TK Siang%'.$tahunString.'%')->where('status', '!=', 'lulus')->count();
+                $terisi_paud = DB::table('siswas')->where('school_id', $s->id)->where('program_pilihan', 'LIKE', 'PAUD%'.$tahunString.'%')->where('status', '!=', 'lulus')->count();
+
+                $kuota_tahun[$tahunString] = [
+                    'tk_pagi' => max(0, ($s->kuota_tk_pagi ?? 30) - $terisi_tk_pagi),
+                    'tk_siang' => max(0, ($s->kuota_tk_siang ?? 30) - $terisi_tk_siang),
+                    'paud' => max(0, ($s->kuota_paud ?? 30) - $terisi_paud),
+                ];
+            }
+
+            $schools_data[$s->id] = [
+                'id' => $s->id,
+                'nama_sekolah' => $s->nama_sekolah,
+                'alamat' => $s->alamat,
+                'list_tahun' => $list_tahun,
+                'kuota' => $kuota_tahun,
+            ];
+        }
+
+        $currentSchool = $schools->where('id', $selected_school_id)->first() ?? $schools->first();
+
+        return view('pendaftaran', compact(
+            'schools',
+            'schools_data',
+            'currentSchool',
+            'selected_school_id',
+            'is_locked',
+            'yayasan'
+        ));
+    }
+
+    /**
+     * API Realtime: Cek apakah email orang tua sudah terdaftar di sistem.
+     */
+    public function checkParentEmail(Request $request)
+    {
+        $email = trim($request->input('email', ''));
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return response()->json(['valid' => false, 'exists' => false]);
+        }
+
+        $user = User::where('email', $email)->first();
+        if ($user) {
+            $totalAnak = Siswa::where('email', $email)->count();
+            return response()->json([
+                'valid'      => true,
+                'exists'     => true,
+                'name'       => $user->name,
+                'total_anak' => $totalAnak,
+                'message'    => "Akun terdeteksi atas nama " . $user->name . ($totalAnak > 0 ? " (Sudah terdaftar {$totalAnak} anak sebelumnya)" : "") . ". Masukkan kata sandi akun Anda untuk konfirmasi penautan anak ini."
+            ]);
+        }
+
+        return response()->json([
+            'valid'   => true,
+            'exists'  => false,
+            'message' => "Email baru. Akun portal wali murid akan otomatis dibuatkan menggunakan email & kata sandi yang Anda tentukan di bawah."
+        ]);
     }
 
     public function storePendaftaran(Request $request)
@@ -263,10 +329,11 @@ class SiswaController extends Controller
             'program_pilihan'  => 'required|string',
             'tahun_inden'      => 'required|string',
             'nama_lengkap'     => 'required|string|max:255',
-            'nik'              => 'required|string',
+            'nik'              => 'required|string|unique:siswas,nik',
             'no_kk'            => 'required|string',
             'tempat_lahir'     => 'required|string|max:255',
             'tgl_lahir'        => 'required|date',
+            'email'            => 'required|email',
             'lintang'          => 'nullable|string',
             'bujur'            => 'nullable|string',
             'foto_anak'        => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -275,7 +342,56 @@ class SiswaController extends Controller
             'bukti_pembayaran' => $isAdmin ? 'nullable|image|mimes:jpeg,png,jpg|max:2048' : 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
 
-        $request->validate($rules);
+        // Jika pendaftar adalah publik (belum login), wajib menyertakan kata sandi akun
+        if (!Auth::check()) {
+            $rules['password'] = 'required|string|min:6';
+        }
+
+        $messages = [
+            'school_id.required'        => 'Cabang sekolah wajib dipilih.',
+            'program_pilihan.required'  => 'Program kelas wajib dipilih.',
+            'tahun_inden.required'      => 'Tahun ajaran wajib dipilih.',
+            'nama_lengkap.required'     => 'Nama lengkap anak wajib diisi.',
+            'nik.required'              => 'NIK anak wajib diisi.',
+            'nik.unique'                => 'NIK anak ini (' . $request->nik . ') sudah pernah terdaftar di sistem. Mohon periksa kembali NIK yang Anda masukkan.',
+            'no_kk.required'            => 'Nomor Kartu Keluarga (KK) wajib diisi.',
+            'tempat_lahir.required'     => 'Tempat lahir wajib diisi.',
+            'tgl_lahir.required'        => 'Tanggal lahir wajib diisi.',
+            'email.required'            => 'Email orang tua wajib diisi.',
+            'email.email'               => 'Format email tidak valid.',
+            'password.required'         => 'Kata sandi akun wajib diisi.',
+            'password.min'              => 'Kata sandi minimal 6 karakter.',
+            'bukti_pembayaran.required' => 'Bukti pembayaran pendaftaran wajib diunggah.',
+            'foto_anak.image'           => 'File pas foto anak harus berupa gambar (JPG/PNG).',
+        ];
+
+        $request->validate($rules, $messages);
+
+        $school = DB::table('schools')->where('id', $request->school_id)->first();
+        $parentUser = null;
+
+        // Logika Akun Wali Murid (Otomatis Buat Akun Baru atau Konfirmasi Akun Lama / Anak Ke-2)
+        if (!Auth::check()) {
+            $existingUser = User::where('email', $request->email)->first();
+
+            if ($existingUser) {
+                // Konfirmasi kata sandi akun yang sudah ada
+                if (!Hash::check($request->password, $existingUser->password)) {
+                    return back()->withInput()->with('error', 'Kata sandi untuk akun ' . $request->email . ' tidak cocok. Silakan masukkan kata sandi akun Anda yang benar untuk konfirmasi penautan anak.');
+                }
+                $parentUser = $existingUser;
+            } else {
+                // Buat akun wali murid baru secara otomatis
+                $parentName = $request->nama_ibu ?: ($request->nama_ayah ?: 'Wali dari ' . $request->nama_lengkap);
+                $parentUser = User::create([
+                    'name'       => $parentName,
+                    'email'      => $request->email,
+                    'password'   => Hash::make($request->password),
+                    'role'       => 'wali_murid',
+                    'yayasan_id' => $school ? $school->yayasan_id : null,
+                ]);
+            }
+        }
 
         $program_gabungan = $request->program_pilihan . ' (Tahun: ' . $request->tahun_inden . ')';
 
@@ -288,42 +404,61 @@ class SiswaController extends Controller
         $koordinat_gabungan = ($request->lintang && $request->bujur) ? ($request->lintang . ', ' . $request->bujur) : '-';
 
         $siswaId = DB::table('siswas')->insertGetId([
-            'school_id'       => $request->school_id,
-            'program_pilihan' => $program_gabungan,
-            'nama_lengkap'    => $request->nama_lengkap,
-            'nik'             => $request->nik,
-            'no_kk'           => $request->no_kk,
-            'jenis_kelamin'   => $request->jenis_kelamin ?? 'L',
-            'tempat_lahir'    => $request->tempat_lahir,
-            'tgl_lahir'       => $request->tgl_lahir,
-            'agama'           => $request->agama ?? 'Islam',
-            'anak_ke'         => $request->anak_ke ?? 1,
-            'jml_saudara'     => $request->jml_saudara ?? 1,
-            'alamat'          => $request->alamat,
-            'rt'              => $request->rt,
-            'rw'              => $request->rw,
-            'dusun'           => $request->dusun,
-            'kelurahan'       => $request->kelurahan,
-            'kecamatan'       => $request->kecamatan,
-            'kode_pos'        => $request->kode_pos,
-            'hp'              => $request->hp,
-            'nama_ayah'       => $request->nama_ayah,
-            'nik_ayah'        => $request->nik_ayah,
-            'nama_ibu'        => $request->nama_ibu,
-            'nik_ibu'         => $request->nik_ibu,
-            'tinggi_badan'    => $request->tinggi_badan,
-            'berat_badan'     => $request->berat_badan,
-            'lingkar_kepala'  => $request->lingkar_kepala,
-            'koordinat_rumah' => $koordinat_gabungan,
-            'lintang'         => $request->lintang ?? '0',
-            'bujur'           => $request->bujur ?? '0',
-            'foto_anak'       => $fotoPath,
-            'bukti_pembayaran'=> $buktiPath,
-            'email'           => $request->email,
-            'status'          => $isAdmin ? 'aktif' : 'menunggu',
-            'created_at'      => now(),
-            'updated_at'      => now(),
+            'school_id'          => $request->school_id,
+            'user_id'            => $parentUser ? $parentUser->id : (Auth::check() ? Auth::id() : null),
+            'program_pilihan'    => $program_gabungan,
+            'nama_lengkap'       => $request->nama_lengkap,
+            'nik'                => $request->nik,
+            'no_kk'              => $request->no_kk,
+            'jenis_kelamin'      => $request->jenis_kelamin ?? 'Laki-laki',
+            'tempat_lahir'       => $request->tempat_lahir,
+            'tgl_lahir'          => $request->tgl_lahir,
+            'agama'              => $request->agama ?? 'Islam',
+            'anak_ke'            => $request->anak_ke ?? 1,
+            'jml_saudara'        => $request->jml_saudara ?? 1,
+            'alamat'             => $request->alamat,
+            'rt'                 => $request->rt,
+            'rw'                 => $request->rw,
+            'dusun'              => $request->dusun,
+            'kelurahan'          => $request->kelurahan,
+            'kecamatan'          => $request->kecamatan,
+            'kode_pos'           => $request->kode_pos,
+            'jenis_tinggal'      => $request->jenis_tinggal,
+            'alat_transportasi'  => $request->alat_transportasi,
+            'jarak_rumah'        => $request->jarak_rumah,
+            'hp'                 => $request->hp,
+            'email'              => $request->email,
+            'nama_ortu'          => $request->nama_ibu ?: ($request->nama_ayah ?: 'Wali Murid'),
+            'nama_ayah'          => $request->nama_ayah,
+            'nik_ayah'           => $request->nik_ayah,
+            'tahun_lahir_ayah'   => $request->tahun_lahir_ayah,
+            'pendidikan_ayah'    => $request->pendidikan_ayah,
+            'pekerjaan_ayah'     => $request->pekerjaan_ayah,
+            'penghasilan_ayah'   => $request->penghasilan_ayah,
+            'nama_ibu'           => $request->nama_ibu,
+            'nik_ibu'            => $request->nik_ibu,
+            'tahun_lahir_ibu'    => $request->tahun_lahir_ibu,
+            'pendidikan_ibu'     => $request->pendidikan_ibu,
+            'pekerjaan_ibu'      => $request->pekerjaan_ibu,
+            'penghasilan_ibu'    => $request->penghasilan_ibu,
+            'tinggi_badan'       => $request->tinggi_badan,
+            'berat_badan'        => $request->berat_badan,
+            'lingkar_kepala'     => $request->lingkar_kepala,
+            'koordinat_rumah'    => $koordinat_gabungan,
+            'lintang'            => $request->lintang ?? '0',
+            'bujur'              => $request->bujur ?? '0',
+            'foto_anak'          => $fotoPath,
+            'bukti_pembayaran'   => $buktiPath,
+            'status'             => $isAdmin ? 'aktif' : 'menunggu',
+            'created_at'         => now(),
+            'updated_at'         => now(),
         ]);
+
+        // Jika pendaftar adalah wali murid baru / publik yang belum login, langsung login-kan ke portal
+        if ($parentUser && !Auth::check()) {
+            Auth::login($parentUser);
+            return redirect('/dashboard')->with('success', 'Pendaftaran siswa baru untuk ' . $request->nama_lengkap . ' berhasil dikirim! Akun portal wali murid Anda telah aktif. Anda dapat memantau status pendaftaran anak di portal ini.');
+        }
 
         return back()->with('success', 'Pendaftaran berhasil disimpan!');
     }

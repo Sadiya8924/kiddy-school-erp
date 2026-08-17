@@ -197,6 +197,46 @@
             color: #fff;
         }
 
+        .auth-toggle-pill {
+            background: #F1F5F9;
+            border: 1.5px solid #E2E8F0;
+            padding: 4px;
+            border-radius: 14px;
+            display: flex;
+            gap: 4px;
+        }
+        .btn-toggle-tab {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 9px 14px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #64748B;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .btn-toggle-tab.active {
+            background: #FFFFFF;
+            color: #1E40AF;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .btn-toggle-tab:hover:not(.active) {
+            color: #1E293B;
+        }
+        .auth-form-panel {
+            animation: fadeIn 0.25s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         @media (max-width: 600px) {
             .header-box { padding: 28px 20px; }
             .card-custom { padding: 24px 18px; }
@@ -300,23 +340,48 @@
             </div>
         </div>
 
-        <!-- Kolom 2: Registrasi Akun Wali Murid -->
+        <!-- Kolom 2: Registrasi & Login Akun Wali Murid (In-Place Switcher) -->
         <div class="col-lg-6">
             <div class="card-custom">
+                @auth
                 <span class="section-badge-tag bg-primary-subtle text-primary border border-primary-subtle">
                     <iconify-icon icon="solar:user-bold"></iconify-icon>
                     Akun Portal Wali Murid
                 </span>
 
-                <h3 class="fw-bold mb-2" style="font-size:20px; color:#0F172A;">Buat Akun Wali Murid</h3>
-                <p class="text-muted small mb-4">
-                    Buat akun portal orang tua untuk memantau nilai e-rapor, absensi harian, dan dokumentasi kegiatan belajar anak di <strong>{{ $yayasan->nama_yayasan }}</strong>.
-                </p>
+                <div class="text-center py-5 bg-light rounded-4 mt-3">
+                    <div style="font-size:42px; margin-bottom:10px;">👋</div>
+                    <h5 class="fw-bold mb-1" style="color:#0F172A;">Halo, {{ Auth::user()->name }}!</h5>
+                    <p class="text-muted small mb-3">Anda sudah masuk ke portal dengan akun terdaftar.</p>
+                    <a href="/dashboard" class="btn btn-primary rounded-pill px-4 fw-bold">
+                        Buka Dashboard Portal →
+                    </a>
+                </div>
+                @else
+
+                <!-- Interactive Switcher Tabs -->
+                <div class="auth-toggle-pill mb-4">
+                    <button type="button" class="btn-toggle-tab active" id="tabBtnRegister" onclick="switchAuthTab('register')">
+                        <iconify-icon icon="solar:user-plus-bold"></iconify-icon>
+                        Buat Akun Baru
+                    </button>
+                    <button type="button" class="btn-toggle-tab" id="tabBtnLogin" onclick="switchAuthTab('login')">
+                        <iconify-icon icon="solar:login-2-bold"></iconify-icon>
+                        Masuk Portal
+                    </button>
+                </div>
 
                 @if(session('success'))
                 <div class="alert alert-success border-success-subtle bg-success-subtle text-success rounded-3 p-3 mb-3 small d-flex gap-2 align-items-start">
                     <iconify-icon icon="solar:check-circle-bold" class="fs-5 flex-shrink-0 mt-0.5"></iconify-icon>
                     <div>{{ session('success') }}</div>
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="alert alert-danger border-danger-subtle bg-danger-subtle text-danger rounded-3 p-3 mb-3 small d-flex gap-2 align-items-start">
+                    <iconify-icon icon="solar:danger-triangle-bold" class="fs-5 flex-shrink-0 mt-0.5"></iconify-icon>
+                    <div>{{ session('error') }}</div>
                 </div>
                 @endif
 
@@ -329,48 +394,85 @@
                 </div>
                 @endif
 
-                @auth
-                <div class="text-center py-5 bg-light rounded-4">
-                    <div style="font-size:42px; margin-bottom:10px;">👋</div>
-                    <h5 class="fw-bold mb-1" style="color:#0F172A;">Halo, {{ Auth::user()->name }}!</h5>
-                    <p class="text-muted small mb-3">Anda sudah masuk ke portal dengan akun terdaftar.</p>
-                    <a href="/dashboard" class="btn btn-primary rounded-pill px-4 fw-bold">
-                        Buka Dashboard Portal →
-                    </a>
+                <!-- PANEL 1: REGISTER FORM -->
+                <div id="panelRegister" class="auth-form-panel">
+                    <h3 class="fw-bold mb-2" style="font-size:20px; color:#0F172A;">Buat Akun Wali Murid</h3>
+                    <p class="text-muted small mb-4">
+                        Buat akun portal orang tua untuk memantau nilai e-rapor, absensi harian, dan dokumentasi kegiatan belajar anak di <strong>{{ $yayasan->nama_yayasan }}</strong>.
+                    </p>
+
+                    <form action="{{ route('yayasan.register', $yayasan->kode_yayasan) }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lengkap Orang Tua / Wali <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control" placeholder="Contoh: Ayah Budi / Bunda Siti" required value="{{ old('name') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Alamat Email Aktif <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" placeholder="email@anda.com" required value="{{ old('email') }}">
+                            <div class="form-text" style="font-size:11.5px;">Gunakan email yang sama saat mendaftarkan putra/putri Anda.</div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-6">
+                                <label class="form-label">Kata Sandi <span class="text-danger">*</span></label>
+                                <input type="password" name="password" class="form-control" placeholder="Min. 8 karakter" required minlength="8">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Konfirmasi Sandi <span class="text-danger">*</span></label>
+                                <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi sandi" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-register-parent">
+                            🚀 Buat Akun Wali Murid Sekarang
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-3 small text-muted">
+                        Sudah punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('login')" class="text-primary fw-bold text-decoration-none">Masuk ke Portal Langsung</a>
+                    </div>
                 </div>
-                @else
-                <form action="{{ route('yayasan.register', $yayasan->kode_yayasan) }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label class="form-label">Nama Lengkap Orang Tua / Wali <span class="text-danger">*</span></label>
-                        <input type="text" name="name" class="form-control" placeholder="Contoh: Ayah Budi / Bunda Siti" required value="{{ old('name') }}">
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Alamat Email Aktif <span class="text-danger">*</span></label>
-                        <input type="email" name="email" class="form-control" placeholder="email@anda.com" required value="{{ old('email') }}">
-                        <div class="form-text" style="font-size:11.5px;">Gunakan email yang sama saat mendaftarkan putra/putri Anda.</div>
-                    </div>
+                <!-- PANEL 2: LOGIN FORM (IN-PLACE) -->
+                <div id="panelLogin" class="auth-form-panel" style="display: none;">
+                    <h3 class="fw-bold mb-2" style="font-size:20px; color:#0F172A;">Masuk ke Portal</h3>
+                    <p class="text-muted small mb-4">
+                        Masuk ke akun portal wali murid <strong>{{ $yayasan->nama_yayasan }}</strong> untuk memantau perkembangan ananda.
+                    </p>
 
-                    <div class="row g-3 mb-4">
-                        <div class="col-6">
+                    <form action="{{ url('/login') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">Alamat Email Terdaftar <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control" placeholder="email@anda.com" required value="{{ old('email') }}">
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label">Kata Sandi <span class="text-danger">*</span></label>
-                            <input type="password" name="password" class="form-control" placeholder="Min. 8 karakter" required minlength="8">
+                            <input type="password" name="password" class="form-control" placeholder="Masukkan kata sandi Anda" required>
                         </div>
-                        <div class="col-6">
-                            <label class="form-label">Konfirmasi Sandi <span class="text-danger">*</span></label>
-                            <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi sandi" required>
+
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <div class="form-check mb-0">
+                                <input class="form-check-input" type="checkbox" name="remember" id="rememberMe">
+                                <label class="form-check-label small text-muted" for="rememberMe">
+                                    Ingat Saya
+                                </label>
+                            </div>
                         </div>
+
+                        <button type="submit" class="btn-register-parent">
+                            🔑 Masuk ke Portal Sekarang
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-3 small text-muted">
+                        Belum punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('register')" class="text-primary fw-bold text-decoration-none">Daftar Akun Baru</a>
                     </div>
-
-                    <button type="submit" class="btn-register-parent">
-                        🚀 Buat Akun Wali Murid Sekarang
-                    </button>
-                </form>
-
-                <div class="text-center mt-3 small text-muted">
-                    Sudah pernah mendaftar? <a href="/login" class="text-primary fw-bold text-decoration-none">Login ke Portal</a>
                 </div>
+
                 @endauth
             </div>
         </div>
@@ -400,5 +502,36 @@
     © {{ date('Y') }} {{ $yayasan->nama_yayasan }}. Didukung oleh Kiddy School ERP.
 </footer>
 
+<script>
+    function switchAuthTab(tab) {
+        const tabBtnRegister = document.getElementById('tabBtnRegister');
+        const tabBtnLogin = document.getElementById('tabBtnLogin');
+        const panelRegister = document.getElementById('panelRegister');
+        const panelLogin = document.getElementById('panelLogin');
+
+        if (!tabBtnRegister || !tabBtnLogin || !panelRegister || !panelLogin) return;
+
+        if (tab === 'login') {
+            tabBtnRegister.classList.remove('active');
+            tabBtnLogin.classList.add('active');
+            panelRegister.style.display = 'none';
+            panelLogin.style.display = 'block';
+            window.location.hash = 'login';
+        } else {
+            tabBtnLogin.classList.remove('active');
+            tabBtnRegister.classList.add('active');
+            panelLogin.style.display = 'none';
+            panelRegister.style.display = 'block';
+            window.location.hash = 'register';
+        }
+    }
+
+    // Cek jika URL memiliki hash #login atau jika ada error saat login
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.location.hash === '#login' || @json(session()->has('error') && !errors()->any())) {
+            switchAuthTab('login');
+        }
+    });
+</script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 11, 2026 at 06:08 AM
+-- Generation Time: Aug 17, 2026 at 11:42 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.5.9
 
@@ -199,8 +199,8 @@ CREATE TABLE `cache` (
 --
 
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1786427057),
-('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1786427057;', 1786427057);
+('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba', 'i:1;', 1786966296),
+('laravel-cache-5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1786966296;', 1786966296);
 
 -- --------------------------------------------------------
 
@@ -316,7 +316,9 @@ INSERT INTO `kelas` (`id`, `school_id`, `nama_kelas`, `kelompok`, `tingkat`, `cr
 (2, 1, 'Tk B Strobery', 'B', 'TK B', '2026-05-19 10:00:44', '2026-05-19 10:00:44'),
 (3, 1, 'Tk A Nanas', 'A', 'TK A', '2026-06-02 12:47:58', '2026-06-02 12:47:58'),
 (4, 2, 'Tk A Banana', NULL, 'TK A', '2026-06-26 19:56:08', '2026-06-26 19:56:08'),
-(5, 2, 'Tk B Bunglon', NULL, 'TK B', '2026-06-26 19:56:19', '2026-06-26 19:56:19');
+(5, 2, 'Tk B Bunglon', NULL, 'TK B', '2026-06-26 19:56:19', '2026-06-26 19:56:19'),
+(6, 3, 'Tk A Cleo', NULL, 'TK A', '2026-08-14 18:09:10', '2026-08-14 18:09:10'),
+(7, 3, 'Tk B Aqua', NULL, 'TK B', '2026-08-14 18:09:26', '2026-08-14 18:09:26');
 
 -- --------------------------------------------------------
 
@@ -540,7 +542,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (56, '2026_08_01_000000_create_yayasans_table_and_add_yayasan_id', 24),
 (57, '2026_08_03_000001_add_foto_kegiatan_to_rapors_table', 25),
 (58, '2026_08_10_000001_create_system_hardening_tables', 26),
-(59, '2026_08_11_031201_add_landing_content_to_yayasans_table', 26);
+(59, '2026_08_11_031201_add_landing_content_to_yayasans_table', 26),
+(60, '2026_08_15_000001_create_yayasan_registrations_table', 27);
 
 -- --------------------------------------------------------
 
@@ -813,7 +816,8 @@ CREATE TABLE `schools` (
 
 INSERT INTO `schools` (`id`, `yayasan_id`, `nama_sekolah`, `npsn`, `alamat`, `kepala_sekolah`, `telepon`, `tahun_ajaran_aktif`, `semester_aktif`, `is_rapor_open`, `logo_sekolah`, `status`, `kepala_sekolah_user_id`, `max_indent_years`, `kuota_tk_pagi`, `kuota_tk_siang`, `kuota_paud`, `created_at`, `updated_at`) VALUES
 (1, 1, 'TK Permata', '12345678', 'Jl. Pendidikan No. 1, Pasuruan', 'Ibu Siti Aminah', '08123456789', '2025/2026', 'Genap', 1, NULL, 'aktif', NULL, 3, 25, 30, 25, '2026-05-19 03:48:16', '2026-07-05 21:48:48'),
-(2, 1, 'Tk Matahari', '1234567890', 'Jalan Bunga Bunga no 00', 'Sadiya', '1234567890', '2026/2027', 'Genap', 0, 'logos/7kKGbTvePn5b7ovpz8M2GSdhxYwzuIEXetZ6s5dE.jpg', 'aktif', NULL, 3, 25, 25, 25, '2026-06-03 00:48:28', '2026-06-03 00:48:28');
+(2, 1, 'Tk Matahari', '1234567890', 'Jalan Bunga Bunga no 00', 'Sadiya', '1234567890', '2026/2027', 'Genap', 0, 'logos/7kKGbTvePn5b7ovpz8M2GSdhxYwzuIEXetZ6s5dE.jpg', 'aktif', NULL, 3, 25, 25, 25, '2026-06-03 00:48:28', '2026-06-03 00:48:28'),
+(3, 2, 'TK Kenanga', '1234569', NULL, NULL, NULL, NULL, NULL, 0, NULL, 'aktif', NULL, 3, 25, 25, 25, '2026-08-14 17:59:27', '2026-08-14 17:59:27');
 
 -- --------------------------------------------------------
 
@@ -913,7 +917,11 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('zxN2374wbbzhdJ61nFZLngASPqD9NAs2vSCFNuT7', 4, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiQXlrU1cxb2N6VnBIZWdIYmhOVmJBMGtMNXc4UFlDSW12Q21jZFg2ZCI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9wZW5kYWZ0YXJhbi1zaXN3YSI7czo1OiJyb3V0ZSI7czoxMToicGVuZGFmdGFyYW4iO31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aTo0O30=', 1786427003);
+('1LDNii5B7ARf53fK3pI5hDGAU0dcEdAd1EmDKxCr', 11, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiOUNnbG9yN2hlT0tHaXRLNUlBaDI4TmlWeUgwWnkyMzByVzRld3RKQyI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDM6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9zZXR0aW5ncy9sYW5kaW5nLXBhZ2UiO3M6NToicm91dGUiO3M6MjE6InNldHRpbmdzLmxhbmRpbmcuZWRpdCI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjExO30=', 1786966737),
+('8nfP0FaLZ0S48aAltHXpwN4GpuJEtxdYiNdmYThd', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.9168', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiNEhHN2U3VFJXV2s1aVRCOERkcUhQZ2Z5bWFscTJCampqUG9ic3l6UCI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NTE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wZW5kYWZ0YXJhbi1zaXN3YT9zY2hvb2xfaWQ9MyI7czo1OiJyb3V0ZSI7czoxMToicGVuZGFmdGFyYW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1786965637),
+('EA4O3dxr01GMuMirv3s7gTmlZ5Kd8WLE0UozuNHl', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.9168', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoid0ZPU3dJamZTZDJTWWNzQ1N0b3F2V2ZiOHJMWFFjZUlpZXlVdkcybiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzk6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wZW5kYWZ0YXJhbi1zaXN3YSI7czo1OiJyb3V0ZSI7czoxMToicGVuZGFmdGFyYW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1786965595),
+('Eye0TAKcz57D2HfNB34zn5OBckfo0LYQY38WIkTi', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.9168', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoidXNseHNZZkY3N2lGNmFXbEw4QmE4MzdPWnVJQzNsUkZTWHZtNnJYWSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6Mzg6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC95L1lZUy0wMDEvZGFmdGFyIjtzOjU6InJvdXRlIjtzOjE5OiJ5YXlhc2FuLnBlbmRhZnRhcmFuIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1786966153),
+('NpjtDHTqGLZjv0AU0Je47N9uGEysg1lZ8oIxUvwh', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1.26100.9168', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoicU95Y0RxTWdpTVBmdjhnalpSaG01SHR3STBGUVczQ2dwYU9aRW0xZSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7czo1OiJyb3V0ZSI7czo0OiJob21lIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1786966534);
 
 -- --------------------------------------------------------
 
@@ -934,8 +942,8 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `key`, `value`, `created_at`, `updated_at`) VALUES
-(1, 'hero_title_1', 'Ciptakan Generasi Gen Z', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
-(2, 'hero_title_2', 'Cerdas & Ceria', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
+(1, 'hero_title_1', 'Ciptakan Generasi Gen 9', '2026-07-06 08:45:46', '2026-08-17 05:28:08'),
+(2, 'hero_title_2', 'Cerdas & Cermat', '2026-07-06 08:45:46', '2026-08-17 05:28:08'),
 (3, 'hero_subtitle', 'Memberikan pendidikan terbaik untuk generasi masa depan dengan fasilitas lengkap dan tenaga pengajar profesional. Amankan kuota putra-putri Anda sekarang. Cuy', '2026-07-06 08:45:46', '2026-07-06 08:47:00'),
 (4, 'files', NULL, '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
 (5, 'profil_title', 'Kenali Lebih Dekat', '2026-07-06 08:45:46', '2026-07-06 08:45:46'),
@@ -972,8 +980,42 @@ INSERT INTO `settings` (`id`, `key`, `value`, `created_at`, `updated_at`) VALUES
 (36, 'footer_whatsapp', '0812-3456-78902', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
 (37, 'footer_email', 'admin@alhikmah.sch.id', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
 (38, 'footer_hours', 'Senin–Sabtu, 07.00–15.00', '2026-07-06 09:02:12', '2026-07-06 09:02:12'),
-(39, 'site_title', 'Yayasan Al-Hikmah 2', '2026-07-06 09:20:19', '2026-07-06 09:20:19'),
-(40, 'site_logo', '/storage/landing/oZsEqOPbXJaSDowSjmYkKhtFFmrcp8TNBjRCMYEU.jpg', '2026-07-06 09:20:19', '2026-08-05 20:32:24');
+(39, 'site_title', 'saas', '2026-07-06 09:20:19', '2026-08-17 05:28:08'),
+(40, 'site_logo', '/storage/landing/1EHOcXXrt2hxgT7ZnxUqWajK1Wuf3hlS32CV1XwV.jpg', '2026-07-06 09:20:19', '2026-08-14 09:13:58'),
+(41, 'landing_template', 'ceria', '2026-08-13 21:12:55', '2026-08-17 05:28:08'),
+(42, 'hero_image', NULL, '2026-08-14 09:07:25', '2026-08-14 09:08:01'),
+(43, 'saas_platform_name', 'Kiddy School ERP', '2026-08-17 05:35:44', '2026-08-17 05:35:52'),
+(44, 'saas_platform_tagline', 'MULTI-TENANT', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(45, 'saas_header_cta_text', 'Daftar Sekarang', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(46, 'saas_hero_badge', 'SaaS Multi-Tenant Terpercaya Khusus Yayasan & Sekolah Anak Usia Dini', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(47, 'saas_hero_title_1', 'Solusi ERP Modern & Terpadu untuk', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(48, 'saas_hero_title_highlight', 'Manajemen Yayasan TK & PAUD', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(49, 'saas_hero_desc', 'Kelola seluruh cabang sekolah, ribuan siswa, e-rapor Kurikulum Merdeka, presensi harian, hingga portal mandiri orang tua dalam satu sistem cloud terintegrasi dengan jaminan isolasi data penuh.', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(50, 'saas_hero_btn_primary', 'Daftarkan Yayasamu Sekarang!', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(51, 'saas_hero_btn_secondary', 'Pelajari Fitur & Modul', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(52, 'saas_stat_1_num', '500+', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(53, 'saas_stat_1_label', 'Cabang Sekolah Terdaftar', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(54, 'saas_stat_2_num', '15.000+', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(55, 'saas_stat_2_label', 'Siswa Aktif & Alumni', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(56, 'saas_stat_3_num', '100%', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(57, 'saas_stat_3_label', 'Isolasi Data Antar-Tenant', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(58, 'saas_stat_4_num', '99.9%', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(59, 'saas_stat_4_label', 'Cloud Server Uptime', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(60, 'saas_step_1_title', '1. Daftarkan Yayasan', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(61, 'saas_step_1_desc', 'Isi formulir identitas yayasan dan lokasi GPS melalui portal pendaftaran.', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(62, 'saas_step_2_title', '2. Verifikasi & Aktivasi', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(63, 'saas_step_2_desc', 'Admin platform memverifikasi data dan akun Super Admin otomatis dibuat.', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(64, 'saas_step_3_title', '3. Atur Cabang & Guru', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(65, 'saas_step_3_desc', 'Super Admin menambahkan cabang TK/PAUD, akun guru, dan kelas.', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(66, 'saas_step_4_title', '4. Siap Digunakan', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(67, 'saas_step_4_desc', 'Sistem siap melayani PPDB, absensi, e-rapor, dan portal wali murid.', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(68, 'saas_cta_title', 'Siap Mentransformasi Digital Yayasan & Sekolah Anda?', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(69, 'saas_cta_desc', 'Bergabunglah bersama puluhan yayasan pendidikan lainnya yang telah menggunakan platform Kiddy School ERP.', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(70, 'saas_cta_btn_text', 'Daftarkan Yayasan Anda Sekarang', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(71, 'saas_footer_about', 'Platform SaaS ERP Manajemen Yayasan TK & PAUD terintegrasi dengan arsitektur multi-tenant modern.', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(72, 'saas_contact_email', 'support@kiddyschool.id', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(73, 'saas_contact_phone', '+62 812-3456-7890', '2026-08-17 05:38:32', '2026-08-17 05:38:32'),
+(74, 'saas_contact_address', 'Gedung Cyber Tech Lt. 5, Jakarta, Indonesia', '2026-08-17 05:38:32', '2026-08-17 05:38:32');
 
 -- --------------------------------------------------------
 
@@ -1058,7 +1100,9 @@ INSERT INTO `siswas` (`id`, `school_id`, `nama_lengkap`, `program_pilihan`, `nik
 (16, 1, 'Maritza', 'TK Pagi (Tahun: 2028/2029)', '3507542670943981', NULL, NULL, NULL, NULL, 'foto_siswa/Y3g6QJ95KzaWleRjWQKp9rJ2EAB18GRm5w8NtCmb.jpg', 'bukti_pendaftaran/cbYneseKBH3CZGwCoBb2BxgRfXYQW40yhnO87h5f.jpg', 'Malang', '2026-07-09', 'Perempuan', 'aktif', 'Rahayu Kuswandari', 'Omar Suryono', NULL, '2026-07-01 10:18:56', '2026-07-01 22:20:14', 105, 20, NULL, NULL, NULL, 'Desa Kuningan', '2', '3', 'ad3wef', 'scwecdecwe', 'fwe3f3', '66171', 'Islam', '2', '2', 'Bersama orang tua', 'jalan', '089681010691', NULL, '3', '45', '3514012305201111', '1234', 'asdfd', 'WDEWVGG', '500', '3514012305201212', '1234', 'ASRG', 'AWWSDFG', '200'),
 (18, 1, 'Amar Amir', 'PAUD (Tahun: 2029/2030)', '3505105603191155', NULL, NULL, NULL, NULL, 'foto_siswa/qep7NdEGYiyntreEMdeOsXvWvyocwqh0xvvdndqO.jpg', 'bukti_pendaftaran/loHTbv7pKH4xqKSiUTIvRcqodhBetOd46solhxxS.jpg', 'Sibolga', '2024-05-02', 'Laki-laki', 'aktif', 'Anastasia Mandasari', 'Omar Suryono', NULL, '2026-07-01 22:03:19', '2026-07-01 22:18:31', 12, 22, NULL, NULL, NULL, 'Desa Kuningan', '2', '3', 'ad3wef', 'scwecdecwe', 'fwe3f3', '66171', 'Islam', '3', '4', 'Wali', 'jalan', '089681010691', 'ortu@tk.com', NULL, '13', '3505105603193333', '1234', 'asdfd', 'WDEWVGG', '500', '3505105603195555', '1234', 'ASRG', 'AWWSDFG', '200'),
 (19, 1, 'asdfghj', 'TK Pagi (Tahun: 2031/2032)', '3514012305208768', NULL, NULL, NULL, NULL, 'foto_siswa/uSTJvAmKrbzOnP0FeSGjNKWuryZBxRbMlpzC3Ig4.jpg', 'bukti_pendaftaran/OAfcBW2pMR1vLAFluzZN95fKzjidWAL0irYtLMDq.jpg', 'argthn', '2026-07-22', 'Perempuan', 'menunggu', 'adfghn', 'asadfgnh', NULL, '2026-07-05 10:23:29', '2026-07-05 10:23:29', 80, 21, NULL, NULL, NULL, '234rthyfregbh45t', '3', '5', 'sdfbgnh', 'asdfghn', 'sdfn', '3134', 'Hindu', '2', '3', 'Bersama orang tua', 'motor', '12345432134', 'ortu5@tk.com', NULL, '30', '3514012305202568', '2345', 'asf', 'wdefrg', '600', '3514012305201702', '1234', 'efrgr', 'dewfrg', '300'),
-(20, 1, 'Sadam', 'TK Siang (Tahun: 2027/2028)', '3514012305212367', NULL, NULL, NULL, NULL, 'foto_siswa/cCMM2Q7US0p8MEQZnLjje8vwnc5AV15a3ouFuo98.jpg', 'bukti_pendaftaran/SjaZJrTvwa0hEa8bmAJYrsddb3UuTYdT6X01Q3H1.jpg', 'argthn', '2026-07-02', 'Laki-laki', 'menunggu', 'adfghn', 'asadfgnh', NULL, '2026-07-06 07:59:45', '2026-07-06 07:59:45', 60, 18, NULL, NULL, NULL, '234rthyfregbh45t', '3', '5', 'sdfbgnh', 'asdfghn', 'sdfn', '1457', 'Islam', '1', '2', 'Wali', 'motor', '12345432134', 'ortu5@tk.com', NULL, '34', '3514012305226803', '1234', 'asf', 'wdefrg', '600', '3514012305782047', '1234', 'efrgr', 'dewfrg', '300');
+(20, 1, 'Sadam', 'TK Siang (Tahun: 2027/2028)', '3514012305212367', NULL, NULL, NULL, NULL, 'foto_siswa/cCMM2Q7US0p8MEQZnLjje8vwnc5AV15a3ouFuo98.jpg', 'bukti_pendaftaran/SjaZJrTvwa0hEa8bmAJYrsddb3UuTYdT6X01Q3H1.jpg', 'argthn', '2026-07-02', 'Laki-laki', 'menunggu', 'adfghn', 'asadfgnh', NULL, '2026-07-06 07:59:45', '2026-07-06 07:59:45', 60, 18, NULL, NULL, NULL, '234rthyfregbh45t', '3', '5', 'sdfbgnh', 'asdfghn', 'sdfn', '1457', 'Islam', '1', '2', 'Wali', 'motor', '12345432134', 'ortu5@tk.com', NULL, '34', '3514012305226803', '1234', 'asf', 'wdefrg', '600', '3514012305782047', '1234', 'efrgr', 'dewfrg', '300'),
+(21, 3, 'Diyaa Maritza', 'TK Siang (Tahun: 2028/2029)', '3507542670943999', '3407542670943999', NULL, NULL, NULL, 'foto_siswa/naQ0hxjxrln72VpdsPRJ2SdA8f4u8Z2bObNJ9Uxa.jpg', 'bukti_pendaftaran/DXLs9BLfguIhpXH7keFCPCCohgls9WFLXgPOKNI9.jpg', 'Sibolga', '2026-08-17', 'Perempuan', 'menunggu', 'Rahayu Kuswandari', 'Omar Suryono', NULL, '2026-08-16 22:28:14', '2026-08-16 22:28:14', 150, 50, '-8.103616, 112.565481', '-8.103616', '112.565481', 'Desa Kuningan', '2', '3', 'malang', 'wdefwf', 'dsvadv', '66171', 'Budha', '4', '3', NULL, NULL, '089681010691', 'wali3@gmail.com', NULL, '40', '35075697543999', NULL, NULL, NULL, NULL, '3507515680943999', NULL, NULL, NULL, NULL),
+(23, 3, 'rendi gondrong', 'TK Pagi (Tahun: 2029/2030)', '35075421111113998', '3507542670943999', NULL, NULL, NULL, 'foto_siswa/FCkZZ8U3dbel9use0xiiCULcroy7tmZUQKPRBCG9.jpg', 'bukti_pendaftaran/8ogrfviTW0ppKP6V8QxAIEdxQ7hBTepgDcJtk52E.jpg', 'Blitar', '2026-08-17', 'Laki-laki', 'menunggu', 'Rahayu Kuswandari', 'Omar', NULL, '2026-08-16 22:38:23', '2026-08-16 22:38:23', 132, 33, '-7.983668, 112.621040', '-7.983668', '112.621040', 'Desa Kuningan', '2', '3', 'ad3wef', 'scwecdecwe', 'fwe3f3', '66171', 'Katolik', '2', '3', NULL, NULL, '089681010691', 'wali3@gmail.com', NULL, '34', '35075433333343999', NULL, NULL, NULL, NULL, '3507522222943999', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1100,17 +1144,21 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `school_id`, `yayasan_id`, `kelas_id`, `name`, `email`, `password`, `role`, `created_at`, `updated_at`) VALUES
-(1, NULL, 1, NULL, 'Super Admin', 'superadmin@tkceria.com', '$2y$12$6Dv7X1W3iyrP4dSWmpWgb.MGWb82HwTJELjiC3XDjPoVYo7pUl8S.', 'super_admin', '2026-05-19 03:48:16', '2026-05-19 03:48:16'),
-(2, 1, 1, NULL, 'Admin TK Permata', 'admin@tk.com', '$2y$12$Z2XUUhApK4wiZlNfTOkBIebemWnjtEIsX8oyxXbsikIMQc3o5vEB.', 'admin', '2026-05-19 03:48:16', '2026-05-19 03:48:16'),
-(3, 1, 1, 1, 'Naning', 'naning@tk.com', '$2y$12$Ys0d25uZOO5h1euzu/kCgeNEAvsBSxgoAv2W/6DzDOOuh9wyWwC46', 'guru', '2026-05-19 03:48:16', '2026-06-27 10:08:40'),
-(4, 1, 1, NULL, 'Wali Murid', 'ortu@tk.com', '$2y$12$x7ZIWUi20hK0Psr3evkkeODLq65WxkW/Ogb7VjpcA2tN27hEgb2uu', 'wali_murid', '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
-(5, 2, 1, NULL, 'adminmatahari', 'adminmatahari@tk.com', '$2y$12$tr0a9cbPfNqk2hrnSr.NYecu7TLHaXWRsKd8qK6JTjz4JuQP6q.3i', 'admin', '2026-06-03 00:49:47', '2026-06-03 01:32:59'),
-(6, 1, 1, NULL, 'Sadiya2', 'kepsek@tk.com', '$2y$12$hshkpXEMDxnf/Z81HjPbEuRHHkVGJL15enVcfrdRALHaWJkGEvmqW', 'kepsek', '2026-06-03 01:27:23', '2026-06-19 20:45:16'),
+(1, NULL, 1, NULL, 'Super Admin', 'superadmin@tkceria.com', '$2y$12$clzRIJ81Kz0eSFcUcQjTs.803ID9SLGGpsxEEJdq/G3iZziM15Bz2', 'super_admin', '2026-05-19 03:48:16', '2026-05-19 03:48:16'),
+(2, 1, 1, NULL, 'Admin TK Permata', 'admin@tk.com', '$2y$12$Bs0LfJSCXmoZXjmrzxFOW.EhD2hkYl4zV8dkaRvaceyO/YbDVbo9W', 'admin', '2026-05-19 03:48:16', '2026-05-19 03:48:16'),
+(3, 1, 1, 1, 'Guru Kelas A', 'guru1@tk.com', '$2y$12$A6c7C0IWsD.ns.q4NNBCvuZ7SU5Q7FWtg2OF0VWQ2pRgtWWWvm.sK', 'guru', '2026-05-19 03:48:16', '2026-08-14 18:11:31'),
+(4, 1, 1, NULL, 'Wali Murid', 'ortu@tkceria.com', '$2y$12$okG3UgqZb7prRxaw8Z4vguiT.wqtQH4TLoEC/euGhIF9G1CLaSHay', 'wali_murid', '2026-05-19 03:48:17', '2026-05-19 03:48:17'),
+(5, 2, 1, NULL, 'adminmatahari', 'admin2@tk.com', '$2y$12$tr0a9cbPfNqk2hrnSr.NYecu7TLHaXWRsKd8qK6JTjz4JuQP6q.3i', 'admin', '2026-06-03 00:49:47', '2026-08-14 18:07:38'),
+(6, 1, 1, NULL, 'Kepsek Permata', 'kepsek@tk.com', '$2y$12$KD11h6kGylN7E0oAWvi45u7oubGc4cm6uM2WjvSRNDwZKfKc6RNeq', 'kepsek', '2026-06-03 01:27:23', '2026-08-14 18:07:57'),
 (7, NULL, 1, NULL, 'ortu', 'ortu2@tk.com', '$2y$12$a067cIJwqd4lZePViI9FJe9SU6d0tK244tnUuyWKO005wjohcLxJ2', 'wali_murid', '2026-06-19 09:28:57', '2026-06-19 09:28:57'),
-(8, NULL, 1, NULL, 'ortu3', 'ortu3@tk.com', '$2y$12$BAS4vBwmUP93XSQqI2UD2OgWZnDO79I9LkLq58WMnfgJohFNmHlxa', 'wali_murid', '2026-06-19 09:38:49', '2026-06-19 09:38:49'),
-(9, NULL, 1, NULL, 'ortu4', 'ortu4@tk.com', '$2y$12$z/uCtfB4Shf66MN3E8.jn.RZ3PSp16PqIhclUSIY0bK0UKV2syWgi', 'wali_murid', '2026-06-19 09:45:33', '2026-06-19 09:45:33'),
-(10, NULL, 1, NULL, 'ortu5', 'ortu5@tk.com', '$2y$12$.JteLqWIQgPQnf31.38as.8FuQNwTU4TeptrXoJL3vHOJVJbJTZ8q', 'wali_murid', '2026-06-29 22:46:46', '2026-06-29 22:46:46'),
-(11, NULL, NULL, NULL, 'Owner Platform', 'owner@yayasan.com', '$2y$12$LgMPrwGPTLxDe7DiSyZTMu6uOxWP3XmpmP/NV1oKfPnReeOOK9xMq', 'owner', '2026-07-31 23:12:30', '2026-07-31 23:12:30');
+(11, NULL, NULL, NULL, 'Owner Platform', 'owner@yayasan.com', '$2y$12$dyTbyIjq4hKB/oMMNbbab.VUYUZgUoXkXedx.UcBHXsBtISCqc25C', 'owner', '2026-07-31 23:12:30', '2026-07-31 23:12:30'),
+(12, 3, 2, NULL, 'Super admin kamu', 'superadmin2@gmail.com', '$2y$12$9PAdls7jYWup9du10YNOcu.WZ6d1AcjhlOSbWm1ll3GhAL8fJQTaa', 'super_admin', '2026-08-14 18:04:16', '2026-08-14 18:04:16'),
+(14, 3, 2, NULL, 'admin kenanga', 'admin3@gmail.com', '$2y$12$dfdl4QMwaKwbYb/wEPTpROHN1CIhdp0OW3NHHgU7rMhqjNZFfZUc2', 'admin', '2026-08-14 18:06:16', '2026-08-14 18:06:16'),
+(15, 3, 2, 6, 'Guru Kelas A', 'guru3@tk.com', '$2y$12$NlZiolPrN6tgDfHTP4FFZu5IqJMkwYUX4BA5XjiS27uRcH0cDzX72', 'guru', '2026-08-14 18:10:39', '2026-08-14 18:10:56'),
+(16, NULL, NULL, NULL, 'wali murid kenanga', 'ortukenanga@tk.com', '$2y$12$2ZsXElg..OGhT.bg1DUqiuo/ZuSWmNVukJtS3deOthp.0t3mddtn.', 'wali_murid', '2026-08-14 18:13:37', '2026-08-14 18:13:37'),
+(17, NULL, 3, NULL, 'Admin Yayasan Bersama', 'Bersama@yayasan.com', '$2y$12$sdq3t4IryXqtY5xfQMo56eW8t7eXhE.0x9ZlE.sBgOsIE6GpX6syC', 'super_admin', '2026-08-14 22:21:34', '2026-08-14 22:21:34'),
+(19, NULL, 2, NULL, 'Rahayu Kuswandari', 'wali3@gmail.com', '$2y$12$WtDaKptfwJ5Syf4hUCAOpOMaMNNE2XC5FB7sG1KAuE0mYbsu4rJgm', 'wali_murid', '2026-08-16 22:28:13', '2026-08-16 22:28:13'),
+(20, NULL, 2, NULL, 'kenanga', 'wali2@gmail.com', '$2y$12$VsSuC3JQ6Zc35iQZdgkFJe9/z9Xb5iv03388MW55Pybwna58sVbTS', 'wali_murid', '2026-08-17 05:06:45', '2026-08-17 05:06:45');
 
 -- --------------------------------------------------------
 
@@ -1137,8 +1185,42 @@ CREATE TABLE `yayasans` (
 --
 
 INSERT INTO `yayasans` (`id`, `nama_yayasan`, `kode_yayasan`, `penanggung_jawab`, `telepon`, `alamat`, `logo_yayasan`, `landing_content`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Yayasan Kami', 'YYS-001', NULL, NULL, NULL, NULL, '{\"template\": \"ocean\", \"akreditasi\": \"A\", \"badge_text\": null, \"card1_desc\": \"Anak belajar merawat tanaman sendiri.\", \"card2_desc\": \"Metode Montessori, anak memilih aktivitasnya.\", \"hero_title\": \"Selamat Jalan dan Semoga Selamat\", \"card1_title\": \"Bermain aktif\", \"card2_title\": \"Calistung dasar\", \"card3_title\": \"Seni dan musik\", \"whatsapp_cta\": null, \"alamat_tampil\": null, \"hero_subtitle\": null, \"tahun_berdiri\": null, \"jumlah_pengajar\": \"18\"}', 'aktif', '2026-07-31 23:04:24', '2026-08-10 22:09:47'),
-(2, 'Yayasan Kamu', 'YYS-002', NULL, NULL, NULL, NULL, NULL, 'aktif', '2026-07-31 23:33:58', '2026-07-31 23:33:58');
+(1, 'Yayasan Kami', 'YYS-001', NULL, NULL, NULL, NULL, '{\"tk_desc\": \"Program TK berfokus pada pengembangan karakter, motorik, sosial, dan kesiapan sekolah.\", \"tk_misi\": \"Pembelajaran berbasis bermain ramah anak.\", \"tk_visi\": \"Membentuk anak usia dini yang cerdas, mandiri, dan berakhlak mulia.\", \"template\": \"trustworthy\", \"tk_title\": \"Taman Kanak-Kanak (TK)\", \"paud_desc\": \"Program PAUD stimulasi usia golden age dengan lingkungan belajar yang hangat.\", \"paud_misi\": \"Aktivitas motorik dan sosialisasi sejak usia dini.\", \"paud_visi\": \"Menjadi wadah stimulasi tumbuh kembang balita yang aman dan menyenangkan.\", \"akreditasi\": \"A\", \"badge_text\": null, \"card1_desc\": \"Anak belajar merawat tanaman sendiri.\", \"card2_desc\": \"Metode Montessori, anak memilih aktivitasnya.\", \"hero_title\": \"Selamat Jalan dan Semoga Selamat\", \"paud_title\": \"Pendidikan Anak Usia Dini (PAUD)\", \"site_title\": \"Yayasan Kami\", \"card1_title\": \"Bermain aktif\", \"card2_title\": \"Calistung dasar\", \"card3_title\": \"Seni dan musik\", \"hero_title_1\": \"Ciptakan Generasi\", \"hero_title_2\": \"Cerdas & Ceria\", \"profil_title\": \"Kenali Lebih Dekat\", \"whatsapp_cta\": null, \"yayasan_desc\": \"Yayasan kami berkomitmen penuh untuk mencetak generasi Islami yang unggul.\", \"yayasan_misi\": \"Menyelenggarakan proses pembelajaran yang berkualitas.\", \"yayasan_visi\": \"Mewujudkan lembaga pendidikan yang berpijak pada penanaman aqidah Islam.\", \"alamat_tampil\": null, \"hero_subtitle\": \"Memberikan pendidikan terbaik untuk generasi masa depan dengan fasilitas lengkap dan tenaga pengajar profesional.\", \"tahun_berdiri\": null, \"yayasan_title\": \"Yayasan Kami\", \"card1_title_nat\": \"Bermain aktif\", \"card2_title_nat\": \"Calistung dasar\", \"jumlah_pengajar\": \"18\", \"profil_subtitle\": \"Pelajari lebih lanjut tentang institusi dan program unggulan kami untuk putra-putri Anda.\", \"tk_profile_name\": \"Kepala Sekolah TK\", \"tk_profile_title\": \"Kepala TK\", \"paud_profile_name\": \"Pengelola PAUD\", \"paud_profile_title\": \"Kepala PAUD\", \"yayasan_profile_name\": \"Pimpinan Yayasan\", \"yayasan_profile_title\": \"Ketua Yayasan\"}', 'aktif', '2026-07-31 23:04:24', '2026-08-14 09:18:03'),
+(2, 'Yayasan Kamu', 'YYS-002', NULL, NULL, NULL, NULL, NULL, 'aktif', '2026-07-31 23:33:58', '2026-07-31 23:33:58'),
+(3, 'Yayasan Bersama', 'YYS-003', 'Bersama', '089xxxxxx', 'Desa Kuningan', NULL, NULL, 'aktif', '2026-08-14 22:21:34', '2026-08-14 22:21:34');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `yayasan_registrations`
+--
+
+CREATE TABLE `yayasan_registrations` (
+  `id` bigint UNSIGNED NOT NULL,
+  `nama_yayasan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `kode_yayasan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Akan di-generate otomatis atau diisi manual oleh owner saat ACC',
+  `penanggung_jawab` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_kontak` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Email untuk dihubungi',
+  `telepon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Nomor telpon untuk dihubungi',
+  `alamat` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lintang` decimal(10,7) DEFAULT NULL COMMENT 'Koordinat latitude',
+  `bujur` decimal(10,7) DEFAULT NULL COMMENT 'Koordinat longitude',
+  `nomor_akta_pendirian` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nomor_sk_kemenkumham` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `npwp_yayasan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('menunggu','disetujui','ditolak') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'menunggu',
+  `catatan_owner` text COLLATE utf8mb4_unicode_ci COMMENT 'Catatan ACC atau alasan penolakan dari owner',
+  `diproses_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `yayasan_registrations`
+--
+
+INSERT INTO `yayasan_registrations` (`id`, `nama_yayasan`, `kode_yayasan`, `penanggung_jawab`, `email_kontak`, `telepon`, `alamat`, `lintang`, `bujur`, `nomor_akta_pendirian`, `nomor_sk_kemenkumham`, `npwp_yayasan`, `status`, `catatan_owner`, `diproses_at`, `created_at`, `updated_at`) VALUES
+(1, 'Yayasan Bersama', 'YYS-003', 'Bersama', 'Bersama@yayasan.com', '089xxxxxx', 'Desa Kuningan', -6.2602992, 106.8736812, 'degf354hgfdg', '34gh65jhfwe4h66', '123456io678', 'disetujui', NULL, '2026-08-14 22:21:34', '2026-08-14 22:20:38', '2026-08-14 22:21:34');
 
 --
 -- Indexes for dumped tables
@@ -1407,6 +1489,12 @@ ALTER TABLE `yayasans`
   ADD UNIQUE KEY `yayasans_kode_yayasan_unique` (`kode_yayasan`);
 
 --
+-- Indexes for table `yayasan_registrations`
+--
+ALTER TABLE `yayasan_registrations`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -1462,7 +1550,7 @@ ALTER TABLE `jurnal_harians`
 -- AUTO_INCREMENT for table `kelas`
 --
 ALTER TABLE `kelas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `materis`
@@ -1510,7 +1598,7 @@ ALTER TABLE `media_kegiatan_siswas`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `modules`
@@ -1552,7 +1640,7 @@ ALTER TABLE `record_revisions`
 -- AUTO_INCREMENT for table `schools`
 --
 ALTER TABLE `schools`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `school_modules`
@@ -1570,13 +1658,13 @@ ALTER TABLE `semesters`
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT for table `siswas`
 --
 ALTER TABLE `siswas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `student_guardian`
@@ -1588,13 +1676,19 @@ ALTER TABLE `student_guardian`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `yayasans`
 --
 ALTER TABLE `yayasans`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `yayasan_registrations`
+--
+ALTER TABLE `yayasan_registrations`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables

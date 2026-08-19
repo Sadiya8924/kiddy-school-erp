@@ -60,13 +60,6 @@
             <p class="text-muted small mt-2">Masuk untuk mengakses sistem sesuai peran Anda —<br><span class="text-primary-custom fw-semibold">Admin, Guru, Kepala Sekolah, atau Wali Murid.</span></p>
           </div>
 
-          {{-- TM-03: Banner Sistem Beta --}}
-          @if(app()->environment('local', 'staging', 'demo', 'production'))
-          <div class="alert alert-warning border-0 rounded-3 py-2 px-3 mb-3 d-flex align-items-center gap-2 small">
-            <iconify-icon icon="solar:danger-triangle-bold" class="fs-6 text-warning"></iconify-icon>
-            <span><strong>Sistem Beta</strong> — Akun di bawah untuk demonstrasi. Jangan masukkan data pribadi nyata.</span>
-          </div>
-          @endif
 
           {{-- Alert Banners --}}
           @if(session('wrong_yayasan'))
@@ -176,61 +169,7 @@
               <a class="text-primary-custom fw-bold text-decoration-none ms-1" href="/register">Daftar di sini</a>
             </div>
 
-            {{-- Quick Demo Login Accounts --}}
-            <div class="mt-4 pt-3 border-top">
-              <p class="text-uppercase text-muted fw-bold mb-2" style="font-size: 11px;">
-                💡 Demo Akun Tersedia di Database:
-              </p>
-              <div class="row g-2">
-                <div class="col-6">
-                  <button type="button" onclick="fillDemo('ortu@tkceria.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
-                    <div class="fw-bold text-dark" style="font-size: 11px;">👨‍👩‍👧 Wali Murid</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">ortu@tkceria.com</div>
-                  </button>
-                </div>
-                <div class="col-6">
-                  <button type="button" onclick="fillDemo('naning@tk.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
-                    <div class="fw-bold text-dark" style="font-size: 11px;">👩‍🏫 Guru TK</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">naning@tk.com</div>
-                  </button>
-                </div>
-                <div class="col-6">
-                  <button type="button" onclick="fillDemo('admin@tk.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
-                    <div class="fw-bold text-dark" style="font-size: 11px;">🏫 Admin TK</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">admin@tk.com</div>
-                  </button>
-                </div>
-                <div class="col-6">
-                  <button type="button" onclick="fillDemo('kepsek@tk.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
-                    <div class="fw-bold text-dark" style="font-size: 11px;">🎓 Kepsek</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">kepsek@tk.com</div>
-                  </button>
-                </div>
-                <div class="col-6">
-                  <button type="button" onclick="fillDemo('superadmin@tkceria.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
-                    <div class="fw-bold text-dark" style="font-size: 11px;">🏛️ Super Admin</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">superadmin@tkceria.com</div>
-                  </button>
-                </div>
-                <div class="col-6">
-                  <button type="button" onclick="fillDemo('owner@yayasan.com')" class="btn btn-sm btn-light border text-start w-100 p-2">
-                    <div class="fw-bold text-dark" style="font-size: 11px;">👑 Owner SaaS</div>
-                    <div class="text-muted text-truncate" style="font-size: 10px;">owner@yayasan.com</div>
-                  </button>
-                </div>
-              </div>
-              <p class="text-muted text-center fst-italic mt-2 mb-0" style="font-size: 10px;">
-                Password bawaan semua akun: <strong class="text-dark">password</strong>
-              </p>
-            </div>
           </form>
-
-          <script>
-            function fillDemo(email) {
-              document.querySelector('input[name="email"]').value = email;
-              document.querySelector('input[name="password"]').value = 'password';
-            }
-          </script>
 
         </div>
       </div>

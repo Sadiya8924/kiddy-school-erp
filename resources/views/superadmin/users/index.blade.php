@@ -76,6 +76,10 @@
                     {{-- Breakdown User Per Role --}}
                     <div class="p-3 bg-slate-50 rounded-3 mb-3 border border-slate-100" style="font-size: 12.5px;">
                       <div class="d-flex justify-content-between align-items-center mb-1.5">
+                        <span class="text-muted"><iconify-icon icon="solar:shield-user-bold-duotone" class="text-purple me-1 align-middle fs-5"></iconify-icon> Super Admin:</span>
+                        <span class="fw-bold text-dark">{{ $cardYayasan->count_super_admin }}</span>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center mb-1.5">
                         <span class="text-muted"><iconify-icon icon="solar:user-bold-duotone" class="text-primary me-1 align-middle fs-5"></iconify-icon> Admin Sekolah:</span>
                         <span class="fw-bold text-dark">{{ $cardYayasan->count_admin }}</span>
                       </div>

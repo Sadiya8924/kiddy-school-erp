@@ -135,14 +135,6 @@ export default function LoginPage({ onNavigate }: Props) {
           <h1 className="text-2xl font-800 text-gray-900 mb-1" style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Masuk Sistem</h1>
           <p className="text-sm mb-4" style={{ color: '#6B7280' }}>Masuk ke akun Kiddy School ERP Anda.</p>
 
-          {/* TM-03: Demo / Beta Environment Security Banner */}
-          <div className="mb-5 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-500 flex items-start gap-2">
-            <span className="text-base leading-none">⚠️</span>
-            <div>
-              <strong className="font-600">Lingkungan Demo / Beta</strong>
-              <p className="text-[11px] text-amber-700 mt-0.5 mb-0">Data pada halaman ini hanya untuk pengujian. Jangan gunakan password pribadi nyata.</p>
-            </div>
-          </div>
 
           {error && (
             <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-500 flex items-center gap-2">
@@ -184,42 +176,6 @@ export default function LoginPage({ onNavigate }: Props) {
               {loading ? 'Memproses Login...' : 'Login'}
             </button>
           </form>
-
-          {/* Quick Demo Login Accounts */}
-          <div className="mt-6 pt-5 border-t border-gray-200">
-            <p className="text-[11px] font-700 text-gray-500 uppercase tracking-wider mb-2" style={{ fontWeight: 700 }}>
-              💡 Demo Akun Tersedia di Database:
-            </p>
-            <div className="grid grid-cols-2 gap-1.5">
-              <button type="button" onClick={() => fillDemo('ortu@tkceria.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
-                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👨‍👩‍👧 Wali Murid</div>
-                <div className="text-[10px] text-gray-500 truncate">ortu@tkceria.com</div>
-              </button>
-              <button type="button" onClick={() => fillDemo('naning@tk.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
-                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👩‍🏫 Guru TK</div>
-                <div className="text-[10px] text-gray-500 truncate">naning@tk.com</div>
-              </button>
-              <button type="button" onClick={() => fillDemo('admin@tk.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
-                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>🏫 Admin TK</div>
-                <div className="text-[10px] text-gray-500 truncate">admin@tk.com</div>
-              </button>
-              <button type="button" onClick={() => fillDemo('kepsek@tk.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
-                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>🎓 Kepsek</div>
-                <div className="text-[10px] text-gray-500 truncate">kepsek@tk.com</div>
-              </button>
-              <button type="button" onClick={() => fillDemo('superadmin@tkceria.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
-                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>🏛️ Super Admin</div>
-                <div className="text-[10px] text-gray-500 truncate">superadmin@tkceria.com</div>
-              </button>
-              <button type="button" onClick={() => fillDemo('owner@yayasan.com')} className="p-2 text-left rounded-lg bg-gray-100 hover:bg-blue-50 border border-gray-200 transition-all cursor-pointer">
-                <div className="text-xs font-700 text-gray-800" style={{ fontWeight: 700 }}>👑 Owner SaaS</div>
-                <div className="text-[10px] text-gray-500 truncate">owner@yayasan.com</div>
-              </button>
-            </div>
-            <p className="text-[10px] text-gray-400 mt-1.5 italic text-center">
-              Password bawaan semua akun: <strong className="text-gray-600">password</strong>
-            </p>
-          </div>
 
           <p className="text-center text-xs mt-5" style={{ color: '#6B7280' }}>
             Belum punya akun?{' '}

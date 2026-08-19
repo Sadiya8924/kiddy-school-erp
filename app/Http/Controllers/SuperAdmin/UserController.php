@@ -28,15 +28,24 @@ class UserController extends Controller
             foreach ($yayasans as $yayasan) {
                 $schoolIds = $yayasan->schools->pluck('id');
 
-                $yayasan->total_users = User::whereIn('school_id', $schoolIds)
-                    ->orWhere('yayasan_id', $yayasan->id)
-                    ->count();
+                $getUsersQuery = function($role = null) use ($yayasan, $schoolIds) {
+                    return User::where(function($q) use ($yayasan, $schoolIds) {
+                        $q->where('yayasan_id', $yayasan->id);
+                        if ($schoolIds->isNotEmpty()) {
+                            $q->orWhereIn('school_id', $schoolIds);
+                        }
+                    })
+                    ->when($role, function($q) use ($role) {
+                        return $q->where('role', $role);
+                    });
+                };
 
-                $yayasan->count_super_admin = User::where('yayasan_id', $yayasan->id)->where('role', 'super_admin')->count();
-                $yayasan->count_admin = User::whereIn('school_id', $schoolIds)->where('role', 'admin')->count();
-                $yayasan->count_kepsek = User::whereIn('school_id', $schoolIds)->where('role', 'kepsek')->count();
-                $yayasan->count_guru = User::whereIn('school_id', $schoolIds)->where('role', 'guru')->count();
-                $yayasan->count_ortu = User::whereIn('school_id', $schoolIds)->where('role', 'wali_murid')->count();
+                $yayasan->total_users       = $getUsersQuery()->count();
+                $yayasan->count_super_admin = $getUsersQuery('super_admin')->count();
+                $yayasan->count_admin       = $getUsersQuery('admin')->count();
+                $yayasan->count_kepsek      = $getUsersQuery('kepsek')->count();
+                $yayasan->count_guru        = $getUsersQuery('guru')->count();
+                $yayasan->count_ortu        = $getUsersQuery('wali_murid')->count();
 
                 $yayasanCards[] = $yayasan;
             }

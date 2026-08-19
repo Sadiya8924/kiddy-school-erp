@@ -24,7 +24,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   const settings = (typeof window !== 'undefined' && (window as any).APP_SETTINGS) || {}
   const authUser = (typeof window !== 'undefined' && (window as any).AUTH_USER) || null
 
-  const siteTitle = settings.site_title || 'Yayasan Al-Hikmah 2'
+  const siteTitle = settings.saas_platform_name || 'Kiddy School ERP'
   const siteLogo = settings.site_logo
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             <img src={siteLogo} alt={siteTitle} style={{ height: 36, width: 'auto', objectFit: 'contain', borderRadius: 6 }} />
           ) : (
             <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-sm"
-              style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}>AH</div>
+              style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}>KS</div>
           )}
           <span className="font-700 text-sm text-gray-900 hidden sm:block" style={{ fontWeight: 700 }}>{siteTitle}</span>
         </button>

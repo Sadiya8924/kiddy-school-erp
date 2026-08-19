@@ -237,10 +237,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @media (max-width: 600px) {
-            .header-box { padding: 28px 20px; }
-            .card-custom { padding: 24px 18px; }
-            .pendaftaran-topbar { padding: 10px 16px; }
+        @media (max-width: 768px) {
+            .portal-wrapper { padding: 20px 12px 60px; }
+            .header-box { padding: 24px 18px; border-radius: 18px; text-align: center; }
+            .header-box p { font-size: 13.5px; }
+            .card-custom { padding: 20px 16px; border-radius: 16px; }
+            .pendaftaran-topbar { padding: 10px 14px; flex-wrap: wrap; gap: 8px; justify-content: center; }
+            .btn-back-yayasan { font-size: 11.5px; padding: 6px 12px; }
+            .brand-yayasan { font-size: 13.5px; }
         }
     </style>
 </head>
@@ -260,9 +264,20 @@
         <span class="d-none d-sm-inline">{{ $yayasan->nama_yayasan }}</span>
     </a>
 
-    <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1.5 fw-bold" style="font-size:11.5px;">
-        PPDB Online {{ date('Y') }}/{{ date('Y')+1 }}
-    </span>
+    <div class="d-flex align-items-center gap-2">
+        @auth
+            <a href="/dashboard" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1" style="font-size:12.5px;">
+                <iconify-icon icon="solar:widget-6-bold-duotone"></iconify-icon> Kembali ke Dashboard
+            </a>
+        @else
+            <a href="{{ route('yayasan.login', $yayasan->kode_yayasan) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1" style="font-size:12.5px;">
+                <iconify-icon icon="solar:login-2-bold-duotone"></iconify-icon> Login Portal
+            </a>
+        @endauth
+        <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1.5 fw-bold d-none d-md-inline-block" style="font-size:11.5px;">
+            PPDB Online {{ date('Y') }}/{{ date('Y')+1 }}
+        </span>
+    </div>
 </div>
 
 <!-- Main Portal Container -->

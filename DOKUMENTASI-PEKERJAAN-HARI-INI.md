@@ -113,22 +113,43 @@ Tabel-tabel berikut telah diisi dengan data dummy operasional yang kaya:
 
 ---
 
-## 7. Petunjuk Pengujian & Verifikasi System
+## 8. Pembaruan Sistem Landing Page, Dynamic Theme, & Portal Multi-Tenant (19 Agustus 2026)
 
-### A. Eksekusi Reset Database:
-```powershell
-php artisan db:seed --class=MasterFreshDatabaseSeeder
-```
-*Atau buka browser di `http://127.0.0.1:8000/auto-seed-db`.*
+Pada pengujian lanjutan tanggal 19 Agustus 2026, telah diselesaikan seluruh perbaikan dan peningkatan fitur portal multi-tenant:
 
-### B. Menjalankan Aplikasi Lokal:
-```powershell
-# Terminal 1: Laravel Server
-php artisan serve
+### A. Dynamic Theme & Sinkronisasi Nama Publik Yayasan
+* 🎨 **Pilihan Tema Visual Dinamis (`ocean`, `ceria`, `trustworthy`, `natural`)**:
+  Menyinkronkan skema warna palette tema pilihan superadmin ke seluruh elemen landing page publik yayasan (`/y/{kode_yayasan}`) meliputi topbar navbar, hero banner, badge CTA, kartu unit sekolah, tombol aksi, serta footer.
+* 🏛️ **Sinkronisasi Nama Publik (`site_title`)**:
+  Pengubahan nama publik yayasan di `/superadmin/landing-page` kini secara otomatis menyinkronkan nama yayasan pada judul tab browser, header topbar, copyright footer, dan meta deskripsi SEO.
+* 🌿 **Footer Theme Synchronization**:
+  Warna latar belakang footer dan aksen link/ikon disesuaikan secara harmonis mengikuti tema pilihan yayasan (misal: warna hijau organik gelap `#142606` untuk *Natural Sage* dan cokelat hangat `#3D2804` untuk *Ceria*).
 
-# Terminal 2: Vite Build / Dev Server
-npm run dev
-```
+### B. Portal Login Terisolasi per Yayasan (`/y/{kode_yayasan}/login`)
+* 🚪 **Dedicated Login Route**:
+  Membuat halaman login publik terpisah untuk masing-masing yayasan (`yayasan.login`), seperti `http://127.0.0.1:8000/y/YAH2/login` dan `http://127.0.0.1:8000/y/YBIC/login`.
+* 🖥️ **Desain Split-Screen Modern**:
+  Sisi kiri (60%) memuat kartu fitur unggulan sistem berbasis tema visual yayasan; Sisi kanan (40%) memuat form login lengkap dengan tombol toggle intip password, checkbox *Ingat Saya* (`remember_token`), serta grid demo account quick-fill.
+* 🔒 **Migrasi Schema Database `remember_token`**:
+  Menambahkan kolom `remember_token` pada tabel `users` via migration `2026_08_19_000000_add_remember_token_to_users_table.php` untuk mendukung fitur *Ingat Saya*.
+
+### C. Isolasi & Restriksi Portal Owner SaaS (`http://127.0.0.1:8000/login`)
+* 🔑 **Khusus Owner SaaS & Platform Admin**:
+  Restriksi akses ketat di mana URL `http://127.0.0.1:8000/login` HANYA DIBUKA UNTUK Pengelola Platform SaaS (`owner@demo.com`).
+* 🏷️ **Branding Resmi Platform SaaS**:
+  Menyesuaikan title, logo initial (`KS`), dan subtitle pada `/login` menjadi **Kiddy School ERP — Platform Management**.
+
+### D. Fitur Proteksi Cross-Tenant Blocker & Smart Logout
+* 🛡️ **Cross-Tenant Blocker & SweetAlert2 Warning**:
+  Jika pengguna yayasan (Admin, Guru, Kepsek, Wali Murid) mencoba login di URL `/login` utama atau portal yayasan lain, sistem secara otomatis menolak akses login dan menampilkan pop-up **SweetAlert2** interaktif yang mengarahkan pengguna ke portal yayasan asalnya melalui tombol 1-klik direct link.
+* 🔄 **Smart Logout Redirect**:
+  Pengguna yayasan yang menekan tombol **Logout** akan secara otomatis diarahkan kembali ke portal login resmi yayasannya masing-masing (`/y/{kode_yayasan}/login`).
+
+### E. Desain 100% Responsif & Offcanvas Mobile Drawer
+* 📱 **Offcanvas Navigation Drawer (<= 992px)**:
+  Di layar tablet & smartphone, menu navigasi horizontal beralih ke tombol Hamburger Menu yang memicu laci navigasi slide-out dari samping kanan.
+* 📐 **Anti-Wrap Text Guard**:
+  Pemasangan CSS `white-space: nowrap !important` dan `flex-shrink: 0 !important` pada tombol header (*Daftar PPDB Online* & *Dashboard*) untuk menjamin kerapian layout di seluruh resolusi layar (Mobile, Tablet, Laptop, Ultra-Wide Display).
 
 ---
 *Dokumentasi ini dibuat secara otomatis sebagai bukti penyelesaian pekerjaan.*

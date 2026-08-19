@@ -15,27 +15,87 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-            $role = Auth::user()->role;
+        $user = User::where('email', $request->email)->first();
 
-            return match($role) {
-                'owner'                         => redirect('/owner/yayasans'),
-                'super_admin', 'platform_admin' => redirect('/superadmin/dashboard'),
-                default                         => redirect('/dashboard'),
-            };
+        // 1. Verifikasi kredensial dasar terlebih dahulu
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return back()->with('error', 'Kombinasi email dan password tidak valid.')->withInput($request->only('email'));
         }
 
-        // TM-06: Uniform error message to prevent user enumeration
-        return back()->with('error', 'Kombinasi email dan password tidak valid.');
+        // 2. Validasi Portal & Peran Akses Login
+        if ($request->filled('kode_yayasan')) {
+            // A. Login via Portal Yayasan (/y/{kode_yayasan}/login)
+            $portalYayasan = \App\Models\Yayasan::where('kode_yayasan', $request->kode_yayasan)->first();
+
+            if ($portalYayasan && !in_array($user->role, ['owner', 'platform_admin'])) {
+                $userYayasanId = $user->getUserYayasanId();
+
+                if ($userYayasanId && (int)$userYayasanId !== (int)$portalYayasan->id) {
+                    $correctYayasan = \App\Models\Yayasan::find($userYayasanId);
+                    $correctYayasanName = $correctYayasan ? $correctYayasan->nama_yayasan : 'Yayasan Asal Anda';
+                    $correctYayasanUrl  = $correctYayasan ? route('yayasan.login', $correctYayasan->kode_yayasan) : '/login';
+
+                    return back()->with('wrong_yayasan', [
+                        'user_email'           => $user->email,
+                        'user_name'            => $user->name,
+                        'portal_yayasan_name'  => $portalYayasan->nama_yayasan,
+                        'correct_yayasan_name' => $correctYayasanName,
+                        'correct_yayasan_url'  => $correctYayasanUrl,
+                    ])->withInput($request->only('email'));
+                }
+            }
+        } else {
+            // B. Login via Halaman Utama Platform SaaS (/login) - Khusus Owner & Platform Admin
+            if (!in_array($user->role, ['owner', 'platform_admin'])) {
+                $userYayasanId = $user->getUserYayasanId();
+                if ($userYayasanId) {
+                    $correctYayasan = \App\Models\Yayasan::find($userYayasanId);
+                    $correctYayasanName = $correctYayasan ? $correctYayasan->nama_yayasan : 'Yayasan Anda';
+                    $correctYayasanUrl  = $correctYayasan ? route('yayasan.login', $correctYayasan->kode_yayasan) : '/login';
+
+                    return back()->with('wrong_yayasan', [
+                        'user_email'           => $user->email,
+                        'user_name'            => $user->name,
+                        'portal_yayasan_name'  => 'Platform Owner SaaS',
+                        'correct_yayasan_name' => $correctYayasanName,
+                        'correct_yayasan_url'  => $correctYayasanUrl,
+                    ])->withInput($request->only('email'));
+                }
+            }
+        }
+
+        // 3. Eksekusi Login
+        Auth::login($user, $request->boolean('remember'));
+        $request->session()->regenerate();
+        $role = $user->role;
+
+        return match($role) {
+            'owner'                         => redirect('/owner/yayasans'),
+            'super_admin', 'platform_admin' => redirect('/superadmin/dashboard'),
+            default                         => redirect('/dashboard'),
+        };
     }
 
     public function logout(Request $request)
     {
+        $user = Auth::user();
+        $redirectUrl = '/login';
+
+        if ($user && !in_array($user->role, ['owner', 'platform_admin'])) {
+            $yayasanId = $user->getUserYayasanId();
+            if ($yayasanId) {
+                $yayasan = \App\Models\Yayasan::find($yayasanId);
+                if ($yayasan) {
+                    $redirectUrl = route('yayasan.login', $yayasan->kode_yayasan);
+                }
+            }
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+
+        return redirect($redirectUrl)->with('info', 'Anda telah berhasil keluar dari portal.');
     }
 
     public function register(Request $request)

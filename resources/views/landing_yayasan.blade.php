@@ -3,20 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $yayasan->nama_yayasan }} — Membangun Generasi Cerdas & Berakhlak Mulia</title>
-    <meta name="description" content="Selamat datang di website resmi {{ $yayasan->nama_yayasan }}. Temukan informasi cabang TK/PAUD, kurikulum unggulan, galeri kegiatan, dan pendaftaran PPDB online.">
-
-    {{-- Google Fonts --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    {{-- Bootstrap & Iconify --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" defer></script>
 
     @php
         $landingContent = $yayasan->landing_content ?? [];
         $template       = $landingContent['template'] ?? 'ocean';
+        $siteTitle      = !empty($landingContent['site_title']) ? $landingContent['site_title'] : $yayasan->nama_yayasan;
+
+        // Palette Theme Mapping for Template Selection
+        $themeMap = [
+            'ceria' => [
+                'primary'      => '#EF9F27',
+                'primary_dark' => '#7A5310',
+                'accent'       => '#F0997B',
+                'dark'         => '#3D2804',
+                'surface'      => '#FDFBF7',
+                'hero_bg'      => 'linear-gradient(135deg, #7A5310 0%, #D4537E 60%, #EF9F27 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.22)',
+                'badge_text'   => '#FFFFFF',
+                'avatar_bg'    => 'linear-gradient(135deg, #EF9F27, #F0997B)',
+                'btn_cta'      => 'linear-gradient(135deg, #F0997B 0%, #D4537E 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#FFF7ED',
+                'pill_border'  => '#FFEDD5',
+                'footer_bg'    => '#3D2804',
+            ],
+            'trustworthy' => [
+                'primary'      => '#185FA5',
+                'primary_dark' => '#0B2545',
+                'accent'       => '#60A5FA',
+                'dark'         => '#0B2545',
+                'surface'      => '#F4F6F9',
+                'hero_bg'      => 'linear-gradient(135deg, #0B2545 0%, #134074 60%, #185FA5 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.14)',
+                'badge_text'   => '#93C5FD',
+                'avatar_bg'    => 'linear-gradient(135deg, #0B2545, #185FA5)',
+                'btn_cta'      => 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#F0F9FF',
+                'pill_border'  => '#E0F2FE',
+                'footer_bg'    => '#0B2545',
+            ],
+            'natural' => [
+                'primary'      => '#639922',
+                'primary_dark' => '#1C3309',
+                'accent'       => '#FAC775',
+                'dark'         => '#1C3309',
+                'surface'      => '#F6F3EC',
+                'hero_bg'      => 'linear-gradient(135deg, #1C3309 0%, #355312 60%, #4D7C0F 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.18)',
+                'badge_text'   => '#FEF08A',
+                'avatar_bg'    => 'linear-gradient(135deg, #355312, #639922)',
+                'btn_cta'      => 'linear-gradient(135deg, #D97706 0%, #B45309 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#F7FEE7',
+                'pill_border'  => '#ECFCCB',
+                'footer_bg'    => '#142606',
+            ],
+            'ocean' => [
+                'primary'      => '#1E40AF',
+                'primary_dark' => '#1E3A8A',
+                'accent'       => '#F59E0B',
+                'dark'         => '#0F172A',
+                'surface'      => '#F8FAFC',
+                'hero_bg'      => 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 60%, #1E40AF 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.14)',
+                'badge_text'   => '#FDE68A',
+                'avatar_bg'    => 'linear-gradient(135deg, #1E40AF, #3B82F6)',
+                'btn_cta'      => 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                'btn_cta_text' => '#0F172A',
+                'pill_bg'      => '#EFF6FF',
+                'pill_border'  => '#DBEAFE',
+                'footer_bg'    => '#0F172A',
+            ],
+        ];
+
+        $theme = $themeMap[$template] ?? $themeMap['ocean'];
 
         // Content bindings with fallbacks
         $heroTitle      = !empty($landingContent['hero_title']) ? $landingContent['hero_title'] : 'Membangun Generasi Cerdas, Mandiri & Berakhlak Mulia';
@@ -31,23 +92,43 @@
         if ($pengabdianTahun <= 0) $pengabdianTahun = 10;
     @endphp
 
+    <title>{{ $siteTitle }} — Membangun Generasi Cerdas & Berakhlak Mulia</title>
+    <meta name="description" content="Selamat datang di website resmi {{ $siteTitle }}. Temukan informasi cabang TK/PAUD, kurikulum unggulan, galeri kegiatan, dan pendaftaran PPDB online.">
+
+    {{-- Google Fonts --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    {{-- Bootstrap & Iconify --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js" defer></script>
+
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
 
         :root {
-            --primary:       #1E40AF;
-            --primary-dark:  #1E3A8A;
-            --accent:        #F59E0B;
-            --dark:          #0F172A;
-            --surface:       #F8FAFC;
+            --primary:       {{ $theme['primary'] }};
+            --primary-dark:  {{ $theme['primary_dark'] }};
+            --accent:        {{ $theme['accent'] }};
+            --dark:          {{ $theme['dark'] }};
+            --surface:       {{ $theme['surface'] }};
+            --hero-bg:       {{ $theme['hero_bg'] }};
+            --badge-bg:      {{ $theme['badge_bg'] }};
+            --badge-text:    {{ $theme['badge_text'] }};
+            --avatar-bg:     {{ $theme['avatar_bg'] }};
+            --btn-cta:       {{ $theme['btn_cta'] }};
+            --btn-cta-text:  {{ $theme['btn_cta_text'] }};
+            --pill-bg:       {{ $theme['pill_bg'] }};
+            --pill-border:   {{ $theme['pill_border'] }};
+            --footer-bg:     {{ $theme['footer_bg'] }};
             --card-radius:   20px;
             --card-bg:       #FFFFFF;
         }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #F8FAFC;
+            background-color: var(--surface);
             color: #1E293B;
             overflow-x: hidden;
         }
@@ -76,12 +157,12 @@
         .brand-avatar {
             width: 40px; height: 40px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #1E40AF, #3B82F6);
+            background: var(--avatar-bg);
             color: #fff;
             display: flex; align-items: center; justify-content: center;
             font-weight: 800;
             font-size: 16px;
-            box-shadow: 0 4px 12px rgba(30,64,175,0.25);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             overflow: hidden;
             flex-shrink: 0;
         }
@@ -91,7 +172,7 @@
         .nav-menu {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 16px;
             list-style: none;
             margin: 0;
             padding: 0;
@@ -99,36 +180,60 @@
         .nav-menu a {
             text-decoration: none;
             color: #475569;
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 600;
             transition: color 0.2s;
+            white-space: nowrap;
         }
         .nav-menu a:hover {
-            color: #1E40AF;
+            color: var(--primary);
         }
         .btn-nav-daftar {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-            color: #0F172A !important;
+            background: var(--btn-cta);
+            color: var(--btn-cta-text) !important;
             font-weight: 800;
-            font-size: 13.5px;
-            padding: 10px 22px;
+            font-size: 13px;
+            padding: 8px 18px;
             border-radius: 100px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 14px rgba(245,158,11,0.35);
+            gap: 6px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
             transition: all 0.25s;
             border: none;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
         }
         .btn-nav-daftar:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(245,158,11,0.45);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+        }
+        .btn-nav-dashboard {
+            background: #FFFFFF;
+            border: 1.5px solid var(--primary);
+            color: var(--primary) !important;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 7px 16px;
+            border-radius: 100px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+            transition: all 0.2s;
+        }
+        .btn-nav-dashboard:hover {
+            background: var(--primary);
+            color: #FFFFFF !important;
+            transform: translateY(-1px);
         }
 
         /* ── Hero Section (Focal Point Utama) ────────── */
         .hero-section {
-            background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 60%, #1E40AF 100%);
+            background: var(--hero-bg);
             padding: 75px 24px 70px;
             position: relative;
             overflow: hidden;
@@ -146,9 +251,9 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255,255,255,0.14);
+            background: var(--badge-bg);
             border: 1px solid rgba(255,255,255,0.22);
-            color: #FDE68A;
+            color: var(--badge-text);
             border-radius: 100px;
             padding: 7px 18px;
             font-size: 12.5px;
@@ -179,8 +284,8 @@
             margin-bottom: 40px;
         }
         .btn-cta-orange {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-            color: #0F172A !important;
+            background: var(--btn-cta);
+            color: var(--btn-cta-text) !important;
             font-weight: 800;
             font-size: 15px;
             padding: 14px 32px;
@@ -189,12 +294,12 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 8px 24px rgba(245,158,11,0.4);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
             transition: all 0.25s;
         }
         .btn-cta-orange:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(245,158,11,0.5);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
         }
         .btn-cta-outline {
             background: rgba(255,255,255,0.08);
@@ -266,7 +371,7 @@
         .stat-item .stat-num {
             font-size: 28px;
             font-weight: 800;
-            color: #1E40AF;
+            color: var(--primary);
             line-height: 1;
         }
         .stat-item .stat-label {
@@ -287,9 +392,9 @@
         }
         .section-pill-tag {
             display: inline-block;
-            background: #EFF6FF;
-            color: #1E40AF;
-            border: 1px solid #DBEAFE;
+            background: var(--pill-bg);
+            color: var(--primary);
+            border: 1px solid var(--pill-border);
             font-size: 11.5px;
             font-weight: 700;
             text-transform: uppercase;
@@ -323,7 +428,7 @@
         }
         .vision-card:hover {
             transform: translateY(-3px);
-            border-color: #93C5FD;
+            border-color: var(--primary);
         }
 
         /* ── School Branch Cards ────────────────────── */
@@ -340,12 +445,12 @@
         }
         .school-card-item:hover {
             transform: translateY(-5px);
-            border-color: #3B82F6;
-            box-shadow: 0 16px 36px rgba(30,64,175,0.08);
+            border-color: var(--primary);
+            box-shadow: 0 16px 36px rgba(0,0,0,0.08);
         }
         .school-card-banner {
             height: 140px;
-            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+            background: var(--avatar-bg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -360,7 +465,7 @@
             flex-grow: 1;
         }
         .btn-daftar-school {
-            background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%);
+            background: var(--avatar-bg);
             color: #fff !important;
             border: none;
             border-radius: 12px;
@@ -375,11 +480,11 @@
             gap: 6px;
             margin-top: auto;
             transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(30,64,175,0.25);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .btn-daftar-school:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(30,64,175,0.35);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
         }
 
         /* ── Gallery & Activities Grid (Wajib Ada) ───── */
@@ -399,7 +504,7 @@
         .gallery-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 14px 32px rgba(0,0,0,0.08);
-            border-color: #93C5FD;
+            border-color: var(--primary);
         }
         .gallery-img-wrapper {
             height: 220px;
@@ -457,9 +562,9 @@
             transition: all 0.2s;
         }
         .feature-item-card:hover {
-            border-color: #3B82F6;
+            border-color: var(--primary);
             transform: translateY(-3px);
-            box-shadow: 0 10px 24px rgba(30,64,175,0.06);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.06);
         }
 
         /* ── Testimonials ────────────────────────────── */
@@ -476,36 +581,47 @@
 
         /* ── CTA Banner ─────────────────────────────── */
         .cta-bottom-banner {
-            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+            background: var(--hero-bg);
             border-radius: 28px;
             padding: 56px 40px;
             color: #fff;
             text-align: center;
-            box-shadow: 0 16px 40px rgba(30,64,175,0.2);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.15);
             position: relative;
             overflow: hidden;
         }
 
         /* ── Footer ─────────────────────────────────── */
         .site-footer-custom {
-            background: #0F172A;
-            color: #94A3B8;
+            background: var(--footer-bg);
+            color: rgba(255,255,255,0.8);
             padding: 50px 24px 28px;
-            border-top: 1px solid #1E293B;
+            border-top: 1px solid rgba(255,255,255,0.12);
             font-size: 13.5px;
         }
 
+        @media (max-width: 1200px) {
+            .nav-menu { gap: 12px; }
+            .nav-menu a { font-size: 12.5px; }
+        }
         @media (max-width: 992px) {
             .nav-menu { display: none; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .hero-section { text-align: center; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .hero-section { text-align: center; padding: 50px 18px 60px; }
             .hero-subtitle { margin-left: auto; margin-right: auto; }
             .hero-buttons { justify-content: center; }
+            .brand-logo div div { display: none; }
         }
-        @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: 1fr; }
-            .top-nav { padding: 12px 18px; }
-            .cta-bottom-banner { padding: 36px 20px; }
+        @media (max-width: 576px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .stat-item .stat-num { font-size: 22px; }
+            .stat-item .stat-label { font-size: 11px; }
+            .top-nav { padding: 10px 14px; }
+            .cta-bottom-banner { padding: 32px 16px; }
+            .btn-nav-daftar, .btn-nav-dashboard { font-size: 11.5px; padding: 6px 12px; }
+            .brand-logo { font-size: 13.5px; gap: 8px; }
+            .brand-avatar { width: 32px; height: 32px; font-size: 13px; }
+            .section-padding { padding: 48px 16px; }
         }
     </style>
 </head>
@@ -519,12 +635,12 @@
                 @if($yayasan->logo_yayasan)
                     <img src="{{ asset('storage/' . $yayasan->logo_yayasan) }}" alt="Logo">
                 @else
-                    {{ strtoupper(substr($yayasan->nama_yayasan, 0, 2)) }}
+                    {{ strtoupper(substr($siteTitle, 0, 2)) }}
                 @endif
             </div>
             <div>
-                {{ $yayasan->nama_yayasan }}
-                <div style="font-size:11px; font-weight:600; color:#1E40AF; letter-spacing:0.02em;">LEMBAGA PENDIDIKAN ANAK USIA DINI</div>
+                {{ $siteTitle }}
+                <div style="font-size:11px; font-weight:600; color:var(--primary); letter-spacing:0.02em;">LEMBAGA PENDIDIKAN ANAK USIA DINI</div>
             </div>
         </a>
 
@@ -537,17 +653,66 @@
             <li><a href="#testimoni">Testimoni</a></li>
         </ul>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 flex-shrink-0" style="white-space: nowrap !important;">
             <a href="{{ route('yayasan.pendaftaran', $yayasan->kode_yayasan) }}" class="btn-nav-daftar">
                 <iconify-icon icon="solar:pen-new-square-bold" style="font-size:16px;"></iconify-icon>
                 Daftar PPDB Online
             </a>
-            <a href="/login" class="btn btn-sm btn-outline-secondary rounded-pill px-3 fw-bold d-none d-sm-inline-flex align-items-center gap-1">
-                <iconify-icon icon="solar:login-2-bold-duotone"></iconify-icon> Login
-            </a>
+            @auth
+                <a href="/dashboard" class="btn-nav-dashboard">
+                    <iconify-icon icon="solar:widget-6-bold-duotone" style="font-size:16px;"></iconify-icon> Dashboard
+                </a>
+            @else
+                <a href="{{ route('yayasan.login', $yayasan->kode_yayasan) }}" class="btn-nav-dashboard">
+                    <iconify-icon icon="solar:login-2-bold-duotone" style="font-size:16px;"></iconify-icon> Login
+                </a>
+            @endauth
+            <!-- Mobile Offcanvas Menu Toggler -->
+            <button class="btn border-0 text-dark d-lg-none p-1 ms-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNavMenu" aria-label="Toggle Navigation">
+                <iconify-icon icon="solar:hamburger-menu-bold" style="font-size: 26px; color: var(--primary);"></iconify-icon>
+            </button>
         </div>
     </div>
 </nav>
+
+<!-- ── Mobile Offcanvas Navigation Drawer ──────────── -->
+<div class="offcanvas offcanvas-end rounded-start-4" tabindex="-1" id="mobileNavMenu" aria-labelledby="mobileNavMenuLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title fw-bold text-dark d-flex align-items-center gap-2" id="mobileNavMenuLabel" style="font-size: 16px;">
+            <div class="brand-avatar" style="width:32px; height:32px; font-size:13px;">
+                {{ strtoupper(substr($siteTitle, 0, 2)) }}
+            </div>
+            <span>Menu Navigasi</span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body p-4">
+        <ul class="list-unstyled d-flex flex-column gap-3 mb-4 font-semibold" style="font-size: 14.5px;">
+            <li><a href="#hero" data-bs-dismiss="offcanvas" class="text-dark text-decoration-none d-flex align-items-center gap-2.5"><iconify-icon icon="solar:home-2-bold-duotone" style="color:var(--primary);" class="fs-5"></iconify-icon> Beranda</a></li>
+            <li><a href="#tentang" data-bs-dismiss="offcanvas" class="text-dark text-decoration-none d-flex align-items-center gap-2.5"><iconify-icon icon="solar:info-circle-bold-duotone" style="color:var(--primary);" class="fs-5"></iconify-icon> Tentang Kami</a></li>
+            <li><a href="#cabang" data-bs-dismiss="offcanvas" class="text-dark text-decoration-none d-flex align-items-center gap-2.5"><iconify-icon icon="solar:buildings-bold-duotone" style="color:var(--primary);" class="fs-5"></iconify-icon> Cabang TK / PAUD</a></li>
+            <li><a href="#galeri" data-bs-dismiss="offcanvas" class="text-dark text-decoration-none d-flex align-items-center gap-2.5"><iconify-icon icon="solar:gallery-bold-duotone" style="color:var(--primary);" class="fs-5"></iconify-icon> Galeri Kegiatan</a></li>
+            <li><a href="#keunggulan" data-bs-dismiss="offcanvas" class="text-dark text-decoration-none d-flex align-items-center gap-2.5"><iconify-icon icon="solar:star-bold-duotone" style="color:var(--primary);" class="fs-5"></iconify-icon> Keunggulan</a></li>
+            <li><a href="#testimoni" data-bs-dismiss="offcanvas" class="text-dark text-decoration-none d-flex align-items-center gap-2.5"><iconify-icon icon="solar:chat-round-like-bold-duotone" style="color:var(--primary);" class="fs-5"></iconify-icon> Testimoni</a></li>
+        </ul>
+        <hr class="my-3 opacity-25">
+        <div class="d-grid gap-2">
+            <a href="{{ route('yayasan.pendaftaran', $yayasan->kode_yayasan) }}" class="btn-nav-daftar justify-content-center py-2.5">
+                <iconify-icon icon="solar:pen-new-square-bold" style="font-size:16px;"></iconify-icon>
+                Daftar PPDB Online
+            </a>
+            @auth
+                <a href="/dashboard" class="btn-nav-dashboard justify-content-center py-2.5">
+                    <iconify-icon icon="solar:widget-6-bold-duotone" style="font-size:16px;"></iconify-icon> Dashboard Saya
+                </a>
+            @else
+                <a href="{{ route('yayasan.login', $yayasan->kode_yayasan) }}" class="btn-nav-dashboard justify-content-center py-2.5">
+                    <iconify-icon icon="solar:login-2-bold-duotone" style="font-size:16px;"></iconify-icon> Login Portal
+                </a>
+            @endauth
+        </div>
+    </div>
+</div>
 
 <!-- ── 1. Hero Section (Focal Point Utama) ────────── -->
 <section class="hero-section" id="hero">
@@ -579,7 +744,7 @@
                 <div class="hero-visual-card">
                     <!-- Foto Berkualitas Tinggi: Interaksi Guru & Anak Preschool -->
                     <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&auto=format&fit=crop&q=80" alt="Belajar Ceria di {{ $yayasan->nama_yayasan }}">
-                    
+
                     <div class="hero-visual-badge">
                         <div class="d-flex align-items-center justify-content-center rounded-circle bg-warning text-dark fw-bold" style="width:42px;height:42px;font-size:20px;flex-shrink:0;">
                             ✨
@@ -965,13 +1130,13 @@
     <div class="container">
         <div class="row g-4 mb-4">
             <div class="col-lg-6">
-                <h5 class="fw-bold text-white mb-2">{{ $yayasan->nama_yayasan }}</h5>
+                <h5 class="fw-bold text-white mb-2">{{ $siteTitle }}</h5>
                 <p class="text-white-50 small mb-3">Lembaga Pendidikan Anak Usia Dini (TK, PAUD, Kelompok Bermain) yang berdedikasi membangun masa depan cerah generasi bangsa.</p>
                 @if($alamatTampil)
-                <div class="small text-white-50 mb-2"><iconify-icon icon="solar:map-point-bold" class="text-primary me-1"></iconify-icon>{{ $alamatTampil }}</div>
+                <div class="small text-white-50 mb-2"><iconify-icon icon="solar:map-point-bold" style="color:var(--accent);" class="me-1"></iconify-icon>{{ $alamatTampil }}</div>
                 @endif
                 @if($yayasan->telepon)
-                <div class="small text-white-50"><iconify-icon icon="solar:phone-bold" class="text-primary me-1"></iconify-icon>{{ $yayasan->telepon }}</div>
+                <div class="small text-white-50"><iconify-icon icon="solar:phone-bold" style="color:var(--accent);" class="me-1"></iconify-icon>{{ $yayasan->telepon }}</div>
                 @endif
             </div>
 
@@ -981,14 +1146,18 @@
                     <li><a href="#tentang" class="text-white-50 text-decoration-none">Profil Yayasan</a></li>
                     <li><a href="#cabang" class="text-white-50 text-decoration-none">Cabang Sekolah</a></li>
                     <li><a href="#galeri" class="text-white-50 text-decoration-none">Galeri Kegiatan</a></li>
-                    <li><a href="{{ route('yayasan.pendaftaran', $yayasan->kode_yayasan) }}" class="text-warning text-decoration-none fw-bold">Daftar PPDB Online</a></li>
-                    <li><a href="/login" class="text-white-50 text-decoration-none">Login Portal Guru & Wali</a></li>
+                    <li><a href="{{ route('yayasan.pendaftaran', $yayasan->kode_yayasan) }}" style="color:var(--accent);" class="text-decoration-none fw-bold">Daftar PPDB Online</a></li>
+                    @auth
+                        <li><a href="/dashboard" style="color:var(--accent);" class="text-decoration-none fw-bold"><iconify-icon icon="solar:widget-6-bold-duotone" class="me-1"></iconify-icon>Kembali ke Dashboard</a></li>
+                    @else
+                        <li><a href="{{ route('yayasan.login', $yayasan->kode_yayasan) }}" class="text-white-50 text-decoration-none">Login Portal Guru & Wali</a></li>
+                    @endauth
                 </ul>
             </div>
         </div>
 
-        <div class="border-top pt-4 text-center text-white-50 small" style="border-color:rgba(255,255,255,0.1) !important;">
-            © {{ date('Y') }} {{ $yayasan->nama_yayasan }}. Didukung oleh <a href="/" class="text-primary text-decoration-none fw-bold">Kiddy School ERP</a>.
+        <div class="border-top pt-4 text-center text-white-50 small" style="border-color:rgba(255,255,255,0.12) !important;">
+            © {{ date('Y') }} {{ $siteTitle }}. Didukung oleh <a href="/" style="color:var(--accent);" class="text-decoration-none fw-bold">Kiddy School ERP</a>.
         </div>
     </div>
 </footer>

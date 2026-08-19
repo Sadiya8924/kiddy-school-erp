@@ -31,81 +31,44 @@ export default function LoginPage({ onNavigate }: Props) {
     setError('')
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+    const formEl = document.createElement('form')
+    formEl.method = 'POST'
+    formEl.action = '/login'
 
-    try {
-      const formData = new FormData()
-      formData.append('_token', csrfToken)
-      formData.append('email', form.email)
-      formData.append('password', form.password)
-      if (form.remember) formData.append('remember', '1')
+    const csrfInput = document.createElement('input')
+    csrfInput.type = 'hidden'
+    csrfInput.name = '_token'
+    csrfInput.value = csrfToken
+    formEl.appendChild(csrfInput)
 
-      const res = await fetch('/login', {
-        method: 'POST',
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-          'Accept': 'application/json, text/html, */*'
-        },
-        body: formData
-      })
+    const emailInput = document.createElement('input')
+    emailInput.type = 'hidden'
+    emailInput.name = 'email'
+    emailInput.value = form.email
+    formEl.appendChild(emailInput)
 
-      if (res.redirected) {
-        if (res.url.includes('/dashboard') || res.url.includes('/superadmin') || res.url.includes('/owner')) {
-          window.location.href = res.url
-          return
-        }
-        // If redirected back to login page, credentials failed
-        setError('Email atau password salah. Silakan periksa kembali.')
-        return
-      }
+    const passInput = document.createElement('input')
+    passInput.type = 'hidden'
+    passInput.name = 'password'
+    passInput.value = form.password
+    formEl.appendChild(passInput)
 
-      if (res.ok && (res.url.includes('/dashboard') || res.url.includes('/superadmin') || res.url.includes('/owner'))) {
-        window.location.href = res.url
-        return
-      }
-
-      // If text contains error message or status is unauthorized
-      const text = await res.text()
-      if (text.includes('Email atau password salah') || res.status === 422 || res.status === 401) {
-        setError('Email atau password salah. Silakan periksa kembali.')
-      } else {
-        // Fallback: programmatic form submit if backend handles standard redirect
-        const formEl = document.createElement('form')
-        formEl.method = 'POST'
-        formEl.action = '/login'
-
-        const csrfInput = document.createElement('input')
-        csrfInput.type = 'hidden'
-        csrfInput.name = '_token'
-        csrfInput.value = csrfToken
-        formEl.appendChild(csrfInput)
-
-        const emailInput = document.createElement('input')
-        emailInput.type = 'hidden'
-        emailInput.name = 'email'
-        emailInput.value = form.email
-        formEl.appendChild(emailInput)
-
-        const passInput = document.createElement('input')
-        passInput.type = 'hidden'
-        passInput.name = 'password'
-        passInput.value = form.password
-        formEl.appendChild(passInput)
-
-        document.body.appendChild(formEl)
-        formEl.submit()
-        return
-      }
-    } catch (err) {
-      setError('Terjadi kesalahan koneksi. Silakan coba lagi.')
-    } finally {
-      setLoading(false)
+    if (form.remember) {
+      const remInput = document.createElement('input')
+      remInput.type = 'hidden'
+      remInput.name = 'remember'
+      remInput.value = '1'
+      formEl.appendChild(remInput)
     }
+
+    document.body.appendChild(formEl)
+    formEl.submit()
   }
 
   return (

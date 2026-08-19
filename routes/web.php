@@ -62,6 +62,8 @@ Route::match(['get', 'post'], '/api/check-parent-email', [SiswaController::class
 Route::get('/y/{kode_yayasan}', [LandingYayasanController::class, 'show'])->name('yayasan.landing');
 // Halaman khusus pendaftaran PPDB siswa & registrasi wali murid per yayasan
 Route::get('/y/{kode_yayasan}/daftar', [LandingYayasanController::class, 'pendaftaranPage'])->name('yayasan.pendaftaran');
+// Halaman login khusus portal per yayasan dengan tema kustom
+Route::get('/y/{kode_yayasan}/login', [LandingYayasanController::class, 'loginPage'])->name('yayasan.login');
 // Daftar akun wali murid terikat ke yayasan tertentu
 Route::post('/y/{kode_yayasan}/register', [LandingYayasanController::class, 'register'])->name('yayasan.register')->middleware('throttle:5,1');
 

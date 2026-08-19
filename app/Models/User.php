@@ -58,4 +58,32 @@ class User extends Authenticatable
                     ->withPivot('peran', 'is_wali_utama')
                     ->withTimestamps();
     }
+
+    /**
+     * Dapatkan ID Yayasan pemilik pengguna ini.
+     */
+    public function getUserYayasanId(): ?int
+    {
+        if ($this->yayasan_id) {
+            return (int) $this->yayasan_id;
+        }
+
+        if ($this->school_id && $this->school) {
+            return (int) $this->school->yayasan_id;
+        }
+
+        if ($this->role === 'wali_murid') {
+            $siswa = $this->children()->first() 
+                ?? $this->allChildren()->first() 
+                ?? Siswa::where('email', $this->email)->first() 
+                ?? Siswa::where('user_id', $this->id)->first();
+
+            if ($siswa) {
+                if ($siswa->yayasan_id) return (int) $siswa->yayasan_id;
+                if ($siswa->school && $siswa->school->yayasan_id) return (int) $siswa->school->yayasan_id;
+            }
+        }
+
+        return null;
+    }
 }

@@ -69,6 +69,52 @@
           @endif
 
           {{-- Alert Banners --}}
+          @if(session('wrong_yayasan'))
+            @php $wy = session('wrong_yayasan'); @endphp
+            <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: #FEF2F2; border: 1.5px solid #FCA5A5 !important; border-left: 5px solid #EF4444 !important;">
+                <div class="card-body p-3.5">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <iconify-icon icon="solar:shield-warning-bold-duotone" class="fs-4"></iconify-icon>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-danger mb-1" style="font-size: 14px;">🚫 Portal Yayasan Tidak Sesuai!</h6>
+                            <p class="text-dark small mb-2.5" style="font-size: 12.5px; line-height: 1.55;">
+                                Akun <strong class="text-danger">{{ $wy['user_email'] }}</strong> terdaftar di <strong class="text-primary">{{ $wy['correct_yayasan_name'] }}</strong>, bukan di <strong>{{ $wy['portal_yayasan_name'] }}</strong>.
+                            </p>
+                            <a href="{{ $wy['correct_yayasan_url'] }}" class="btn btn-danger btn-sm rounded-pill px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-2 shadow-xs" style="font-size: 12px;">
+                                <iconify-icon icon="solar:arrow-right-bold"></iconify-icon>
+                                Pindah ke Portal {{ $wy['correct_yayasan_name'] }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Portal Yayasan Tidak Sesuai!',
+                            html: `Akun <b>{{ $wy['user_email'] }}</b> terdaftar di <b>{{ $wy['correct_yayasan_name'] }}</b>.<br><br>Silakan masuk melalui portal yayasan Anda.`,
+                            confirmButtonText: '➡️ Pindah ke Portal {{ $wy['correct_yayasan_name'] }}',
+                            confirmButtonColor: '#EF4444',
+                            showCancelButton: true,
+                            cancelButtonText: 'Tutup',
+                            customClass: {
+                                popup: 'rounded-4'
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "{{ $wy['correct_yayasan_url'] }}";
+                            }
+                        });
+                    }
+                });
+            </script>
+          @endif
+
           @if(session('error'))
             <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
               <div class="d-flex align-items-center gap-2">

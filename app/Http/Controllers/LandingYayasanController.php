@@ -68,6 +68,23 @@ class LandingYayasanController extends Controller
     }
 
     /**
+     * GET /y/{kode_yayasan}/login
+     * Halaman login khusus portal per yayasan dengan tema & branding mengikuti template landing page yayasan.
+     */
+    public function loginPage(Request $request, string $kode_yayasan)
+    {
+        if (Auth::check()) {
+            return redirect('/dashboard');
+        }
+
+        $yayasan = Yayasan::where('kode_yayasan', $kode_yayasan)
+            ->where('status', 'aktif')
+            ->firstOrFail();
+
+        return view('landing_yayasan_login', compact('yayasan'));
+    }
+
+    /**
      * POST /y/{kode_yayasan}/register
      * Daftar akun wali murid baru yang terikat ke yayasan ini.
      */

@@ -66,12 +66,12 @@ export default function App() {
 
   useEffect(() => {
     const titles: Record<Page, string> = {
-      home: 'Beranda — Yayasan Al-Hikmah 2',
-      about: 'Tentang Kami — Yayasan Al-Hikmah 2',
-      registration: 'Pendaftaran — Yayasan Al-Hikmah 2',
-      contact: 'Hubungi Kami — Yayasan Al-Hikmah 2',
-      login: 'Login Portal — Yayasan Al-Hikmah 2',
-      register: 'Daftar Akun — Yayasan Al-Hikmah 2',
+      home: 'Kiddy School ERP — Platform Manajemen Yayasan TK & PAUD',
+      about: 'Tentang Kami — Kiddy School ERP',
+      registration: 'Pendaftaran Yayasan — Kiddy School ERP',
+      contact: 'Hubungi Kami — Kiddy School ERP',
+      login: 'Login Owner & Platform — Kiddy School ERP',
+      register: 'Daftar Yayasan Baru — Kiddy School ERP',
     }
     document.title = titles[currentPage]
   }, [currentPage])

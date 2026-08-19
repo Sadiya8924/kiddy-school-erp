@@ -1,11 +1,18 @@
 # 🔑 Dokumentasi Akun & Credentials Testing - Kiddy School ERP
 
-> **Catatan Penting Security:**  
-> Password default untuk **SELURUH AKUN** di bawah ini adalah: **`password`**
+> **Catatan Penting Security & Multi-Tenant Portal Routing:**  
+> 1. **Password Default Seluruh Akun:** `password`  
+> 2. **URL Portal Login Resmi Terisolasi:**  
+>    * 🔑 **Owner SaaS & Platform Admin**: `http://127.0.0.1:8000/login` *(Khusus Pengelola Platform)*  
+>    * 🏛️ **Yayasan Pendidikan Al-Hikmah 2**: `http://127.0.0.1:8000/y/YAH2/login`  
+>    * 🏛️ **Yayasan Bina Insani Ceria**: `http://127.0.0.1:8000/y/YBIC/login`  
+> 3. **Proteksi Login Lintas-Portal (Cross-Tenant Blocker):**  
+>    Pengguna yayasan yang mencoba login di URL `/login` utama atau di portal yayasan lain akan **ditolak secara aman**, dan disajikan pop-up **SweetAlert2** interaktif dengan tombol *direct link* 1-klik menuju portal resmi yayasannya.
 
 ---
 
 ## 📌 1. Akun Level Platform / Owner (Lintas Tenant)
+* **URL Login Resmi**: `http://127.0.0.1:8000/login`
 
 | Role | Nama Pengguna | Email Login | Hak Akses & Deskripsi |
 | :--- | :--- | :--- | :--- |
@@ -14,6 +21,9 @@
 ---
 
 ## 🏛️ 2. Tenant 1: Yayasan Pendidikan Al-Hikmah 2
+* **URL Portal Login Resmi**: `http://127.0.0.1:8000/y/YAH2/login` (atau `/y/YYS-001/login`)
+* **URL Landing Page Yayasan**: `http://127.0.0.1:8000/y/YAH2`
+* **Tema Visual**: `Natural Sage` (Dapat disesuaikan di /superadmin/landing-page)
 
 ### A. Level Yayasan (Pusat)
 | Role | Nama Pengguna | Email Login | Hak Akses & Deskripsi |
@@ -55,6 +65,9 @@
 ---
 
 ## 🏛️ 3. Tenant 2: Yayasan Bina Insani Ceria
+* **URL Portal Login Resmi**: `http://127.0.0.1:8000/y/YBIC/login` (atau `/y/YYS-002/login`)
+* **URL Landing Page Yayasan**: `http://127.0.0.1:8000/y/YBIC`
+* **Tema Visual**: `Ceria Playful` (Dapat disesuaikan di /superadmin/landing-page)
 
 ### A. Level Yayasan (Pusat)
 | Role | Nama Pengguna | Email Login | Hak Akses & Deskripsi |

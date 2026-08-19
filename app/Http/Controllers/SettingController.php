@@ -77,6 +77,11 @@ class SettingController extends Controller
         $yayasan = Yayasan::findOrFail($user->yayasan_id);
         $content = $yayasan->landing_content ?? [];
 
+        // Sync main yayasan name column if site_title is updated
+        if ($request->filled('site_title')) {
+            $yayasan->nama_yayasan = $request->site_title;
+        }
+
         // Save all text inputs
         $inputs = $request->except('_token', '_method', 'yayasan_image', 'tk_image', 'paud_image', 'site_logo', 'hero_image');
         foreach ($inputs as $key => $val) {

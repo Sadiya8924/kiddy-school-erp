@@ -138,6 +138,25 @@
             box-shadow: 0 8px 22px rgba(37,99,235,0.45);
             color: #fff;
         }
+        .btn-header-login {
+            background: #F8FAFC;
+            border: 1.5px solid #CBD5E1;
+            color: #475569;
+            font-weight: 700;
+            font-size: 13.5px;
+            padding: 9px 20px;
+            border-radius: 100px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-header-login:hover {
+            border-color: #2563EB;
+            color: #2563EB;
+            background: #EFF6FF;
+        }
 
         /* ── Hero Section ───────────────────────────── */
         .hero-section {
@@ -757,11 +776,24 @@
         <li><a href="#faq">FAQ</a></li>
     </ul>
 
-    <!-- Header CTA Button -> Navigates to dedicated registration page -->
-    <a href="{{ route('yayasan.daftar') }}" class="btn-header-cta">
-        <iconify-icon icon="solar:rocket-bold-duotone" style="font-size:18px;"></iconify-icon>
-        {{ $headerCta }}
-    </a>
+    <!-- Header Actions -> Login Owner/Platform & Daftar Yayasan Baru -->
+    <div class="d-flex align-items-center gap-2">
+        @auth
+            <a href="/dashboard" class="btn-header-login">
+                <iconify-icon icon="solar:widget-6-bold-duotone" style="font-size:18px;"></iconify-icon>
+                Kembali ke Dashboard
+            </a>
+        @else
+            <a href="/login" class="btn-header-login">
+                <iconify-icon icon="solar:login-2-bold-duotone" style="font-size:18px;"></iconify-icon>
+                Login Owner / Platform
+            </a>
+        @endauth
+        <a href="{{ route('yayasan.daftar') }}" class="btn-header-cta">
+            <iconify-icon icon="solar:rocket-bold-duotone" style="font-size:18px;"></iconify-icon>
+            {{ $headerCta }}
+        </a>
+    </div>
 </nav>
 
 <!-- Hero Section -->

@@ -45,38 +45,44 @@ Halaman promosi platform untuk menarik calon yayasan baru.
 ```
 
 ### Landing Page Yayasan — `/y/{kode_yayasan}`
-Halaman publik masing-masing yayasan (contoh: `/y/YYS-001`).
+Halaman publik khusus masing-masing yayasan (contoh: `/y/YAH2` atau `/y/YBIC`).
 ```
-[/y/YYS-001]
-  ├── Lihat profil yayasan, visi misi, unit pendidikan
-  ├── Tombol "Daftar PPDB" (per cabang) → /y/YYS-001/daftar
-  └── Tombol "Login Portal"             → /y/YYS-001/daftar (tab login)
-```
-
-### Halaman Daftar Akun & PPDB per Yayasan — `/y/{kode_yayasan}/daftar`
-Halaman dengan dua tab dalam satu halaman (tanpa pindah URL).
-```
-[/y/YYS-001/daftar]
-  ├── [Tab: Buat Akun Baru] ← Default tab
-  │   ├── Isi nama, email, kata sandi, konfirmasi sandi
-  │   ├── Klik "Buat Akun Wali Murid Sekarang"
-  │   └── → Langsung login otomatis → /dashboard
-  │
-  └── [Tab: Masuk Portal] ← Klik link "Sudah punya akun? Masuk"
-      ├── Isi email & kata sandi
-      ├── Centang "Ingat Saya" (opsional)
-      └── Klik "Masuk ke Portal Sekarang" → /dashboard
+[/y/{kode_yayasan}]
+  ├── Tampilan Visual Dinamis 4 Tema (Natural Sage, Ceria Playful, Trustworthy Navy, Modern Ocean)
+  ├── Sinkronisasi Nama Publik Yayasan (site_title) di Title, Header, Footer & Metadata
+  ├── Navbar Header Responsif (dengan Offcanvas Drawer di Mobile/Tablet <= 992px)
+  ├── Tombol "Daftar PPDB Online"   → /y/{kode_yayasan}/daftar
+  └── Tombol "Dashboard / Login"   → /y/{kode_yayasan}/login (jika belum login) atau /dashboard (jika sudah login)
 ```
 
-### Halaman Login Staf — `/login`
+### Portal Login Resmi per Yayasan — `/y/{kode_yayasan}/login`
+Halaman login terisolasi khusus untuk pengguna yayasan terkait (Super Admin, Admin TK, Kepala Sekolah, Guru, & Wali Murid).
+```
+[/y/{kode_yayasan}/login]
+  ├── Layout Split-Screen Modern (Fitur Unggulan Kiri & Form Login Kanan)
+  ├── Skema Warna Terikat Tema Yayasan (Natural, Ceria, Trustworthy, Ocean)
+  ├── Tombol Toggle Intip Password & Checkbox "Ingat Saya" (remember_token)
+  ├── Grid Demo Quick-Fill Account untuk Kemudahan Pengujian
+  └── Sistem Validasi Cross-Tenant Blocker (Mencegah Login Pengguna Yayasan Lain)
+```
+
+### Halaman Pendaftaran PPDB per Yayasan — `/y/{kode_yayasan}/daftar`
+Formulir registrasi calon wali murid baru per yayasan.
+```
+[/y/{kode_yayasan}/daftar]
+  ├── Pilihan Cabang Sekolah TK / PAUD
+  ├── Form Data Wali Murid & Calon Siswa
+  └── Tombol Navigasi Topbar "Login Portal" → /y/{kode_yayasan}/login
+```
+
+### Portal Login Khusus Owner Platform SaaS — `/login`
+Halaman login eksklusif untuk jajaran **Owner SaaS & Platform Admin**.
 ```
 [/login]
-  ├── Isi email & kata sandi
-  ├── Klik "Login" → redirect sesuai role:
-  │   ├── Owner       → /superadmin/dashboard (bisa switch ke owner view)
-  │   ├── Super Admin → /superadmin/dashboard
-  │   └── Admin/Guru/Kepsek/Wali Murid → /dashboard
-  └── Link "Lupa Password" → /forgot-password
+  ├── Branding Resmi Platform SaaS: "Kiddy School ERP — Platform Management"
+  ├── Restriksi Akses: HANYA DIBUKA UNTUK OWNER / PLATFORM ADMIN (owner@demo.com)
+  └── Pengguna Yayasan yang mencoba login di URL ini akan DIBLOKIR dan diarahkan kembali 
+      ke Portal Yayasan mereka melalui SweetAlert2 Warning dengan 1-klik Direct Link.
 ```
 
 ---

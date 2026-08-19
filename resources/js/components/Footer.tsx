@@ -9,7 +9,7 @@ interface FooterProps {
 export default function Footer({ onNavigate }: FooterProps) {
   const settings = (typeof window !== 'undefined' && (window as any).APP_SETTINGS) || {}
 
-  const siteTitle = settings.site_title || 'Yayasan Al-Hikmah 2'
+  const siteTitle = settings.saas_platform_name || 'Kiddy School ERP'
   const siteLogo = settings.site_logo
   const footerAddress = settings.footer_address || 'Jl. KH. Wahid Hasyim No. 45, Sukun, Malang 65117'
   const footerPhone = settings.footer_phone || '(0341) 567-890'

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import type { ReactElement } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useReducedMotion } from '../hooks/useReducedMotion'
@@ -23,12 +24,12 @@ const GAL6 = `${PH}/photo-1613896527026-f195d5c818ed?w=360&h=190&fit=crop&auto=f
 
 // ── Data ───────────────────────────────────────────────────────────────────────
 const FEATURES = [
-  { icon: '👩‍🏫', color: '#2563EB', bg: '#EFF6FF', title: 'Guru Profesional', desc: 'Tenaga pendidik bersertifikat dengan pengalaman dan dedikasi tinggi.' },
-  { icon: '📖', color: '#10B981', bg: '#ECFDF5', title: 'Kurikulum Islami', desc: 'Kurikulum terintegrasi nilai Islam, Tahfidz, dan pendidikan karakter.' },
-  { icon: '🏟️', color: '#F59E0B', bg: '#FFFBEB', title: 'Fasilitas Lengkap', desc: 'Ruang kelas nyaman, perpustakaan, lab sains, dan taman bermain.' },
-  { icon: '❤️', color: '#EF4444', bg: '#FFF1F2', title: 'Pengembangan Karakter', desc: 'Program akhlak mulia, kreativitas, dan kecerdasan emosional anak.' },
-  { icon: '📿', color: '#8B5CF6', bg: '#F5F3FF', title: 'Tahfidz Qur\'an', desc: 'Program hafalan Al-Quran dengan metode yang menyenangkan dan efektif.' },
-  { icon: '⚽', color: '#F97316', bg: '#FFF7ED', title: 'Ekstrakurikuler', desc: 'Seni, olahraga, dan kegiatan kreatif untuk mengembangkan bakat anak.' },
+  { icon: 'teacher', color: '#2563EB', bg: '#EFF6FF', title: 'Guru Profesional', desc: 'Tenaga pendidik bersertifikat dengan pengalaman dan dedikasi tinggi.' },
+  { icon: 'book', color: '#10B981', bg: '#ECFDF5', title: 'Kurikulum Islami', desc: 'Kurikulum terintegrasi nilai Islam, Tahfidz, dan pendidikan karakter.' },
+  { icon: 'building', color: '#F59E0B', bg: '#FFFBEB', title: 'Fasilitas Lengkap', desc: 'Ruang kelas nyaman, perpustakaan, lab sains, dan taman bermain.' },
+  { icon: 'heart', color: '#EF4444', bg: '#FFF1F2', title: 'Pengembangan Karakter', desc: 'Program akhlak mulia, kreativitas, dan kecerdasan emosional anak.' },
+  { icon: 'star', color: '#8B5CF6', bg: '#F5F3FF', title: 'Tahfidz Qur\'an', desc: 'Program hafalan Al-Quran dengan metode yang menyenangkan dan efektif.' },
+  { icon: 'trophy', color: '#F97316', bg: '#FFF7ED', title: 'Ekstrakurikuler', desc: 'Seni, olahraga, dan kegiatan kreatif untuk mengembangkan bakat anak.' },
 ]
 
 const NEWS = [
@@ -38,12 +39,12 @@ const NEWS = [
 ]
 
 const PARTNERS = [
-  { name: 'Kemendikbud RI', type: 'Pemerintah', icon: '🏛️' },
-  { name: 'Dinas Pendidikan Kota Malang', type: 'Pemerintah Daerah', icon: '🏫' },
-  { name: 'MUI Kota Malang', type: 'Keagamaan', icon: '🕌' },
-  { name: 'LP Ma\'arif NU', type: 'Pendidikan Islam', icon: '📚' },
-  { name: 'Yayasan Pendidikan Islam', type: 'Yayasan', icon: '🤝' },
-  { name: 'BAN PAUD & PNF', type: 'Akreditasi', icon: '⭐' },
+  { name: 'Kemendikbud RI', type: 'Pemerintah', icon: 'landmark' },
+  { name: 'Dinas Pendidikan Kota Malang', type: 'Pemerintah Daerah', icon: 'academic' },
+  { name: 'MUI Kota Malang', type: 'Keagamaan', icon: 'moon' },
+  { name: 'LP Ma\'arif NU', type: 'Pendidikan Islam', icon: 'books' },
+  { name: 'Yayasan Pendidikan Islam', type: 'Yayasan', icon: 'handshake' },
+  { name: 'BAN PAUD & PNF', type: 'Akreditasi', icon: 'award' },
 ]
 
 const TESTIS = [
@@ -683,7 +684,8 @@ export default function HomePage({ onNavigate }: Props) {
               <div style={{ marginBottom: 18 }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, padding: '9px 20px', borderRadius: 999, background: theme.heroBadgeBg, border: `1px solid ${theme.heroBadgeBorder}`, backdropFilter: 'blur(10px)' }}>
                   <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#4ADE80', boxShadow: '0 0 8px #4ADE80', flexShrink: 0, display: 'inline-block' }} />
-                  <span style={{ fontSize: 14, fontWeight: 700, color: '#93C5FD', letterSpacing: '0.02em' }}>📢 Pendaftaran & Inden Dibuka — TA 2027/2028</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#93C5FD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><path d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: '#93C5FD', letterSpacing: '0.02em' }}>Pendaftaran &amp; Inden Dibuka — TA 2027/2028</span>
                 </div>
               </div>
 
@@ -851,18 +853,19 @@ function ProfilSekolahSection() {
       {/* Tabs */}
       <div className="flex gap-2 border-b mb-4 pb-2" style={{ borderColor: '#E2E8F0' }}>
         {[
-          { id: 'yayasan', label: '🏠 Profil Yayasan' },
-          { id: 'tk', label: '🎒 Program TK' },
-          { id: 'paud', label: '🎨 Program PAUD' },
+          { id: 'yayasan', label: 'Profil Yayasan', iconPath: 'M3 12l9-9 9 9M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9' },
+          { id: 'tk', label: 'Program TK', iconPath: 'M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z' },
+          { id: 'paud', label: 'Program PAUD', iconPath: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' },
         ].map((t) => (
           <button key={t.id} onClick={() => setTab(t.id as any)}
-            className="px-4 py-2 text-xs sm:text-sm rounded-xl font-600 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 text-xs sm:text-sm rounded-xl font-600 transition-all cursor-pointer"
             style={{
               fontWeight: tab === t.id ? 700 : 500,
               color: tab === t.id ? '#2563EB' : '#64748B',
               background: tab === t.id ? '#EFF6FF' : 'transparent',
               borderBottom: tab === t.id ? '2px solid #2563EB' : 'none',
             }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={t.iconPath} /></svg>
             {t.label}
           </button>
         ))}
@@ -894,11 +897,17 @@ function ProfilSekolahSection() {
               dangerouslySetInnerHTML={{ __html: yayasanDesc }} />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
-                <h5 className="font-700 text-blue-700 text-[11px] uppercase mb-1">🎯 Visi</h5>
+                <h5 className="font-700 text-blue-700 text-[11px] uppercase mb-1 flex items-center gap-1">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                  Visi
+                </h5>
                 <div className="text-xs text-gray-700" dangerouslySetInnerHTML={{ __html: yayasanVisi }} />
               </div>
               <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
-                <h5 className="font-700 text-blue-700 text-[11px] uppercase mb-1">🚀 Misi</h5>
+                <h5 className="font-700 text-blue-700 text-[11px] uppercase mb-1 flex items-center gap-1">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" /></svg>
+                  Misi
+                </h5>
                 <div className="text-xs text-gray-700" dangerouslySetInnerHTML={{ __html: yayasanMisi }} />
               </div>
             </div>
@@ -906,8 +915,9 @@ function ProfilSekolahSection() {
               <h5 className="font-700 text-gray-900 text-xs mb-1.5">Program Unggulan</h5>
               <div className="flex flex-wrap gap-2">
                 {['Tahfidz Quran', 'Bahasa Arab & Inggris', 'Seni & Kreativitas', 'Pendidikan Karakter'].map((item) => (
-                  <span key={item} className="px-2.5 py-0.5 rounded-full text-xs font-600 bg-blue-50 text-blue-700 border border-blue-200">
-                    ⭐ {item}
+                  <span key={item} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-600 bg-blue-50 text-blue-700 border border-blue-200">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    {item}
                   </span>
                 ))}
               </div>
@@ -940,7 +950,10 @@ function ProfilSekolahSection() {
             <div className="text-xs sm:text-sm text-gray-600 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: tkDesc }} />
             <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
-              <h5 className="font-700 text-gray-900 text-xs mb-1.5">📋 Fokus Pembelajaran</h5>
+              <h5 className="font-700 text-gray-900 text-xs mb-1.5 flex items-center gap-1">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+                Fokus Pembelajaran
+              </h5>
               <ul className="text-xs text-gray-700 space-y-1 list-disc list-inside">
                 <li>Pengenalan dasar membaca, menulis, dan berhitung (Calistung) tanpa membebani anak.</li>
                 <li>Penanaman nilai-nilai akhlak, adab makan, dan rutinitas ibadah harian.</li>
@@ -951,8 +964,9 @@ function ProfilSekolahSection() {
               <h5 className="font-700 text-gray-900 text-xs mb-1.5">Aktivitas Penunjang</h5>
               <div className="flex flex-wrap gap-2">
                 {['Renang Ceria', 'Field Trip Edutainment', 'Cek Kesehatan Rutin'].map((item) => (
-                  <span key={item} className="px-2.5 py-0.5 rounded-full text-xs font-600 bg-blue-50 text-blue-700 border border-blue-200">
-                    ⭐ {item}
+                  <span key={item} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-600 bg-blue-50 text-blue-700 border border-blue-200">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    {item}
                   </span>
                 ))}
               </div>
@@ -985,7 +999,10 @@ function ProfilSekolahSection() {
             <div className="text-xs sm:text-sm text-gray-600 leading-relaxed"
               dangerouslySetInnerHTML={{ __html: paudDesc }} />
             <div className="p-3 rounded-xl bg-gray-50 border border-gray-200">
-              <h5 className="font-700 text-gray-900 text-xs mb-1.5">🎯 Target Perkembangan</h5>
+              <h5 className="font-700 text-gray-900 text-xs mb-1.5 flex items-center gap-1">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /></svg>
+                Target Perkembangan
+              </h5>
               <ul className="text-xs text-gray-700 space-y-1 list-disc list-inside">
                 <li>Stimulasi komunikasi dan bahasa untuk memperkaya kosakata harian anak.</li>
                 <li>Latihan kemandirian dasar seperti mencuci tangan, merapikan mainan, dan toilet training.</li>
@@ -996,8 +1013,9 @@ function ProfilSekolahSection() {
               <h5 className="font-700 text-gray-900 text-xs mb-1.5">Metode Stimulasi</h5>
               <div className="flex flex-wrap gap-2">
                 {['Bernyanyi & Menari', 'Story Telling', 'Sensoric Play'].map((item) => (
-                  <span key={item} className="px-2.5 py-0.5 rounded-full text-xs font-600 bg-blue-50 text-blue-700 border border-blue-200">
-                    ⭐ {item}
+                  <span key={item} className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-600 bg-blue-50 text-blue-700 border border-blue-200">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    {item}
                   </span>
                 ))}
               </div>
@@ -1104,13 +1122,33 @@ function InfoKuotaSection({ onNavigate }: { onNavigate: (p: Page) => void }) {
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
+const FEATURE_ICONS: Record<string, ReactElement> = {
+  teacher: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87" /><path d="M16 3.13a4 4 0 010 7.75" /></svg>,
+  book: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" /><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" /></svg>,
+  building: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>,
+  heart: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" /></svg>,
+  star: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>,
+  trophy: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="8 21 12 21 16 21" /><line x1="12" y1="17" x2="12" y2="21" /><path d="M7 4H4a2 2 0 00-2 2v1c0 3.314 2.686 6 6 6" /><path d="M17 4h3a2 2 0 012 2v1c0 3.314-2.686 6-6 6" /><rect x="7" y="2" width="10" height="14" rx="2" /></svg>,
+}
+
+const PARTNER_ICONS: Record<string, ReactElement> = {
+  landmark: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="22" x2="21" y2="22" /><line x1="6" y1="18" x2="6" y2="11" /><line x1="10" y1="18" x2="10" y2="11" /><line x1="14" y1="18" x2="14" y2="11" /><line x1="18" y1="18" x2="18" y2="11" /><polygon points="12 2 20 7 4 7" /></svg>,
+  academic: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>,
+  moon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>,
+  books: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" /></svg>,
+  handshake: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 11l-5-5-5 5" /><path d="M12 6v12" /><path d="M3 17l3-3 3 3" /><path d="M18 17l3-3-3-3" /></svg>,
+  award: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6" /><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" /></svg>,
+}
+
 function FeatureCard({ f, reduced }: { f: typeof FEATURES[0]; reduced: boolean }) {
   const ref = useRef<HTMLDivElement>(null)
   return (
     <div ref={ref} className="p-5 rounded-2xl border bg-white cursor-default" style={{ borderColor: '#F1F5F9', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
       onMouseEnter={() => { if (!reduced && ref.current) gsap.to(ref.current, { y: -6, boxShadow: '0 16px 40px rgba(0,0,0,0.1)', duration: 0.25, ease: 'power2.out' }) }}
       onMouseLeave={() => { if (!reduced && ref.current) gsap.to(ref.current, { y: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.04)', duration: 0.25, ease: 'power2.out' }) }}>
-      <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-3" style={{ background: f.bg }}>{f.icon}</div>
+      <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3" style={{ background: f.bg, color: f.color }}>
+        {FEATURE_ICONS[f.icon] ?? null}
+      </div>
       <h3 className="text-sm mb-1.5" style={{ fontWeight: 700, color: '#0F172A' }}>{f.title}</h3>
       <p className="text-xs leading-relaxed" style={{ color: '#64748B' }}>{f.desc}</p>
     </div>
@@ -1157,9 +1195,17 @@ function StatCard({ icon, val, label, sub, reduced }: { icon: string; val: strin
     }, ref)
     return () => ctx.revert()
   }, [val, reduced])
+  const STAT_ICONS: Record<string, ReactElement> = {
+    school: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>,
+    alumni: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>,
+    years: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>,
+    satisfaction: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" /></svg>,
+  }
   return (
     <div ref={ref} className="text-center text-white p-5 rounded-2xl" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(8px)' }}>
-      <div className="text-3xl mb-2">{icon}</div>
+      <div className="flex justify-center mb-2" style={{ opacity: 0.85 }}>
+        {STAT_ICONS[icon] ?? <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /></svg>}
+      </div>
       <div style={{ fontWeight: 800, fontSize: 36, letterSpacing: '-0.03em', lineHeight: 1 }} data-c>{val}</div>
       <div style={{ fontWeight: 600, fontSize: 14, marginTop: 6 }}>{label}</div>
       <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, marginTop: 2 }}>{sub}</div>

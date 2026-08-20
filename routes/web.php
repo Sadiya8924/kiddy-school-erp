@@ -51,6 +51,12 @@ Route::get('/auto-seed-db', function () {
 
 // Landing page utama SaaS Yayasan
 Route::get('/', [YayasanRegistrationController::class, 'landing'])->name('home');
+Route::get('/fitur', [YayasanRegistrationController::class, 'fitur'])->name('saas.fitur');
+Route::get('/cara-kerja', [YayasanRegistrationController::class, 'caraKerja'])->name('saas.cara_kerja');
+Route::get('/keamanan', [YayasanRegistrationController::class, 'keamanan'])->name('saas.keamanan');
+Route::get('/testimoni', [YayasanRegistrationController::class, 'testimoni'])->name('saas.testimoni');
+Route::get('/faq', [YayasanRegistrationController::class, 'faq'])->name('saas.faq');
+
 // Halaman form pendaftaran yayasan baru
 Route::get('/daftar-yayasan', [YayasanRegistrationController::class, 'showForm'])->name('yayasan.daftar');
 Route::post('/daftar-yayasan', [YayasanRegistrationController::class, 'store'])->name('yayasan.register.store')->middleware('throttle:5,1');

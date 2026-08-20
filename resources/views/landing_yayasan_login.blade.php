@@ -429,6 +429,55 @@
             .header-brand { font-size: 13.5px; }
             .header-brand-avatar { width: 30px; height: 30px; font-size: 12px; }
         }
+
+        /* ── GSAP Animated Orb decorations ───────────── */
+        .gsap-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(0px);
+            opacity: 0;
+        }
+        .gsap-orb-1 {
+            width: 220px; height: 220px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.14);
+            top: -60px; right: -60px;
+        }
+        .gsap-orb-2 {
+            width: 140px; height: 140px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12);
+            bottom: 10%; right: 8%;
+        }
+        .gsap-orb-3 {
+            width: 80px; height: 80px;
+            background: var(--accent);
+            opacity: 0.15;
+            bottom: 22%; left: 8%;
+        }
+        .gsap-star-1, .gsap-star-2 {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
+        }
+        .gsap-star-1 { top: 14%; right: 15%; }
+        .gsap-star-2 { bottom: 20%; right: 12%; }
+        .hero-content-inner {
+            position: relative;
+            z-index: 10;
+        }
+        .welcome-icon-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            margin-bottom: 18px;
+            font-size: 26px;
+        }
     </style>
 </head>
 <body>
@@ -469,57 +518,67 @@
     <main class="login-split-container">
         
         <!-- Left Panel: Hero Banner (60%) -->
-        <div class="hero-panel-left">
-            <!-- Floating Decorative Particles -->
-            <div class="floating-decor" style="top: 10%; right: 12%;">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <div class="hero-panel-left" id="hero-panel">
+
+            <!-- GSAP animated orb decorations -->
+            <div class="gsap-orb gsap-orb-1" id="orb1"></div>
+            <div class="gsap-orb gsap-orb-2" id="orb2"></div>
+            <div class="gsap-orb gsap-orb-3" id="orb3"></div>
+
+            <!-- Star accent icons -->
+            <div class="gsap-star-1" id="star1">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </div>
-            <div class="floating-decor" style="bottom: 18%; right: 10%;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </div>
-            <div class="floating-decor" style="bottom: 8%; left: 45%;">
-                <svg width="120" height="70" viewBox="0 0 130 80" fill="none">
-                    <circle cx="40" cy="35" r="26" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" />
-                    <circle cx="40" cy="35" r="14" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="2" />
-                    <rect x="62" y="32" width="50" height="8" rx="4" fill="rgba(255,255,255,0.2)" />
-                    <rect x="100" y="40" width="10" height="8" rx="3" fill="rgba(255,255,255,0.2)" />
-                    <circle cx="40" cy="35" r="5" fill="var(--accent)" opacity="0.8" />
-                </svg>
+            <div class="gsap-star-2" id="star2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.6)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </div>
 
-            <div class="hero-welcome-badge">👋</div>
-            <h2 class="hero-heading">Selamat Datang Kembali!</h2>
-            <p class="hero-subtext">
-                Masuk ke Sistem Informasi {{ $siteTitle }} untuk mengelola data dan perkembangan sekolah.
-            </p>
+            <!-- Hero content -->
+            <div class="hero-content-inner">
+                <div class="welcome-icon-wrap" id="welcome-icon">
+                    <iconify-icon icon="solar:hand-stars-bold-duotone" style="font-size: 26px; color: #fff;"></iconify-icon>
+                </div>
+                <h2 class="hero-heading" id="hero-heading">Selamat Datang Kembali!</h2>
+                <p class="hero-subtext" id="hero-subtext">
+                    Masuk ke Sistem Informasi {{ $siteTitle }} untuk mengelola data dan perkembangan sekolah.
+                </p>
 
-            <div class="feature-cards-grid">
-                <div class="feature-pill-card">
-                    <div class="feature-icon-box">📊</div>
-                    <div>
-                        <div class="feature-title">Informasi Akademik</div>
-                        <p class="feature-desc">Pantau nilai, perkembangan, dan laporan</p>
+                <div class="feature-cards-grid" id="feature-grid">
+                    <div class="feature-pill-card">
+                        <div class="feature-icon-box">
+                            <iconify-icon icon="solar:chart-2-bold-duotone" style="font-size:22px;color:var(--accent);"></iconify-icon>
+                        </div>
+                        <div>
+                            <div class="feature-title">Informasi Akademik</div>
+                            <p class="feature-desc">Pantau nilai, perkembangan, dan laporan</p>
+                        </div>
                     </div>
-                </div>
-                <div class="feature-pill-card">
-                    <div class="feature-icon-box">🔔</div>
-                    <div>
-                        <div class="feature-title">Pemberitahuan Sistem</div>
-                        <p class="feature-desc">Terima notifikasi presensi dan pengumuman</p>
+                    <div class="feature-pill-card">
+                        <div class="feature-icon-box">
+                            <iconify-icon icon="solar:bell-bing-bold-duotone" style="font-size:22px;color:var(--accent);"></iconify-icon>
+                        </div>
+                        <div>
+                            <div class="feature-title">Pemberitahuan Sistem</div>
+                            <p class="feature-desc">Terima notifikasi presensi dan pengumuman</p>
+                        </div>
                     </div>
-                </div>
-                <div class="feature-pill-card">
-                    <div class="feature-icon-box">📢</div>
-                    <div>
-                        <div class="feature-title">Jurnal &amp; Materi</div>
-                        <p class="feature-desc">Kelola jurnal harian dan materi pembelajaran</p>
+                    <div class="feature-pill-card">
+                        <div class="feature-icon-box">
+                            <iconify-icon icon="solar:notebook-bold-duotone" style="font-size:22px;color:var(--accent);"></iconify-icon>
+                        </div>
+                        <div>
+                            <div class="feature-title">Jurnal &amp; Materi</div>
+                            <p class="feature-desc">Kelola jurnal harian dan materi pembelajaran</p>
+                        </div>
                     </div>
-                </div>
-                <div class="feature-pill-card">
-                    <div class="feature-icon-box">🔗</div>
-                    <div>
-                        <div class="feature-title">Terintegrasi</div>
-                        <p class="feature-desc">Platform multi-sekolah yang aman dan handal</p>
+                    <div class="feature-pill-card">
+                        <div class="feature-icon-box">
+                            <iconify-icon icon="solar:link-circle-bold-duotone" style="font-size:22px;color:var(--accent);"></iconify-icon>
+                        </div>
+                        <div>
+                            <div class="feature-title">Terintegrasi</div>
+                            <p class="feature-desc">Platform multi-sekolah yang aman dan handal</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -529,15 +588,6 @@
         <div class="form-panel-right">
             <h2 class="form-title">Masuk Sistem</h2>
             <p class="form-subtitle">Masuk ke akun portal {{ $siteTitle }} Anda.</p>
-
-            {{-- Demo / Beta Alert --}}
-            <div class="demo-alert-box">
-                <iconify-icon icon="solar:danger-triangle-bold" class="fs-5 flex-shrink-0" style="color: #D97706;"></iconify-icon>
-                <div>
-                    <strong>Lingkungan Demo / Beta</strong><br>
-                    Data pada halaman ini hanya untuk pengujian. Jangan gunakan password pribadi nyata.
-                </div>
-            </div>
 
             {{-- Wrong Yayasan Portal Alert --}}
             @if(session('wrong_yayasan'))
@@ -630,45 +680,8 @@
                 </button>
             </form>
 
-            {{-- Demo Accounts Quick Fill --}}
-            <div class="demo-accounts-card">
-                <div class="demo-accounts-title">
-                    <iconify-icon icon="solar:bolt-bold" class="text-warning fs-6"></iconify-icon>
-                    Demo Akun Tersedia di Database:
-                </div>
-                <div class="demo-grid">
-                    <button type="button" class="btn-quick-fill" onclick="fillCredentials('ortu.1A.1@gmail.com')">
-                        <span class="role-name">👪 Wali Murid</span>
-                        <span class="email-text">ortu.1A.1@gmail.com</span>
-                    </button>
-                    <button type="button" class="btn-quick-fill" onclick="fillCredentials('guru.a1@tkpermata.sch.id')">
-                        <span class="role-name">👨‍🏫 Guru TK</span>
-                        <span class="email-text">guru.a1@tkpermata.sch.id</span>
-                    </button>
-                    <button type="button" class="btn-quick-fill" onclick="fillCredentials('admin1@tkpermata.sch.id')">
-                        <span class="role-name">🛠️ Admin TK</span>
-                        <span class="email-text">admin1@tkpermata.sch.id</span>
-                    </button>
-                    <button type="button" class="btn-quick-fill" onclick="fillCredentials('kepsek1@tkpermata.sch.id')">
-                        <span class="role-name">🏫 Kepsek</span>
-                        <span class="email-text">kepsek1@tkpermata.sch.id</span>
-                    </button>
-                    <button type="button" class="btn-quick-fill" onclick="fillCredentials('superadmin1@alhikmah.com')">
-                        <span class="role-name">👑 Super Admin</span>
-                        <span class="email-text">superadmin1@alhikmah.com</span>
-                    </button>
-                    <button type="button" class="btn-quick-fill" onclick="fillCredentials('owner@demo.com')">
-                        <span class="role-name">🔑 Owner SaaS</span>
-                        <span class="email-text">owner@demo.com</span>
-                    </button>
-                </div>
-                <div class="text-muted text-center mt-2" style="font-size: 10.5px;">
-                    Password bawaan semua akun: <strong>password</strong>
-                </div>
-            </div>
-
             <div class="text-center mt-4">
-                <p class="text-muted small mb-0" style="font-size: 13px;">
+                <p class="text-muted small mb-0" style="font-size: 13.5px;">
                     Belum punya akun?  
                     <a href="{{ route('yayasan.pendaftaran', $yayasan->kode_yayasan) }}" class="fw-bold text-decoration-none ms-1" style="color: var(--primary);">
                         Daftar sekarang
@@ -679,6 +692,9 @@
 
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- GSAP Core + Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script>
         function fillCredentials(email) {
             document.getElementById('login-email').value = email;
@@ -696,6 +712,121 @@
                 icon.setAttribute('icon', 'solar:eye-bold');
             }
         }
+
+        /* ─────────────────────────────────────────────────────
+           GSAP Animations for Hero Panel Left
+        ───────────────────────────────────────────────────── */
+        document.addEventListener('DOMContentLoaded', function () {
+            const panel = document.getElementById('hero-panel');
+            if (!panel) return;
+
+            // 1. Fade in orbs with stagger
+            gsap.to(['#orb1', '#orb2', '#orb3'], {
+                opacity: 1,
+                duration: 1.6,
+                stagger: 0.25,
+                ease: 'power2.out'
+            });
+
+            // 2. Floating loop animation for orbs
+            gsap.to('#orb1', {
+                y: -24,
+                x: 12,
+                duration: 7,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut'
+            });
+            gsap.to('#orb2', {
+                y: 18,
+                x: -10,
+                duration: 5.5,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+                delay: 0.8
+            });
+            gsap.to('#orb3', {
+                y: -14,
+                x: 8,
+                duration: 4.8,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+                delay: 1.2
+            });
+
+            // 3. Stars twinkling fade in + rotation
+            gsap.to(['#star1', '#star2'], {
+                opacity: 1,
+                rotation: 20,
+                duration: 1.2,
+                stagger: 0.4,
+                ease: 'back.out(1.5)',
+                delay: 0.5
+            });
+            gsap.to('#star1', {
+                rotation: '+=360',
+                duration: 14,
+                repeat: -1,
+                ease: 'none',
+                delay: 1.8
+            });
+            gsap.to('#star2', {
+                y: -10,
+                duration: 3.2,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+                delay: 1
+            });
+
+            // 4. Slide-up + fade in for welcome icon
+            gsap.from('#welcome-icon', {
+                y: 40,
+                opacity: 0,
+                duration: 0.9,
+                ease: 'power3.out',
+                delay: 0.3
+            });
+
+            // 5. Slide-up for heading and subtext
+            gsap.from('#hero-heading', {
+                y: 36,
+                opacity: 0,
+                duration: 0.85,
+                ease: 'power3.out',
+                delay: 0.55
+            });
+            gsap.from('#hero-subtext', {
+                y: 28,
+                opacity: 0,
+                duration: 0.8,
+                ease: 'power3.out',
+                delay: 0.75
+            });
+
+            // 6. Feature cards staggered entrance
+            const cards = document.querySelectorAll('#feature-grid .feature-pill-card');
+            gsap.from(cards, {
+                y: 30,
+                opacity: 0,
+                duration: 0.7,
+                stagger: 0.12,
+                ease: 'power2.out',
+                delay: 0.95
+            });
+
+            // 7. Continuous subtle float for the entire content
+            gsap.to('#hero-panel .hero-content-inner', {
+                y: -8,
+                duration: 5,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+                delay: 2
+            });
+        });
     </script>
 </body>
 </html>

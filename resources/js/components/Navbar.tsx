@@ -72,7 +72,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
         </button>
 
         {/* Nav */}
-        <nav className="hidden md:flex items-center gap-0.5">
+        <nav className="hidden md:flex items-center gap-1">
           {navLinks.map(({ label, page }) => (
             <button key={page} onClick={() => onNavigate(page)}
               className="px-3.5 py-2 rounded-xl text-sm transition-all duration-150"
@@ -88,13 +88,15 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
             <a href="/dashboard"
               className="px-4 py-2 rounded-xl text-sm text-white font-600 transition-all hover:opacity-90 active:scale-95 flex items-center gap-1.5"
               style={{ background: 'linear-gradient(135deg, #10B981, #059669)', fontWeight: 600, boxShadow: '0 3px 12px rgba(16,185,129,0.3)', textDecoration: 'none' }}>
-              <span>🚀</span> Ke Dashboard {authUser ? `(${authUser.name})` : ''}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+              Ke Dashboard {authUser ? `(${authUser.name})` : ''}
             </a>
           ) : (
             <>
               <button onClick={() => onNavigate('login')}
-                className="hidden sm:flex px-3.5 py-2 rounded-xl text-sm border transition-colors hover:bg-gray-50"
+                className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm border transition-colors hover:bg-gray-50"
                 style={{ fontWeight: 500, color: '#374151', borderColor: '#E5E7EB' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" y1="12" x2="3" y2="12" /></svg>
                 Login Portal
               </button>
               <button onClick={() => onNavigate('registration')}

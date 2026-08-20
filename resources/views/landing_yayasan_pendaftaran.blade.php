@@ -4,8 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Pendaftaran PPDB & Registrasi Akun — {{ $yayasan->nama_yayasan }}</title>
-    <meta name="description" content="Pendaftaran siswa baru (PPDB) dan pembuatan akun portal wali murid untuk {{ $yayasan->nama_yayasan }}.">
+
+    @php
+        $landingContent = $yayasan->landing_content ?? [];
+        $template       = $landingContent['template'] ?? 'ocean';
+        $siteTitle      = !empty($landingContent['site_title']) ? $landingContent['site_title'] : $yayasan->nama_yayasan;
+
+        $themeMap = [
+            'ceria' => [
+                'primary'      => '#EF9F27',
+                'primary_dark' => '#7A5310',
+                'accent'       => '#F0997B',
+                'surface'      => '#FDFBF7',
+                'hero_bg'      => 'linear-gradient(135deg, #7A5310 0%, #D4537E 60%, #EF9F27 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #EF9F27, #F0997B)',
+                'btn_cta'      => 'linear-gradient(135deg, #EF9F27 0%, #D4537E 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#FEF3E2',
+                'pill_border'  => '#FCD7A1',
+            ],
+            'trustworthy' => [
+                'primary'      => '#185FA5',
+                'primary_dark' => '#0B2545',
+                'accent'       => '#2563EB',
+                'surface'      => '#F4F6F9',
+                'hero_bg'      => 'linear-gradient(135deg, #0B2545 0%, #134074 60%, #185FA5 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #0B2545, #185FA5)',
+                'btn_cta'      => 'linear-gradient(135deg, #185FA5 0%, #1D4ED8 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#EBF3FC',
+                'pill_border'  => '#BDD8F5',
+            ],
+            'natural' => [
+                'primary'      => '#639922',
+                'primary_dark' => '#1C3309',
+                'accent'       => '#D97706',
+                'surface'      => '#F6F3EC',
+                'hero_bg'      => 'linear-gradient(135deg, #1C3309 0%, #355312 60%, #4D7C0F 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #355312, #639922)',
+                'btn_cta'      => 'linear-gradient(135deg, #639922 0%, #355312 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#F0F7E6',
+                'pill_border'  => '#CEE5AE',
+            ],
+            'ocean' => [
+                'primary'      => '#2563EB',
+                'primary_dark' => '#1B3A8C',
+                'accent'       => '#FCD34D',
+                'surface'      => '#FFFFFF',
+                'hero_bg'      => 'linear-gradient(135deg, #1B3A8C 0%, #2D55E8 60%, #4F8BFF 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #1E40AF, #3B82F6)',
+                'btn_cta'      => 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#EFF6FF',
+                'pill_border'  => '#BFDBFE',
+            ],
+        ];
+
+        $theme = $themeMap[$template] ?? $themeMap['ocean'];
+    @endphp
+
+    <title>Pendaftaran PPDB & Registrasi Akun — {{ $siteTitle }}</title>
+    <meta name="description" content="Pendaftaran siswa baru (PPDB) dan pembuatan akun portal wali murid untuk {{ $siteTitle }}.">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,9 +78,23 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
+
+        :root {
+            --primary:       {{ $theme['primary'] }};
+            --primary-dark:  {{ $theme['primary_dark'] }};
+            --accent:        {{ $theme['accent'] }};
+            --surface:       {{ $theme['surface'] }};
+            --hero-bg:       {{ $theme['hero_bg'] }};
+            --avatar-bg:     {{ $theme['avatar_bg'] }};
+            --btn-cta:       {{ $theme['btn_cta'] }};
+            --btn-cta-text:  {{ $theme['btn_cta_text'] }};
+            --pill-bg:       {{ $theme['pill_bg'] }};
+            --pill-border:   {{ $theme['pill_border'] }};
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #F1F5F9;
+            background: #F8FAFC;
             color: #1E293B;
             min-height: 100vh;
             margin: 0;
@@ -54,9 +128,9 @@
             transition: all 0.2s;
         }
         .btn-back-yayasan:hover {
-            background: #EFF6FF;
-            border-color: #BFDBFE;
-            color: #1D4ED8;
+            background: var(--pill-bg);
+            border-color: var(--pill-border);
+            color: var(--primary);
         }
         .brand-yayasan {
             display: flex;
@@ -68,13 +142,18 @@
             font-size: 15.5px;
         }
         .brand-avatar-mini {
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #1E40AF, #3B82F6);
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            background: var(--avatar-bg);
             color: #fff;
             display: flex; align-items: center; justify-content: center;
             font-weight: 800;
             font-size: 14px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .brand-avatar-mini img {
+            width: 100%; height: 100%; object-fit: cover;
         }
 
         /* ── Main Layout ────────────────────────────── */
@@ -85,25 +164,39 @@
         }
 
         .header-box {
-            background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+            background: var(--hero-bg);
             border-radius: 24px;
             padding: 40px 36px;
             color: #fff;
             margin-bottom: 36px;
-            box-shadow: 0 10px 30px rgba(30,64,175,0.15);
+            box-shadow: 0 12px 36px rgba(0,0,0,0.12);
+            position: relative;
+            overflow: hidden;
+        }
+        .header-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
         }
         .header-box h1 {
             font-size: 26px;
             font-weight: 800;
             margin-bottom: 8px;
             letter-spacing: -0.02em;
+            position: relative;
+            z-index: 2;
         }
         .header-box p {
             font-size: 14.5px;
-            color: #DBEAFE;
+            color: rgba(255,255,255,0.85);
             margin: 0;
             max-width: 680px;
             line-height: 1.6;
+            position: relative;
+            z-index: 2;
         }
 
         .card-custom {
@@ -143,10 +236,10 @@
             transition: all 0.2s;
         }
         .school-choice-item:hover {
-            background: #EFF6FF;
-            border-color: #3B82F6;
+            background: var(--pill-bg);
+            border-color: var(--primary);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(30,64,175,0.08);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
         }
 
         .doc-item {
@@ -176,24 +269,29 @@
         }
         .form-control:focus {
             background: #FFFFFF;
-            border-color: #2563EB;
-            box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0,0,0,0.06);
         }
         .btn-register-parent {
-            background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%);
-            color: #fff;
+            background: var(--btn-cta);
+            color: var(--btn-cta-text) !important;
             border: none;
             border-radius: 12px;
             padding: 13px;
             font-size: 14.5px;
             font-weight: 700;
             width: 100%;
-            box-shadow: 0 6px 18px rgba(30,64,175,0.25);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
             transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .btn-register-parent:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 24px rgba(30,64,175,0.35);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.25);
             color: #fff;
         }
 
@@ -223,7 +321,7 @@
         }
         .btn-toggle-tab.active {
             background: #FFFFFF;
-            color: #1E40AF;
+            color: var(--primary);
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
         .btn-toggle-tab:hover:not(.active) {
@@ -235,6 +333,25 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(4px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-form-action {
+            background: var(--btn-cta);
+            color: var(--btn-cta-text) !important;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 16px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-form-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
         @media (max-width: 768px) {
@@ -266,15 +383,15 @@
 
     <div class="d-flex align-items-center gap-2">
         @auth
-            <a href="/dashboard" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1" style="font-size:12.5px;">
+            <a href="/dashboard" class="btn btn-sm rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1" style="font-size:12.5px; border: 1.5px solid var(--primary); color: var(--primary);">
                 <iconify-icon icon="solar:widget-6-bold-duotone"></iconify-icon> Kembali ke Dashboard
             </a>
         @else
-            <a href="{{ route('yayasan.login', $yayasan->kode_yayasan) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1" style="font-size:12.5px;">
+            <a href="{{ route('yayasan.login', $yayasan->kode_yayasan) }}" class="btn btn-sm rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1" style="font-size:12.5px; border: 1.5px solid var(--primary); color: var(--primary);">
                 <iconify-icon icon="solar:login-2-bold-duotone"></iconify-icon> Login Portal
             </a>
         @endauth
-        <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1.5 fw-bold d-none d-md-inline-block" style="font-size:11.5px;">
+        <span class="badge rounded-pill px-3 py-1.5 fw-bold d-none d-md-inline-block" style="font-size:11.5px; background: var(--pill-bg); color: var(--primary); border: 1px solid var(--pill-border);">
             PPDB Online {{ date('Y') }}/{{ date('Y')+1 }}
         </span>
     </div>
@@ -285,13 +402,13 @@
     <!-- Header Banner -->
     <div class="header-box">
         <div class="d-flex align-items-center gap-2 mb-2">
-            <span class="badge bg-warning text-dark font-bold px-3 py-1 rounded-pill" style="font-size:11px;">
+            <span class="badge font-bold px-3 py-1 rounded-pill" style="font-size:11px; background: var(--accent); color: #0F172A;">
                 PORTAL PENDAFTARAN RESMI
             </span>
         </div>
         <h1>Pendaftaran Siswa Baru & Akun Orang Tua</h1>
         <p>
-            Selamat datang di portal pendaftaran <strong>{{ $yayasan->nama_yayasan }}</strong>. Silakan pilih pendaftaran siswa baru (PPDB) atau buat akun wali murid untuk memantau aktivitas dan e-rapor anak.
+            Selamat datang di portal pendaftaran <strong>{{ $siteTitle }}</strong>. Silakan pilih pendaftaran siswa baru (PPDB) atau buat akun wali murid untuk memantau aktivitas dan e-rapor anak.
         </p>
     </div>
 
@@ -300,14 +417,14 @@
         <!-- Kolom 1: Formulir Pendaftaran Siswa (PPDB Online) -->
         <div class="col-lg-6">
             <div class="card-custom">
-                <span class="section-badge-tag bg-success-subtle text-success border border-success-subtle">
-                    <iconify-icon icon="solar:diploma-bold"></iconify-icon>
+                <span class="section-badge-tag" style="background: var(--pill-bg); color: var(--primary); border: 1px solid var(--pill-border);">
+                    <iconify-icon icon="solar:diploma-bold-duotone"></iconify-icon>
                     Pendaftaran Siswa (PPDB)
                 </span>
 
                 <h3 class="fw-bold mb-2" style="font-size:20px; color:#0F172A;">Daftarkan Putra / Putri Anda</h3>
                 <p class="text-muted small mb-4">
-                    Pilih cabang TK atau PAUD tujuan di bawah <strong>{{ $yayasan->nama_yayasan }}</strong> untuk langsung mengisi formulir pendaftaran siswa baru secara online.
+                    Pilih cabang TK atau PAUD tujuan di bawah <strong>{{ $siteTitle }}</strong> untuk langsung mengisi formulir pendaftaran siswa baru secara online.
                 </p>
 
                 <div class="mb-4">
@@ -318,15 +435,15 @@
                     @forelse($schools as $school)
                     <a href="{{ route('pendaftaran', ['school_id' => $school->id]) }}" class="school-choice-item">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="d-flex align-items-center justify-content-center rounded-3 bg-white text-primary border" style="width:42px;height:42px;font-size:20px;flex-shrink:0;">
-                                🏫
+                            <div class="d-flex align-items-center justify-content-center rounded-3 bg-white border" style="width:42px;height:42px;color:var(--primary);flex-shrink:0;">
+                                <iconify-icon icon="solar:buildings-3-bold-duotone" style="font-size:22px;"></iconify-icon>
                             </div>
                             <div>
                                 <div class="fw-bold text-dark" style="font-size:14.5px;">{{ $school->nama_sekolah }}</div>
                                 <div class="text-muted" style="font-size:12px;">{{ Str::limit($school->alamat, 40) }}</div>
                             </div>
                         </div>
-                        <div class="btn btn-sm btn-primary rounded-pill px-3 fw-bold d-flex align-items-center gap-1" style="font-size:12px;">
+                        <div class="btn-form-action">
                             Isi Form <iconify-icon icon="solar:arrow-right-bold"></iconify-icon>
                         </div>
                     </a>
@@ -338,17 +455,20 @@
                 </div>
 
                 <div class="mt-auto pt-3 border-top">
-                    <div class="fw-bold text-dark small mb-2">📋 Dokumen yang Perlu Disiapkan:</div>
-                    <div class="doc-item">
-                        <span>📄</span>
-                        <div class="small text-muted"><strong>Kartu Keluarga & Akta Kelahiran</strong> (Foto / Scan asli).</div>
+                    <div class="fw-bold text-dark small mb-2 d-flex align-items-center gap-1.5">
+                        <iconify-icon icon="solar:document-text-bold-duotone" style="color:var(--primary);font-size:18px;"></iconify-icon>
+                        Dokumen yang Perlu Disiapkan:
                     </div>
                     <div class="doc-item">
-                        <span>🖼️</span>
+                        <iconify-icon icon="solar:file-check-bold-duotone" style="color:var(--primary);font-size:20px;flex-shrink:0;margin-top:2px;"></iconify-icon>
+                        <div class="small text-muted"><strong>Kartu Keluarga &amp; Akta Kelahiran</strong> (Foto / Scan asli).</div>
+                    </div>
+                    <div class="doc-item">
+                        <iconify-icon icon="solar:user-circle-bold-duotone" style="color:var(--primary);font-size:20px;flex-shrink:0;margin-top:2px;"></iconify-icon>
                         <div class="small text-muted"><strong>Pas Foto Anak</strong> (Ukuran 3x4 / setengah badan).</div>
                     </div>
                     <div class="doc-item">
-                        <span>💳</span>
+                        <iconify-icon icon="solar:card-2-bold-duotone" style="color:var(--primary);font-size:20px;flex-shrink:0;margin-top:2px;"></iconify-icon>
                         <div class="small text-muted"><strong>Bukti Pembayaran Pendaftaran</strong> (Struk / Transfer bank).</div>
                     </div>
                 </div>
@@ -359,16 +479,18 @@
         <div class="col-lg-6">
             <div class="card-custom">
                 @auth
-                <span class="section-badge-tag bg-primary-subtle text-primary border border-primary-subtle">
-                    <iconify-icon icon="solar:user-bold"></iconify-icon>
+                <span class="section-badge-tag" style="background: var(--pill-bg); color: var(--primary); border: 1px solid var(--pill-border);">
+                    <iconify-icon icon="solar:user-bold-duotone"></iconify-icon>
                     Akun Portal Wali Murid
                 </span>
 
                 <div class="text-center py-5 bg-light rounded-4 mt-3">
-                    <div style="font-size:42px; margin-bottom:10px;">👋</div>
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width:60px;height:60px;background:var(--pill-bg);color:var(--primary);font-size:28px;">
+                        <iconify-icon icon="solar:user-check-bold-duotone"></iconify-icon>
+                    </div>
                     <h5 class="fw-bold mb-1" style="color:#0F172A;">Halo, {{ Auth::user()->name }}!</h5>
                     <p class="text-muted small mb-3">Anda sudah masuk ke portal dengan akun terdaftar.</p>
-                    <a href="/dashboard" class="btn btn-primary rounded-pill px-4 fw-bold">
+                    <a href="/dashboard" class="btn-register-parent d-inline-flex align-items-center gap-2" style="width:auto;padding:10px 24px;">
                         Buka Dashboard Portal →
                     </a>
                 </div>
@@ -441,12 +563,13 @@
                         </div>
 
                         <button type="submit" class="btn-register-parent">
-                            🚀 Buat Akun Wali Murid Sekarang
+                            <iconify-icon icon="solar:user-plus-bold" style="font-size:18px;"></iconify-icon>
+                            Buat Akun Wali Murid Sekarang
                         </button>
                     </form>
 
                     <div class="text-center mt-3 small text-muted">
-                        Sudah punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('login')" class="text-primary fw-bold text-decoration-none">Masuk ke Portal Langsung</a>
+                        Sudah punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('login')" class="fw-bold text-decoration-none" style="color:var(--primary);">Masuk ke Portal Langsung</a>
                     </div>
                 </div>
 
@@ -454,7 +577,7 @@
                 <div id="panelLogin" class="auth-form-panel" style="display: none;">
                     <h3 class="fw-bold mb-2" style="font-size:20px; color:#0F172A;">Masuk ke Portal</h3>
                     <p class="text-muted small mb-4">
-                        Masuk ke akun portal wali murid <strong>{{ $yayasan->nama_yayasan }}</strong> untuk memantau perkembangan ananda.
+                        Masuk ke akun portal wali murid <strong>{{ $siteTitle }}</strong> untuk memantau perkembangan ananda.
                     </p>
 
                     <form action="{{ url('/login') }}" method="POST">
@@ -479,12 +602,13 @@
                         </div>
 
                         <button type="submit" class="btn-register-parent">
-                            🔑 Masuk ke Portal Sekarang
+                            <iconify-icon icon="solar:login-2-bold" style="font-size:18px;"></iconify-icon>
+                            Masuk ke Portal Sekarang
                         </button>
                     </form>
 
                     <div class="text-center mt-3 small text-muted">
-                        Belum punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('register')" class="text-primary fw-bold text-decoration-none">Daftar Akun Baru</a>
+                        Belum punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('register')" class="fw-bold text-decoration-none" style="color:var(--primary);">Daftar Akun Baru</a>
                     </div>
                 </div>
 
@@ -495,14 +619,14 @@
 
     <!-- Bantuan WhatsApp -->
     @if($yayasan->telepon)
-    <div class="p-4 rounded-4 bg-white border border-success-subtle d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div class="p-4 rounded-4 bg-white border d-flex align-items-center justify-content-between flex-wrap gap-3" style="border-color: #E2E8F0 !important;">
         <div class="d-flex align-items-center gap-3">
-            <div class="d-flex align-items-center justify-content-center rounded-circle bg-success text-white" style="width:46px;height:46px;font-size:24px;flex-shrink:0;">
+            <div class="d-flex align-items-center justify-content-center rounded-circle text-white" style="width:46px;height:46px;font-size:24px;flex-shrink:0;background:#22C55E;">
                 <iconify-icon icon="simple-icons:whatsapp"></iconify-icon>
             </div>
             <div>
                 <h5 class="fw-bold mb-0 text-dark" style="font-size:16px;">Butuh Bantuan Pendaftaran PPDB?</h5>
-                <p class="text-muted small mb-0">Hubungi tim administrasi <strong>{{ $yayasan->nama_yayasan }}</strong> via WhatsApp.</p>
+                <p class="text-muted small mb-0">Hubungi tim administrasi <strong>{{ $siteTitle }}</strong> via WhatsApp.</p>
             </div>
         </div>
         <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $yayasan->telepon) }}" target="_blank" class="btn btn-success rounded-pill px-4 fw-bold d-inline-flex align-items-center gap-2">
@@ -514,7 +638,7 @@
 </main>
 
 <footer class="text-center py-4 border-top bg-white text-muted small">
-    © {{ date('Y') }} {{ $yayasan->nama_yayasan }}. Didukung oleh Kiddy School ERP.
+    © {{ date('Y') }} {{ $siteTitle }}. Didukung oleh Kiddy School ERP.
 </footer>
 
 <script>

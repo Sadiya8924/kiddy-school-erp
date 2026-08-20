@@ -20,6 +20,46 @@ class YayasanRegistrationController extends Controller
     }
 
     /**
+     * GET /fitur — Halaman Fitur Lengkap & Modul SaaS ERP.
+     */
+    public function fitur()
+    {
+        return view('saas.fitur');
+    }
+
+    /**
+     * GET /cara-kerja — Halaman Alur & Cara Kerja Implementasi.
+     */
+    public function caraKerja()
+    {
+        return view('saas.cara_kerja');
+    }
+
+    /**
+     * GET /keamanan — Halaman Keamanan Data & Isolasi Multi-Tenant.
+     */
+    public function keamanan()
+    {
+        return view('saas.keamanan');
+    }
+
+    /**
+     * GET /testimoni — Halaman Testimoni Klien & Studi Kasus.
+     */
+    public function testimoni()
+    {
+        return view('saas.testimoni');
+    }
+
+    /**
+     * GET /faq — Halaman FAQ & Pusat Bantuan.
+     */
+    public function faq()
+    {
+        return view('saas.faq');
+    }
+
+    /**
      * GET /daftar-yayasan — Halaman form pendaftaran yayasan baru khusus (dedicated page).
      */
     public function showForm()

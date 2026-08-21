@@ -59,7 +59,7 @@ class MasterFreshDatabaseSeeder extends Seeder
         // ----------------------------------------------------
         $yayasan1Id = DB::table('yayasans')->insertGetId([
             'nama_yayasan' => 'Yayasan Pendidikan Al-Hikmah 2',
-            'kode_yayasan' => 'YAH2',
+            'kode_yayasan' => 'YYS-002',
             'alamat' => 'Jl. Veteran No. 45, Malang',
             'telepon' => '0341-551122',
             'status' => 'aktif',
@@ -69,7 +69,7 @@ class MasterFreshDatabaseSeeder extends Seeder
 
         $yayasan2Id = DB::table('yayasans')->insertGetId([
             'nama_yayasan' => 'Yayasan Bina Insani Ceria',
-            'kode_yayasan' => 'YBIC',
+            'kode_yayasan' => 'YYS-001',
             'alamat' => 'Jl. Soekarno Hatta No. 88, Malang',
             'telepon' => '0341-778899',
             'status' => 'aktif',

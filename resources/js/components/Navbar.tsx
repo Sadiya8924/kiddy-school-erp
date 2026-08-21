@@ -61,7 +61,7 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
     >
       <div className="max-w-[1320px] mx-auto px-6 sm:px-10 w-full flex items-center justify-between">
         {/* Logo */}
-        <button onClick={() => onNavigate('home')} className="flex items-center gap-2.5">
+        <a href="/" className="flex items-center gap-2.5 text-decoration-none">
           {siteLogo ? (
             <img src={siteLogo} alt={siteTitle} style={{ height: 36, width: 'auto', objectFit: 'contain', borderRadius: 6 }} />
           ) : (
@@ -69,16 +69,24 @@ export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
               style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}>KS</div>
           )}
           <span className="font-700 text-sm text-gray-900 hidden sm:block" style={{ fontWeight: 700 }}>{siteTitle}</span>
-        </button>
+        </a>
 
         {/* Nav */}
         <nav className="hidden md:flex items-center gap-1">
           {navLinks.map(({ label, page }) => (
-            <button key={page} onClick={() => onNavigate(page)}
-              className="px-3.5 py-2 rounded-xl text-sm transition-all duration-150"
-              style={{ fontWeight: currentPage === page ? 600 : 500, color: currentPage === page ? '#365CF5' : '#374151', background: currentPage === page ? '#EEF1FE' : 'transparent' }}>
-              {label}
-            </button>
+            page === 'home' ? (
+              <a key={page} href="/"
+                className="px-3.5 py-2 rounded-xl text-sm transition-all duration-150 text-decoration-none"
+                style={{ fontWeight: currentPage === page ? 600 : 500, color: currentPage === page ? '#365CF5' : '#374151', background: currentPage === page ? '#EEF1FE' : 'transparent' }}>
+                {label}
+              </a>
+            ) : (
+              <button key={page} onClick={() => onNavigate(page)}
+                className="px-3.5 py-2 rounded-xl text-sm transition-all duration-150"
+                style={{ fontWeight: currentPage === page ? 600 : 500, color: currentPage === page ? '#365CF5' : '#374151', background: currentPage === page ? '#EEF1FE' : 'transparent' }}>
+                {label}
+              </button>
+            )
           ))}
         </nav>
 

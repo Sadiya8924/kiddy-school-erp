@@ -17,12 +17,31 @@ class LandingYayasanController extends Controller
      * Tampilkan landing page profil publik per yayasan.
      * Diakses via: /y/{kode_yayasan}
      */
+    private function findYayasan(string $kode_yayasan): Yayasan
+    {
+        $code = strtoupper(trim($kode_yayasan));
+        return Yayasan::where(function($q) use ($code) {
+                $q->where('kode_yayasan', $code)
+                  ->orWhere('kode_yayasan', strtolower($code));
+                
+                if (in_array($code, ['YYS-002', 'YYS-2', 'YAH2'])) {
+                    $q->orWhereIn('kode_yayasan', ['YYS-002', 'YAH2']);
+                } elseif (in_array($code, ['YYS-001', 'YYS-1', 'YBIC'])) {
+                    $q->orWhereIn('kode_yayasan', ['YYS-001', 'YBIC']);
+                }
+            })
+            ->where('status', 'aktif')
+            ->firstOrFail();
+    }
+
+    /**
+     * Tampilkan landing page profil publik per yayasan.
+     * Diakses via: /y/{kode_yayasan}
+     */
     public function show(string $kode_yayasan)
     {
-        $yayasan = Yayasan::where('kode_yayasan', $kode_yayasan)
-            ->where('status', 'aktif')
-            ->with('schools')
-            ->firstOrFail();
+        $yayasan = $this->findYayasan($kode_yayasan);
+        $yayasan->load('schools');
 
         // Statistik ringkas per sekolah
         $schools = $yayasan->schools->where('status', 'aktif')->map(function ($school) {
@@ -38,14 +57,27 @@ class LandingYayasanController extends Controller
             ->take(3)
             ->get();
 
-        $total_siswa   = $schools->sum('jumlah_siswa');
+        $total_siswa   = Siswa::whereIn('school_id', $schoolIds)->where('status', 'aktif')->count();
         $total_sekolah = $schools->count();
+        $total_guru    = User::where(function($q) use ($yayasan, $schoolIds) {
+                            $q->where('yayasan_id', $yayasan->id);
+                            if (!empty($schoolIds)) {
+                                $q->orWhereIn('school_id', $schoolIds);
+                            }
+                        })
+                        ->whereIn('role', ['guru', 'kepsek', 'admin'])
+                        ->count();
+        $total_kelas   = \App\Models\Kelas::whereIn('school_id', $schoolIds)->count();
+        $total_alumni  = Siswa::whereIn('school_id', $schoolIds)->where('status', 'alumni')->count();
 
         return view('landing_yayasan', compact(
             'yayasan',
             'schools',
             'total_siswa',
             'total_sekolah',
+            'total_guru',
+            'total_kelas',
+            'total_alumni',
             'announcements'
         ));
     }
@@ -56,10 +88,8 @@ class LandingYayasanController extends Controller
      */
     public function pendaftaranPage(Request $request, string $kode_yayasan)
     {
-        $yayasan = Yayasan::where('kode_yayasan', $kode_yayasan)
-            ->where('status', 'aktif')
-            ->with('schools')
-            ->firstOrFail();
+        $yayasan = $this->findYayasan($kode_yayasan);
+        $yayasan->load('schools');
 
         $schools = $yayasan->schools->where('status', 'aktif')->values();
         $selectedSchoolId = $request->query('school_id');
@@ -77,9 +107,7 @@ class LandingYayasanController extends Controller
             return redirect('/dashboard');
         }
 
-        $yayasan = Yayasan::where('kode_yayasan', $kode_yayasan)
-            ->where('status', 'aktif')
-            ->firstOrFail();
+        $yayasan = $this->findYayasan($kode_yayasan);
 
         return view('landing_yayasan_login', compact('yayasan'));
     }
@@ -90,9 +118,7 @@ class LandingYayasanController extends Controller
      */
     public function register(Request $request, string $kode_yayasan)
     {
-        $yayasan = Yayasan::where('kode_yayasan', $kode_yayasan)
-            ->where('status', 'aktif')
-            ->firstOrFail();
+        $yayasan = $this->findYayasan($kode_yayasan);
 
         $request->validate([
             'name'                  => 'required|string|max:255',

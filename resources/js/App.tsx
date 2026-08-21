@@ -25,6 +25,10 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>(getInitialPage)
 
   const navigate = (page: Page) => {
+    if (page === 'home') {
+      window.location.href = '/'
+      return
+    }
     setCurrentPage(page)
     const pagePaths: Record<Page, string> = {
       home: '/',
@@ -77,10 +81,11 @@ export default function App() {
   }, [currentPage])
 
   const noFooter = currentPage === 'login' || currentPage === 'register'
+  const noNavbar = currentPage === 'login'
 
   return (
     <div style={{ background: '#F7F9FC', minHeight: '100vh', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <Navbar currentPage={currentPage} onNavigate={navigate} />
+      {!noNavbar && <Navbar currentPage={currentPage} onNavigate={navigate} />}
       <main>
         {currentPage === 'home' && <HomePage onNavigate={navigate} />}
         {currentPage === 'about' && <AboutPage onNavigate={navigate} />}

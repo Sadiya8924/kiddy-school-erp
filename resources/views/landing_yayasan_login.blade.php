@@ -189,7 +189,52 @@
         .login-split-container {
             flex: 1;
             display: flex;
-            min-height: calc(100vh - 61px);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ── Floating Back to Home Button ──────────── */
+        .btn-back-home {
+            position: absolute;
+            top: 24px;
+            left: 28px;
+            z-index: 100;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 100px;
+            color: #FFFFFF;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            transition: all 0.25s ease;
+        }
+        .btn-back-home:hover {
+            background: rgba(255, 255, 255, 0.35);
+            color: #FFFFFF;
+            transform: translateX(-4px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        @media (max-width: 992px) {
+            .btn-back-home {
+                background: #FFFFFF;
+                color: #1E293B;
+                border: 1.5px solid #E2E8F0;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                top: 16px;
+                left: 16px;
+            }
+            .btn-back-home:hover {
+                background: #F8FAFC;
+                color: var(--primary);
+                border-color: var(--primary);
+                transform: translateX(-3px);
+            }
         }
 
         /* ── Left Hero Panel (60%) ────────────────────── */
@@ -482,40 +527,14 @@
 </head>
 <body>
 
-    <!-- ── Top Bar Header ───────────────────────────── -->
-    <header class="site-header">
-        <a href="{{ route('yayasan.landing', $yayasan->kode_yayasan) }}" class="header-brand">
-            <div class="header-brand-avatar">
-                @if(!empty($landingContent['site_logo']))
-                    <img src="{{ asset($landingContent['site_logo']) }}" alt="Logo">
-                @elseif($yayasan->logo_yayasan)
-                    <img src="{{ asset('storage/' . $yayasan->logo_yayasan) }}" alt="Logo">
-                @else
-                    {{ strtoupper(substr($siteTitle, 0, 2)) }}
-                @endif
-            </div>
-            <span>{{ $siteTitle }}</span>
-        </a>
-
-        <ul class="header-nav-menu">
-            <li><a href="{{ route('yayasan.landing', $yayasan->kode_yayasan) }}#hero">Beranda</a></li>
-            <li><a href="{{ route('yayasan.landing', $yayasan->kode_yayasan) }}#tentang">Tentang Kami</a></li>
-            <li><a href="{{ route('yayasan.pendaftaran', $yayasan->kode_yayasan) }}">Pendaftaran</a></li>
-            <li><a href="{{ route('yayasan.landing', $yayasan->kode_yayasan) }}#footer">Hubungi Kami</a></li>
-        </ul>
-
-        <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('yayasan.login', $yayasan->kode_yayasan) }}" class="btn-portal-outline">
-                Login Portal
-            </a>
-            <a href="{{ route('yayasan.pendaftaran', $yayasan->kode_yayasan) }}" class="btn-daftar-now">
-                Daftar Sekarang
-            </a>
-        </div>
-    </header>
-
     <!-- ── Main Split Screen ────────────────────────── -->
     <main class="login-split-container">
+        
+        <!-- Tombol Navigasi Kembali ke Beranda -->
+        <a href="{{ route('yayasan.landing', $yayasan->kode_yayasan) }}" class="btn-back-home">
+            <iconify-icon icon="solar:alt-arrow-left-bold" style="font-size: 18px;"></iconify-icon>
+            <span>Kembali ke Beranda</span>
+        </a>
         
         <!-- Left Panel: Hero Banner (60%) -->
         <div class="hero-panel-left" id="hero-panel">

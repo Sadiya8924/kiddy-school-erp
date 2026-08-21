@@ -25,6 +25,10 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>(getInitialPage)
 
   const navigate = (page: Page) => {
+    if (page === 'home') {
+      window.location.href = '/'
+      return
+    }
     setCurrentPage(page)
     const pagePaths: Record<Page, string> = {
       home: '/',

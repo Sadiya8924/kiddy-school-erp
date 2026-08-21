@@ -16,7 +16,17 @@ class YayasanRegistrationController extends Controller
      */
     public function landing()
     {
-        return view('landing_utama');
+        $total_yayasan = Yayasan::where('status', 'aktif')->count();
+        $total_sekolah = \App\Models\School::where('status', 'aktif')->count();
+        $total_siswa   = \App\Models\Siswa::where('status', 'aktif')->count();
+        $total_guru    = \App\Models\User::whereIn('role', ['guru', 'kepsek', 'admin'])->count();
+
+        return view('landing_utama', compact(
+            'total_yayasan',
+            'total_sekolah',
+            'total_siswa',
+            'total_guru'
+        ));
     }
 
     /**

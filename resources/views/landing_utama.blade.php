@@ -11,14 +11,14 @@
     $heroBtnPrimary = \App\Models\Setting::get('saas_hero_btn_primary', 'Daftarkan Yayasan Anda');
     $heroBtnSecondary = \App\Models\Setting::get('saas_hero_btn_secondary', 'Pelajari Fitur & Modul');
 
-    $stat1Num = \App\Models\Setting::get('saas_stat_1_num', '500+');
-    $stat1Lbl = \App\Models\Setting::get('saas_stat_1_label', 'Cabang Sekolah Terdaftar');
-    $stat2Num = \App\Models\Setting::get('saas_stat_2_num', '15.000+');
-    $stat2Lbl = \App\Models\Setting::get('saas_stat_2_label', 'Siswa Aktif & Alumni');
-    $stat3Num = \App\Models\Setting::get('saas_stat_3_num', '100%');
-    $stat3Lbl = \App\Models\Setting::get('saas_stat_3_label', 'Isolasi Data Antar-Tenant');
-    $stat4Num = \App\Models\Setting::get('saas_stat_4_num', '99.9%');
-    $stat4Lbl = \App\Models\Setting::get('saas_stat_4_label', 'Cloud Server Uptime');
+    $stat1Num = isset($total_yayasan) ? $total_yayasan . ' Yayasan' : \App\Models\Setting::get('saas_stat_1_num', '2 Yayasan');
+    $stat1Lbl = \App\Models\Setting::get('saas_stat_1_label', 'Yayasan Terdaftar');
+    $stat2Num = isset($total_sekolah) ? $total_sekolah . ' Cabang' : \App\Models\Setting::get('saas_stat_2_num', '4 Cabang');
+    $stat2Lbl = \App\Models\Setting::get('saas_stat_2_label', 'Cabang Sekolah TK/PAUD');
+    $stat3Num = isset($total_siswa) ? $total_siswa . ' Siswa' : \App\Models\Setting::get('saas_stat_3_num', '120 Siswa');
+    $stat3Lbl = \App\Models\Setting::get('saas_stat_3_label', 'Siswa Aktif Terdaftar');
+    $stat4Num = isset($total_guru) ? $total_guru . ' Pengajar' : \App\Models\Setting::get('saas_stat_4_num', '16 Pengajar');
+    $stat4Lbl = \App\Models\Setting::get('saas_stat_4_label', 'Tenaga Pendidik & Staf');
 
     $step1Title = \App\Models\Setting::get('saas_step_1_title', '1. Daftarkan Yayasan');
     $step1Desc = \App\Models\Setting::get('saas_step_1_desc', 'Isi formulir identitas yayasan dan lokasi GPS melalui portal pendaftaran.');

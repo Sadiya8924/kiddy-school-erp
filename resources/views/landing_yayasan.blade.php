@@ -84,12 +84,11 @@
         $heroSubtitle   = !empty($landingContent['hero_subtitle']) ? $landingContent['hero_subtitle'] : 'Mendidik anak usia dini dengan penuh kasih sayang, kurikulum holistik terintegrasi, dan fasilitas pembelajaran yang aman serta menyenangkan.';
         $whatsappCta    = $landingContent['whatsapp_cta'] ?? $yayasan->telepon;
         $alamatTampil   = $landingContent['alamat_tampil'] ?? $yayasan->alamat;
-        $tahunBerdiri   = $landingContent['tahun_berdiri'] ?? 2015;
+        $tahunBerdiri   = !empty($landingContent['tahun_berdiri']) ? $landingContent['tahun_berdiri'] : ($yayasan->created_at ? $yayasan->created_at->format('Y') : date('Y'));
         $badgeText      = $landingContent['badge_text'] ?? 'Pendaftaran & Inden Dibuka — TA ' . (date('Y')) . '/' . (date('Y')+1);
         $akreditasi     = $landingContent['akreditasi'] ?? 'A';
-        $jumlahPengajar = $landingContent['jumlah_pengajar'] ?? '18';
-        $pengabdianTahun= date('Y') - (int)$tahunBerdiri;
-        if ($pengabdianTahun <= 0) $pengabdianTahun = 10;
+        $jumlahPengajar = isset($total_guru) ? $total_guru : 0;
+        $pengabdianTahun= max(1, (int)date('Y') - (int)$tahunBerdiri);
     @endphp
 
     <title>{{ $siteTitle }} — Membangun Generasi Cerdas & Berakhlak Mulia</title>
@@ -899,16 +898,16 @@
                 <div class="stat-label">Tahun Pengabdian</div>
             </div>
             <div class="stat-item">
-                <div class="stat-num">{{ $total_siswa > 0 ? $total_siswa : '300+' }}</div>
+                <div class="stat-num">{{ $total_siswa }}</div>
                 <div class="stat-label">Siswa Aktif</div>
             </div>
             <div class="stat-item">
-                <div class="stat-num">{{ $jumlahPengajar }}+</div>
-                <div class="stat-label">Tenaga Pendidik Profesional</div>
+                <div class="stat-num">{{ $total_guru }}</div>
+                <div class="stat-label">Tenaga Pendidik &amp; Staf</div>
             </div>
             <div class="stat-item">
-                <div class="stat-num" style="color:#10B981;">Akreditasi {{ $akreditasi }}</div>
-                <div class="stat-label">BAN PAUD &amp; PNF</div>
+                <div class="stat-num" style="color:#10B981;">{{ $total_sekolah }} Cabang</div>
+                <div class="stat-label">Sekolah TK / PAUD</div>
             </div>
         </div>
     </div>

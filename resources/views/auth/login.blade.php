@@ -39,7 +39,13 @@
   </style>
 </head>
 
-<body class="d-flex align-items-center justify-content-center min-vh-100">
+<body class="d-flex align-items-center justify-content-center min-vh-100 position-relative">
+  <!-- Tombol Navigasi Kembali ke Beranda -->
+  <a href="/" class="btn btn-light rounded-pill px-3 py-2 fw-bold text-secondary border shadow-sm position-absolute top-0 start-0 m-3 m-md-4 d-inline-flex align-items-center gap-2 text-decoration-none" style="z-index: 1050; font-size: 13px;">
+    <iconify-icon icon="solar:alt-arrow-left-bold" class="fs-5 text-primary"></iconify-icon>
+    <span>Kembali ke Beranda</span>
+  </a>
+
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-5 col-xxl-4">

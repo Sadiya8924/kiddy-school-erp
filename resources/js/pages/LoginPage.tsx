@@ -72,7 +72,16 @@ export default function LoginPage({ onNavigate }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex" style={{ paddingTop: 64, background: '#F7F9FC' }}>
+    <div className="min-h-screen flex relative" style={{ background: '#F7F9FC' }}>
+      {/* Top Left Back Button (Desktop) */}
+      <button
+        onClick={() => onNavigate('home')}
+        className="absolute top-6 left-6 z-50 hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-white bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 shadow-md transition-all cursor-pointer group"
+      >
+        <span className="group-hover:-translate-x-1 transition-transform">←</span>
+        <span>Kembali ke Beranda</span>
+      </button>
+
       {/* Left panel */}
       <div ref={leftRef} className="hidden lg:flex flex-1 flex-col justify-center p-12 relative overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #1B3A8C 0%, #2D55E8 60%, #4F8BFF 100%)' }}>
@@ -127,9 +136,18 @@ export default function LoginPage({ onNavigate }: Props) {
       {/* Right — form */}
       <div className="flex-1 lg:max-w-md flex items-center justify-center p-8">
         <div className="w-full max-w-sm">
-          <div className="lg:hidden flex items-center gap-2.5 mb-8">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}>KS</div>
-            <span className="font-700 text-sm text-gray-900" style={{ fontWeight: 700 }}>Kiddy School ERP</span>
+          <div className="lg:hidden flex items-center justify-between gap-2 mb-6">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}>KS</div>
+              <span className="font-700 text-sm text-gray-900" style={{ fontWeight: 700 }}>Kiddy School ERP</span>
+            </div>
+            <button
+              onClick={() => onNavigate('home')}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-all border border-gray-200 cursor-pointer"
+            >
+              <span>←</span>
+              <span>Beranda</span>
+            </button>
           </div>
 
           <h1 className="text-2xl font-800 text-gray-900 mb-1" style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Masuk Sistem</h1>

@@ -14,7 +14,7 @@
   {{-- ========================================================== --}}
   {{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
   {{-- ========================================================== --}}
-  <div class="card border-0 shadow-sm overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
+  <div class="card border-0 shadow-sm overflow-hidden hero-welcome-card" style="background: var(--theme-hero-gradient, linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)); border-radius: 16px !important;">
     <div class="card-body p-4 text-white">
       <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
         
@@ -98,14 +98,10 @@
                     </div>
                   </div>
 
-                  <form method="POST" action="{{ route('owner.switch_yayasan') }}">
-                    @csrf
-                    <input type="hidden" name="active_yayasan_id" value="{{ $cardYayasan->id }}">
-                    <button type="submit" class="btn btn-outline-primary w-100 rounded-3 font-semibold py-2 d-flex align-items-center justify-content-center gap-1.5" style="font-size: 12.5px;">
-                      <span>Kelola User Yayasan Ini</span>
-                      <iconify-icon icon="solar:alt-arrow-right-line-duotone" class="fs-5"></iconify-icon>
-                    </button>
-                  </form>
+                  <a href="{{ route('superadmin.users.encrypted', $cardYayasan->encrypted_token) }}" class="btn btn-outline-primary w-100 rounded-3 font-semibold py-2 d-flex align-items-center justify-content-center gap-1.5" style="font-size: 12.5px;">
+                    <span>Kelola User Yayasan Ini</span>
+                    <iconify-icon icon="solar:alt-arrow-right-line-duotone" class="fs-5"></iconify-icon>
+                  </a>
 
                 </div>
               </div>
@@ -127,7 +123,7 @@
 
   {{-- MODE 2: TABEL USER DETAIL (DENGAN FILTER ROLE & YAYASAN) --}}
   @else
-    <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+    <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue, #3b82f6) !important; border-radius: 16px !important;">
       <div class="card-body p-4 d-flex flex-column">
 
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3.5 border-bottom pb-3">
@@ -187,30 +183,30 @@
           
           {{-- Filter by Role Pills --}}
           <div class="d-flex gap-1.5 flex-wrap">
-            <a href="{{ route('superadmin.users.index', array_merge(request()->query(), ['role' => null])) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ !request('role') ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Semua Role</a>
-            <a href="{{ route('superadmin.users.index', array_merge(request()->query(), ['role' => 'admin'])) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ request('role') === 'admin' ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Admin Sekolah</a>
-            <a href="{{ route('superadmin.users.index', array_merge(request()->query(), ['role' => 'kepsek'])) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ request('role') === 'kepsek' ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Kepala Sekolah</a>
-            <a href="{{ route('superadmin.users.index', array_merge(request()->query(), ['role' => 'guru'])) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ request('role') === 'guru' ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Guru</a>
-            <a href="{{ route('superadmin.users.index', array_merge(request()->query(), ['role' => 'wali_murid'])) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ request('role') === 'wali_murid' ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Wali Murid</a>
+            @php $currentEncryptedToken = isset($selectedYayasan) ? $selectedYayasan->encrypted_token : (request('y') ?: null); @endphp
+            <a href="{{ $currentEncryptedToken ? route('superadmin.users.encrypted', ['token' => $currentEncryptedToken, 'role' => null]) : route('superadmin.users.index', ['role' => null]) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ !request('role') ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Semua Role</a>
+            <a href="{{ $currentEncryptedToken ? route('superadmin.users.encrypted', ['token' => $currentEncryptedToken, 'role' => 'admin']) : route('superadmin.users.index', ['role' => 'admin']) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ request('role') === 'admin' ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Admin Sekolah</a>
+            <a href="{{ $currentEncryptedToken ? route('superadmin.users.encrypted', ['token' => $currentEncryptedToken, 'role' => 'kepsek']) : route('superadmin.users.index', ['role' => 'kepsek']) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ request('role') === 'kepsek' ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Kepala Sekolah</a>
+            <a href="{{ $currentEncryptedToken ? route('superadmin.users.encrypted', ['token' => $currentEncryptedToken, 'role' => 'guru']) : route('superadmin.users.index', ['role' => 'guru']) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ request('role') === 'guru' ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Guru</a>
+            <a href="{{ $currentEncryptedToken ? route('superadmin.users.encrypted', ['token' => $currentEncryptedToken, 'role' => 'wali_murid']) : route('superadmin.users.index', ['role' => 'wali_murid']) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ request('role') === 'wali_murid' ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Wali Murid</a>
             @if(auth()->user()->isOwner())
-              <a href="{{ route('superadmin.users.index', array_merge(request()->query(), ['role' => 'super_admin'])) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ request('role') === 'super_admin' ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Super Admin</a>
+              <a href="{{ $currentEncryptedToken ? route('superadmin.users.encrypted', ['token' => $currentEncryptedToken, 'role' => 'super_admin']) : route('superadmin.users.index', ['role' => 'super_admin']) }}" class="btn btn-xs rounded-pill px-3 py-1.5 font-semibold {{ request('role') === 'super_admin' ? 'btn-primary' : 'btn-light border text-muted' }}" style="font-size: 11.5px;">Super Admin</a>
             @endif
           </div>
 
-          {{-- Dropdown Switch Filter Yayasan untuk Owner --}}
-          @if(auth()->user()->isOwner())
-            <form method="POST" action="{{ route('owner.switch_yayasan') }}" class="d-flex align-items-center gap-2 m-0">
-              @csrf
+          {{-- Dropdown Switch Filter Yayasan dengan URL Terenkripsi --}}
+          @if(auth()->user()->isOwner() || auth()->user()->isSuperAdmin())
+            <div class="d-flex align-items-center gap-2 m-0">
               <small class="text-muted font-semibold whitespace-nowrap" style="font-size: 11.5px;">Filter Yayasan:</small>
-              <select name="active_yayasan_id" class="form-select form-select-sm rounded-3 border-purple-subtle shadow-none font-semibold" onchange="this.form.submit()" style="min-width: 180px; background-color: #f3e8ff; color: #7e22ce; font-size: 12px;">
-                <option value="0">-- Semua Yayasan --</option>
+              <select class="form-select form-select-sm rounded-3 border-purple-subtle shadow-none font-semibold" onchange="if(this.value){ window.location.href=this.value; }" style="min-width: 180px; background-color: #f3e8ff; color: #7e22ce; font-size: 12px;">
+                <option value="{{ route('superadmin.users.index') }}">-- Semua Yayasan --</option>
                 @foreach(\App\Models\Yayasan::where('status', 'aktif')->get() as $yys)
-                  <option value="{{ $yys->id }}" {{ session('active_yayasan_id') == $yys->id ? 'selected' : '' }}>
+                  <option value="{{ route('superadmin.users.encrypted', $yys->encrypted_token) }}" {{ isset($selectedYayasan) && $selectedYayasan->id == $yys->id ? 'selected' : '' }}>
                     {{ $yys->nama_yayasan }}
                   </option>
                 @endforeach
               </select>
-            </form>
+            </div>
           @endif
 
         </div>
@@ -318,13 +314,6 @@
       </div>
     </div>
   @endif
-
-  {{-- ========================================================== --}}
-  {{-- 3. SUBTLE LOW-KEY FOOTER --}}
-  {{-- ========================================================== --}}
-  <footer class="text-center py-2 mt-2">
-    <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria Educational Management Platform • Internal Web System v1.0</span>
-  </footer>
 
 </div>
 @endsection

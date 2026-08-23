@@ -61,9 +61,10 @@ class SettingController extends Controller
     public function editYayasanLanding()
     {
         $user = auth()->user();
-        abort_unless($user->isPureSuperAdmin(), 403, 'Akses ditolak.');
+        abort_unless($user->isPureSuperAdmin() || $user->isOwner(), 403, 'Akses ditolak.');
 
-        $yayasan = Yayasan::findOrFail($user->yayasan_id);
+        $yayasanId = session('active_yayasan_id') ?: $user->yayasan_id;
+        $yayasan = Yayasan::find($yayasanId) ?: Yayasan::firstOrFail();
         $content = $yayasan->landing_content ?? [];
 
         return view('superadmin.landing', compact('yayasan', 'content'));
@@ -72,9 +73,10 @@ class SettingController extends Controller
     public function updateYayasanLanding(Request $request)
     {
         $user = auth()->user();
-        abort_unless($user->isPureSuperAdmin(), 403, 'Akses ditolak.');
+        abort_unless($user->isPureSuperAdmin() || $user->isOwner(), 403, 'Akses ditolak.');
 
-        $yayasan = Yayasan::findOrFail($user->yayasan_id);
+        $yayasanId = session('active_yayasan_id') ?: $user->yayasan_id;
+        $yayasan = Yayasan::find($yayasanId) ?: Yayasan::firstOrFail();
         $content = $yayasan->landing_content ?? [];
 
         // Sync main yayasan name column if site_title is updated
@@ -83,14 +85,14 @@ class SettingController extends Controller
         }
 
         // Save all text inputs
-        $inputs = $request->except('_token', '_method', 'yayasan_image', 'tk_image', 'paud_image', 'site_logo', 'hero_image');
+        $fileKeys = ['yayasan_image', 'tk_image', 'paud_image', 'site_logo', 'hero_image', 'galeri_1_image', 'galeri_2_image', 'galeri_3_image', 'galeri_4_image', 'galeri_5_image', 'galeri_6_image'];
+        $inputs = $request->except(array_merge(['_token', '_method'], $fileKeys));
         foreach ($inputs as $key => $val) {
             $content[$key] = $val;
         }
 
         // Save image uploads
-        $imageFields = ['yayasan_image', 'tk_image', 'paud_image', 'site_logo', 'hero_image'];
-        foreach ($imageFields as $field) {
+        foreach ($fileKeys as $field) {
             if ($request->hasFile($field)) {
                 if (!empty($content[$field])) {
                     $old = str_replace('/storage/', '', $content[$field]);

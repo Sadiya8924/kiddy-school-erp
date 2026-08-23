@@ -7,7 +7,7 @@
   {{-- ========================================================== --}}
   {{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
   {{-- ========================================================== --}}
-  <div class="card border-0 shadow-sm overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
+  <div class="card border-0 shadow-sm overflow-hidden hero-welcome-card" style="background: var(--theme-hero-gradient, linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)); border-radius: 16px !important;">
     <div class="card-body p-4 text-white">
       <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
         
@@ -45,7 +45,7 @@
   {{-- ========================================================== --}}
   {{-- 2. TABEL DATA SEKOLAH --}}
   {{-- ========================================================== --}}
-  <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+  <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue, #3b82f6) !important; border-radius: 16px !important;">
     <div class="card-body p-4 d-flex flex-column">
       <div class="d-flex justify-content-between align-items-center mb-3.5 border-bottom pb-3">
         <div>

@@ -14,7 +14,7 @@
   {{-- ========================================================== --}}
   {{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
   {{-- ========================================================== --}}
-  <div class="card border-0 shadow-sm overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
+  <div class="card border-0 shadow-sm overflow-hidden" style="background: var(--theme-hero-gradient, linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)); border-radius: 16px !important;">
     <div class="card-body p-4 text-white">
       <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
         
@@ -88,9 +88,11 @@
       </a>
     </div>
 
-    {{-- Total Pengguna --}}
     <div class="col-xl-3 col-md-6">
-      <a href="{{ route('superadmin.users.index') }}" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid #f59e0b !important; border-radius: 16px !important;">
+      @php
+        $dashYayasan = auth()->user()->yayasan_id ? \App\Models\Yayasan::find(auth()->user()->yayasan_id) : (\App\Models\Yayasan::find(session('active_yayasan_id')) ?? \App\Models\Yayasan::first());
+      @endphp
+      <a href="{{ $dashYayasan ? route('superadmin.users.encrypted', $dashYayasan->encrypted_token) : route('superadmin.users.index') }}" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid #f59e0b !important; border-radius: 16px !important;">
         <div class="card-body p-3.5 d-flex justify-content-between align-items-center">
           <div>
             <span class="text-muted font-semibold d-block mb-1" style="font-size: 11.5px; letter-spacing: 0.02em;">TOTAL PENGGUNA</span>
@@ -251,13 +253,6 @@
     </div>
 
   </div>
-
-  {{-- ========================================================== --}}
-  {{-- 4. SUBTLE LOW-KEY FOOTER --}}
-  {{-- ========================================================== --}}
-  <footer class="text-center py-2 mt-2">
-    <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria Educational Management Platform • Internal Web System v1.0</span>
-  </footer>
 
 </div>
 

@@ -29,7 +29,7 @@
     {{-- ========================================================== --}}
     {{-- 1. HERO WELCOME CARD WITH SOFT BLUE GRADIENT --}}
     {{-- ========================================================== --}}
-    <div class="card border-0 shadow-sm overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%); border-radius: 16px !important;">
+    <div class="card border-0 shadow-sm overflow-hidden" style="background: var(--theme-hero-gradient, linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)); border-radius: 16px !important;">
         <div class="card-body p-4 text-white">
             <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
                 
@@ -256,13 +256,6 @@
         </div>
 
     </div>
-
-    {{-- ========================================================== --}}
-    {{-- 5. SUBTLE LOW-KEY FOOTER --}}
-    {{-- ========================================================== --}}
-    <footer class="text-center py-2 mt-2">
-        <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria Educational Management Platform • Internal Web System v1.0</span>
-    </footer>
 
 </div>
 @endsection

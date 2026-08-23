@@ -13,16 +13,161 @@
     <!-- Import Font 'Inter' biar tulisan lebih "bakuh" -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    @php
+        $currentYayasan = null;
+        if (auth()->check()) {
+            $user = auth()->user();
+            if (!empty($user->yayasan_id)) {
+                $currentYayasan = \App\Models\Yayasan::find($user->yayasan_id);
+            } elseif (!empty($user->school_id)) {
+                $school = \App\Models\School::find($user->school_id);
+                if ($school && $school->yayasan_id) {
+                    $currentYayasan = \App\Models\Yayasan::find($school->yayasan_id);
+                }
+            }
+            if (!$currentYayasan) {
+                $sessionYayasanId = session('active_yayasan_id');
+                if ($sessionYayasanId) {
+                    $currentYayasan = \App\Models\Yayasan::find($sessionYayasanId);
+                }
+                if (!$currentYayasan) {
+                    $currentYayasan = \App\Models\Yayasan::first();
+                }
+            }
+        }
+
+        $landingContent = [];
+        if ($currentYayasan) {
+            $rawContent = $currentYayasan->landing_content ?? $currentYayasan->landing_page_content ?? [];
+            $landingContent = is_array($rawContent) ? $rawContent : (json_decode($rawContent, true) ?? []);
+        }
+        $templateKey = $landingContent['template'] ?? 'ocean';
+
+        $themeConfigMap = [
+            'ocean' => [
+                'primary'      => '#2563eb',
+                'primary_dark' => '#0f172a',
+                'accent'       => '#f59e0b',
+                'surface'      => '#f8fafc',
+                'pill_bg'      => '#eff6ff',
+                'pill_border'  => '#dbeafe',
+                'gradient'     => 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)',
+            ],
+            'ceria' => [
+                'primary'      => '#EF9F27',
+                'primary_dark' => '#7A5310',
+                'accent'       => '#F0997B',
+                'surface'      => '#FDFBF7',
+                'pill_bg'      => '#FFF7ED',
+                'pill_border'  => '#FFEDD5',
+                'gradient'     => 'linear-gradient(135deg, #7A5310 0%, #D4537E 60%, #EF9F27 100%)',
+            ],
+            'trustworthy' => [
+                'primary'      => '#185FA5',
+                'primary_dark' => '#0B2545',
+                'accent'       => '#60A5FA',
+                'surface'      => '#F4F6F9',
+                'pill_bg'      => '#F0F9FF',
+                'pill_border'  => '#E0F2FE',
+                'gradient'     => 'linear-gradient(135deg, #0B2545 0%, #134074 60%, #185FA5 100%)',
+            ],
+            'natural' => [
+                'primary'      => '#639922',
+                'primary_dark' => '#1C3309',
+                'accent'       => '#FAC775',
+                'surface'      => '#F6F3EC',
+                'pill_bg'      => '#F7FEE7',
+                'pill_border'  => '#ECFCCB',
+                'gradient'     => 'linear-gradient(135deg, #1C3309 0%, #355312 60%, #4D7C0F 100%)',
+            ],
+            'sunset' => [
+                'primary'      => '#E11D48',
+                'primary_dark' => '#4C0519',
+                'accent'       => '#F59E0B',
+                'surface'      => '#FFFDFB',
+                'pill_bg'      => '#FFF1F2',
+                'pill_border'  => '#FFE4E6',
+                'gradient'     => 'linear-gradient(135deg, #4C0519 0%, #9F1239 50%, #E11D48 100%)',
+            ],
+            'emerald' => [
+                'primary'      => '#059669',
+                'primary_dark' => '#064E3B',
+                'accent'       => '#FBBF24',
+                'surface'      => '#F4FBF7',
+                'pill_bg'      => '#ECFDF5',
+                'pill_border'  => '#D1FAE5',
+                'gradient'     => 'linear-gradient(135deg, #064E3B 0%, #047857 60%, #10B981 100%)',
+            ],
+            'violet' => [
+                'primary'      => '#7C3AED',
+                'primary_dark' => '#3B0764',
+                'accent'       => '#EC4899',
+                'surface'      => '#FAF5FF',
+                'pill_bg'      => '#F3E8FF',
+                'pill_border'  => '#E9D5FF',
+                'gradient'     => 'linear-gradient(135deg, #3B0764 0%, #6D28D9 60%, #8B5CF6 100%)',
+            ],
+            'minimal' => [
+                'primary'      => '#334155',
+                'primary_dark' => '#0F172A',
+                'accent'       => '#0EA5E9',
+                'surface'      => '#F8FAFC',
+                'pill_bg'      => '#F1F5F9',
+                'pill_border'  => '#E2E8F0',
+                'gradient'     => 'linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #334155 100%)',
+            ],
+            'amber' => [
+                'primary'      => '#D97706',
+                'primary_dark' => '#78350F',
+                'accent'       => '#10B981',
+                'surface'      => '#FFFBEB',
+                'pill_bg'      => '#FEF3C7',
+                'pill_border'  => '#FDE68A',
+                'gradient'     => 'linear-gradient(135deg, #78350F 0%, #B45309 60%, #F59E0B 100%)',
+            ],
+            'cyan' => [
+                'primary'      => '#0891B2',
+                'primary_dark' => '#164E63',
+                'accent'       => '#A855F7',
+                'surface'      => '#F0FDFA',
+                'pill_bg'      => '#CCFBF1',
+                'pill_border'  => '#99F6E4',
+                'gradient'     => 'linear-gradient(135deg, #164E63 0%, #0E7490 60%, #06B6D4 100%)',
+            ],
+            'rose' => [
+                'primary'      => '#E11D48',
+                'primary_dark' => '#881337',
+                'accent'       => '#FB7185',
+                'surface'      => '#FFF1F2',
+                'pill_bg'      => '#FFE4E6',
+                'pill_border'  => '#FECDD3',
+                'gradient'     => 'linear-gradient(135deg, #881337 0%, #BE123C 60%, #FB7185 100%)',
+            ],
+            'midnight' => [
+                'primary'      => '#38BDF8',
+                'primary_dark' => '#030712',
+                'accent'       => '#818CF8',
+                'surface'      => '#0F172A',
+                'pill_bg'      => '#1E293B',
+                'pill_border'  => '#334155',
+                'gradient'     => 'linear-gradient(135deg, #030712 0%, #0F172A 60%, #1E293B 100%)',
+            ],
+        ];
+
+        $cfg = $themeConfigMap[$templateKey] ?? $themeConfigMap['ocean'];
+    @endphp
+
     <style>
         :root {
-            --primary-blue: #2563eb;       /* Biru solid/pekat */
-            --primary-blue-soft: #eff6ff;  /* Background biru super muda */
-            --primary-blue-border: #bfdbfe;/* Border biru muda */
-            --primary-blue-dark: #1e40af;  /* Biru gelap pekat */
-            --text-dark: #0f172a;          /* Teks hitam pekat (Slate 900) */
-            --text-muted: #64748b;         /* Abu-abu solid (Slate 500) */
+            --primary-blue: {{ $cfg['primary'] }};       /* Primary Theme Accent */
+            --primary-blue-soft: {{ $cfg['pill_bg'] }};  /* Background soft muda */
+            --primary-blue-border: {{ $cfg['pill_border'] }};/* Border muda */
+            --primary-blue-dark: {{ $cfg['primary_dark'] }};  /* Biru gelap pekat */
+            --text-dark: #0f172a;          
+            --text-muted: #64748b;         
             --bg-body: #f8fafc;            
-            --border-color: #e2e8f0;       
+            --border-color: {{ $cfg['pill_border'] }};       
+            --theme-hero-gradient: {{ $cfg['gradient'] }};
         }
 
         body, .page-wrapper {
@@ -30,6 +175,20 @@
             color: var(--text-dark);
             font-family: 'Inter', sans-serif !important;
             -webkit-font-smoothing: antialiased; /* Kunci biar tulisan tajam! */
+        }
+
+        /* Force Welcome Banner and Header Cards to use active template theme gradient */
+        .hero-welcome-card,
+        .hero-banner-card,
+        .card[style*="linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%)"],
+        .card[style*="linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%)"] {
+            background: var(--theme-hero-gradient) !important;
+        }
+
+        /* Override hardcoded card border-top colors to adopt active template accent */
+        .card[style*="border-top: 3.5px solid #3b82f6"],
+        .card[style*="border-top: 3.5px solid #2563eb"] {
+            border-top-color: var(--primary-blue) !important;
         }
 
         h1, h2, h3, h4, h5, h6 { font-weight: 600 !important; color: var(--text-dark); }
@@ -71,17 +230,48 @@
             margin-bottom: 0.5rem;
         }
 
+        /* Dynamic Theme Brand Logo & Icon Helpers */
+        .theme-brand-title {
+            color: var(--primary-blue-dark, var(--primary-blue)) !important;
+        }
+        .theme-brand-bg-soft {
+            background-color: var(--primary-blue-soft) !important;
+        }
+        .theme-brand-icon, .theme-text-primary {
+            color: var(--primary-blue) !important;
+        }
+
         /* Sidebar Styling (Lebih Rapi & Tegas) */
+        .left-sidebar {
+            width: 265px !important;
+        }
+        .body-wrapper {
+            margin-left: 265px !important;
+        }
+        @media (max-width: 1199.98px) {
+            .body-wrapper {
+                margin-left: 0 !important;
+            }
+        }
+
         .sidebar-nav ul .sidebar-item > .sidebar-link {
             font-weight: 500;
             color: #475569;
+            display: flex;
+            align-items: center;
+            padding: 9px 12px !important;
+            font-size: 13px !important;
+            border-radius: 10px !important;
+            white-space: normal !important;
+            line-height: 1.3;
+            margin-bottom: 3px;
         }
         .sidebar-nav ul .sidebar-item.selected > .sidebar-link,
         .sidebar-nav ul .sidebar-item > .sidebar-link.active {
             background-color: var(--primary-blue-soft) !important;
             color: var(--primary-blue-dark) !important;
-            font-weight: 600;
-            border-radius: 8px;
+            font-weight: 600 !important;
+            border-radius: 10px !important;
         }
         .sidebar-nav ul .sidebar-item.selected > .sidebar-link iconify-icon,
         .sidebar-nav ul .sidebar-item > .sidebar-link.active iconify-icon {
@@ -198,6 +388,16 @@
           {{-- Flash messages will be handled by SweetAlert2 --}}
 
           @yield('content')
+
+          <!-- Unified Clean Footer -->
+          <div class="py-3 text-center mt-4 border-top border-light">
+            @php
+                $footerYayasanName = isset($currentYayasan) && $currentYayasan ? $currentYayasan->nama_yayasan : \App\Models\Setting::get('site_title', 'TK CERIA');
+            @endphp
+            <p class="mb-0 text-muted" style="font-size: 12px; font-weight: 500;">
+              © {{ date('Y') }} {{ $footerYayasanName }} — Kiddy School ERP v2.0
+            </p>
+          </div>
         </div>
 
       </div>

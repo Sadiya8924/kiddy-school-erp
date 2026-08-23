@@ -14,10 +14,12 @@ export default function App() {
   const getInitialPage = (): Page => {
     if (typeof window === 'undefined') return 'home'
     const path = window.location.pathname.toLowerCase()
+    if (path.includes('/register') || path.includes('/registration')) {
+      window.location.href = '/daftar-yayasan'
+      return 'home'
+    }
     if (path.includes('/login')) return 'login'
-    if (path.includes('/register')) return 'register'
     if (path.includes('/about')) return 'about'
-    if (path.includes('/registration')) return 'registration'
     if (path.includes('/contact')) return 'contact'
     return 'home'
   }
@@ -25,6 +27,10 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>(getInitialPage)
 
   const navigate = (page: Page) => {
+    if (page === 'register' || page === 'registration') {
+      window.location.href = '/daftar-yayasan'
+      return
+    }
     if (page === 'home') {
       window.location.href = '/'
       return
@@ -33,10 +39,10 @@ export default function App() {
     const pagePaths: Record<Page, string> = {
       home: '/',
       about: '/about',
-      registration: '/registration',
+      registration: '/daftar-yayasan',
       contact: '/contact',
       login: '/login',
-      register: '/register'
+      register: '/daftar-yayasan'
     }
     if (typeof window !== 'undefined') {
       window.history.pushState(null, '', pagePaths[page] || '/')
@@ -74,14 +80,14 @@ export default function App() {
       about: 'Tentang Kami — Kiddy School ERP',
       registration: 'Pendaftaran Yayasan — Kiddy School ERP',
       contact: 'Hubungi Kami — Kiddy School ERP',
-      login: 'Login Owner & Platform — Kiddy School ERP',
+      login: 'Login Platform — Kiddy School ERP',
       register: 'Daftar Yayasan Baru — Kiddy School ERP',
     }
     document.title = titles[currentPage]
   }, [currentPage])
 
   const noFooter = currentPage === 'login' || currentPage === 'register'
-  const noNavbar = currentPage === 'login'
+  const noNavbar = currentPage === 'login' || currentPage === 'register'
 
   return (
     <div style={{ background: '#F7F9FC', minHeight: '100vh', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>

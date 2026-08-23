@@ -12,14 +12,46 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, ?string $token = null)
     {
         $currentUser = Auth::user();
         $active_school_id = session('active_school_id');
-        $active_yayasan_id = session('active_yayasan_id') ?: $request->get('yayasan_id');
 
-        // Jika Owner dan belum memilih yayasan (dan tidak minta view detail), tampilkan Card per-Yayasan terlebih dahulu
-        $showYayasanCards = $currentUser->isOwner() && !$active_yayasan_id && !$request->has('show_users');
+        $rawYayasanParam = $token ?: $request->get('y') ?: $request->get('yayasan_id');
+        $active_yayasan_id = null;
+
+        if ($rawYayasanParam) {
+            $decryptedCode = Yayasan::decryptToken($rawYayasanParam);
+            $targetCodeOrId = $decryptedCode ?: $rawYayasanParam;
+
+            $foundY = Yayasan::where('id', $targetCodeOrId)
+                ->orWhere('kode_yayasan', $targetCodeOrId)
+                ->orWhere('kode_yayasan', strtolower($targetCodeOrId))
+                ->first();
+
+            if ($foundY) {
+                $active_yayasan_id = $foundY->id;
+                session(['active_yayasan_id' => $foundY->id]);
+            }
+        }
+
+        if (!$active_yayasan_id && $currentUser->yayasan_id) {
+            $active_yayasan_id = $currentUser->yayasan_id;
+        }
+
+        if (!$active_yayasan_id && !empty($currentUser->school_id)) {
+            $userSchool = School::find($currentUser->school_id);
+            if ($userSchool && $userSchool->yayasan_id) {
+                $active_yayasan_id = $userSchool->yayasan_id;
+            }
+        }
+
+        if (!$active_yayasan_id) {
+            $active_yayasan_id = session('active_yayasan_id');
+        }
+
+        // Jika Owner/Superadmin dan belum memilih yayasan, tampilkan Card per-Yayasan
+        $showYayasanCards = ($currentUser->isOwner() || $currentUser->isSuperAdmin()) && !$active_yayasan_id && !$request->has('show_users') && !$rawYayasanParam;
 
         $yayasanCards = [];
         if ($showYayasanCards) {

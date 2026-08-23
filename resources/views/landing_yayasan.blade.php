@@ -6,11 +6,28 @@
 
     @php
         $landingContent = $yayasan->landing_content ?? [];
+        $content        = $landingContent;
         $template       = $landingContent['template'] ?? 'ocean';
         $siteTitle      = !empty($landingContent['site_title']) ? $landingContent['site_title'] : $yayasan->nama_yayasan;
 
-        // Palette Theme Mapping for Template Selection
+        // Palette Theme Mapping for 10 Professional Template Selections
         $themeMap = [
+            'ocean' => [
+                'primary'      => '#1E40AF',
+                'primary_dark' => '#1E3A8A',
+                'accent'       => '#60A5FA',
+                'dark'         => '#0F172A',
+                'surface'      => '#F8FAFC',
+                'hero_bg'      => 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 60%, #1E40AF 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.14)',
+                'badge_text'   => '#93C5FD',
+                'avatar_bg'    => 'linear-gradient(135deg, #1E40AF, #3B82F6)',
+                'btn_cta'      => 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#EFF6FF',
+                'pill_border'  => '#DBEAFE',
+                'footer_bg'    => '#0F172A',
+            ],
             'ceria' => [
                 'primary'      => '#EF9F27',
                 'primary_dark' => '#7A5310',
@@ -21,7 +38,7 @@
                 'badge_bg'     => 'rgba(255,255,255,0.22)',
                 'badge_text'   => '#FFFFFF',
                 'avatar_bg'    => 'linear-gradient(135deg, #EF9F27, #F0997B)',
-                'btn_cta'      => 'linear-gradient(135deg, #F0997B 0%, #D4537E 100%)',
+                'btn_cta'      => 'linear-gradient(135deg, #EF9F27 0%, #D97706 100%)',
                 'btn_cta_text' => '#FFFFFF',
                 'pill_bg'      => '#FFF7ED',
                 'pill_border'  => '#FFEDD5',
@@ -37,7 +54,7 @@
                 'badge_bg'     => 'rgba(255,255,255,0.14)',
                 'badge_text'   => '#93C5FD',
                 'avatar_bg'    => 'linear-gradient(135deg, #0B2545, #185FA5)',
-                'btn_cta'      => 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                'btn_cta'      => 'linear-gradient(135deg, #185FA5 0%, #0B2545 100%)',
                 'btn_cta_text' => '#FFFFFF',
                 'pill_bg'      => '#F0F9FF',
                 'pill_border'  => '#E0F2FE',
@@ -53,27 +70,139 @@
                 'badge_bg'     => 'rgba(255,255,255,0.18)',
                 'badge_text'   => '#FEF08A',
                 'avatar_bg'    => 'linear-gradient(135deg, #355312, #639922)',
-                'btn_cta'      => 'linear-gradient(135deg, #D97706 0%, #B45309 100%)',
+                'btn_cta'      => 'linear-gradient(135deg, #65A30D 0%, #4D7C0F 100%)',
                 'btn_cta_text' => '#FFFFFF',
                 'pill_bg'      => '#F7FEE7',
                 'pill_border'  => '#ECFCCB',
                 'footer_bg'    => '#142606',
             ],
-            'ocean' => [
-                'primary'      => '#1E40AF',
-                'primary_dark' => '#1E3A8A',
+            'sunset' => [
+                'primary'      => '#DC2626',
+                'primary_dark' => '#4C0519',
                 'accent'       => '#F59E0B',
+                'dark'         => '#4C0519',
+                'surface'      => '#FFFDFB',
+                'hero_bg'      => 'linear-gradient(135deg, #4C0519 0%, #9F1239 50%, #E11D48 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.16)',
+                'badge_text'   => '#FDE68A',
+                'avatar_bg'    => 'linear-gradient(135deg, #9F1239, #E11D48)',
+                'btn_cta'      => 'linear-gradient(135deg, #F43F5E 0%, #E11D48 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#FFF1F2',
+                'pill_border'  => '#FFE4E6',
+                'footer_bg'    => '#310410',
+            ],
+            'emerald' => [
+                'primary'      => '#059669',
+                'primary_dark' => '#064E3B',
+                'accent'       => '#FBBF24',
+                'dark'         => '#064E3B',
+                'surface'      => '#F4FBF7',
+                'hero_bg'      => 'linear-gradient(135deg, #064E3B 0%, #047857 60%, #10B981 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.16)',
+                'badge_text'   => '#FDE68A',
+                'avatar_bg'    => 'linear-gradient(135deg, #064E3B, #059669)',
+                'btn_cta'      => 'linear-gradient(135deg, #10B981 0%, #047857 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#ECFDF5',
+                'pill_border'  => '#D1FAE5',
+                'footer_bg'    => '#043427',
+            ],
+            'violet' => [
+                'primary'      => '#7C3AED',
+                'primary_dark' => '#3B0764',
+                'accent'       => '#EC4899',
+                'dark'         => '#3B0764',
+                'surface'      => '#FAF5FF',
+                'hero_bg'      => 'linear-gradient(135deg, #3B0764 0%, #6D28D9 60%, #8B5CF6 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.18)',
+                'badge_text'   => '#FBCFE8',
+                'avatar_bg'    => 'linear-gradient(135deg, #5B21B6, #7C3AED)',
+                'btn_cta'      => 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#F3E8FF',
+                'pill_border'  => '#E9D5FF',
+                'footer_bg'    => '#270444',
+            ],
+            'minimal' => [
+                'primary'      => '#334155',
+                'primary_dark' => '#0F172A',
+                'accent'       => '#0EA5E9',
                 'dark'         => '#0F172A',
                 'surface'      => '#F8FAFC',
-                'hero_bg'      => 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 60%, #1E40AF 100%)',
+                'hero_bg'      => 'linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #334155 100%)',
                 'badge_bg'     => 'rgba(255,255,255,0.14)',
-                'badge_text'   => '#FDE68A',
-                'avatar_bg'    => 'linear-gradient(135deg, #1E40AF, #3B82F6)',
+                'badge_text'   => '#7DD3FC',
+                'avatar_bg'    => 'linear-gradient(135deg, #1E293B, #475569)',
+                'btn_cta'      => 'linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#F1F5F9',
+                'pill_border'  => '#E2E8F0',
+                'footer_bg'    => '#0A0F1D',
+            ],
+            'amber' => [
+                'primary'      => '#D97706',
+                'primary_dark' => '#78350F',
+                'accent'       => '#10B981',
+                'dark'         => '#78350F',
+                'surface'      => '#FFFBEB',
+                'hero_bg'      => 'linear-gradient(135deg, #78350F 0%, #B45309 60%, #F59E0B 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.2)',
+                'badge_text'   => '#A7F3D0',
+                'avatar_bg'    => 'linear-gradient(135deg, #92400E, #D97706)',
                 'btn_cta'      => 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                'btn_cta_text' => '#0F172A',
-                'pill_bg'      => '#EFF6FF',
-                'pill_border'  => '#DBEAFE',
-                'footer_bg'    => '#0F172A',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#FEF3C7',
+                'pill_border'  => '#FDE68A',
+                'footer_bg'    => '#451A03',
+            ],
+            'cyan' => [
+                'primary'      => '#0891B2',
+                'primary_dark' => '#164E63',
+                'accent'       => '#A855F7',
+                'dark'         => '#164E63',
+                'surface'      => '#F0FDFA',
+                'hero_bg'      => 'linear-gradient(135deg, #164E63 0%, #0E7490 60%, #06B6D4 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.18)',
+                'badge_text'   => '#E9D5FF',
+                'avatar_bg'    => 'linear-gradient(135deg, #155E75, #0891B2)',
+                'btn_cta'      => 'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#CCFBF1',
+                'pill_border'  => '#99F6E4',
+                'footer_bg'    => '#0E3341',
+            ],
+            'rose' => [
+                'primary'      => '#E11D48',
+                'primary_dark' => '#881337',
+                'accent'       => '#FB7185',
+                'dark'         => '#881337',
+                'surface'      => '#FFF1F2',
+                'hero_bg'      => 'linear-gradient(135deg, #881337 0%, #BE123C 60%, #FB7185 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.2)',
+                'badge_text'   => '#FFE4E6',
+                'avatar_bg'    => 'linear-gradient(135deg, #9F1239, #E11D48)',
+                'btn_cta'      => 'linear-gradient(135deg, #F43F5E 0%, #BE123C 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#FFE4E6',
+                'pill_border'  => '#FECDD3',
+                'footer_bg'    => '#4C0519',
+            ],
+            'midnight' => [
+                'primary'      => '#38BDF8',
+                'primary_dark' => '#030712',
+                'accent'       => '#818CF8',
+                'dark'         => '#030712',
+                'surface'      => '#0F172A',
+                'hero_bg'      => 'linear-gradient(135deg, #030712 0%, #0F172A 60%, #1E293B 100%)',
+                'badge_bg'     => 'rgba(255,255,255,0.12)',
+                'badge_text'   => '#BAE6FD',
+                'avatar_bg'    => 'linear-gradient(135deg, #0F172A, #38BDF8)',
+                'btn_cta'      => 'linear-gradient(135deg, #38BDF8 0%, #0284C7 100%)',
+                'btn_cta_text' => '#FFFFFF',
+                'pill_bg'      => '#1E293B',
+                'pill_border'  => '#334155',
+                'footer_bg'    => '#030712',
             ],
         ];
 
@@ -874,15 +1003,17 @@
                         <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&auto=format&fit=crop&q=80" alt="Belajar Ceria di {{ $yayasan->nama_yayasan }}">
                     @endif
 
+                    @if(($content['show_hero_badge'] ?? '1') == '1')
                     <div class="hero-visual-badge">
                         <div class="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0" style="width:42px;height:42px;font-size:18px;background:var(--btn-cta);">
                             <iconify-icon icon="solar:medal-star-bold-duotone" style="color:var(--btn-cta-text);"></iconify-icon>
                         </div>
                         <div>
-                            <div class="fw-bold text-white small">Pendidikan Holistik Ramah Anak</div>
-                            <div class="text-white-50" style="font-size:11.5px;">Membimbing motorik, logika, & adab islami sejak usia dini.</div>
+                            <div class="fw-bold text-white small">{{ $content['hero_badge_title'] ?? 'Pendidikan Holistik Ramah Anak' }}</div>
+                            <div class="text-white-50" style="font-size:11.5px;">{{ $content['hero_badge_desc'] ?? 'Membimbing motorik, logika, & adab islami sejak usia dini.' }}</div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -983,14 +1114,14 @@
 <section class="section-padding bg-white border-top border-bottom" id="cabang">
     <div class="container">
         <div class="section-header-center">
-            <span class="section-pill-tag">Unit Pendidikan</span>
-            <h2 class="section-main-title">Cabang Sekolah di Bawah Yayasan</h2>
+            <span class="section-pill-tag">{{ $content['cabang_pill_tag'] ?? 'Unit Pendidikan' }}</span>
+            <h2 class="section-main-title">{{ $content['cabang_title'] ?? 'Cabang Sekolah di Bawah Yayasan' }}</h2>
             <p class="section-subtitle-text">
-                Pilih cabang TK / PAUD terdekat dengan domisili Anda untuk melihat informasi kuota dan mendaftarkan anak Anda.
+                {{ $content['cabang_subtitle'] ?? 'Pilih cabang TK / PAUD terdekat dengan domisili Anda untuk melihat informasi kuota dan mendaftarkan anak Anda.' }}
             </p>
         </div>
 
-        <div class="row g-4">
+        <div class="row g-4 justify-content-center">
             @forelse($schools as $school)
             <div class="col-md-6 col-lg-4">
                 <div class="school-card-item">
@@ -1014,7 +1145,7 @@
                         @endif
 
                         <a href="{{ route('yayasan.pendaftaran', ['kode_yayasan' => $yayasan->kode_yayasan, 'school_id' => $school->id]) }}" class="btn-daftar-school">
-                            Daftar ke Sekolah Ini →
+                            {{ $content['cabang_btn_text'] ?? 'Daftar ke Sekolah Ini →' }}
                         </a>
                     </div>
                 </div>
@@ -1036,85 +1167,44 @@
 <section class="section-padding" id="galeri">
     <div class="container">
         <div class="section-header-center">
-            <span class="section-pill-tag">Aktivitas & Fasilitas</span>
-            <h2 class="section-main-title">Galeri Kegiatan & Fasilitas Unggulan</h2>
+            <span class="section-pill-tag">{{ $content['galeri_pill_tag'] ?? 'Aktivitas & Fasilitas' }}</span>
+            <h2 class="section-main-title">{{ $content['galeri_title'] ?? 'Galeri Kegiatan & Fasilitas Unggulan' }}</h2>
             <p class="section-subtitle-text">
-                Dokumentasi nyata keseruan belajar, bermain, pembiasaan ibadah, dan eksplorasi bakat anak-anak di sekolah kami.
+                {{ $content['galeri_subtitle'] ?? 'Dokumentasi nyata keseruan belajar, bermain, pembiasaan ibadah, dan eksplorasi bakat anak-anak di sekolah kami.' }}
             </p>
         </div>
 
         <div class="gallery-grid">
-            <!-- Galeri 1 -->
-            <div class="gallery-card">
-                <div class="gallery-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=700&auto=format&fit=crop&q=80" alt="Belajar & Motorik Kreatif">
-                    <span class="gallery-tag-pill">Kreativitas &amp; Motorik</span>
-                </div>
-                <div class="gallery-body">
-                    <h3 class="gallery-title">Eksplorasi Belajar &amp; Sensorik</h3>
-                    <p class="gallery-desc">Mewarnai, meronce, menyusun balok, dan melatih motorik halus dengan metode bermain bermakna.</p>
-                </div>
-            </div>
+            @php
+                $defaultGaleri = [
+                    1 => ['tag' => 'Kreativitas & Motorik', 'title' => 'Eksplorasi Belajar & Sensorik', 'desc' => 'Mewarnai, meronce, menyusun balok, dan melatih motorik halus dengan metode bermain bermakna.', 'img' => 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=700&auto=format&fit=crop&q=80'],
+                    2 => ['tag' => 'Karakter & Keagamaan', 'title' => 'Tahfidz Cilik & Pembiasaan Doa', 'desc' => 'Hafalan surat-surat pendek juz 30, doa harian, dan pengenalan adab sopan santun sejak dini.', 'img' => 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=700&auto=format&fit=crop&q=80'],
+                    3 => ['tag' => 'Ekstrakurikuler', 'title' => 'Minat Bakat & Drumband Cilik', 'desc' => 'Melatih kekompakan, rasa percaya diri, dan kepekaan musikalitas anak melalui ekskul pilihan.', 'img' => 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=700&auto=format&fit=crop&q=80'],
+                    4 => ['tag' => 'Area Bermain Outbound', 'title' => 'Taman Bermain Aman & Asri', 'desc' => 'Fasilitas playground indoor & outdoor yang aman untuk melatih ketangkasan serta motorik kasar.', 'img' => 'https://images.unsplash.com/photo-1596464716127-f2a829822301?w=700&auto=format&fit=crop&q=80'],
+                    5 => ['tag' => 'Pentas Seni & Field Trip', 'title' => 'Panggung Apresiasi & Wisata Edukasi', 'desc' => 'Kunjungan profesi edukatif serta panggung tahunan untuk melatih keberanian anak tampil di depan publik.', 'img' => 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=700&auto=format&fit=crop&q=80'],
+                    6 => ['tag' => 'Sains & Eksplorasi', 'title' => 'Eksperimen Sains Anak Usia Dini', 'desc' => 'Mengenalkan logika fenomena alam dan rasa ingin tahu ilmiah melalui percobaan sederhana yang aman.', 'img' => 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=700&auto=format&fit=crop&q=80'],
+                ];
+            @endphp
 
-            <!-- Galeri 2 -->
-            <div class="gallery-card">
-                <div class="gallery-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=700&auto=format&fit=crop&q=80" alt="Tahfidz & Doa Harian">
-                    <span class="gallery-tag-pill">Karakter &amp; Keagamaan</span>
+            @for($i = 1; $i <= 6; $i++)
+                @php
+                    $def = $defaultGaleri[$i];
+                    $gTag = $content["galeri_{$i}_tag"] ?? $def['tag'];
+                    $gTitle = $content["galeri_{$i}_title"] ?? $def['title'];
+                    $gDesc = $content["galeri_{$i}_desc"] ?? $def['desc'];
+                    $gImg = $content["galeri_{$i}_image"] ?? $def['img'];
+                @endphp
+                <div class="gallery-card">
+                    <div class="gallery-img-wrapper">
+                        <img src="{{ asset($gImg) }}" alt="{{ $gTitle }}" onerror="this.src='{{ $def['img'] }}'">
+                        <span class="gallery-tag-pill">{{ $gTag }}</span>
+                    </div>
+                    <div class="gallery-body">
+                        <h3 class="gallery-title">{{ $gTitle }}</h3>
+                        <p class="gallery-desc">{{ $gDesc }}</p>
+                    </div>
                 </div>
-                <div class="gallery-body">
-                    <h3 class="gallery-title">Tahfidz Cilik &amp; Pembiasaan Doa</h3>
-                    <p class="gallery-desc">Hafalan surat-surat pendek juz 30, doa harian, dan pengenalan adab sopan santun sejak dini.</p>
-                </div>
-            </div>
-
-            <!-- Galeri 3 -->
-            <div class="gallery-card">
-                <div class="gallery-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=700&auto=format&fit=crop&q=80" alt="Ekstrakurikuler Drumband & Seni">
-                    <span class="gallery-tag-pill">Ekstrakurikuler</span>
-                </div>
-                <div class="gallery-body">
-                    <h3 class="gallery-title">Minat Bakat &amp; Drumband Cilik</h3>
-                    <p class="gallery-desc">Melatih kekompakan, rasa percaya diri, dan kepekaan musikalitas anak melalui ekskul pilihan.</p>
-                </div>
-            </div>
-
-            <!-- Galeri 4 -->
-            <div class="gallery-card">
-                <div class="gallery-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1596464716127-f2a829822301?w=700&auto=format&fit=crop&q=80" alt="Playground & Outbound">
-                    <span class="gallery-tag-pill">Area Bermain Outbound</span>
-                </div>
-                <div class="gallery-body">
-                    <h3 class="gallery-title">Taman Bermain Aman &amp; Asri</h3>
-                    <p class="gallery-desc">Fasilitas playground indoor &amp; outdoor yang aman untuk melatih ketangkasan serta motorik kasar.</p>
-                </div>
-            </div>
-
-            <!-- Galeri 5 -->
-            <div class="gallery-card">
-                <div class="gallery-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=700&auto=format&fit=crop&q=80" alt="Field Trip & Pentas Seni">
-                    <span class="gallery-tag-pill">Pentas Seni &amp; Field Trip</span>
-                </div>
-                <div class="gallery-body">
-                    <h3 class="gallery-title">Panggung Apresiasi &amp; Wisata Edukasi</h3>
-                    <p class="gallery-desc">Kunjungan profesi edukatif serta panggung tahunan untuk melatih keberanian anak tampil di depan publik.</p>
-                </div>
-            </div>
-
-            <!-- Galeri 6 -->
-            <div class="gallery-card">
-                <div class="gallery-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=700&auto=format&fit=crop&q=80" alt="Eksperimen Sains Sederhana">
-                    <span class="gallery-tag-pill">Sains &amp; Eksplorasi</span>
-                </div>
-                <div class="gallery-body">
-                    <h3 class="gallery-title">Eksperimen Sains Anak Usia Dini</h3>
-                    <p class="gallery-desc">Mengenalkan logika fenomena alam dan rasa ingin tahu ilmiah melalui percobaan sederhana yang aman.</p>
-                </div>
-            </div>
+            @endfor
         </div>
     </div>
 </section>
@@ -1193,7 +1283,7 @@
             </p>
         </div>
 
-        <div class="row g-4">
+        <div class="row g-4 justify-content-center">
             <div class="col-md-4">
                 <div class="testimonial-card-item">
                     <div>

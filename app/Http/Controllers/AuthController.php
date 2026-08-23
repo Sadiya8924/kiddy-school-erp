@@ -33,7 +33,7 @@ class AuthController extends Controller
                 if ($userYayasanId && (int)$userYayasanId !== (int)$portalYayasan->id) {
                     $correctYayasan = \App\Models\Yayasan::find($userYayasanId);
                     $correctYayasanName = $correctYayasan ? $correctYayasan->nama_yayasan : 'Yayasan Asal Anda';
-                    $correctYayasanUrl  = $correctYayasan ? route('yayasan.login', $correctYayasan->kode_yayasan) : '/login';
+                    $correctYayasanUrl  = $correctYayasan ? route('yayasan.login', $correctYayasan->encrypted_token) : '/login';
 
                     return back()->with('wrong_yayasan', [
                         'user_email'           => $user->email,
@@ -51,7 +51,7 @@ class AuthController extends Controller
                 if ($userYayasanId) {
                     $correctYayasan = \App\Models\Yayasan::find($userYayasanId);
                     $correctYayasanName = $correctYayasan ? $correctYayasan->nama_yayasan : 'Yayasan Anda';
-                    $correctYayasanUrl  = $correctYayasan ? route('yayasan.login', $correctYayasan->kode_yayasan) : '/login';
+                    $correctYayasanUrl  = $correctYayasan ? route('yayasan.login', $correctYayasan->encrypted_token) : '/login';
 
                     return back()->with('wrong_yayasan', [
                         'user_email'           => $user->email,
@@ -69,11 +69,22 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $role = $user->role;
 
-        return match($role) {
-            'owner'                         => redirect('/owner/yayasans'),
-            'super_admin', 'platform_admin' => redirect('/superadmin/dashboard'),
-            default                         => redirect('/dashboard'),
-        };
+        $userYayasanId = $user->getUserYayasanId();
+        $userYayasan = $userYayasanId ? \App\Models\Yayasan::find($userYayasanId) : null;
+
+        if ($role === 'owner') {
+            return redirect('/owner/yayasans');
+        } elseif (in_array($role, ['super_admin', 'platform_admin'])) {
+            if ($userYayasan) {
+                return redirect()->route('superadmin.dashboard.encrypted', $userYayasan->encrypted_token);
+            }
+            return redirect()->route('superadmin.dashboard');
+        } else {
+            if ($userYayasan) {
+                return redirect()->route('dashboard.encrypted', $userYayasan->encrypted_token);
+            }
+            return redirect()->route('dashboard');
+        }
     }
 
     public function logout(Request $request)
@@ -86,7 +97,7 @@ class AuthController extends Controller
             if ($yayasanId) {
                 $yayasan = \App\Models\Yayasan::find($yayasanId);
                 if ($yayasan) {
-                    $redirectUrl = route('yayasan.login', $yayasan->kode_yayasan);
+                    $redirectUrl = route('yayasan.login', $yayasan->encrypted_token);
                 }
             }
         }

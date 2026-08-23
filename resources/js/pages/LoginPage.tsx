@@ -5,6 +5,15 @@ import { useReducedMotion } from '../hooks/useReducedMotion'
 type Page = 'home' | 'about' | 'registration' | 'contact' | 'login' | 'register'
 interface Props { onNavigate: (p: Page) => void }
 
+interface YayasanItem {
+  id: number
+  nama_yayasan: string
+  kode_yayasan: string
+  logo_yayasan?: string
+  schools_count?: number
+  login_url: string
+}
+
 export default function LoginPage({ onNavigate }: Props) {
   const [form, setForm] = useState({ email: '', password: '', remember: false })
   const [showPass, setShowPass] = useState(false)
@@ -12,6 +21,8 @@ export default function LoginPage({ onNavigate }: Props) {
   const [error, setError] = useState('')
   const reduced = useReducedMotion()
   const leftRef = useRef<HTMLDivElement>(null)
+
+  const yayasans: YayasanItem[] = (typeof window !== 'undefined' && (window as any).YAYASANS) || []
   const csrfToken = (typeof document !== 'undefined' && document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')) || ''
 
   useEffect(() => {
@@ -19,8 +30,8 @@ export default function LoginPage({ onNavigate }: Props) {
     const decors = leftRef.current.querySelectorAll('[data-hero-decor]')
     const ctx = gsap.context(() => {
       decors.forEach((el, i) => {
-        gsap.fromTo(el, { opacity: 0, scale: 0, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.55, delay: 0.4 + i * 0.12, ease: 'back.out(2)' })
-        gsap.to(el, { y: i % 2 === 0 ? -12 : 10, x: i % 3 === 0 ? 8 : -6, duration: 3 + i * 0.45, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: i * 0.3 })
+        gsap.fromTo(el, { opacity: 0, scale: 0, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.25, delay: 0.05 + i * 0.05, ease: 'power2.out' })
+        gsap.to(el, { y: i % 2 === 0 ? -12 : 10, x: i % 3 === 0 ? 8 : -6, duration: 3 + i * 0.45, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: i * 0.1 })
       })
     }, leftRef)
     return () => ctx.revert()
@@ -134,7 +145,7 @@ export default function LoginPage({ onNavigate }: Props) {
       </div>
 
       {/* Right — form */}
-      <div className="flex-1 lg:max-w-md flex items-center justify-center p-8">
+      <div className="flex-1 lg:max-w-md flex items-center justify-center p-8 overflow-y-auto my-auto">
         <div className="w-full max-w-sm">
           <div className="lg:hidden flex items-center justify-between gap-2 mb-6">
             <div className="flex items-center gap-2.5">
@@ -152,7 +163,6 @@ export default function LoginPage({ onNavigate }: Props) {
 
           <h1 className="text-2xl font-800 text-gray-900 mb-1" style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>Masuk Sistem</h1>
           <p className="text-sm mb-4" style={{ color: '#6B7280' }}>Masuk ke akun Kiddy School ERP Anda.</p>
-
 
           {error && (
             <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-500 flex items-center gap-2">
@@ -195,9 +205,88 @@ export default function LoginPage({ onNavigate }: Props) {
             </button>
           </form>
 
+          {/* Quick Demo Credentials */}
+          <div className="mt-5 p-3 rounded-xl bg-gray-50 border border-gray-200">
+            <div className="text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-wider">⚡ Demo Akun Tersedia di Database:</div>
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={() => fillDemo('ortu@tkceria.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
+                👨‍👩‍👧 Wali Murid
+              </button>
+              <button onClick={() => fillDemo('nanang@tk.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
+                👩‍🏫 Guru TK
+              </button>
+              <button onClick={() => fillDemo('admin@tk.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
+                🏢 Admin TK
+              </button>
+              <button onClick={() => fillDemo('kepsek@tk.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
+                🎓 Kepsek
+              </button>
+              <button onClick={() => fillDemo('superadmin@tkceria.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
+                ⚙️ Super Admin
+              </button>
+              <button onClick={() => fillDemo('owner@yayasan.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
+                👑 Owner SaaS
+              </button>
+            </div>
+          </div>
+
+          {/* Section: Card Yayasan Terdaftar (Direct to Yayasan Login Page) */}
+          {yayasans && yayasans.length > 0 && (
+            <div className="mt-5 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                  <span>🏢</span>
+                  <span>Portal Login Yayasan Terdaftar</span>
+                </div>
+                <span className="text-[10px] text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full font-semibold border border-blue-100">
+                  {yayasans.length} Yayasan
+                </span>
+              </div>
+
+              <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+                {yayasans.map((y) => (
+                  <a
+                    key={y.id}
+                    href={y.login_url}
+                    className="p-2.5 rounded-xl border border-gray-200 bg-white hover:border-blue-500 hover:bg-blue-50/40 shadow-xs transition-all flex items-center justify-between gap-2.5 text-decoration-none group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      {y.logo_yayasan ? (
+                        <img
+                          src={`/storage/${y.logo_yayasan}`}
+                          className="w-8 h-8 rounded-lg object-cover border flex-shrink-0"
+                          alt={y.nama_yayasan}
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 font-bold flex items-center justify-center text-xs border border-blue-200 flex-shrink-0">
+                          {y.nama_yayasan ? y.nama_yayasan.substring(0, 2).toUpperCase() : 'YA'}
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <div className="font-bold text-gray-900 text-xs truncate group-hover:text-blue-600 transition-colors">
+                          {y.nama_yayasan}
+                        </div>
+                        <div className="text-[10px] text-gray-500 flex items-center gap-1.5 mt-0.5">
+                          <span className="font-mono bg-gray-100 px-1.5 py-0.2 rounded border text-gray-600 font-semibold">
+                            {y.kode_yayasan || '-'}
+                          </span>
+                          <span>• {y.schools_count || 0} TK</span>
+                        </div>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all flex-shrink-0 flex items-center gap-1">
+                      <span>Masuk</span>
+                      <span className="group-hover:translate-x-0.5 transition-transform">➔</span>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
           <p className="text-center text-xs mt-5" style={{ color: '#6B7280' }}>
-            Belum punya akun?{' '}
-            <button onClick={() => onNavigate('register')} className="font-600" style={{ color: '#365CF5', fontWeight: 600 }}>Daftar sekarang</button>
+            Belum punya yayasan terdaftar?{' '}
+            <a href="/daftar-yayasan" className="font-600 text-decoration-none" style={{ color: '#365CF5', fontWeight: 600 }}>Daftar yayasan baru</a>
           </p>
         </div>
       </div>

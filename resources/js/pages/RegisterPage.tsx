@@ -32,7 +32,16 @@ export default function RegisterPage({ onNavigate }: Props) {
   }
 
   return (
-    <div className="min-h-screen flex" style={{ paddingTop: 64, background: '#F7F9FC' }}>
+    <div className="min-h-screen flex relative" style={{ background: '#F7F9FC' }}>
+      {/* Top Left Back Button (Desktop) */}
+      <a
+        href="/"
+        className="absolute top-6 left-6 z-50 hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-white bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/30 shadow-md transition-all cursor-pointer group text-decoration-none"
+      >
+        <span className="group-hover:-translate-x-1 transition-transform">←</span>
+        <span>Kembali ke Beranda</span>
+      </a>
+
       {/* Left panel — illustration */}
       <div ref={leftRef} className="hidden lg:flex flex-1 relative overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #1B3A8C 0%, #2D55E8 60%, #4F8BFF 100%)' }}>

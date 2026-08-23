@@ -79,13 +79,22 @@ Route::get('/login', function (\Illuminate\Http\Request $request) {
     }
     $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
     $schools = DB::table('schools')->where('status', 'aktif')->get();
-    return view('welcome', compact('schools', 'settings'));
+    $yayasans = \App\Models\Yayasan::where('status', 'aktif')
+        ->withCount('schools')
+        ->latest()
+        ->get()
+        ->map(function ($y) {
+            $y->login_url = $y->encrypted_login_url;
+            return $y;
+        });
+
+    return view('welcome', compact('schools', 'settings', 'yayasans'));
 })->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
-// /register tidak lagi tersedia secara umum — daftar akun hanya lewat /y/{kode_yayasan}
+// /register tidak lagi tersedia — alihkan langsung ke pendaftaran yayasan (/daftar-yayasan)
 Route::get('/register', function () {
-    return redirect('/login')->with('info', 'Untuk mendaftar akun, silakan akses halaman yayasan Anda terlebih dahulu.');
+    return redirect('/daftar-yayasan');
 })->name('register');
 
 // TM-34: Password Reset — GET = halaman form, POST = proses kirim email
@@ -148,14 +157,50 @@ Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->nam
 Route::middleware(['auth'])->group(function () {
 
     // 1. DASHBOARD UMUM
-    Route::get('/dashboard', function () {
+    // 1. DASHBOARD UMUM
+    $generalDashboardClosure = function (\Illuminate\Http\Request $request, ?string $token = null) {
         $user = Auth::user();
-        
+        if ($token) {
+            $decryptedCode = \App\Models\Yayasan::decryptToken($token);
+            if ($decryptedCode) {
+                $foundY = \App\Models\Yayasan::where('id', $decryptedCode)->orWhere('kode_yayasan', $decryptedCode)->first();
+                if ($foundY) {
+                    session(['active_yayasan_id' => $foundY->id]);
+                }
+            }
+        } else {
+            if ($user->isSuperAdmin() || $user->isPlatformAdmin()) {
+                $yId = session('active_school_id') ? null : ($user->getUserYayasanId() ?: session('active_yayasan_id'));
+                if ($yId) {
+                    $yObj = \App\Models\Yayasan::find($yId);
+                    if ($yObj) {
+                        return redirect()->route('superadmin.dashboard.encrypted', $yObj->encrypted_token);
+                    }
+                }
+                return redirect()->route('superadmin.dashboard');
+            } else {
+                $yId = $user->getUserYayasanId();
+                if ($yId) {
+                    $yObj = \App\Models\Yayasan::find($yId);
+                    if ($yObj) {
+                        return redirect()->route('dashboard.encrypted', $yObj->encrypted_token);
+                    }
+                }
+            }
+        }
+
         if ($user->isSuperAdmin()) {
             if (session('active_school_id')) {
                 $current_school_id = session('active_school_id');
             } else {
-                return redirect('/superadmin/dashboard');
+                $yId = session('active_yayasan_id') ?: $user->yayasan_id;
+                if ($yId) {
+                    $yObj = \App\Models\Yayasan::find($yId);
+                    if ($yObj) {
+                        return redirect()->route('superadmin.dashboard.encrypted', $yObj->encrypted_token);
+                    }
+                }
+                return redirect()->route('superadmin.dashboard');
             }
         } else if ($user->role == 'wali_murid') {
             $anak = \App\Models\Siswa::where('email', $user->email)
@@ -170,7 +215,7 @@ Route::middleware(['auth'])->group(function () {
         } else {
             $current_school_id = $user->school_id;
         }
-        
+
         $school = \App\Models\School::findOrFail($current_school_id);
         $semesterAktif = Semester::where('is_active', true)->first();
 
@@ -203,7 +248,10 @@ Route::middleware(['auth'])->group(function () {
         $school->total_kelas = $kelas_stats->count();
 
         return view('dashboard', compact('school', 'pengumuman', 'semesterAktif', 'kelas_stats', 'guru_kelas'));
-    })->name('dashboard');
+    };
+
+    Route::get('/d/{token}', $generalDashboardClosure)->name('dashboard.encrypted');
+    Route::get('/dashboard', $generalDashboardClosure)->name('dashboard');
 
     // 1B. AKSES OWNER ONLY (MANAJEMEN YAYASAN)
     Route::middleware('role:owner')->prefix('owner')->name('owner.')->group(function () {
@@ -222,11 +270,28 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/owner/yayasan-registrations/{id}/reject', [\App\Http\Controllers\YayasanRegistrationController::class, 'reject'])->name('owner.yayasan_reg.reject');
     });
 
-
-
     // 2. AKSES SUPER ADMIN & OWNER
     Route::middleware('role:owner,super_admin')->prefix('superadmin')->name('superadmin.')->group(function () {
-        Route::get('/dashboard', function () {
+        $superAdminDashboardClosure = function (\Illuminate\Http\Request $request, ?string $token = null) {
+            $user = Auth::user();
+            if ($token) {
+                $decryptedCode = \App\Models\Yayasan::decryptToken($token);
+                if ($decryptedCode) {
+                    $foundY = \App\Models\Yayasan::where('id', $decryptedCode)->orWhere('kode_yayasan', $decryptedCode)->first();
+                    if ($foundY) {
+                        session(['active_yayasan_id' => $foundY->id]);
+                    }
+                }
+            } else {
+                $yId = $user->getUserYayasanId() ?: session('active_yayasan_id');
+                if ($yId) {
+                    $yObj = \App\Models\Yayasan::find($yId);
+                    if ($yObj) {
+                        return redirect()->route('superadmin.dashboard.encrypted', $yObj->encrypted_token);
+                    }
+                }
+            }
+
             $totalSchools  = \App\Models\School::count();
             $activeSchools = \App\Models\School::where('status', 'aktif')->count();
             $totalUsers    = \App\Models\User::whereNot('role', 'super_admin')->count();
@@ -237,7 +302,10 @@ Route::middleware(['auth'])->group(function () {
                                 ->select('announcements.*', 'schools.nama_sekolah')
                                 ->latest('announcements.created_at')->take(5)->get();
             return view('superadmin.dashboard', compact('totalSchools', 'activeSchools', 'totalUsers', 'totalSiswa', 'schools', 'pengumuman_global'));
-        })->name('dashboard');
+        };
+
+        Route::get('/d/{token}', $superAdminDashboardClosure)->name('dashboard.encrypted');
+        Route::get('/dashboard', $superAdminDashboardClosure)->name('dashboard');
 
         Route::post('/switch-school', function (\Illuminate\Http\Request $request) {
             if ($request->active_school_id) session(['active_school_id' => $request->active_school_id]);
@@ -246,6 +314,7 @@ Route::middleware(['auth'])->group(function () {
         })->name('switch_school');
 
         Route::resource('schools', SchoolController::class);
+        Route::get('/users/y/{token}', [SuperUserController::class, 'index'])->name('users.encrypted');
         Route::resource('users', SuperUserController::class);
         Route::get('/schools/{id}/modules', [ModuleManagementController::class, 'manage'])->name('schools.modules');
         Route::post('/schools/{id}/modules', [ModuleManagementController::class, 'update'])->name('schools.modules.update');

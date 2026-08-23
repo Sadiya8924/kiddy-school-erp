@@ -353,7 +353,7 @@
         @else
             <a href="/login" class="btn-header-login">
                 <iconify-icon icon="solar:login-2-bold-duotone" style="font-size:18px;"></iconify-icon>
-                Login Owner / Platform
+                Login Platform
             </a>
         @endauth
         <a href="{{ route('yayasan.daftar') }}" class="btn-header-cta">

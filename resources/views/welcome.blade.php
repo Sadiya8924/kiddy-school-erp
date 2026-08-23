@@ -13,6 +13,7 @@
         window.isAuth = {{ Auth::check() ? 'true' : 'false' }};
         window.csrfToken = "{{ csrf_token() }}";
         window.WRONG_YAYASAN = @json(session('wrong_yayasan'));
+        window.YAYASANS = @json($yayasans ?? []);
     </script>
 
     <!-- Vite React Refresh & Entry Point -->

@@ -17,9 +17,18 @@ class LandingYayasanController extends Controller
      * Tampilkan landing page profil publik per yayasan.
      * Diakses via: /y/{kode_yayasan}
      */
-    private function findYayasan(string $kode_yayasan): Yayasan
+    private function findYayasan(string $kode_yayasan, bool &$isEncrypted = false): Yayasan
     {
-        $code = strtoupper(trim($kode_yayasan));
+        $decryptedCode = Yayasan::decryptToken($kode_yayasan);
+        if ($decryptedCode) {
+            $isEncrypted = true;
+            $targetCode = $decryptedCode;
+        } else {
+            $isEncrypted = false;
+            $targetCode = $kode_yayasan;
+        }
+
+        $code = strtoupper(trim($targetCode));
         return Yayasan::where(function($q) use ($code) {
                 $q->where('kode_yayasan', $code)
                   ->orWhere('kode_yayasan', strtolower($code));
@@ -40,7 +49,14 @@ class LandingYayasanController extends Controller
      */
     public function show(string $kode_yayasan)
     {
-        $yayasan = $this->findYayasan($kode_yayasan);
+        $isEncrypted = false;
+        $yayasan = $this->findYayasan($kode_yayasan, $isEncrypted);
+
+        // Jika diakses menggunakan kode unencrypted (misal /y/YAH2), redirect paksa ke URL terenkripsi
+        if (!$isEncrypted && $kode_yayasan !== $yayasan->encrypted_token) {
+            return redirect()->route('yayasan.landing', $yayasan->encrypted_token);
+        }
+
         $yayasan->load('schools');
 
         // Statistik ringkas per sekolah
@@ -88,7 +104,14 @@ class LandingYayasanController extends Controller
      */
     public function pendaftaranPage(Request $request, string $kode_yayasan)
     {
-        $yayasan = $this->findYayasan($kode_yayasan);
+        $isEncrypted = false;
+        $yayasan = $this->findYayasan($kode_yayasan, $isEncrypted);
+
+        // Jika diakses menggunakan kode unencrypted, redirect ke URL terenkripsi
+        if (!$isEncrypted) {
+            return redirect()->route('yayasan.pendaftaran', array_merge(['kode_yayasan' => $yayasan->encrypted_token], $request->query()));
+        }
+
         $yayasan->load('schools');
 
         $schools = $yayasan->schools->where('status', 'aktif')->values();
@@ -107,7 +130,13 @@ class LandingYayasanController extends Controller
             return redirect('/dashboard');
         }
 
-        $yayasan = $this->findYayasan($kode_yayasan);
+        $isEncrypted = false;
+        $yayasan = $this->findYayasan($kode_yayasan, $isEncrypted);
+
+        // Jika diakses menggunakan kode unencrypted (misal /y/YAH2/login), redirect paksa ke URL terenkripsi
+        if (!$isEncrypted) {
+            return redirect()->route('yayasan.login', $yayasan->encrypted_token);
+        }
 
         return view('landing_yayasan_login', compact('yayasan'));
     }

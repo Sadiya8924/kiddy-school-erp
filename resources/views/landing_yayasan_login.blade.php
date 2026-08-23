@@ -11,6 +11,16 @@
         $siteTitle      = !empty($landingContent['site_title']) ? $landingContent['site_title'] : $yayasan->nama_yayasan;
 
         $themeMap = [
+            'ocean' => [
+                'primary'      => '#1E40AF',
+                'primary_dark' => '#1B3A8C',
+                'accent'       => '#FCD34D',
+                'surface'      => '#FFFFFF',
+                'hero_bg'      => 'linear-gradient(135deg, #1B3A8C 0%, #2D55E8 60%, #4F8BFF 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #1E40AF, #3B82F6)',
+                'btn_cta'      => 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+                'btn_cta_text' => '#FFFFFF',
+            ],
             'ceria' => [
                 'primary'      => '#EF9F27',
                 'primary_dark' => '#7A5310',
@@ -41,15 +51,85 @@
                 'btn_cta'      => 'linear-gradient(135deg, #639922 0%, #355312 100%)',
                 'btn_cta_text' => '#FFFFFF',
             ],
-            'ocean' => [
-                'primary'      => '#2563EB',
-                'primary_dark' => '#1B3A8C',
-                'accent'       => '#FCD34D',
-                'surface'      => '#FFFFFF',
-                'hero_bg'      => 'linear-gradient(135deg, #1B3A8C 0%, #2D55E8 60%, #4F8BFF 100%)',
-                'avatar_bg'    => 'linear-gradient(135deg, #1E40AF, #3B82F6)',
-                'btn_cta'      => 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+            'sunset' => [
+                'primary'      => '#DC2626',
+                'primary_dark' => '#4C0519',
+                'accent'       => '#F59E0B',
+                'surface'      => '#FFFDFB',
+                'hero_bg'      => 'linear-gradient(135deg, #4C0519 0%, #9F1239 50%, #E11D48 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #9F1239, #E11D48)',
+                'btn_cta'      => 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
                 'btn_cta_text' => '#FFFFFF',
+            ],
+            'emerald' => [
+                'primary'      => '#059669',
+                'primary_dark' => '#064E3B',
+                'accent'       => '#FBBF24',
+                'surface'      => '#F4FBF7',
+                'hero_bg'      => 'linear-gradient(135deg, #064E3B 0%, #047857 60%, #10B981 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #064E3B, #059669)',
+                'btn_cta'      => 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                'btn_cta_text' => '#FFFFFF',
+            ],
+            'violet' => [
+                'primary'      => '#7C3AED',
+                'primary_dark' => '#3B0764',
+                'accent'       => '#EC4899',
+                'surface'      => '#FAF5FF',
+                'hero_bg'      => 'linear-gradient(135deg, #3B0764 0%, #6D28D9 60%, #8B5CF6 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #5B21B6, #7C3AED)',
+                'btn_cta'      => 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)',
+                'btn_cta_text' => '#FFFFFF',
+            ],
+            'minimal' => [
+                'primary'      => '#334155',
+                'primary_dark' => '#0F172A',
+                'accent'       => '#0EA5E9',
+                'surface'      => '#F8FAFC',
+                'hero_bg'      => 'linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #334155 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #1E293B, #475569)',
+                'btn_cta'      => 'linear-gradient(135deg, #334155 0%, #1E293B 100%)',
+                'btn_cta_text' => '#FFFFFF',
+            ],
+            'amber' => [
+                'primary'      => '#D97706',
+                'primary_dark' => '#78350F',
+                'accent'       => '#10B981',
+                'surface'      => '#FFFBEB',
+                'hero_bg'      => 'linear-gradient(135deg, #78350F 0%, #B45309 60%, #F59E0B 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #92400E, #D97706)',
+                'btn_cta'      => 'linear-gradient(135deg, #D97706 0%, #B45309 100%)',
+                'btn_cta_text' => '#FFFFFF',
+            ],
+            'cyan' => [
+                'primary'      => '#0891B2',
+                'primary_dark' => '#164E63',
+                'accent'       => '#A855F7',
+                'surface'      => '#F0FDFA',
+                'hero_bg'      => 'linear-gradient(135deg, #164E63 0%, #0E7490 60%, #06B6D4 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #155E75, #0891B2)',
+                'btn_cta'      => 'linear-gradient(135deg, #0891B2 0%, #0E7490 100%)',
+                'btn_cta_text' => '#FFFFFF',
+            ],
+            'rose' => [
+                'primary'      => '#E11D48',
+                'primary_dark' => '#881337',
+                'accent'       => '#FB7185',
+                'surface'      => '#FFF1F2',
+                'hero_bg'      => 'linear-gradient(135deg, #881337 0%, #BE123C 60%, #FB7185 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #9F1239, #E11D48)',
+                'btn_cta'      => 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
+                'btn_cta_text' => '#FFFFFF',
+            ],
+            'midnight' => [
+                'primary'      => '#38BDF8',
+                'primary_dark' => '#030712',
+                'accent'       => '#818CF8',
+                'surface'      => '#0F172A',
+                'hero_bg'      => 'linear-gradient(135deg, #030712 0%, #0F172A 60%, #1E293B 100%)',
+                'avatar_bg'    => 'linear-gradient(135deg, #0F172A, #38BDF8)',
+                'btn_cta'      => 'linear-gradient(135deg, #38BDF8 0%, #0284C7 100%)',
+                'btn_cta_text' => '#0F172A',
             ],
         ];
 
@@ -742,8 +822,8 @@
             // 1. Fade in orbs with stagger
             gsap.to(['#orb1', '#orb2', '#orb3'], {
                 opacity: 1,
-                duration: 1.6,
-                stagger: 0.25,
+                duration: 0.5,
+                stagger: 0.05,
                 ease: 'power2.out'
             });
 
@@ -763,7 +843,7 @@
                 repeat: -1,
                 yoyo: true,
                 ease: 'sine.inOut',
-                delay: 0.8
+                delay: 0.1
             });
             gsap.to('#orb3', {
                 y: -14,
@@ -772,24 +852,24 @@
                 repeat: -1,
                 yoyo: true,
                 ease: 'sine.inOut',
-                delay: 1.2
+                delay: 0.1
             });
 
             // 3. Stars twinkling fade in + rotation
             gsap.to(['#star1', '#star2'], {
                 opacity: 1,
                 rotation: 20,
-                duration: 1.2,
-                stagger: 0.4,
-                ease: 'back.out(1.5)',
-                delay: 0.5
+                duration: 0.4,
+                stagger: 0.05,
+                ease: 'power2.out',
+                delay: 0.05
             });
             gsap.to('#star1', {
                 rotation: '+=360',
                 duration: 14,
                 repeat: -1,
                 ease: 'none',
-                delay: 1.8
+                delay: 0.2
             });
             gsap.to('#star2', {
                 y: -10,
@@ -797,43 +877,43 @@
                 repeat: -1,
                 yoyo: true,
                 ease: 'sine.inOut',
-                delay: 1
+                delay: 0.1
             });
 
             // 4. Slide-up + fade in for welcome icon
             gsap.from('#welcome-icon', {
-                y: 40,
+                y: 15,
                 opacity: 0,
-                duration: 0.9,
-                ease: 'power3.out',
-                delay: 0.3
+                duration: 0.3,
+                ease: 'power2.out',
+                delay: 0.02
             });
 
             // 5. Slide-up for heading and subtext
             gsap.from('#hero-heading', {
-                y: 36,
+                y: 15,
                 opacity: 0,
-                duration: 0.85,
-                ease: 'power3.out',
-                delay: 0.55
+                duration: 0.3,
+                ease: 'power2.out',
+                delay: 0.05
             });
             gsap.from('#hero-subtext', {
-                y: 28,
+                y: 15,
                 opacity: 0,
-                duration: 0.8,
-                ease: 'power3.out',
-                delay: 0.75
+                duration: 0.3,
+                ease: 'power2.out',
+                delay: 0.08
             });
 
             // 6. Feature cards staggered entrance
             const cards = document.querySelectorAll('#feature-grid .feature-pill-card');
             gsap.from(cards, {
-                y: 30,
+                y: 15,
                 opacity: 0,
-                duration: 0.7,
-                stagger: 0.12,
+                duration: 0.3,
+                stagger: 0.04,
                 ease: 'power2.out',
-                delay: 0.95
+                delay: 0.1
             });
 
             // 7. Continuous subtle float for the entire content

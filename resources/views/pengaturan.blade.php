@@ -361,12 +361,5 @@
 
     @endif
 
-    {{-- ========================================================== --}}
-    {{-- 5. SUBTLE LOW-KEY FOOTER --}}
-    {{-- ========================================================== --}}
-    <footer class="text-center py-2 mt-2">
-        <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria Educational Management Platform • Internal Web System v1.0</span>
-    </footer>
-
 </div>
 @endsection

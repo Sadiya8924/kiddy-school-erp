@@ -352,17 +352,22 @@
             </div>
         </div>
 
-        {{-- STICKY SAVE BAR --}}
-        <div class="sticky-save-bar p-3 d-flex align-items-center justify-content-between gap-3">
-            <div class="d-flex align-items-center gap-2">
-                <span class="p-2 rounded-circle bg-success-subtle text-success d-inline-flex">
-                    <iconify-icon icon="solar:check-read-bold" class="fs-5"></iconify-icon>
-                </span>
-                <span class="text-dark small fw-semibold">Pastikan seluruh data platform sudah sesuai sebelum menyimpan.</span>
+        {{-- TOMBOL SIMPAN PERUBAHAN DI AKHIR HALAMAN (STATIC, TIDAK NGAMBANG) --}}
+        <div class="card border shadow-sm mb-4 mt-2" style="border-top: 3.5px solid #2563eb !important; border-radius: 16px !important;">
+            <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3" style="border-radius: 14px; background-color: #f8fafc;">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle p-2.5 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
+                        <iconify-icon icon="solar:info-circle-bold-duotone" class="fs-4"></iconify-icon>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0.5 text-dark" style="font-size: 14px;">Konfirmasi Simpan Tampilan &amp; Konten Landing Page</h6>
+                        <span class="text-muted small" style="font-size: 12px;">Pastikan seluruh data platform sudah sesuai sebelum menyimpan perubahan secara publik.</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary rounded-3 px-4 py-2.5 font-semibold d-flex align-items-center gap-2 shadow-sm" style="font-size: 13px;">
+                    <iconify-icon icon="solar:diskette-bold-duotone" class="fs-5"></iconify-icon> Simpan Perubahan Landing Page
+                </button>
             </div>
-            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-bold d-inline-flex align-items-center gap-2 shadow-sm">
-                <iconify-icon icon="solar:diskette-bold" class="fs-5"></iconify-icon> Simpan Perubahan Landing Page
-            </button>
         </div>
 
     </form>

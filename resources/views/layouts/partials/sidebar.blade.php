@@ -1,10 +1,47 @@
 <aside class="left-sidebar">
     <div>
-        <div class="brand-logo d-flex align-items-center justify-content-between px-4 py-3">
-            <a href="/dashboard" class="text-nowrap logo-img text-decoration-none">
-                <h4 class="fw-bold text-primary mb-0 text-truncate" style="max-width: 190px;" title="{{ \App\Models\Setting::get('site_title', 'TK CERIA') }}">
-                    <iconify-icon icon="solar:diploma-bold-duotone" class="fs-6 align-middle me-1"></iconify-icon> {{ strtoupper(\App\Models\Setting::get('site_title', 'TK CERIA')) }}
-                </h4>
+        @php
+            $sidebarYayasan = null;
+            if (auth()->check()) {
+                $u = auth()->user();
+                if (!empty($u->yayasan_id)) {
+                    $sidebarYayasan = \App\Models\Yayasan::find($u->yayasan_id);
+                } elseif (!empty($u->school_id)) {
+                    $sch = \App\Models\School::find($u->school_id);
+                    if ($sch && $sch->yayasan_id) {
+                        $sidebarYayasan = \App\Models\Yayasan::find($sch->yayasan_id);
+                    }
+                }
+                if (!$sidebarYayasan) {
+                    $sessId = session('active_yayasan_id');
+                    if ($sessId) {
+                        $sidebarYayasan = \App\Models\Yayasan::find($sessId);
+                    }
+                }
+                if (!$sidebarYayasan) {
+                    $sidebarYayasan = \App\Models\Yayasan::first();
+                }
+            }
+            $sidebarTitle = $sidebarYayasan ? $sidebarYayasan->nama_yayasan : \App\Models\Setting::get('site_title', 'TK CERIA');
+            $sidebarYayasanToken = $sidebarYayasan ? $sidebarYayasan->encrypted_token : null;
+
+            $encLink = function($url) use ($sidebarYayasanToken) {
+                if (!$sidebarYayasanToken || empty($url) || $url === 'javascript:void(0)') return $url;
+                return $url . (str_contains($url, '?') ? '&' : '?') . 'y=' . $sidebarYayasanToken;
+            };
+        @endphp
+
+        <div class="brand-logo d-flex align-items-center justify-content-between px-3 py-3 border-bottom border-light">
+            <a href="{{ $encLink('/dashboard') }}" class="logo-img text-decoration-none d-flex align-items-center gap-2 overflow-hidden me-2">
+                <div class="rounded-circle theme-brand-bg-soft theme-text-primary p-2 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px;">
+                    <iconify-icon icon="solar:diploma-bold-duotone" class="fs-5 theme-brand-icon"></iconify-icon>
+                </div>
+                <div class="lh-sm overflow-hidden">
+                    <span class="fw-bold d-block theme-brand-title text-uppercase text-truncate" style="font-size: 13px; letter-spacing: -0.01em;" title="{{ $sidebarTitle }}">
+                        {{ $sidebarTitle }}
+                    </span>
+                    <span class="text-muted d-block text-truncate" style="font-size: 10.5px; font-weight: 500;">Portal ERP Yayasan</span>
+                </div>
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                 <i class="ti ti-x fs-8"></i>
@@ -52,8 +89,8 @@
                 </li>
 
                 <li class="sidebar-item">
-                    <a class="sidebar-link {{ request()->is('dashboard') || request()->is('superadmin/dashboard') ? 'active' : '' }}" 
-                       href="{{ $user && $user->isSuperAdmin() ? '/superadmin/dashboard' : '/dashboard' }}">
+                    <a class="sidebar-link {{ request()->is('dashboard') || request()->is('d/*') || request()->is('superadmin/dashboard') || request()->is('superadmin/d/*') ? 'active' : '' }}" 
+                       href="{{ $sidebarYayasan ? ($user->isSuperAdmin() ? route('superadmin.dashboard.encrypted', $sidebarYayasan->encrypted_token) : route('dashboard.encrypted', $sidebarYayasan->encrypted_token)) : ($user->isSuperAdmin() ? route('superadmin.dashboard') : route('dashboard')) }}">
                         <span><iconify-icon icon="solar:home-smile-bold-duotone" class="fs-6"></iconify-icon></span>
                         <span class="hide-menu">Dashboard</span>
                     </a>
@@ -68,7 +105,7 @@
                     @if($user->isOwner())
                     {{-- Owner: edit landing page utama/global --}}
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('settings/landing-page*') ? 'active' : '' }}" href="{{ route('settings.landing.edit') }}">
+                        <a class="sidebar-link {{ request()->is('settings/landing-page*') ? 'active' : '' }}" href="{{ $encLink(route('settings.landing.edit')) }}">
                             <span><iconify-icon icon="solar:monitor-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Edit Landing Page Utama</span>
                         </a>
@@ -76,7 +113,7 @@
                     {{-- Owner: Pendaftaran Yayasan Baru --}}
                     <li class="sidebar-item">
                         @php $regCount = \App\Models\YayasanRegistration::where('status','menunggu')->count(); @endphp
-                        <a class="sidebar-link {{ request()->is('owner/yayasan-registrations*') ? 'active' : '' }}" href="{{ route('owner.yayasan_reg.index') }}">
+                        <a class="sidebar-link {{ request()->is('owner/yayasan-registrations*') ? 'active' : '' }}" href="{{ $encLink(route('owner.yayasan_reg.index')) }}">
                             <span><iconify-icon icon="solar:buildings-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">
                                 Pendaftaran Yayasan
@@ -91,7 +128,7 @@
                     @if($user->isPureSuperAdmin())
                     {{-- Super Admin: edit landing page yayasan sendiri --}}
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('superadmin/landing-page*') ? 'active' : '' }}" href="{{ route('superadmin.landing.edit') }}">
+                        <a class="sidebar-link {{ request()->is('superadmin/landing-page*') ? 'active' : '' }}" href="{{ $encLink(route('superadmin.landing.edit')) }}">
                             <span><iconify-icon icon="solar:monitor-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Edit Landing Page Yayasan</span>
                         </a>
@@ -107,7 +144,7 @@
                     </li>
                     @if($user->isOwner())
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('owner/yayasans*') ? 'active' : '' }}" href="{{ route('owner.yayasans.index') }}">
+                        <a class="sidebar-link {{ request()->is('owner/yayasans*') ? 'active' : '' }}" href="{{ $encLink(route('owner.yayasans.index')) }}">
                             <span><iconify-icon icon="solar:buildings-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Data Yayasan</span>
                         </a>
@@ -115,14 +152,14 @@
                     @endif
                     @if(!$user->isOwner())
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('superadmin/schools*') ? 'active' : '' }}" href="{{ route('superadmin.schools.index') }}">
+                        <a class="sidebar-link {{ request()->is('superadmin/schools*') ? 'active' : '' }}" href="{{ $encLink(route('superadmin.schools.index')) }}">
                             <span><iconify-icon icon="solar:buildings-2-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Data Sekolah (TK)</span>
                         </a>
                     </li>
                     @endif
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('superadmin/users*') ? 'active' : '' }}" href="{{ route('superadmin.users.index') }}">
+                        <a class="sidebar-link {{ request()->is('superadmin/users*') ? 'active' : '' }}" href="{{ $sidebarYayasan ? route('superadmin.users.encrypted', $sidebarYayasan->encrypted_token) : $encLink(route('superadmin.users.index')) }}">
                             <span><iconify-icon icon="solar:users-group-rounded-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Manajemen User</span>
                         </a>
@@ -138,7 +175,7 @@
                     
                     @if($hasMenu('Pengaturan Sekolah'))
                         <li class="sidebar-item">
-                            <a class="sidebar-link {{ request()->is('pengaturan*') ? 'active' : '' }}" href="/pengaturan">
+                            <a class="sidebar-link {{ request()->is('pengaturan*') ? 'active' : '' }}" href="{{ $encLink('/pengaturan') }}">
                                 <span><iconify-icon icon="solar:settings-bold-duotone" class="fs-6"></iconify-icon></span>
                                 <span class="hide-menu">Pengaturan Sekolah</span>
                             </a>
@@ -147,7 +184,7 @@
                     
                     @if($hasMenu('Manajemen Kelas'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('kelas*') ? 'active' : '' }}" href="/kelas">
+                        <a class="sidebar-link {{ request()->is('kelas*') ? 'active' : '' }}" href="{{ $encLink('/kelas') }}">
                             <span><iconify-icon icon="solar:black-hole-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Data Kelas</span>
                         </a>
@@ -156,7 +193,7 @@
 
                     @if($hasMenu('Data Siswa'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('data-siswa*') ? 'active' : '' }}" href="/data-siswa">
+                        <a class="sidebar-link {{ request()->is('data-siswa*') ? 'active' : '' }}" href="{{ $encLink('/data-siswa') }}">
                             <span><iconify-icon icon="solar:users-group-two-rounded-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Data Siswa</span>
                         </a>
@@ -170,7 +207,7 @@
                     
                     @if($user->role == 'guru' || $user->isSuperAdmin())
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('materi/guru*') ? 'active' : '' }}" href="{{ route('materi.guru.index') }}">
+                        <a class="sidebar-link {{ request()->is('materi/guru*') ? 'active' : '' }}" href="{{ $encLink(route('materi.guru.index')) }}">
                             <span><iconify-icon icon="solar:document-add-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Manajemen Materi</span>
                         </a>
@@ -178,7 +215,7 @@
                     @endif
                     @if(in_array($user->role, ['kepsek', 'admin', 'super_admin']))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('materi/persetujuan*') ? 'active' : '' }}" href="{{ route('materi.kepsek.index') }}">
+                        <a class="sidebar-link {{ request()->is('materi/persetujuan*') ? 'active' : '' }}" href="{{ $encLink(route('materi.kepsek.index')) }}">
                             <span><iconify-icon icon="solar:shield-check-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Persetujuan Materi</span>
                         </a>
@@ -186,7 +223,7 @@
                     @endif
                     @if($hasMenu('Jurnal Harian'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('jurnal-harian*') ? 'active' : '' }}" href="/jurnal-harian">
+                        <a class="sidebar-link {{ request()->is('jurnal-harian*') ? 'active' : '' }}" href="{{ $encLink('/jurnal-harian') }}">
                             <span><iconify-icon icon="solar:book-bookmark-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Jurnal Harian</span>
                         </a>
@@ -195,7 +232,7 @@
 
                     @if($hasMenu('Absensi Harian'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('absensi-harian*') ? 'active' : '' }}" href="/absensi-harian">
+                        <a class="sidebar-link {{ request()->is('absensi-harian*') ? 'active' : '' }}" href="{{ $encLink('/absensi-harian') }}">
                             <span><iconify-icon icon="solar:user-check-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Presensi Harian</span>
                         </a>
@@ -204,7 +241,7 @@
 
                     @if($hasMenu('Rekap Absensi'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('rekap-absensi*') ? 'active' : '' }}" href="/rekap-absensi">
+                        <a class="sidebar-link {{ request()->is('rekap-absensi*') ? 'active' : '' }}" href="{{ $encLink('/rekap-absensi') }}">
                             <span><iconify-icon icon="solar:document-text-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Rekap Presensi</span>
                         </a>
@@ -213,7 +250,7 @@
 
                     @if($hasMenu('Perkembangan Fisik'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('perkembangan-fisik*') ? 'active' : '' }}" href="/perkembangan-fisik">
+                        <a class="sidebar-link {{ request()->is('perkembangan-fisik*') ? 'active' : '' }}" href="{{ $encLink('/perkembangan-fisik') }}">
                             <span><iconify-icon icon="solar:pulse-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Perkembangan Fisik</span>
                         </a>
@@ -227,7 +264,7 @@
                     
                     @if($hasMenu('Isi Rapor'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('isi-rapor*') ? 'active' : '' }}" href="/isi-rapor">
+                        <a class="sidebar-link {{ request()->is('isi-rapor*') ? 'active' : '' }}" href="{{ $encLink('/isi-rapor') }}">
                             <span><iconify-icon icon="solar:pen-new-round-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Isi Rapor</span>
                         </a>
@@ -236,7 +273,7 @@
 
                     @if($hasMenu('Cetak Rapor'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('cetak-rapor*') ? 'active' : '' }}" href="/cetak-rapor">
+                        <a class="sidebar-link {{ request()->is('cetak-rapor*') ? 'active' : '' }}" href="{{ $encLink('/cetak-rapor') }}">
                             <span><iconify-icon icon="solar:printer-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Cetak Rapor</span>
                         </a>
@@ -245,7 +282,7 @@
 
                     @if($hasMenu('Arsip Rapor'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('arsip-rapor*') ? 'active' : '' }}" href="/arsip-rapor">
+                        <a class="sidebar-link {{ request()->is('arsip-rapor*') ? 'active' : '' }}" href="{{ $encLink('/arsip-rapor') }}">
                             <span><iconify-icon icon="solar:folder-with-files-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Arsip Rapor</span>
                         </a>
@@ -254,7 +291,7 @@
 
                     @if($hasMenu('Pengumuman'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('pengumuman*') ? 'active' : '' }}" href="/pengumuman">
+                        <a class="sidebar-link {{ request()->is('pengumuman*') ? 'active' : '' }}" href="{{ $encLink('/pengumuman') }}">
                             <span><iconify-icon icon="solar:bell-bing-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Pengumuman Sekolah</span>
                         </a>
@@ -264,7 +301,7 @@
                     @if(in_array($user->role, ['super_admin', 'admin']))
                         @if($hasMenu('Template Rapor'))
                         <li class="sidebar-item mt-2">
-                            <a class="sidebar-link {{ request()->is('admin/template*') ? 'active' : '' }}" href="/admin/template">
+                            <a class="sidebar-link {{ request()->is('admin/template*') ? 'active' : '' }}" href="{{ $encLink('/admin/template') }}">
                                 <span><iconify-icon icon="solar:document-add-bold-duotone" class="fs-6"></iconify-icon></span>
                                 <span class="hide-menu">Template Rapor</span>
                             </a>
@@ -273,7 +310,7 @@
                         
                         @if($hasMenu('Kenaikan Kelas'))
                         <li class="sidebar-item">
-                            <a class="sidebar-link {{ request()->is('kenaikan-kelas*') ? 'active' : '' }}" href="/kenaikan-kelas">
+                            <a class="sidebar-link {{ request()->is('kenaikan-kelas*') ? 'active' : '' }}" href="{{ $encLink('/kenaikan-kelas') }}">
                                 <span><iconify-icon icon="solar:square-double-alt-arrow-up-bold-duotone" class="fs-6"></iconify-icon></span>
                                 <span class="hide-menu">Kenaikan Kelas</span>
                             </a>
@@ -290,7 +327,7 @@
                     
                     @if($hasMenu('Rapor Anak'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="/rapor-anak">
+                        <a class="sidebar-link" href="{{ $encLink('/rapor-anak') }}">
                             <span><iconify-icon icon="solar:notebook-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Rapor Anak</span>
                         </a>
@@ -299,7 +336,7 @@
                     
                     @if($hasMenu('Laporan Fisik'))
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="/perkembangan-anak">
+                        <a class="sidebar-link" href="{{ $encLink('/perkembangan-anak') }}">
                             <span><iconify-icon icon="solar:pulse-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Laporan Fisik</span>
                         </a>
@@ -308,14 +345,14 @@
 
                     
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->routeIs('materi.ortu.index') ? 'active' : '' }}" href="{{ route('materi.ortu.index') }}">
+                        <a class="sidebar-link {{ request()->routeIs('materi.ortu.index') ? 'active' : '' }}" href="{{ $encLink(route('materi.ortu.index')) }}">
                             <span><iconify-icon icon="solar:book-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Materi Pelajaran</span>
                         </a>
                     </li>
                     
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('materi-anak*') ? 'active' : '' }}" href="{{ route('walimurid.materi') }}">
+                        <a class="sidebar-link {{ request()->is('materi-anak*') ? 'active' : '' }}" href="{{ $encLink(route('walimurid.materi')) }}">
                             <span><iconify-icon icon="solar:notebook-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Jurnal Harian Anak</span>
                         </a>

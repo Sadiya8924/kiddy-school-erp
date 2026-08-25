@@ -48,8 +48,8 @@
         <li class="nav-item d-none d-md-block me-3">
             <form action="{{ route('pengaturan.semester.switch') }}" method="POST" id="formSwitchSemester" class="d-flex align-items-center gap-2">
                 @csrf
-                <iconify-icon icon="solar:calendar-mark-bold-duotone" class="fs-6 text-success"></iconify-icon>
-                <select name="semester_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchSemester').submit()" style="min-width: 170px; background-color: #f0fdf4; color: #166534; border-radius: 8px;">
+                <iconify-icon icon="solar:calendar-mark-bold-duotone" class="fs-6 text-primary"></iconify-icon>
+                <select name="semester_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchSemester').submit()" style="min-width: 170px; background-color: var(--primary-blue-soft); color: var(--primary-blue-dark); border-radius: 8px;">
                     @foreach($semesters as $sem)
                         <option value="{{ $sem->id }}" {{ $activeSemId == $sem->id ? 'selected' : '' }}>
                             {{ $sem->tahun_ajaran }} ({{ ucfirst($sem->jenis) }})
@@ -67,8 +67,8 @@
         <li class="nav-item d-none d-md-block me-3">
             <form action="{{ route('owner.switch_yayasan') }}" method="POST" id="formSwitchYayasan" class="d-flex align-items-center gap-2">
                 @csrf
-                <iconify-icon icon="solar:city-bold-duotone" class="fs-6 text-purple"></iconify-icon>
-                <select name="active_yayasan_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchYayasan').submit()" style="min-width: 190px; background-color: #f3e8ff; color: #7e22ce; border-radius: 8px;">
+                <iconify-icon icon="solar:city-bold-duotone" class="fs-6 text-primary"></iconify-icon>
+                <select name="active_yayasan_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchYayasan').submit()" style="min-width: 190px; background-color: var(--primary-blue-soft); color: var(--primary-blue-dark); border-radius: 8px;">
                     <option value="">-- Semua Yayasan --</option>
                     @foreach(\App\Models\Yayasan::where('status', 'aktif')->get() as $yayasan)
                         <option value="{{ $yayasan->id }}" {{ session('active_yayasan_id') == $yayasan->id ? 'selected' : '' }}>

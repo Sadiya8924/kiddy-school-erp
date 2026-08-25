@@ -212,7 +212,7 @@
                   <form method="POST" action="{{ route('superadmin.switch_school') }}">
                     @csrf
                     <input type="hidden" name="active_school_id" value="{{ $sch->id }}">
-                    <button type="submit" class="btn btn-success w-100 rounded-3 font-semibold py-2 d-flex align-items-center justify-content-center gap-1.5" style="font-size: 12.5px;">
+                    <button type="submit" class="btn btn-primary w-100 rounded-3 font-semibold py-2 d-flex align-items-center justify-content-center gap-1.5" style="font-size: 12.5px;">
                       <span>Pilih {{ $sch->nama_sekolah }}</span>
                       <iconify-icon icon="solar:check-circle-bold-duotone" class="fs-5"></iconify-icon>
                     </button>

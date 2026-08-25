@@ -306,6 +306,36 @@
             --bs-primary: var(--primary-blue);
             --bs-primary-bg-subtle: var(--primary-blue-soft);
             --bs-primary-border-subtle: var(--primary-blue-border);
+            --bs-nav-pills-link-active-bg: var(--primary-blue);
+            --bs-nav-pills-link-active-color: #ffffff;
+            --bs-nav-link-color: var(--primary-blue);
+            --bs-nav-link-hover-color: var(--primary-blue-dark, var(--primary-blue));
+        }
+
+        /* ============================================================ */
+        /* NAV-PILLS & TABS THEME OVERRIDE                              */
+        /* ============================================================ */
+        .nav-pills .nav-link {
+            color: var(--primary-blue) !important;
+            border-color: var(--primary-blue-border, #bfdbfe);
+        }
+        .nav-pills .nav-link iconify-icon,
+        .nav-pills .nav-link i {
+            color: inherit !important;
+        }
+        .nav-pills .nav-link:hover {
+            color: var(--primary-blue-dark, var(--primary-blue)) !important;
+            background-color: var(--primary-blue-soft) !important;
+        }
+        .nav-pills .nav-link.active,
+        .nav-pills .show > .nav-link {
+            background-color: var(--primary-blue) !important;
+            color: #ffffff !important;
+            border-color: var(--primary-blue) !important;
+        }
+        .nav-pills .nav-link.active iconify-icon,
+        .nav-pills .nav-link.active i {
+            color: #ffffff !important;
         }
 
         /* Sidebar Styling (Lebih Rapi & Tegas) */

@@ -122,7 +122,7 @@
         @endif
 
         {{-- TABEL PRESENSI --}}
-        <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+        <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
             <div class="card-body p-4 d-flex flex-column">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3.5 border-bottom pb-3 gap-2">
                     <div>

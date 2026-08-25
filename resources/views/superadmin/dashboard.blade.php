@@ -58,14 +58,14 @@
     
     {{-- Total Sekolah Terdaftar --}}
     <div class="col-xl-3 col-md-6">
-      <a href="{{ auth()->user()->isOwner() ? route('owner.yayasans.index') : route('superadmin.schools.index') }}" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+      <a href="{{ auth()->user()->isOwner() ? route('owner.yayasans.index') : route('superadmin.schools.index') }}" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-3.5 d-flex justify-content-between align-items-center">
           <div>
             <span class="text-muted font-semibold d-block mb-1" style="font-size: 11.5px; letter-spacing: 0.02em;">TOTAL SEKOLAH TERDAFTAR</span>
             <h2 class="fw-bold text-dark mb-0" style="letter-spacing: -0.03em; font-size: 26px;">{{ $totalSchools }}</h2>
             <span class="text-muted small mt-1 d-block" style="font-size: 11px;">Sekolah terdaftar di sistem</span>
           </div>
-          <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background-color: #eff6ff; color: #3b82f6; width: 54px; height: 54px;">
+          <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background-color: var(--primary-blue-soft); color: var(--primary-blue); width: 54px; height: 54px;">
             <iconify-icon icon="solar:buildings-2-bold-duotone" class="fs-2"></iconify-icon>
           </div>
         </div>
@@ -136,7 +136,7 @@
           <div class="d-flex justify-content-between align-items-center mb-3.5 border-bottom pb-3">
             <div>
               <h6 class="fw-bold text-dark mb-0.5 d-flex align-items-center gap-2" style="font-size: 15px;">
-                <iconify-icon icon="solar:buildings-bold-duotone" class="text-primary fs-5"></iconify-icon> Daftar Sekolah
+                <iconify-icon icon="solar:buildings-bold-duotone" class="fs-5" style="color: var(--primary-blue);"></iconify-icon> Daftar Sekolah
               </h6>
             </div>
             @if(!auth()->user()->isOwner())
@@ -164,7 +164,7 @@
                         @if($school->logo_sekolah)
                           <img src="{{ asset('storage/' . $school->logo_sekolah) }}" alt="Logo" class="rounded object-fit-cover shadow-sm flex-shrink-0" style="width: 40px; height: 40px;">
                         @else
-                          <div class="rounded d-flex align-items-center justify-content-center fw-bold text-primary shadow-sm flex-shrink-0" style="width: 40px; height: 40px; background-color: #eff6ff; font-size: 14px;">
+                          <div class="rounded d-flex align-items-center justify-content-center fw-bold shadow-sm flex-shrink-0" style="width: 40px; height: 40px; background-color: var(--primary-blue-soft); color: var(--primary-blue); font-size: 14px;">
                             {{ strtoupper(substr($school->nama_sekolah, 0, 2)) }}
                           </div>
                         @endif
@@ -204,7 +204,7 @@
           </div>
           
           <div class="mt-auto pt-3 text-center border-top">
-            <a href="{{ route('superadmin.schools.index') }}" class="text-decoration-none font-semibold text-primary small d-inline-flex align-items-center gap-1" style="font-size: 12.5px;">
+            <a href="{{ route('superadmin.schools.index') }}" class="text-decoration-none font-semibold small d-inline-flex align-items-center gap-1" style="font-size: 12.5px; color: var(--primary-blue);">
               Lihat Semua Sekolah <iconify-icon icon="solar:alt-arrow-right-line-duotone" class="align-middle fs-5"></iconify-icon>
             </a>
           </div>
@@ -264,7 +264,7 @@
   .card-clickable:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
-    border-color: #bfdbfe !important;
+    border-color: var(--primary-blue-border, #bfdbfe) !important;
   }
 </style>
 @endsection

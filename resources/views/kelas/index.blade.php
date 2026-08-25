@@ -62,10 +62,10 @@
     <div class="row g-4">
         @forelse($list_kelas as $kelas)
             <div class="col-md-6 col-lg-4">
-                <div class="card border shadow-sm h-100 position-relative overflow-hidden" style="border-radius: 16px !important; border-top: 3.5px solid #3b82f6 !important;">
+                <div class="card border shadow-sm h-100 position-relative overflow-hidden" style="border-radius: 16px !important; border-top: 3.5px solid var(--primary-blue) !important;">
                     <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
                         <div>
-                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 58px; height: 58px; background-color: #eff6ff; color: #2563eb;">
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 58px; height: 58px; background-color: var(--primary-blue-soft); color: var(--primary-blue);">
                                 <iconify-icon icon="solar:black-hole-bold-duotone" style="font-size: 28px;"></iconify-icon>
                             </div>
                             

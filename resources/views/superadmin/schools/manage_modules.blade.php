@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex flex-column gap-3.5 mt-0 pb-4">
 
-    <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+    <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-4 p-md-4.5">
             
             <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">

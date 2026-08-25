@@ -88,7 +88,7 @@
         {{-- ========================================================== --}}
         {{-- 2. IDENTITAS & BRANDING UTAMA (NAVBAR & HEADER) --}}
         {{-- ========================================================== --}}
-        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #2563eb !important; border-radius: 16px !important;">
+        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
             <div class="card-header bg-white border-bottom p-4">
                 <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
                     <span class="section-icon-badge bg-primary-subtle text-primary">
@@ -353,7 +353,7 @@
         </div>
 
         {{-- TOMBOL SIMPAN PERUBAHAN DI AKHIR HALAMAN (STATIC, TIDAK NGAMBANG) --}}
-        <div class="card border shadow-sm mb-4 mt-2" style="border-top: 3.5px solid #2563eb !important; border-radius: 16px !important;">
+        <div class="card border shadow-sm mb-4 mt-2" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
             <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3" style="border-radius: 14px; background-color: #f8fafc;">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-circle p-2.5 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">

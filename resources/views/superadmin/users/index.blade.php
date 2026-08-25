@@ -53,7 +53,7 @@
         <div class="row g-4">
           @forelse($yayasanCards as $cardYayasan)
             <div class="col-md-6 col-lg-4">
-              <div class="card border shadow-sm h-100 card-clickable" style="border-radius: 16px !important; border-top: 3px solid #2563eb !important;">
+              <div class="card border shadow-sm h-100 card-clickable" style="border-radius: 16px !important; border-top: 3px solid var(--primary-blue) !important;">
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                   <div>
                     <div class="d-flex justify-content-between align-items-start mb-3">

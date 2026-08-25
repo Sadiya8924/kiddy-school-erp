@@ -25,7 +25,7 @@
             <form action="{{ route('switch-child') }}" method="POST" id="formSwitchChild" class="d-flex align-items-center gap-2">
                 @csrf
                 <iconify-icon icon="solar:user-speak-bold-duotone" class="fs-6 text-primary"></iconify-icon>
-                <select name="child_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchChild').submit()" style="min-width: 210px; background-color: #eff6ff; color: #1e40af; border-radius: 8px;">
+                <select name="child_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchChild').submit()" style="min-width: 210px; background-color: var(--primary-blue-soft); color: var(--primary-blue-dark); border-radius: 8px;">
                     @foreach($anakList as $anak)
                         <option value="{{ $anak->id }}" {{ $activeChildId == $anak->id ? 'selected' : '' }}>
                             Anak: {{ $anak->nama_lengkap }}

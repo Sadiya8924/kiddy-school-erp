@@ -77,7 +77,7 @@
     {{-- STATS CARDS --}}
     <div class="row g-3">
         <div class="col-6 col-md-3">
-            <div class="card border shadow-sm h-100" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+            <div class="card border shadow-sm h-100" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
                 <div class="card-body p-3.5">
                     <span class="text-muted font-semibold d-block mb-1" style="font-size: 11px;">TOTAL TOPIK</span>
                     <h3 class="fw-bold mb-0 text-primary">{{ $stats['total'] ?? 0 }}</h3>
@@ -111,7 +111,7 @@
     </div>
 
     {{-- FILTER BAR --}}
-    <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+    <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-3.5">
             <form method="GET" action="{{ route('jurnal.index') }}" class="row g-3 align-items-end">
                 <div class="col-md-3">
@@ -188,7 +188,7 @@
     <div class="row g-3">
         @forelse($materis as $materi)
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 border shadow-sm overflow-hidden" style="border-top: 3.5px solid {{ $materi->kelompok == 'A' ? '#3b82f6' : ($materi->kelompok == 'B' ? '#10b981' : '#06b6d4') }} !important; border-radius: 16px !important;">
+                <div class="card h-100 border shadow-sm overflow-hidden" style="border-top: 3.5px solid {{ $materi->kelompok == 'A' ? 'var(--primary-blue)' : ($materi->kelompok == 'B' ? '#10b981' : '#06b6d4') }} !important; border-radius: 16px !important;">
                     <div class="card-header border-0 bg-white p-3.5 border-bottom border-light-subtle">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="badge {{ $materi->kelompok == 'A' ? 'bg-primary-subtle text-primary' : ($materi->kelompok == 'B' ? 'bg-success-subtle text-success' : 'bg-info-subtle text-info') }} font-semibold rounded-pill px-2.5 py-1" style="font-size: 11px;">
@@ -239,7 +239,7 @@
             </div>
         @empty
             <div class="col-12 text-center py-5">
-                <div class="card border shadow-sm p-5 bg-white" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+                <div class="card border shadow-sm p-5 bg-white" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
                     <div class="card-body">
                         <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 54px; height: 54px;">
                             <iconify-icon icon="solar:file-remove-bold-duotone" class="fs-2"></iconify-icon>

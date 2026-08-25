@@ -196,7 +196,11 @@
 
         /* Override hardcoded card border-top colors to adopt active template accent */
         .card[style*="border-top: 3.5px solid #3b82f6"],
-        .card[style*="border-top: 3.5px solid #2563eb"] {
+        .card[style*="border-top: 3.5px solid #2563eb"],
+        .card[style*="border-top: 3px solid #3b82f6"],
+        .card[style*="border-top: 3px solid #2563eb"],
+        .card[style*="border-top:3.5px solid #3b82f6"],
+        .card[style*="border-top:3.5px solid #2563eb"] {
             border-top-color: var(--primary-blue) !important;
         }
 
@@ -248,6 +252,60 @@
         }
         .theme-brand-icon, .theme-text-primary {
             color: var(--primary-blue) !important;
+        }
+
+        /* Override Bootstrap text-primary & bg-primary utilities to follow active theme */
+        .text-primary { color: var(--primary-blue) !important; }
+        .bg-primary { background-color: var(--primary-blue) !important; }
+        .bg-primary-subtle { background-color: var(--primary-blue-soft) !important; }
+        .text-primary.text-opacity-80 { color: var(--primary-blue) !important; opacity: 0.8; }
+        .border-primary { border-color: var(--primary-blue) !important; }
+        .btn-outline-primary {
+            color: var(--primary-blue) !important;
+            border-color: var(--primary-blue) !important;
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--primary-blue) !important;
+            color: #fff !important;
+        }
+        a.text-primary, a.text-primary:visited { color: var(--primary-blue) !important; }
+        .badge.bg-primary, .badge.bg-primary-subtle.text-primary {
+            background-color: var(--primary-blue-soft) !important;
+            color: var(--primary-blue) !important;
+        }
+        .progress-bar.bg-primary { background-color: var(--primary-blue) !important; }
+        .card-clickable:hover { border-color: var(--primary-blue-border, #bfdbfe) !important; }
+
+        /* ============================================================ */
+        /* SIDEBAR HOVER — override template hardcoded #2952ff blue     */
+        /* ============================================================ */
+        .sidebar-nav ul .sidebar-item .sidebar-link:hover {
+            background-color: var(--primary-blue-soft) !important;
+            color: var(--primary-blue) !important;
+        }
+        .sidebar-nav ul .sidebar-item .sidebar-link:hover iconify-icon,
+        .sidebar-nav ul .sidebar-item .sidebar-link:hover .ti {
+            color: var(--primary-blue) !important;
+        }
+
+        /* ============================================================ */
+        /* NAVBAR TOP-BAR ICON HOVER — override template #2952ff blue   */
+        /* ============================================================ */
+        .nav-icon-hover:hover::before {
+            background-color: var(--primary-blue-soft) !important;
+        }
+        .app-header .navbar .navbar-nav.quick-links .nav-item:hover .nav-link {
+            color: var(--primary-blue) !important;
+        }
+        .app-header .navbar .navbar-nav.quick-links .nav-item:hover .nav-link:before {
+            background: var(--primary-blue-soft) !important;
+        }
+
+        /* Override Bootstrap CSS custom props so template components inherit theme */
+        :root {
+            --bs-primary: var(--primary-blue);
+            --bs-primary-bg-subtle: var(--primary-blue-soft);
+            --bs-primary-border-subtle: var(--primary-blue-border);
         }
 
         /* Sidebar Styling (Lebih Rapi & Tegas) */

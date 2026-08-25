@@ -212,7 +212,7 @@ export default function LoginPage({ onNavigate }: Props) {
               <button onClick={() => fillDemo('ortu@tkceria.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
                 👨‍👩‍👧 Wali Murid
               </button>
-              <button onClick={() => fillDemo('nanang@tk.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
+              <button onClick={() => fillDemo('naning@tk.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
                 👩‍🏫 Guru TK
               </button>
               <button onClick={() => fillDemo('admin@tk.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">

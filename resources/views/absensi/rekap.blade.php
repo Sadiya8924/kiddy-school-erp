@@ -245,7 +245,7 @@
 @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
 
 <!-- FORM FILTER (KELAS, SEARCH SISWA, TANGGAL) -->
-<div class="card border shadow-sm no-print card-filter mb-4" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+<div class="card border shadow-sm no-print card-filter mb-4" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
     <div class="card-body p-3.5">
         <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2" style="font-size: 14.5px;">
             <iconify-icon icon="solar:filter-bold-duotone" class="text-primary fs-5"></iconify-icon> Filter Data Presensi ({{ $school->nama_sekolah ?? 'TK CERIA' }})
@@ -347,7 +347,7 @@
 @endif
 
 <!-- TABEL REKAP & MATRIKS PRESENSI -->
-<div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+<div class="card border shadow-sm mb-4" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
     <div class="card-body p-4">
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3 no-print">
             <div class="d-flex align-items-center gap-3">

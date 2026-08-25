@@ -8,7 +8,7 @@
 
     {{-- Info Sekolah --}}
     <div class="col-lg-4">
-      <div class="card border shadow-sm text-center" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+      <div class="card border shadow-sm text-center" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-4">
           <a href="{{ route('superadmin.schools.index') }}" class="btn btn-sm btn-light text-muted rounded-circle p-2 shadow-xs d-inline-flex align-items-center justify-content-center float-start" style="width: 36px; height: 36px;" title="Kembali">
             <iconify-icon icon="solar:alt-arrow-left-bold-duotone" class="fs-5"></iconify-icon>
@@ -74,7 +74,7 @@
 
     {{-- Daftar User --}}
     <div class="col-lg-8">
-      <div class="card border shadow-sm h-100" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+      <div class="card border shadow-sm h-100" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-4 d-flex flex-column">
           <div class="d-flex justify-content-between align-items-center mb-3.5 border-bottom pb-3">
             <div>

@@ -1,5 +1,23 @@
 @extends('layouts.admin')
 
+@php
+    $dashYayasan = null;
+    if (auth()->check()) {
+        $u = auth()->user();
+        $yId = method_exists($u, 'getUserYayasanId') ? $u->getUserYayasanId() : ($u->yayasan_id ?? null);
+        if (!$yId && isset($anak) && $anak->count() > 0) {
+            $sch = \App\Models\School::find($anak->first()->school_id);
+            if ($sch) $yId = $sch->yayasan_id;
+        }
+        $dashYayasan = $yId ? \App\Models\Yayasan::find($yId) : \App\Models\Yayasan::where('status', 'aktif')->first();
+    }
+    $dashToken = $dashYayasan ? $dashYayasan->encrypted_token : null;
+    $dashLink = function($path) use ($dashToken) {
+        if (!$dashToken) return $path;
+        return '/y/' . $dashToken . (str_starts_with($path, '/') ? $path : '/' . $path);
+    };
+@endphp
+
 @section('konten_halaman')
 <div class="d-flex flex-column gap-3.5 mt-0">
 
@@ -41,7 +59,7 @@
 
                 {{-- Action Controls --}}
                 <div class="d-flex align-items-center gap-2 flex-wrap ms-lg-auto">
-                    <a href="/pendaftaran-siswa" class="btn btn-warning text-dark rounded-3 btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5 shadow-sm" style="font-size: 12px;">
+                    <a href="{{ $dashLink('/daftar#login') }}" class="btn btn-warning text-dark rounded-3 btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5 shadow-sm" style="font-size: 12px;">
                         <iconify-icon icon="solar:user-plus-bold-duotone" class="fs-5"></iconify-icon> + Tambah Anak
                     </a>
                 </div>
@@ -68,7 +86,7 @@
                             </h6>
                             <span class="text-muted small" style="font-size: 11.5px;">Akses jurnal harian, laporan fisik, materi & rapor ananda</span>
                         </div>
-                        <a href="/pendaftaran-siswa" class="btn btn-outline-primary btn-sm rounded-3 font-semibold px-3 py-1.5 d-flex align-items-center gap-1" style="font-size: 12px;">
+                        <a href="{{ $dashLink('/daftar#login') }}" class="btn btn-outline-primary btn-sm rounded-3 font-semibold px-3 py-1.5 d-flex align-items-center gap-1" style="font-size: 12px;">
                             <iconify-icon icon="solar:add-square-bold-duotone" class="fs-5"></iconify-icon> Tambah
                         </a>
                     </div>
@@ -81,7 +99,7 @@
                             </div>
                             <h5 class="fw-bold text-dark mb-1" style="font-size: 16px;">Belum Ada Data Anak</h5>
                             <p class="text-muted small mb-4 mx-auto" style="max-width: 300px; font-size: 12px;">Sepertinya Anda belum mendaftarkan putra/putri Anda ke sistem kami.</p>
-                            <a href="/pendaftaran-siswa" class="btn btn-primary rounded-3 font-semibold px-4 py-2 shadow-sm" style="font-size: 13px;">
+                            <a href="{{ $dashLink('/daftar#login') }}" class="btn btn-primary rounded-3 font-semibold px-4 py-2 shadow-sm" style="font-size: 13px;">
                                 <iconify-icon icon="solar:user-plus-bold-duotone" class="align-middle me-1 fs-5"></iconify-icon> Daftarkan Anak Sekarang
                             </a>
                         </div>
@@ -116,23 +134,23 @@
                                                 </div>
                                             </div>
 
-                                            <a href="/rapor-anak/{{ $a->id }}" class="btn btn-sm btn-outline-primary rounded-3 font-semibold px-3 py-1.5 text-nowrap" style="font-size: 12px;">
+                                            <a href="{{ $dashLink('/rapor-anak/' . $a->id) }}" class="btn btn-sm btn-outline-primary rounded-3 font-semibold px-3 py-1.5 text-nowrap" style="font-size: 12px;">
                                                 Detail Rapor →
                                             </a>
                                         </div>
 
                                         {{-- Quick Actions Row --}}
                                         <div class="pt-3 d-flex align-items-center gap-2 flex-wrap">
-                                            <a href="/rapor-anak/{{ $a->id }}" class="btn btn-white border flex-grow-1 fw-semibold text-dark shadow-xs bg-white rounded-3 py-2" style="font-size: 12px;">
+                                            <a href="{{ $dashLink('/rapor-anak/' . $a->id) }}" class="btn btn-white border flex-grow-1 fw-semibold text-dark shadow-xs bg-white rounded-3 py-2" style="font-size: 12px;">
                                                 <iconify-icon icon="solar:notebook-bold-duotone" class="text-primary me-1 align-middle"></iconify-icon> Lihat Rapor
                                             </a>
-                                            <a href="/perkembangan-anak/{{ $a->id }}" class="btn btn-white border flex-grow-1 fw-semibold text-dark shadow-xs bg-white rounded-3 py-2" style="font-size: 12px;">
+                                            <a href="{{ $dashLink('/perkembangan-anak/' . $a->id) }}" class="btn btn-white border flex-grow-1 fw-semibold text-dark shadow-xs bg-white rounded-3 py-2" style="font-size: 12px;">
                                                 <iconify-icon icon="solar:pulse-bold-duotone" class="text-success me-1 align-middle"></iconify-icon> Cek Fisik
                                             </a>
-                                            <a href="{{ route('walimurid.materi') }}" class="btn btn-primary border flex-grow-1 fw-semibold shadow-xs rounded-3 py-2" style="font-size: 12px;">
+                                            <a href="{{ $dashLink('/jurnal-anak/' . $a->id) }}" class="btn btn-primary border flex-grow-1 fw-semibold shadow-xs rounded-3 py-2" style="font-size: 12px;">
                                                 <iconify-icon icon="solar:book-bookmark-bold-duotone" class="me-1 align-middle"></iconify-icon> Jurnal Harian
                                             </a>
-                                            <a href="{{ route('materi.ortu.index') }}" class="btn btn-info text-white border flex-grow-1 fw-semibold shadow-xs rounded-3 py-2" style="font-size: 12px; background-color: #8b5cf6; border-color: #8b5cf6;">
+                                            <a href="{{ $dashLink('/materi') }}" class="btn btn-info text-white border flex-grow-1 fw-semibold shadow-xs rounded-3 py-2" style="font-size: 12px; background-color: #8b5cf6; border-color: #8b5cf6;">
                                                 <iconify-icon icon="solar:folder-with-files-bold-duotone" class="me-1 align-middle"></iconify-icon> Materi Pelajaran
                                             </a>
                                         </div>

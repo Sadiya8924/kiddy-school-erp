@@ -107,9 +107,9 @@ class LandingYayasanController extends Controller
         $isEncrypted = false;
         $yayasan = $this->findYayasan($kode_yayasan, $isEncrypted);
 
-        // Jika diakses menggunakan kode unencrypted, redirect ke URL terenkripsi
+        // Jika diakses menggunakan kode unencrypted, redirect ke URL terenkripsi dengan hash anchor #login
         if (!$isEncrypted) {
-            return redirect()->route('yayasan.pendaftaran', array_merge(['kode_yayasan' => $yayasan->encrypted_token], $request->query()));
+            return redirect()->to(route('yayasan.pendaftaran', array_merge(['kode_yayasan' => $yayasan->encrypted_token], $request->query())) . '#login');
         }
 
         $yayasan->load('schools');

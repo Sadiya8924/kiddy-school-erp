@@ -388,9 +388,17 @@ class JurnalHarianController extends Controller
         $user = Auth::user();
         
         // Ambil semua anak
-        $anak = \App\Models\Siswa::where('email', $user->email)->get();
+        $anak = \App\Models\Siswa::where('email', $user->email)->orWhere('user_id', $user->id)->get();
         if ($anak->isEmpty()) {
             return redirect('/dashboard')->with('error', 'Belum ada data anak.');
+        }
+
+        if (!$request->route('kode_yayasan')) {
+            $sch = \App\Models\School::find($anak->first()->school_id);
+            $yayasan = $sch ? \App\Models\Yayasan::find($sch->yayasan_id) : \App\Models\Yayasan::where('status', 'aktif')->first();
+            if ($yayasan) {
+                return redirect()->route('yayasan.walimurid.materi', array_merge(['kode_yayasan' => $yayasan->encrypted_token], $request->query()));
+            }
         }
 
         $siswaIds = $anak->pluck('id')->toArray();

@@ -11,6 +11,14 @@
                     if ($sch && $sch->yayasan_id) {
                         $sidebarYayasan = \App\Models\Yayasan::find($sch->yayasan_id);
                     }
+                } elseif ($u->role == 'wali_murid') {
+                    $anakSiswa = \App\Models\Siswa::where('email', $u->email)->orWhere('user_id', $u->id)->first();
+                    if ($anakSiswa && $anakSiswa->school_id) {
+                        $sch = \App\Models\School::find($anakSiswa->school_id);
+                        if ($sch && $sch->yayasan_id) {
+                            $sidebarYayasan = \App\Models\Yayasan::find($sch->yayasan_id);
+                        }
+                    }
                 }
                 if (!$sidebarYayasan) {
                     $sessId = session('active_yayasan_id');
@@ -19,7 +27,7 @@
                     }
                 }
                 if (!$sidebarYayasan) {
-                    $sidebarYayasan = \App\Models\Yayasan::first();
+                    $sidebarYayasan = \App\Models\Yayasan::where('status', 'aktif')->first();
                 }
             }
             $sidebarTitle = $sidebarYayasan ? $sidebarYayasan->nama_yayasan : \App\Models\Setting::get('site_title', 'TK CERIA');
@@ -27,7 +35,14 @@
 
             $encLink = function($url) use ($sidebarYayasanToken) {
                 if (!$sidebarYayasanToken || empty($url) || $url === 'javascript:void(0)') return $url;
-                return $url . (str_contains($url, '?') ? '&' : '?') . 'y=' . $sidebarYayasanToken;
+                if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://')) {
+                    $path = parse_url($url, PHP_URL_PATH);
+                    $query = parse_url($url, PHP_URL_QUERY);
+                    if ($path) $url = $path . ($query ? '?' . $query : '');
+                }
+                if (str_starts_with($url, '/y/')) return $url;
+                if (str_starts_with($url, '/d/')) return $url;
+                return '/y/' . $sidebarYayasanToken . (str_starts_with($url, '/') ? $url : '/' . $url);
             };
         @endphp
 

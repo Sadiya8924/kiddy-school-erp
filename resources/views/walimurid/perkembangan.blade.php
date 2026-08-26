@@ -5,7 +5,6 @@
 <div class="row gx-3 gy-3 mt-0">
     <div class="col-12">
         <div class="d-flex align-items-center gap-3 mb-4">
-            <a href="/dashboard" class="btn btn-outline-light border shadow-none text-muted p-2 rounded d-flex"><iconify-icon icon="solar:arrow-left-line-duotone" class="fs-5"></iconify-icon></a>
             <div>
                 <h4 class="fw-bold mb-1 text-dark">Laporan Fisik & Kesehatan</h4>
                 <p class="text-muted mb-0 small">Riwayat pemeriksaan fisik ananda {{ $siswa->nama_lengkap ?? '' }}</p>

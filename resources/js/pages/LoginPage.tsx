@@ -146,7 +146,7 @@ export default function LoginPage({ onNavigate }: Props) {
 
       {/* Right — form */}
       <div className="flex-1 lg:max-w-md flex items-center justify-center p-8 overflow-y-auto my-auto">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm py-4">
           <div className="lg:hidden flex items-center justify-between gap-2 mb-6">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #365CF5, #5B7CFA)' }}>KS</div>
@@ -171,6 +171,7 @@ export default function LoginPage({ onNavigate }: Props) {
             </div>
           )}
 
+          {/* Form Login */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input type="hidden" name="_token" value={csrfToken} />
             <div>
@@ -205,78 +206,61 @@ export default function LoginPage({ onNavigate }: Props) {
             </button>
           </form>
 
-          {/* Quick Demo Credentials */}
-          <div className="mt-5 p-3 rounded-xl bg-gray-50 border border-gray-200">
-            <div className="text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-wider">⚡ Demo Akun Tersedia di Database:</div>
-            <div className="grid grid-cols-2 gap-2">
-              <button onClick={() => fillDemo('ortu@tkceria.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
-                👨‍👩‍👧 Wali Murid
-              </button>
-              <button onClick={() => fillDemo('naning@tk.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
-                👩‍🏫 Guru TK
-              </button>
-              <button onClick={() => fillDemo('admin@tk.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
-                🏢 Admin TK
-              </button>
-              <button onClick={() => fillDemo('kepsek@tk.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
-                🎓 Kepsek
-              </button>
-              <button onClick={() => fillDemo('superadmin@tkceria.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
-                ⚙️ Super Admin
-              </button>
-              <button onClick={() => fillDemo('owner@yayasan.com')} className="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
-                👑 Owner SaaS
+          {/* Quick Demo Credentials for Central SaaS Login */}
+          <div className="mt-4 p-3 rounded-xl bg-gray-50 border border-gray-200">
+            <div className="text-[11px] font-bold text-gray-500 mb-2 uppercase tracking-wider">⚡ Demo Akun Platform SaaS:</div>
+            <div>
+              <button onClick={() => fillDemo('owner@yayasan.com')} className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-xs font-semibold text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all text-left flex items-center justify-between">
+                <span>👑 Owner / Pengelola SaaS</span>
+                <span className="font-mono text-[11px] text-gray-500">owner@yayasan.com</span>
               </button>
             </div>
           </div>
 
-          {/* Section: Card Yayasan Terdaftar (Direct to Yayasan Login Page) */}
+          {/* Section: Simple Portal Login Yayasan BELOW Form */}
           {yayasans && yayasans.length > 0 && (
-            <div className="mt-5 pt-4 border-t border-gray-200">
-              <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="mt-4 pt-3.5 border-t border-gray-200">
+              <div className="flex items-center justify-between gap-2 mb-2.5">
                 <div className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
                   <span>🏢</span>
-                  <span>Portal Login Yayasan Terdaftar</span>
+                  <span>Portal Login Yayasan</span>
                 </div>
                 <span className="text-[10px] text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full font-semibold border border-blue-100">
                   {yayasans.length} Yayasan
                 </span>
               </div>
 
-              <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+              <div className="space-y-2">
                 {yayasans.map((y) => (
                   <a
                     key={y.id}
                     href={y.login_url}
-                    className="p-2.5 rounded-xl border border-gray-200 bg-white hover:border-blue-500 hover:bg-blue-50/40 shadow-xs transition-all flex items-center justify-between gap-2.5 text-decoration-none group cursor-pointer"
+                    className="p-2.5 rounded-xl border border-gray-200 bg-white hover:border-blue-500 hover:bg-blue-50/50 shadow-xs transition-all flex items-center justify-between gap-2.5 text-decoration-none group cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       {y.logo_yayasan ? (
                         <img
                           src={`/storage/${y.logo_yayasan}`}
-                          className="w-8 h-8 rounded-lg object-cover border flex-shrink-0"
+                          className="w-7 h-7 rounded-md object-cover border flex-shrink-0"
                           alt={y.nama_yayasan}
                         />
                       ) : (
-                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 font-bold flex items-center justify-center text-xs border border-blue-200 flex-shrink-0">
+                        <div className="w-7 h-7 rounded-md bg-blue-50 text-blue-600 font-bold flex items-center justify-center text-[11px] border border-blue-200 flex-shrink-0">
                           {y.nama_yayasan ? y.nama_yayasan.substring(0, 2).toUpperCase() : 'YA'}
                         </div>
                       )}
                       <div className="min-w-0">
-                        <div className="font-bold text-gray-900 text-xs truncate group-hover:text-blue-600 transition-colors">
+                        <div className="font-bold text-gray-900 text-xs truncate group-hover:text-blue-600">
                           {y.nama_yayasan}
                         </div>
-                        <div className="text-[10px] text-gray-500 flex items-center gap-1.5 mt-0.5">
-                          <span className="font-mono bg-gray-100 px-1.5 py-0.2 rounded border text-gray-600 font-semibold">
-                            {y.kode_yayasan || '-'}
-                          </span>
+                        <div className="text-[10px] text-gray-500 flex items-center gap-1.5">
+                          <span className="font-mono bg-gray-100 px-1 rounded text-gray-600 font-semibold">{y.kode_yayasan || '-'}</span>
                           <span>• {y.schools_count || 0} TK</span>
                         </div>
                       </div>
                     </div>
-                    <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all flex-shrink-0 flex items-center gap-1">
-                      <span>Masuk</span>
-                      <span className="group-hover:translate-x-0.5 transition-transform">➔</span>
+                    <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all flex-shrink-0">
+                      Masuk Portal ➔
                     </span>
                   </a>
                 ))}
@@ -284,7 +268,7 @@ export default function LoginPage({ onNavigate }: Props) {
             </div>
           )}
 
-          <p className="text-center text-xs mt-5" style={{ color: '#6B7280' }}>
+          <p className="text-center text-xs mt-4" style={{ color: '#6B7280' }}>
             Belum punya yayasan terdaftar?{' '}
             <a href="/daftar-yayasan" className="font-600 text-decoration-none" style={{ color: '#365CF5', fontWeight: 600 }}>Daftar yayasan baru</a>
           </p>

@@ -53,7 +53,7 @@
     {{-- STATS CARDS --}}
     <div class="row g-3">
         <div class="col-6 col-md-3">
-            <div class="card border shadow-sm h-100" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+            <div class="card border shadow-sm h-100" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
                 <div class="card-body p-3.5">
                     <span class="text-muted font-semibold d-block mb-1" style="font-size: 11px;">TOTAL MATERI</span>
                     <h3 class="fw-bold mb-0 text-primary">{{ $stats['total'] }}</h3>
@@ -87,7 +87,7 @@
     </div>
 
     {{-- TABEL MATERI --}}
-    <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+    <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-4 d-flex flex-column">
             <div class="d-flex justify-content-between align-items-center mb-3.5 border-bottom pb-3">
                 <div>

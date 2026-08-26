@@ -6,7 +6,7 @@
 
   <div class="row justify-content-center">
     <div class="col-lg-8">
-      <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+      <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-4 p-md-4.5">
 
           <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">

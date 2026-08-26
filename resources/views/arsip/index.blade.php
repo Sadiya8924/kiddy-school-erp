@@ -44,7 +44,7 @@
     @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
 
     {{-- FILTER CARD --}}
-    <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+    <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-3.5">
             <form action="{{ route('arsip.index') }}" method="GET" class="row g-2.5 align-items-center">
                 @if(auth()->user()->role == 'admin')
@@ -83,7 +83,7 @@
     </div>
 
     {{-- TABEL ARSIP --}}
-    <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+    <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-4 d-flex flex-column">
             <div class="d-flex justify-content-between align-items-center mb-3.5 border-bottom pb-3">
                 <div>

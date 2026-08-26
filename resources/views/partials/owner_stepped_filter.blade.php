@@ -136,7 +136,7 @@
 
       {{-- STEP 2: SUDAH PILIH YAYASAN (SERTA KHUSUS SUPER ADMIN), SEKARANG PILIH TK --}}
       @elseif($currentYayasan)
-        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+        <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
           <div class="card-body p-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <div class="d-flex align-items-center gap-3">
               <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px;">
@@ -174,7 +174,7 @@
               $totalKelasSch = \Illuminate\Support\Facades\DB::table('kelas')->where('school_id', $sch->id)->count();
             @endphp
             <div class="col-md-6 col-lg-4">
-              <div class="card border shadow-sm h-100 card-clickable" style="border-radius: 16px !important; border-top: 3px solid #3b82f6 !important;">
+              <div class="card border shadow-sm h-100 card-clickable" style="border-radius: 16px !important; border-top: 3px solid var(--primary-blue) !important;">
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                   <div>
                     <div class="d-flex justify-content-between align-items-start mb-3">
@@ -212,7 +212,7 @@
                   <form method="POST" action="{{ route('superadmin.switch_school') }}">
                     @csrf
                     <input type="hidden" name="active_school_id" value="{{ $sch->id }}">
-                    <button type="submit" class="btn btn-success w-100 rounded-3 font-semibold py-2 d-flex align-items-center justify-content-center gap-1.5" style="font-size: 12.5px;">
+                    <button type="submit" class="btn btn-primary w-100 rounded-3 font-semibold py-2 d-flex align-items-center justify-content-center gap-1.5" style="font-size: 12.5px;">
                       <span>Pilih {{ $sch->nama_sekolah }}</span>
                       <iconify-icon icon="solar:check-circle-bold-duotone" class="fs-5"></iconify-icon>
                     </button>

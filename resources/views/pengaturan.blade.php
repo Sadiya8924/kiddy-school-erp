@@ -44,7 +44,7 @@
     @if((!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id')) && $school)
     
     {{-- 1. PENGATURAN PENDAFTARAN & KUOTA --}}
-    <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+    <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-header bg-white border-bottom p-4">
             <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2" style="font-size: 15px;">
                 <iconify-icon icon="solar:settings-minimalistic-bold-duotone" class="text-primary fs-5"></iconify-icon> Pengaturan Pendaftaran &amp; Kuota

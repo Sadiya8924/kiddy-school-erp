@@ -50,7 +50,7 @@
     @include('partials.owner_stepped_filter')
 
     @if(!in_array(Auth::user()->role, ['owner', 'super_admin']) || session('active_school_id'))
-    <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+    <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-4 p-md-5"> 
         
         {{-- PERINGATAN JIKA RAPOR DITUTUP / TEMPLATE KOSONG --}}

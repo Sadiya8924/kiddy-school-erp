@@ -43,7 +43,7 @@
         {{-- Form Input (Hanya muncul untuk Admin) --}}
         @if(auth()->user()->role == 'admin')
         <div class="col-lg-4">
-            <div class="card border shadow-sm" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+            <div class="card border shadow-sm" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
                 <div class="card-body p-4">
                     <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2" style="font-size: 15px;">
                         <iconify-icon icon="solar:pen-new-square-bold-duotone" class="text-primary fs-5"></iconify-icon> Buat Pengumuman Baru

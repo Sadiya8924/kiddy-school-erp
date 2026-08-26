@@ -78,14 +78,14 @@
         
         {{-- Total Siswa --}}
         <div class="col-xl-3 col-md-6">
-            <a href="/data-siswa" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid #3b82f6 !important; border-radius: 16px !important;">
+            <a href="/data-siswa" class="card h-100 border shadow-sm card-clickable text-decoration-none" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
                 <div class="card-body p-3.5 d-flex justify-content-between align-items-center">
                     <div>
                         <span class="text-muted font-semibold d-block mb-1" style="font-size: 11.5px; letter-spacing: 0.02em;">TOTAL SISWA AKTIF</span>
                         <h2 class="fw-bold text-dark mb-0" style="letter-spacing: -0.03em; font-size: 26px;">{{ $totalSiswaCount }}</h2>
                         <span class="text-muted small mt-1 d-block" style="font-size: 11px;">Peserta didik terdaftar</span>
                     </div>
-                    <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background-color: #eff6ff; color: #3b82f6; width: 54px; height: 54px;">
+                    <div class="rounded-3 p-3 d-flex align-items-center justify-content-center" style="background-color: var(--primary-blue-soft); color: var(--primary-blue); width: 54px; height: 54px;">
                         <iconify-icon icon="solar:users-group-rounded-bold-duotone" class="fs-2"></iconify-icon>
                     </div>
                 </div>
@@ -178,13 +178,13 @@
                     <div class="d-flex justify-content-between align-items-center mb-3.5 border-bottom pb-3">
                         <div>
                             <h6 class="fw-bold text-dark mb-0.5 d-flex align-items-center gap-2" style="font-size: 15px;">
-                                <iconify-icon icon="solar:chart-2-bold-duotone" class="text-primary fs-5"></iconify-icon> Distribusi Siswa per Kelas
+                                <iconify-icon icon="solar:chart-2-bold-duotone" class="fs-5" style="color: var(--primary-blue);"></iconify-icon> Distribusi Siswa per Kelas
                             </h6>
                             <span class="text-muted small" style="font-size: 11.5px;">Proporsi pendaftaran rombongan belajar</span>
                         </div>
                         {{-- TM-13: "Kelola Rombel" hanya tampil untuk admin/kepsek/super_admin, bukan guru --}}
                         @if(in_array(Auth::user()->role, ['admin', 'super_admin', 'kepsek', 'owner']))
-                        <a href="/kelas" class="text-decoration-none text-primary font-semibold small" style="font-size: 12px;">Kelola Rombel &rarr;</a>
+                        <a href="/kelas" class="text-decoration-none font-semibold small" style="font-size: 12px; color: var(--primary-blue);">Kelola Rombel &rarr;</a>
                         @endif
                     </div>
 
@@ -220,7 +220,7 @@
                         </h6>
                         {{-- TM-13: "Kelola" pengumuman hanya untuk admin/kepsek/super_admin --}}
                         @if(in_array(Auth::user()->role, ['admin', 'super_admin', 'kepsek', 'owner']))
-                        <a href="/pengumuman" class="text-decoration-none text-primary font-semibold small" style="font-size: 12px;">Kelola &rarr;</a>
+                        <a href="/pengumuman" class="text-decoration-none font-semibold small" style="font-size: 12px; color: var(--primary-blue);">Kelola &rarr;</a>
                         @endif
                     </div>
 

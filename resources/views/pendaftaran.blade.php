@@ -1,97 +1,238 @@
 {{-- Halaman pendaftaran selalu pakai layout bersih: tanpa navbar, sidebar, atau footer --}}
 @extends('layouts.pendaftaran')
 
-@section('konten_halaman')
-
-{{-- PANGGIL LIBRARY LEAFLET UNTUK PETA (GRATIS, TANPA API KEY!) --}}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-{{-- PANGGIL LIBRARY LEAFLET GEOCODER (Buat fitur cari alamat) --}}
-<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
 @php
     $activeYayasan = $yayasan ?? null;
+    if ($activeYayasan && !($activeYayasan instanceof \App\Models\Yayasan) && is_object($activeYayasan) && isset($activeYayasan->id)) {
+        $activeYayasan = \App\Models\Yayasan::find($activeYayasan->id);
+    }
     if (!$activeYayasan && isset($currentSchool) && !empty($currentSchool->yayasan_id)) {
         $activeYayasan = \App\Models\Yayasan::find($currentSchool->yayasan_id);
     }
     if (!$activeYayasan) {
         $activeYayasan = \App\Models\Yayasan::where('status', 'aktif')->first();
     }
-    $template = ($activeYayasan && isset($activeYayasan->landing_content['template'])) 
-        ? $activeYayasan->landing_content['template'] 
-        : \App\Models\Setting::get('landing_template', 'ocean');
     
-    $themeColor = '#2563eb';
-    $themeBg    = '#F7F9FC';
+    $landingContent = $activeYayasan->landing_content ?? [];
+    $templateName   = $landingContent['template'] ?? 'ocean';
+
+    $themeMap = [
+        'ocean' => [
+            'primary'      => '#1E40AF',
+            'primary_dark' => '#1B3A8C',
+            'accent'       => '#FCD34D',
+            'surface'      => '#F7F9FC',
+            'hero_bg'      => 'linear-gradient(135deg, #1B3A8C 0%, #2D55E8 60%, #4F8BFF 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'ceria' => [
+            'primary'      => '#EF9F27',
+            'primary_dark' => '#7A5310',
+            'accent'       => '#F0997B',
+            'surface'      => '#FDFBF7',
+            'hero_bg'      => 'linear-gradient(135deg, #7A5310 0%, #D4537E 60%, #EF9F27 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #EF9F27 0%, #D4537E 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'trustworthy' => [
+            'primary'      => '#185FA5',
+            'primary_dark' => '#0B2545',
+            'accent'       => '#2563EB',
+            'surface'      => '#F4F6F9',
+            'hero_bg'      => 'linear-gradient(135deg, #0B2545 0%, #134074 60%, #185FA5 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #185FA5 0%, #1D4ED8 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'natural' => [
+            'primary'      => '#639922',
+            'primary_dark' => '#1C3309',
+            'accent'       => '#D97706',
+            'surface'      => '#F6F3EC',
+            'hero_bg'      => 'linear-gradient(135deg, #1C3309 0%, #355312 60%, #4D7C0F 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #639922 0%, #355312 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'sunset' => [
+            'primary'      => '#DC2626',
+            'primary_dark' => '#4C0519',
+            'accent'       => '#F59E0B',
+            'surface'      => '#FFFDFB',
+            'hero_bg'      => 'linear-gradient(135deg, #4C0519 0%, #9F1239 50%, #E11D48 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'emerald' => [
+            'primary'      => '#059669',
+            'primary_dark' => '#064E3B',
+            'accent'       => '#FBBF24',
+            'surface'      => '#F4FBF7',
+            'hero_bg'      => 'linear-gradient(135deg, #064E3B 0%, #047857 60%, #10B981 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'violet' => [
+            'primary'      => '#7C3AED',
+            'primary_dark' => '#3B0764',
+            'accent'       => '#EC4899',
+            'surface'      => '#FAF5FF',
+            'hero_bg'      => 'linear-gradient(135deg, #3B0764 0%, #6D28D9 60%, #8B5CF6 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'minimal' => [
+            'primary'      => '#334155',
+            'primary_dark' => '#0F172A',
+            'accent'       => '#0EA5E9',
+            'surface'      => '#F8FAFC',
+            'hero_bg'      => 'linear-gradient(135deg, #0F172A 0%, #1E293B 60%, #334155 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #334155 0%, #1E293B 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'amber' => [
+            'primary'      => '#D97706',
+            'primary_dark' => '#78350F',
+            'accent'       => '#10B981',
+            'surface'      => '#FFFBEB',
+            'hero_bg'      => 'linear-gradient(135deg, #78350F 0%, #B45309 60%, #F59E0B 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #D97706 0%, #B45309 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'cyan' => [
+            'primary'      => '#0891B2',
+            'primary_dark' => '#164E63',
+            'accent'       => '#A855F7',
+            'surface'      => '#F0FDFA',
+            'hero_bg'      => 'linear-gradient(135deg, #164E63 0%, #0E7490 60%, #06B6D4 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #0891B2 0%, #0E7490 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'rose' => [
+            'primary'      => '#E11D48',
+            'primary_dark' => '#881337',
+            'accent'       => '#FB7185',
+            'surface'      => '#FFF1F2',
+            'hero_bg'      => 'linear-gradient(135deg, #881337 0%, #BE123C 60%, #FB7185 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)',
+            'btn_cta_text' => '#FFFFFF',
+        ],
+        'midnight' => [
+            'primary'      => '#38BDF8',
+            'primary_dark' => '#030712',
+            'accent'       => '#818CF8',
+            'surface'      => '#0F172A',
+            'hero_bg'      => 'linear-gradient(135deg, #030712 0%, #0F172A 60%, #1E293B 100%)',
+            'btn_cta'      => 'linear-gradient(135deg, #38BDF8 0%, #0284C7 100%)',
+            'btn_cta_text' => '#0F172A',
+        ],
+    ];
+
+    $theme = $themeMap[$templateName] ?? $themeMap['ocean'];
     
-    if ($template === 'ceria') {
-        $themeColor = '#EF9F27';
-        $themeBg    = '#FDFBF7';
-    } elseif ($template === 'trustworthy') {
-        $themeColor = '#185FA5';
-        $themeBg    = '#f8fafc';
-    } elseif ($template === 'natural') {
-        $themeColor = '#639922';
-        $themeBg    = '#F6F3EC';
+    $yayasanLoginUrl = '/';
+    if ($activeYayasan && $activeYayasan instanceof \App\Models\Yayasan) {
+        $yayasanLoginUrl = $activeYayasan->encrypted_login_url;
     }
 @endphp
+
+@section('topbar_branding')
+    <a href="{{ $yayasanLoginUrl }}" class="brand">
+        @if($activeYayasan && $activeYayasan->logo_yayasan)
+            <img src="{{ asset('storage/' . $activeYayasan->logo_yayasan) }}" alt="Logo Yayasan" style="height: 28px; border-radius: 6px;">
+        @else
+            <div style="width: 28px; height: 28px; border-radius: 8px; background: {{ $theme['hero_bg'] }}; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;">
+                {{ $activeYayasan ? strtoupper(substr($activeYayasan->nama_yayasan, 0, 2)) : 'KS' }}
+            </div>
+        @endif
+        <span>{{ $activeYayasan ? $activeYayasan->nama_yayasan : 'Kiddy School ERP' }}</span>
+    </a>
+@endsection
+
+@section('konten_halaman')
+
+{{-- PANGGIL LIBRARY LEAFLET UNTUK PETA --}}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+{{-- PANGGIL LIBRARY LEAFLET GEOCODER --}}
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
 <style>
-    body { background-color: {{ $themeBg }} !important; }
-    .bg-primary { background-color: {{ $themeColor }} !important; }
-    .btn-primary { background-color: {{ $themeColor }} !important; border-color: {{ $themeColor }} !important; }
-    .border-primary { border-color: {{ $themeColor }} !important; }
-    .text-primary { color: {{ $themeColor }} !important; }
+    body { background-color: {{ $theme['surface'] }} !important; }
+    
+    .hero-banner-card {
+        background: {{ $theme['hero_bg'] }} !important;
+        color: #ffffff !important;
+    }
+    
+    .text-theme-primary { color: {{ $theme['primary'] }} !important; }
+    .bg-theme-primary { background-color: {{ $theme['primary'] }} !important; }
+    .border-theme-primary { border-color: {{ $theme['primary'] }} !important; }
+
+    .btn-theme-submit {
+        background: {{ $theme['btn_cta'] }} !important;
+        color: {{ $theme['btn_cta_text'] }} !important;
+        border: none !important;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
+        transition: all 0.25s ease !important;
+    }
+    .btn-theme-submit:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 24px rgba(0,0,0,0.22) !important;
+        opacity: 0.95;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: {{ $theme['primary'] }} !important;
+        box-shadow: 0 0 0 3px {{ $theme['primary'] }}25 !important;
+    }
+
+    /* Form Validation Styling: Highlight required unfilled fields */
+    .was-validated .form-control:invalid, 
+    .was-validated .form-select:invalid,
+    .form-control.is-invalid-custom,
+    .form-select.is-invalid-custom {
+        border-color: #EF4444 !important;
+        background-color: #FEF2F2 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
+    }
 </style>
 
-<div class="container mt-4 mb-5">
+<div class="container mt-3 mb-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
 
-            <div class="card border shadow-sm rounded-4 overflow-hidden">
-                <div class="card-header bg-primary text-white text-center py-4 border-bottom-0">
-                    <h4 class="mb-1 fw-bold text-white">Formulir Pendaftaran & Inden Siswa Baru</h4>
-                    <p class="mb-0 small opacity-75" id="header_school_name">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                {{-- Dynamic Theme Hero Banner --}}
+                <div class="card-header hero-banner-card text-center py-4 border-bottom-0">
+                    <div class="d-inline-flex align-items-center justify-content-center px-3 py-1 rounded-pill bg-white bg-opacity-20 text-white text-xs font-semibold mb-2" style="font-size: 11.5px; backdrop-filter: blur(4px);">
+                        ✨ Pendaftaran Online Resmi — {{ $activeYayasan ? $activeYayasan->nama_yayasan : 'Kiddy School ERP' }}
+                    </div>
+                    <h3 class="mb-1 fw-extrabold text-white" style="letter-spacing: -0.02em;">Formulir Pendaftaran &amp; Inden Siswa Baru</h3>
+                    <p class="mb-0 small text-white-50" id="header_school_name">
                         {{ $currentSchool->nama_sekolah ?? 'Pendaftaran Siswa Baru' }} {{ $activeYayasan ? '— ' . $activeYayasan->nama_yayasan : '' }}
-                    </p> 
+                    </p>
                 </div>
 
                 <div class="card-body p-4 p-md-5 bg-white">
-                    @if(session('success'))
-                        <div class="alert alert-success border-success-subtle bg-success-subtle text-success rounded py-3 px-4 mb-4 fw-medium d-flex align-items-center gap-2">
-                            <iconify-icon icon="solar:check-circle-bold" class="fs-4"></iconify-icon> {{ session('success') }}
-                        </div>
-                    @endif
-                    @if(session('error'))
-                        <div class="alert alert-danger border-danger-subtle bg-danger-subtle text-danger rounded py-3 px-4 mb-4 fw-medium d-flex align-items-center gap-2">
-                            <iconify-icon icon="solar:danger-triangle-bold" class="fs-4"></iconify-icon> {{ session('error') }}
-                        </div>
-                    @endif
-                    @if($errors->any())
-                        <div class="alert alert-danger border-danger-subtle bg-danger-subtle text-danger rounded py-3 px-4 mb-4 fw-medium">
-                            <ul class="mb-0 ps-3">
-                            @foreach($errors->all() as $error) <li>{{ $error }}</li> @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
+                    
                     {{-- 1-WAY UNIFIED REGISTRATION FORM --}}
-                    <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data" id="formPendaftaran" novalidate>
                         @csrf
 
                         {{-- SECTION 1: PILIH CABANG SEKOLAH, TAHUN AJARAN, & PROGRAM KELAS --}}
-                        <div class="p-3.5 p-md-4 rounded-3 border border-primary-subtle bg-light mb-4 shadow-xs">
+                        <div class="p-3.5 p-md-4 rounded-3 border border-theme-primary bg-light mb-4 shadow-xs">
                             <div class="row gx-3 gy-3">
                                 <div class="col-md-5">
                                     <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">
                                         1. Pilih Cabang TK / PAUD Tujuan <span class="text-danger">*</span>
                                     </label>
                                     @if(isset($is_locked) && $is_locked && $currentSchool)
-                                        <input type="text" class="form-control bg-white border shadow-none fw-bold text-primary" value="{{ $currentSchool->nama_sekolah }}" readonly style="font-size: 13.5px;">
+                                        <input type="text" class="form-control bg-white border shadow-none fw-bold text-theme-primary" value="{{ $currentSchool->nama_sekolah }}" readonly style="font-size: 13.5px;">
                                         <input type="hidden" name="school_id" id="school_id_field" value="{{ $currentSchool->id }}">
                                     @else
-                                        <select name="school_id" id="school_id_field" class="form-select bg-white border shadow-none fw-bold text-primary" required style="font-size: 13.5px;">
+                                        <select name="school_id" id="school_id_field" class="form-select bg-white border shadow-none fw-bold text-theme-primary" required style="font-size: 13.5px;">
                                             @if($schools->count() > 1)
                                                 <option value="">-- Pilih Cabang Sekolah --</option>
                                             @endif
@@ -125,11 +266,11 @@
                         </div>
 
                         {{-- A. DATA PRIBADI --}}
-                        <h6 class="fw-bold text-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">A. Data Pribadi Siswa</h6>
+                        <h6 class="fw-bold text-theme-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">A. Data Pribadi Siswa</h6>
                         <div class="row gx-3">
                             <div class="col-md-8 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Nama Lengkap Anak <span class="text-danger">*</span></label>
-                                <input type="text" name="nama_lengkap" class="form-control bg-white border shadow-none" value="{{ old('nama_lengkap') }}" style="font-size: 13px;" required placeholder="Nama lengkap sesuai akta">
+                                <input type="text" name="nama_lengkap" class="form-control bg-white border shadow-none" value="{{ old('nama_lengkap') }}" style="font-size: 13px;" required placeholder="Nama lengkap sesuai akta kelahiran">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">NIK Anak <span class="text-danger">*</span></label>
@@ -137,20 +278,20 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Nomor KK (Dapodik) <span class="text-danger">*</span></label>
-                                <input type="number" name="no_kk" class="form-control bg-white border shadow-none" value="{{ old('no_kk') }}" style="font-size: 13px;" required placeholder="Cek di Kartu Keluarga">
+                                <input type="number" name="no_kk" class="form-control bg-white border shadow-none" value="{{ old('no_kk') }}" style="font-size: 13px;" required placeholder="16 digit Nomor Kartu Keluarga">
                             </div>
 
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Jenis Kelamin <span class="text-danger">*</span></label>
                                 <select name="jenis_kelamin" class="form-select bg-white border shadow-none" style="font-size: 13px;" required>
-                                    <option value="">-- Pilih --</option>
+                                    <option value="">-- Pilih Jenis Kelamin --</option>
                                     <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
                                     <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Tempat Lahir <span class="text-danger">*</span></label>
-                                <input type="text" name="tempat_lahir" class="form-control bg-white border shadow-none" value="{{ old('tempat_lahir') }}" style="font-size: 13px;" required placeholder="Kota kelahiran">
+                                <input type="text" name="tempat_lahir" class="form-control bg-white border shadow-none" value="{{ old('tempat_lahir') }}" style="font-size: 13px;" required placeholder="Kota kelahiran (Contoh: Malang)">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Tanggal Lahir <span class="text-danger">*</span></label>
@@ -159,7 +300,7 @@
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Agama <span class="text-danger">*</span></label>
                                 <select name="agama" class="form-select bg-white border shadow-none" style="font-size: 13px;" required>
-                                    <option value="">-- Pilih --</option>
+                                    <option value="">-- Pilih Agama --</option>
                                     <option value="Islam" {{ old('agama') == 'Islam' ? 'selected' : '' }}>Islam</option>
                                     <option value="Kristen" {{ old('agama') == 'Kristen' ? 'selected' : '' }}>Kristen</option>
                                     <option value="Katolik" {{ old('agama') == 'Katolik' ? 'selected' : '' }}>Katolik</option>
@@ -170,80 +311,80 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Anak ke- <span class="text-danger">*</span></label>
-                                <input type="number" name="anak_ke" class="form-control bg-white border shadow-none" value="{{ old('anak_ke') }}" style="font-size: 13px;" required placeholder="1">
+                                <input type="number" name="anak_ke" class="form-control bg-white border shadow-none" value="{{ old('anak_ke') }}" style="font-size: 13px;" required placeholder="Contoh: 1">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Jumlah Saudara <span class="text-danger">*</span></label>
-                                <input type="number" name="jml_saudara" class="form-control bg-white border shadow-none" value="{{ old('jml_saudara') }}" style="font-size: 13px;" required placeholder="1">
+                                <input type="number" name="jml_saudara" class="form-control bg-white border shadow-none" value="{{ old('jml_saudara') }}" style="font-size: 13px;" required placeholder="Contoh: 1">
                             </div>
                         </div>
 
                         {{-- B. ALAMAT & KONTAK --}}
-                        <h6 class="fw-bold text-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">B. Alamat, Koordinat, & Kontak</h6>
+                        <h6 class="fw-bold text-theme-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">B. Alamat, Koordinat, &amp; Kontak</h6>
                         
                         {{-- PETA INTERAKTIF --}}
                         <div class="row gx-3 mb-3">
                             <div class="col-12 mb-2">
                                 <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-                                    <label class="form-label fw-bold text-dark mb-0" style="font-size: 13px;"><iconify-icon icon="solar:map-point-bold-duotone" class="text-primary"></iconify-icon> Cari Lokasi Rumah di Peta (Wajib Dapodik) <span class="text-danger">*</span></label>
+                                    <label class="form-label fw-bold text-dark mb-0" style="font-size: 13px;"><iconify-icon icon="solar:map-point-bold-duotone" class="text-theme-primary"></iconify-icon> Cari Lokasi Rumah di Peta (Wajib Dapodik) <span class="text-danger">*</span></label>
                                     <button type="button" id="btnGps" class="btn btn-sm btn-outline-primary rounded-pill font-semibold px-3 py-1 d-inline-flex align-items-center gap-1.5" style="font-size: 11.5px;">
                                         <iconify-icon icon="solar:gps-bold-duotone" class="fs-6"></iconify-icon> Deteksi Lokasi Saya (GPS)
                                     </button>
                                 </div>
-                                <p class="small text-muted mb-2">Gunakan kotak pencarian atau klik/geser pin di peta untuk menentukan lokasi rumah Anda. Lintang & Bujur akan terisi otomatis.</p>
+                                <p class="small text-muted mb-2">Gunakan kotak pencarian atau klik/geser pin di peta untuk menentukan lokasi rumah Anda. Lintang &amp; Bujur akan terisi otomatis.</p>
                                 <div id="map" class="rounded border shadow-sm" style="height: 300px; width: 100%; z-index: 1;"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Garis Lintang (Latitude) <span class="text-danger">*</span></label>
-                                <input type="text" id="lintang" name="lintang" class="form-control bg-light border shadow-none font-semibold text-primary" value="{{ old('lintang') }}" style="font-size: 13px;" readonly required placeholder="Otomatis dari Peta">
+                                <input type="text" id="lintang" name="lintang" class="form-control bg-light border shadow-none font-semibold text-theme-primary" value="{{ old('lintang') }}" style="font-size: 13px;" readonly required placeholder="Otomatis dari Peta">
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Garis Bujur (Longitude) <span class="text-danger">*</span></label>
-                                <input type="text" id="bujur" name="bujur" class="form-control bg-light border shadow-none font-semibold text-primary" value="{{ old('bujur') }}" style="font-size: 13px;" readonly required placeholder="Otomatis dari Peta">
+                                <input type="text" id="bujur" name="bujur" class="form-control bg-light border shadow-none font-semibold text-theme-primary" value="{{ old('bujur') }}" style="font-size: 13px;" readonly required placeholder="Otomatis dari Peta">
                             </div>
                         </div>
 
                         <div class="row gx-3">
                             <div class="col-md-8 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Alamat Jalan <span class="text-danger">*</span></label>
-                                <input type="text" name="alamat" class="form-control bg-white border shadow-none" value="{{ old('alamat') }}" style="font-size: 13px;" required placeholder="Jl. Raya Bangsa No. 12">
+                                <input type="text" name="alamat" class="form-control bg-white border shadow-none" value="{{ old('alamat') }}" style="font-size: 13px;" required placeholder="Contoh: Jl. Raya Melati No. 12">
                             </div>
                             <div class="col-md-2 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">RT <span class="text-danger">*</span></label>
-                                <input type="text" name="rt" class="form-control bg-white border shadow-none" value="{{ old('rt') }}" style="font-size: 13px;" required placeholder="01">
+                                <input type="text" name="rt" class="form-control bg-white border shadow-none" value="{{ old('rt') }}" style="font-size: 13px;" required placeholder="Contoh: 01">
                             </div>
                             <div class="col-md-2 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">RW <span class="text-danger">*</span></label>
-                                <input type="text" name="rw" class="form-control bg-white border shadow-none" value="{{ old('rw') }}" style="font-size: 13px;" required placeholder="02">
+                                <input type="text" name="rw" class="form-control bg-white border shadow-none" value="{{ old('rw') }}" style="font-size: 13px;" required placeholder="Contoh: 02">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Dusun <span class="text-danger">*</span></label>
-                                <input type="text" name="dusun" class="form-control bg-white border shadow-none" value="{{ old('dusun') }}" style="font-size: 13px;" required placeholder="Dusun...">
+                                <input type="text" name="dusun" class="form-control bg-white border shadow-none" value="{{ old('dusun') }}" style="font-size: 13px;" required placeholder="Contoh: Dusun Krajan">
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Desa/Kel. <span class="text-danger">*</span></label>
-                                <input type="text" name="kelurahan" class="form-control bg-white border shadow-none" value="{{ old('kelurahan') }}" style="font-size: 13px;" required placeholder="Kelurahan...">
+                                <input type="text" name="kelurahan" class="form-control bg-white border shadow-none" value="{{ old('kelurahan') }}" style="font-size: 13px;" required placeholder="Contoh: Sumbersari">
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Kecamatan <span class="text-danger">*</span></label>
-                                <input type="text" name="kecamatan" class="form-control bg-white border shadow-none" value="{{ old('kecamatan') }}" style="font-size: 13px;" required placeholder="Kecamatan...">
+                                <input type="text" name="kecamatan" class="form-control bg-white border shadow-none" value="{{ old('kecamatan') }}" style="font-size: 13px;" required placeholder="Contoh: Lowokwaru">
                             </div>
                             <div class="col-md-2 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Kode Pos <span class="text-danger">*</span></label>
-                                <input type="number" name="kode_pos" class="form-control bg-white border shadow-none" value="{{ old('kode_pos') }}" style="font-size: 13px;" required placeholder="66171">
+                                <input type="number" name="kode_pos" class="form-control bg-white border shadow-none" value="{{ old('kode_pos') }}" style="font-size: 13px;" required placeholder="65145">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Jenis Tinggal <span class="text-danger">*</span></label>
                                 <select name="jenis_tinggal" class="form-select bg-white border shadow-none" style="font-size: 13px;" required>
-                                    <option value="">-- Pilih --</option>
-                                    <option value="Bersama orang tua" {{ old('jenis_tinggal', 'Bersama orang tua') == 'Bersama orang tua' ? 'selected' : '' }}>Bersama orang tua</option>
+                                    <option value="">-- Pilih Jenis Tinggal --</option>
+                                    <option value="Bersama orang tua" {{ old('jenis_tinggal') == 'Bersama orang tua' ? 'selected' : '' }}>Bersama orang tua</option>
                                     <option value="Wali" {{ old('jenis_tinggal') == 'Wali' ? 'selected' : '' }}>Wali</option>
                                     <option value="Asrama" {{ old('jenis_tinggal') == 'Asrama' ? 'selected' : '' }}>Asrama</option>
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Transportasi ke Sekolah <span class="text-danger">*</span></label>
-                                <input type="text" name="alat_transportasi" class="form-control bg-white border shadow-none" value="{{ old('alat_transportasi') }}" style="font-size: 13px;" required placeholder="Jalan kaki, Motor, Mobil, dll">
+                                <input type="text" name="alat_transportasi" class="form-control bg-white border shadow-none" value="{{ old('alat_transportasi') }}" style="font-size: 13px;" required placeholder="Contoh: Sepeda Motor / Jalan Kaki / Mobil">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Jarak ke Sekolah (Km) <span class="text-danger">*</span></label>
@@ -269,7 +410,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Email Orang Tua <span class="text-danger">*</span></label>
-                                    <input type="email" name="email" id="parent_email" class="form-control bg-white border shadow-none" value="{{ old('email') }}" style="font-size: 13px;" required placeholder="email@anda.com">
+                                    <input type="email" name="email" id="parent_email" class="form-control bg-white border shadow-none" value="{{ old('email') }}" style="font-size: 13px;" required placeholder="nama@email.com">
                                     <div id="email_feedback_box" class="mt-2" style="display:none;"></div>
                                 </div>
                                 <div class="col-12 mb-3">
@@ -284,7 +425,7 @@
                                             </button>
                                         </div>
                                         <div class="form-text text-muted" id="password_hint" style="font-size: 11px;">
-                                            Kata sandi ini digunakan untuk login ke portal wali murid guna memantau kelulusan, rapor, & absensi anak.
+                                            Kata sandi ini digunakan untuk login ke portal wali murid guna memantau status pendaftaran &amp; perkembangan anak.
                                         </div>
                                     </div>
                                 </div>
@@ -292,16 +433,16 @@
                         </div>
 
                         {{-- C. DATA ORANG TUA --}}
-                        <h6 class="fw-bold text-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">C. Data Orang Tua</h6>
+                        <h6 class="fw-bold text-theme-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">C. Data Orang Tua</h6>
                         <div class="row gx-3">
                             <div class="col-md-6 mb-3">
                                 <div class="p-3 border rounded bg-light h-100">
                                     <h6 class="fw-bold text-dark mb-3" style="font-size: 13px;">Data Ayah Kandung</h6>
                                     <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Nama Ayah <span class="text-danger">*</span></label><input type="text" name="nama_ayah" class="form-control bg-white border shadow-none" value="{{ old('nama_ayah') }}" style="font-size: 12px;" required placeholder="Nama lengkap ayah"></div>
                                     <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">NIK Ayah <span class="text-danger">*</span></label><input type="number" name="nik_ayah" class="form-control bg-white border shadow-none" value="{{ old('nik_ayah') }}" style="font-size: 12px;" required placeholder="16 digit NIK ayah"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Tahun Lahir <span class="text-danger">*</span></label><input type="number" name="tahun_lahir_ayah" class="form-control bg-white border shadow-none" value="{{ old('tahun_lahir_ayah') }}" style="font-size: 12px;" required placeholder="1980"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pendidikan <span class="text-danger">*</span></label><input type="text" name="pendidikan_ayah" class="form-control bg-white border shadow-none" value="{{ old('pendidikan_ayah') }}" style="font-size: 12px;" required placeholder="SMA / S1 / dll"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pekerjaan <span class="text-danger">*</span></label><input type="text" name="pekerjaan_ayah" class="form-control bg-white border shadow-none" value="{{ old('pekerjaan_ayah') }}" style="font-size: 12px;" required placeholder="Karyawan / Wiraswasta / dll"></div>
+                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Tahun Lahir <span class="text-danger">*</span></label><input type="number" name="tahun_lahir_ayah" class="form-control bg-white border shadow-none" value="{{ old('tahun_lahir_ayah') }}" style="font-size: 12px;" required placeholder="Contoh: 1980"></div>
+                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pendidikan <span class="text-danger">*</span></label><input type="text" name="pendidikan_ayah" class="form-control bg-white border shadow-none" value="{{ old('pendidikan_ayah') }}" style="font-size: 12px;" required placeholder="Contoh: S1 / SMA / dll"></div>
+                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pekerjaan <span class="text-danger">*</span></label><input type="text" name="pekerjaan_ayah" class="form-control bg-white border shadow-none" value="{{ old('pekerjaan_ayah') }}" style="font-size: 12px;" required placeholder="Contoh: Karyawan Swasta / Wiraswasta"></div>
                                     <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Penghasilan Bulanan <span class="text-danger">*</span></label><input type="text" name="penghasilan_ayah" class="form-control bg-white border shadow-none" value="{{ old('penghasilan_ayah') }}" style="font-size: 12px;" required placeholder="Contoh: Rp. 3.000.000"></div>
                                 </div>
                             </div>
@@ -310,33 +451,33 @@
                                     <h6 class="fw-bold text-dark mb-3" style="font-size: 13px;">Data Ibu Kandung</h6>
                                     <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Nama Ibu <span class="text-danger">*</span></label><input type="text" name="nama_ibu" class="form-control bg-white border shadow-none" value="{{ old('nama_ibu') }}" style="font-size: 12px;" required placeholder="Nama lengkap ibu"></div>
                                     <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">NIK Ibu <span class="text-danger">*</span></label><input type="number" name="nik_ibu" class="form-control bg-white border shadow-none" value="{{ old('nik_ibu') }}" style="font-size: 12px;" required placeholder="16 digit NIK ibu"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Tahun Lahir <span class="text-danger">*</span></label><input type="number" name="tahun_lahir_ibu" class="form-control bg-white border shadow-none" value="{{ old('tahun_lahir_ibu') }}" style="font-size: 12px;" required placeholder="1985"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pendidikan <span class="text-danger">*</span></label><input type="text" name="pendidikan_ibu" class="form-control bg-white border shadow-none" value="{{ old('pendidikan_ibu') }}" style="font-size: 12px;" required placeholder="SMA / S1 / dll"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pekerjaan <span class="text-danger">*</span></label><input type="text" name="pekerjaan_ibu" class="form-control bg-white border shadow-none" value="{{ old('pekerjaan_ibu') }}" style="font-size: 12px;" required placeholder="Ibu Rumah Tangga / dll"></div>
+                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Tahun Lahir <span class="text-danger">*</span></label><input type="number" name="tahun_lahir_ibu" class="form-control bg-white border shadow-none" value="{{ old('tahun_lahir_ibu') }}" style="font-size: 12px;" required placeholder="Contoh: 1985"></div>
+                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pendidikan <span class="text-danger">*</span></label><input type="text" name="pendidikan_ibu" class="form-control bg-white border shadow-none" value="{{ old('pendidikan_ibu') }}" style="font-size: 12px;" required placeholder="Contoh: S1 / SMA / dll"></div>
+                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pekerjaan <span class="text-danger">*</span></label><input type="text" name="pekerjaan_ibu" class="form-control bg-white border shadow-none" value="{{ old('pekerjaan_ibu') }}" style="font-size: 12px;" required placeholder="Contoh: Ibu Rumah Tangga / PNS"></div>
                                     <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Penghasilan Bulanan <span class="text-danger">*</span></label><input type="text" name="penghasilan_ibu" class="form-control bg-white border shadow-none" value="{{ old('penghasilan_ibu') }}" style="font-size: 12px;" required placeholder="Contoh: Rp. 2.000.000"></div>
                                 </div>
                             </div>
                         </div>
 
                         {{-- D. FISIK & DOKUMEN --}}
-                        <h6 class="fw-bold text-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">D. Fisik & Dokumen Upload</h6>
+                        <h6 class="fw-bold text-theme-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">D. Fisik &amp; Dokumen Upload</h6>
                         <div class="row gx-3">
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Tinggi Badan (cm) <span class="text-danger">*</span></label>
-                                <input type="number" name="tinggi_badan" class="form-control bg-white border shadow-none" value="{{ old('tinggi_badan') }}" style="font-size: 13px;" required placeholder="110">
+                                <input type="number" name="tinggi_badan" class="form-control bg-white border shadow-none" value="{{ old('tinggi_badan') }}" style="font-size: 13px;" required placeholder="Contoh: 110">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Berat Badan (kg) <span class="text-danger">*</span></label>
-                                <input type="number" name="berat_badan" class="form-control bg-white border shadow-none" value="{{ old('berat_badan') }}" style="font-size: 13px;" required placeholder="18">
+                                <input type="number" name="berat_badan" class="form-control bg-white border shadow-none" value="{{ old('berat_badan') }}" style="font-size: 13px;" required placeholder="Contoh: 18">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Lingkar Kepala (cm) <span class="text-danger">*</span></label>
-                                <input type="number" name="lingkar_kepala" class="form-control bg-white border shadow-none" value="{{ old('lingkar_kepala') }}" style="font-size: 13px;" required placeholder="48">
+                                <input type="number" name="lingkar_kepala" class="form-control bg-white border shadow-none" value="{{ old('lingkar_kepala') }}" style="font-size: 13px;" required placeholder="Contoh: 48">
                             </div>
                             
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 13px;">Pas Foto Anak (Wajib) <span class="text-danger">*</span></label>
-                                <input type="file" name="foto_anak" accept="image/*" class="form-control bg-white border-primary shadow-none" required>
+                                <input type="file" name="foto_anak" accept="image/*" class="form-control bg-white border shadow-none" required>
                                 <div class="form-text text-muted" style="font-size: 11px;">Format: JPG/PNG, Max: 2MB.</div>
                             </div>
 
@@ -354,21 +495,73 @@
                             
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 13px;">Bukti Pembayaran (Wajib) <span class="text-danger">*</span></label>
-                                <input type="file" name="bukti_pembayaran" accept="image/*" class="form-control bg-white border-success shadow-none" required>
+                                <input type="file" name="bukti_pembayaran" accept="image/*" class="form-control bg-white border shadow-none" required>
                                 <div class="form-text text-muted" style="font-size: 11px;">Format: JPG/PNG, Max: 2MB. Upload struk transfer pendaftaran.</div>
                             </div>
                         </div>
                         
                         <div class="d-grid mt-4 pt-3 border-top">
-                            <button type="submit" class="btn btn-primary rounded-pill fw-bold shadow-none py-3 d-flex justify-content-center align-items-center gap-2" style="font-size: 15px;">
+                            <button type="submit" id="btnSubmitForm" class="btn btn-theme-submit rounded-pill font-bold py-3 d-flex justify-content-center align-items-center gap-2" style="font-size: 15px; font-weight: 700;">
                                 <iconify-icon icon="solar:send-square-bold-duotone" class="fs-5"></iconify-icon> Kirim Formulir Pendaftaran
                             </button>
                         </div>
                     </form>
                     
-                    {{-- SCRIPT JAVASCRIPT: PETA LEAFLET & OTOMASI KUOTA PER SEKOLAH (1-WAY) --}}
+                    {{-- SCRIPT JAVASCRIPT: PETA LEAFLET, DYNAMIC KUOTA REALTIME, FORM VALIDATION & SWEETALERT --}}
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
+
+                            {{-- SweetAlert2 Notifikasi Sukses Pendaftaran --}}
+                            @if(session('success_pendaftaran'))
+                                var pData = @json(session('success_pendaftaran'));
+                                Swal.fire({
+                                    title: '🎉 Pendaftaran Berhasil!',
+                                    html: `
+                                        <div style="text-align: left; font-size: 13.5px; line-height: 1.6; color: #374151;">
+                                            <p style="margin-bottom: 10px;">Data pendaftaran siswa atas nama <strong style="color: {{ $theme['primary'] }};">${pData.nama_siswa}</strong> di <strong>${pData.nama_sekolah}</strong> (${pData.nama_yayasan}) telah berhasil disimpan ke database.</p>
+                                            <p style="margin-bottom: 10px;">Akun portal wali murid terhubung dengan email: <strong>${pData.email}</strong>.</p>
+                                            <div style="background: #F3F4F6; border: 1px solid #E5E7EB; padding: 10px 14px; border-radius: 10px; font-size: 12px;">
+                                                👉 Silakan masuk ke <strong>Portal Login Yayasan</strong> untuk mengecek status pendaftaran &amp; informasi sekolah.
+                                            </div>
+                                        </div>
+                                    `,
+                                    icon: 'success',
+                                    confirmButtonText: '➡️ Masuk ke Portal Login Yayasan',
+                                    confirmButtonColor: '{{ $theme['primary'] }}',
+                                    allowOutsideClick: false,
+                                    customClass: {
+                                        popup: 'rounded-4'
+                                    }
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = pData.login_url;
+                                    }
+                                });
+                            @endif
+
+                            {{-- SweetAlert2 Notifikasi Error Validation --}}
+                            @if(session('error') || $errors->any())
+                                var errHtml = `{{ session('error') }}`;
+                                @if($errors->any())
+                                    errHtml += `<ul style="text-align: left; margin-top: 8px; font-size: 13px;">`;
+                                    @foreach($errors->all() as $err)
+                                        errHtml += `<li>{{ $err }}</li>`;
+                                    @endforeach
+                                    errHtml += `</ul>`;
+                                @endif
+
+                                Swal.fire({
+                                    title: '⚠️ Formulir Belum Lengkap!',
+                                    html: `<div style="font-size: 13.5px;">${errHtml}</div>`,
+                                    icon: 'error',
+                                    confirmButtonText: 'Perbaiki Isian Formulir',
+                                    confirmButtonColor: '#EF4444',
+                                    customClass: {
+                                        popup: 'rounded-4'
+                                    }
+                                });
+                            @endif
+
                             // 1. Script Peta Leaflet
                             var defaultLat = {{ old('lintang', '-7.983908') }};
                             var defaultLng = {{ old('bujur', '112.621391') }};
@@ -437,7 +630,7 @@
                                 }
                             });
 
-                            // 2. Data Kuota & Tahun Per Sekolah (1-WAY CLIENT-SIDE DYNAMIC)
+                            // 2. Data Kuota Real-time & Tahun Per Sekolah
                             const schoolsData = @json($schools_data ?? []);
                             const schoolSelect = document.getElementById('school_id_field');
                             const tahunSelect = document.getElementById('tahun_inden');
@@ -461,7 +654,7 @@
                                 if (schoolId && schoolsData[schoolId]) {
                                     const schoolInfo = schoolsData[schoolId];
                                     if (headerSchoolName) {
-                                        headerSchoolName.textContent = schoolInfo.nama_sekolah;
+                                        headerSchoolName.textContent = schoolInfo.nama_sekolah + ' {{ $activeYayasan ? '— ' . $activeYayasan->nama_yayasan : '' }}';
                                     }
 
                                     const years = schoolInfo.list_tahun || [];
@@ -496,7 +689,10 @@
                                         const opt = document.createElement('option');
                                         opt.value = val;
                                         opt.text = `${text} - Sisa Kuota: ${sisa}`;
-                                        if (sisa <= 0) opt.disabled = true;
+                                        if (sisa <= 0) {
+                                            opt.disabled = true;
+                                            opt.text += ' (Penuh)';
+                                        }
                                         if (val === oldProgram) opt.selected = true;
                                         programSelect.appendChild(opt);
                                     };
@@ -568,7 +764,7 @@
                                                 <div class="alert alert-info py-2 px-3 mb-0 rounded-3 small d-flex align-items-start gap-2">
                                                     <iconify-icon icon="solar:info-circle-bold" class="fs-5 flex-shrink-0 text-primary mt-0.5"></iconify-icon>
                                                     <div>
-                                                        <strong>Email Baru:</strong> Akun portal wali murid akan otomatis dibuatkan menggunakan email & kata sandi yang Anda tentukan di bawah.
+                                                        <strong>Email Baru:</strong> Akun portal wali murid akan otomatis dibuatkan menggunakan email &amp; kata sandi yang Anda tentukan di bawah.
                                                     </div>
                                                 </div>
                                             `;
@@ -608,6 +804,36 @@
                                         eyeIcon.setAttribute('icon', 'solar:eye-bold');
                                     }
                                 });
+                            }
+
+                            // 5. Form Client Validation Visual Feedback
+                            const formPendaftaran = document.getElementById('formPendaftaran');
+                            if (formPendaftaran) {
+                                formPendaftaran.addEventListener('submit', function(event) {
+                                    if (!formPendaftaran.checkValidity()) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        formPendaftaran.classList.add('was-validated');
+
+                                        // Focus & scroll to first invalid field
+                                        const firstInvalid = formPendaftaran.querySelector(':invalid');
+                                        if (firstInvalid) {
+                                            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            firstInvalid.focus();
+                                        }
+
+                                        Swal.fire({
+                                            title: '⚠️ Formulir Belum Lengkap',
+                                            text: 'Mohon periksa dan isi seluruh kolom yang wajib diisi (*). Fields yang belum diisi telah ditandai dengan warna merah.',
+                                            icon: 'warning',
+                                            confirmButtonText: 'Lengkapi Sekarang',
+                                            confirmButtonColor: '#EF4444',
+                                            customClass: {
+                                                popup: 'rounded-4'
+                                            }
+                                        });
+                                    }
+                                }, false);
                             }
                         });
                     </script>

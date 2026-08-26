@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulir Pendaftaran – {{ \App\Models\Setting::get('site_title', 'Yayasan Al-Hikmah') }}</title>
+    <title>Formulir Pendaftaran – Kiddy School ERP</title>
 
     <!-- CSS Bawaan Template -->
     <link rel="stylesheet" href="{{ asset('template2/css/styles.min.css') }}" />
     <!-- Iconify -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     @stack('styles')
 
@@ -69,8 +71,8 @@
         .pendaftaran-topbar .step-label {
             margin-left: auto;
             font-size: 11.5px;
-            color: #9ca3af;
-            font-weight: 500;
+            color: #6b7280;
+            font-weight: 600;
             letter-spacing: 0.02em;
         }
 
@@ -89,16 +91,9 @@
             Kembali
         </a>
 
-        <a href="/" class="brand">
-            @if(\App\Models\Setting::get('site_logo'))
-                <img src="{{ \App\Models\Setting::get('site_logo') }}" alt="Logo">
-            @else
-                <iconify-icon icon="solar:diploma-bold-duotone" class="fs-5 text-primary"></iconify-icon>
-            @endif
-            {{ \App\Models\Setting::get('site_title', 'Yayasan Al-Hikmah') }}
-        </a>
+        @yield('topbar_branding')
 
-        <span class="step-label">📋 Formulir Pendaftaran Siswa Baru</span>
+        <span class="step-label d-none d-sm-inline">📋 Formulir Pendaftaran Siswa Baru</span>
     </div>
 
     {{-- ── Konten Pendaftaran ── --}}

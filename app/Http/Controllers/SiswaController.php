@@ -202,16 +202,21 @@ class SiswaController extends Controller
         $user = Auth::user();
 
         // 1. Tentukan yayasan_id:
-        // Dari user yang login (wali_murid / admin / super_admin)
-        // ATAU dari query parameter ?yayasan_id=... / ?kode_yayasan=... / ?school_id=...
+        // 1. Tentukan yayasan_id & resolve encrypted hash token:
         $yayasan_id = null;
         if ($user && $user->yayasan_id) {
             $yayasan_id = $user->yayasan_id;
+        } elseif ($request->filled('y') || $request->filled('token')) {
+            $rawToken = $request->query('y') ?? $request->query('token');
+            $decryptedCode = \App\Models\Yayasan::decryptToken($rawToken);
+            $y = \App\Models\Yayasan::where('kode_yayasan', $decryptedCode ?: $rawToken)->first();
+            if ($y) $yayasan_id = $y->id;
+        } elseif ($request->filled('kode_yayasan')) {
+            $decryptedCode = \App\Models\Yayasan::decryptToken($request->kode_yayasan);
+            $y = \App\Models\Yayasan::where('kode_yayasan', $decryptedCode ?: $request->kode_yayasan)->first();
+            if ($y) $yayasan_id = $y->id;
         } elseif ($request->filled('yayasan_id')) {
             $yayasan_id = $request->yayasan_id;
-        } elseif ($request->filled('kode_yayasan')) {
-            $y = DB::table('yayasans')->where('kode_yayasan', $request->kode_yayasan)->first();
-            if ($y) $yayasan_id = $y->id;
         } elseif ($request->filled('school_id')) {
             $sch = DB::table('schools')->where('id', $request->school_id)->first();
             if ($sch) $yayasan_id = $sch->yayasan_id;
@@ -222,7 +227,7 @@ class SiswaController extends Controller
             $schools = \App\Models\School::where('status', 'aktif')
                 ->where('yayasan_id', $yayasan_id)
                 ->get();
-            $yayasan = DB::table('yayasans')->where('id', $yayasan_id)->first();
+            $yayasan = \App\Models\Yayasan::find($yayasan_id);
         } else {
             $schools = \App\Models\School::where('status', 'aktif')->get();
             $yayasan = null;
@@ -241,6 +246,13 @@ class SiswaController extends Controller
         // Jika belum ada school_id terpilih tapi ada sekolah, pilih sekolah pertama
         if (!$selected_school_id && $schools->count() > 0) {
             $selected_school_id = $schools->first()->id;
+        }
+
+        if (!$yayasan && $selected_school_id) {
+            $sch = DB::table('schools')->where('id', $selected_school_id)->first();
+            if ($sch && $sch->yayasan_id) {
+                $yayasan = \App\Models\Yayasan::find($sch->yayasan_id);
+            }
         }
 
         // 4. Siapkan data kuota & tahun inden untuk SETIAP sekolah (agar ganti sekolah instant tanpa reload 1-way)
@@ -454,13 +466,17 @@ class SiswaController extends Controller
             'updated_at'         => now(),
         ]);
 
-        // Jika pendaftar adalah wali murid baru / publik yang belum login, langsung login-kan ke portal
-        if ($parentUser && !Auth::check()) {
-            Auth::login($parentUser);
-            return redirect('/dashboard')->with('success', 'Pendaftaran siswa baru untuk ' . $request->nama_lengkap . ' berhasil dikirim! Akun portal wali murid Anda telah aktif. Anda dapat memantau status pendaftaran anak di portal ini.');
-        }
+        $school = DB::table('schools')->where('id', $request->school_id)->first();
+        $yayasanObj = $school ? \App\Models\Yayasan::find($school->yayasan_id) : null;
+        $loginUrl = $yayasanObj ? $yayasanObj->encrypted_login_url : route('login');
 
-        return back()->with('success', 'Pendaftaran berhasil disimpan!');
+        return back()->with('success_pendaftaran', [
+            'nama_siswa'   => $request->nama_lengkap,
+            'nama_sekolah' => $school ? $school->nama_sekolah : 'Sekolah',
+            'nama_yayasan' => $yayasanObj ? $yayasanObj->nama_yayasan : 'Yayasan Terdaftar',
+            'email'        => $request->email,
+            'login_url'    => $loginUrl,
+        ]);
     }
 
     public function importNisn(Request $request)

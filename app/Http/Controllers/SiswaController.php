@@ -201,10 +201,15 @@ class SiswaController extends Controller
     {
         $user = Auth::user();
 
-        // 1. Tentukan yayasan_id:
         // 1. Tentukan yayasan_id & resolve encrypted hash token:
         $yayasan_id = null;
-        if ($user && $user->yayasan_id) {
+        $routeParam = $request->route('kode_yayasan');
+
+        if ($routeParam) {
+            $decryptedCode = \App\Models\Yayasan::decryptToken($routeParam);
+            $y = \App\Models\Yayasan::where('kode_yayasan', $decryptedCode ?: $routeParam)->first();
+            if ($y) $yayasan_id = $y->id;
+        } elseif ($user && $user->yayasan_id) {
             $yayasan_id = $user->yayasan_id;
         } elseif ($request->filled('y') || $request->filled('token')) {
             $rawToken = $request->query('y') ?? $request->query('token');
@@ -253,6 +258,11 @@ class SiswaController extends Controller
             if ($sch && $sch->yayasan_id) {
                 $yayasan = \App\Models\Yayasan::find($sch->yayasan_id);
             }
+        }
+
+        // PAKSA REDIRECT KE ENCRYPTED HASH TOKEN URL (Contoh: /y/eyJjIjoiWUFIMi.../form-pendaftaran?school_id=1#form)
+        if ($yayasan && !$request->routeIs('yayasan.pendaftaran.form')) {
+            return redirect()->to(route('yayasan.pendaftaran.form', array_merge(['kode_yayasan' => $yayasan->encrypted_token], $request->query())) . '#form');
         }
 
         // 4. Siapkan data kuota & tahun inden untuk SETIAP sekolah (agar ganti sekolah instant tanpa reload 1-way)

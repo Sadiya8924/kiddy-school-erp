@@ -135,6 +135,13 @@
     }
 @endphp
 
+@section('topbar_back_btn')
+    <a href="{{ $activeYayasan && $activeYayasan instanceof \App\Models\Yayasan ? route('yayasan.pendaftaran', $activeYayasan->encrypted_token) . '#login' : 'javascript:history.back()' }}" class="back-btn">
+        <iconify-icon icon="solar:alt-arrow-left-bold-duotone"></iconify-icon>
+        Kembali ke Portal PPDB
+    </a>
+@endsection
+
 @section('topbar_branding')
     <a href="{{ $yayasanLoginUrl }}" class="brand">
         @if($activeYayasan && $activeYayasan->logo_yayasan)
@@ -186,6 +193,16 @@
     .form-control:focus, .form-select:focus {
         border-color: {{ $theme['primary'] }} !important;
         box-shadow: 0 0 0 3px {{ $theme['primary'] }}25 !important;
+    }
+
+    /* Hide HTML5 spinner arrows for number inputs */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
     }
 
     /* Form Validation Styling: Highlight required unfilled fields */
@@ -274,11 +291,11 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">NIK Anak <span class="text-danger">*</span></label>
-                                <input type="number" name="nik" class="form-control bg-white border shadow-none" value="{{ old('nik') }}" style="font-size: 13px;" required placeholder="16 digit NIK anak">
+                                <input type="text" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="nik" class="form-control bg-white border shadow-none" value="{{ old('nik') }}" style="font-size: 13px;" required placeholder="16 digit NIK anak">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Nomor KK (Dapodik) <span class="text-danger">*</span></label>
-                                <input type="number" name="no_kk" class="form-control bg-white border shadow-none" value="{{ old('no_kk') }}" style="font-size: 13px;" required placeholder="16 digit Nomor Kartu Keluarga">
+                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Nomor KK <span class="text-danger">*</span></label>
+                                <input type="text" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="no_kk" class="form-control bg-white border shadow-none" value="{{ old('no_kk') }}" style="font-size: 13px;" required placeholder="16 digit Nomor Kartu Keluarga">
                             </div>
 
                             <div class="col-md-4 mb-3">
@@ -311,11 +328,11 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Anak ke- <span class="text-danger">*</span></label>
-                                <input type="number" name="anak_ke" class="form-control bg-white border shadow-none" value="{{ old('anak_ke') }}" style="font-size: 13px;" required placeholder="Contoh: 1">
+                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="anak_ke" class="form-control bg-white border shadow-none" value="{{ old('anak_ke') }}" style="font-size: 13px;" required placeholder="Contoh: 1">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Jumlah Saudara <span class="text-danger">*</span></label>
-                                <input type="number" name="jml_saudara" class="form-control bg-white border shadow-none" value="{{ old('jml_saudara') }}" style="font-size: 13px;" required placeholder="Contoh: 1">
+                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="jml_saudara" class="form-control bg-white border shadow-none" value="{{ old('jml_saudara') }}" style="font-size: 13px;" required placeholder="Contoh: 1">
                             </div>
                         </div>
 
@@ -326,7 +343,7 @@
                         <div class="row gx-3 mb-3">
                             <div class="col-12 mb-2">
                                 <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-                                    <label class="form-label fw-bold text-dark mb-0" style="font-size: 13px;"><iconify-icon icon="solar:map-point-bold-duotone" class="text-theme-primary"></iconify-icon> Cari Lokasi Rumah di Peta (Wajib Dapodik) <span class="text-danger">*</span></label>
+                                    <label class="form-label fw-bold text-dark mb-0" style="font-size: 13px;"><iconify-icon icon="solar:map-point-bold-duotone" class="text-theme-primary"></iconify-icon> Cari Lokasi Rumah di Peta <span class="text-danger">*</span></label>
                                     <button type="button" id="btnGps" class="btn btn-sm btn-outline-primary rounded-pill font-semibold px-3 py-1 d-inline-flex align-items-center gap-1.5" style="font-size: 11.5px;">
                                         <iconify-icon icon="solar:gps-bold-duotone" class="fs-6"></iconify-icon> Deteksi Lokasi Saya (GPS)
                                     </button>
@@ -371,7 +388,7 @@
                             </div>
                             <div class="col-md-2 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Kode Pos <span class="text-danger">*</span></label>
-                                <input type="number" name="kode_pos" class="form-control bg-white border shadow-none" value="{{ old('kode_pos') }}" style="font-size: 13px;" required placeholder="65145">
+                                <input type="text" inputmode="numeric" maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="kode_pos" class="form-control bg-white border shadow-none" value="{{ old('kode_pos') }}" style="font-size: 13px;" required placeholder="65145">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Jenis Tinggal <span class="text-danger">*</span></label>
@@ -384,35 +401,33 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Transportasi ke Sekolah <span class="text-danger">*</span></label>
-                                <input type="text" name="alat_transportasi" class="form-control bg-white border shadow-none" value="{{ old('alat_transportasi') }}" style="font-size: 13px;" required placeholder="Contoh: Sepeda Motor / Jalan Kaki / Mobil">
+                                <select name="alat_transportasi" class="form-select bg-white border shadow-none" style="font-size: 13px;" required>
+                                    <option value="">-- Pilih Transportasi --</option>
+                                    <option value="Jalan kaki" {{ old('alat_transportasi') == 'Jalan kaki' ? 'selected' : '' }}>Jalan kaki</option>
+                                    <option value="Sepeda" {{ old('alat_transportasi') == 'Sepeda' ? 'selected' : '' }}>Sepeda</option>
+                                    <option value="Sepeda Motor" {{ old('alat_transportasi') == 'Sepeda Motor' ? 'selected' : '' }}>Sepeda Motor</option>
+                                    <option value="Mobil Pribadi" {{ old('alat_transportasi') == 'Mobil Pribadi' ? 'selected' : '' }}>Mobil Pribadi</option>
+                                    <option value="Antar Jemput Sekolah" {{ old('alat_transportasi') == 'Antar Jemput Sekolah' ? 'selected' : '' }}>Antar Jemput Sekolah</option>
+                                    <option value="Angkutan Umum / Bus" {{ old('alat_transportasi') == 'Angkutan Umum / Bus' ? 'selected' : '' }}>Angkutan Umum / Bus</option>
+                                    <option value="Lainnya" {{ old('alat_transportasi') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                </select>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Jarak ke Sekolah (Km) <span class="text-danger">*</span></label>
-                                <input type="number" name="jarak_rumah" class="form-control bg-white border shadow-none" value="{{ old('jarak_rumah') }}" style="font-size: 13px;" required placeholder="Contoh: 1">
+                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="jarak_rumah" class="form-control bg-white border shadow-none" value="{{ old('jarak_rumah') }}" style="font-size: 13px;" required placeholder="Contoh: 1">
                             </div>
 
-                            @if(Auth::check())
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-semibold text-dark" style="font-size: 12px;">No HP / WhatsApp <span class="text-danger">*</span></label>
-                                    <input type="text" name="hp" class="form-control bg-white border shadow-none" value="{{ old('hp') }}" style="font-size: 13px;" required placeholder="08xxxxxxxxxx">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Email Akun Portal Anda</label>
-                                    <input type="email" name="email" class="form-control bg-light border text-muted shadow-none fw-semibold" value="{{ Auth::user()->email }}" style="font-size: 13px;" readonly>
-                                    <div class="form-text text-success d-flex align-items-center gap-1 mt-1" style="font-size: 11.5px;">
-                                        <iconify-icon icon="solar:check-circle-bold"></iconify-icon> Terhubung ke akun: <strong>{{ Auth::user()->name }}</strong>
-                                    </div>
-                                </div>
-                            @else
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-semibold text-dark" style="font-size: 12px;">No HP / WhatsApp <span class="text-danger">*</span></label>
-                                    <input type="text" name="hp" class="form-control bg-white border shadow-none" value="{{ old('hp') }}" style="font-size: 13px;" required placeholder="08xxxxxxxxxx">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Email Orang Tua <span class="text-danger">*</span></label>
-                                    <input type="email" name="email" id="parent_email" class="form-control bg-white border shadow-none" value="{{ old('email') }}" style="font-size: 13px;" required placeholder="nama@email.com">
-                                    <div id="email_feedback_box" class="mt-2" style="display:none;"></div>
-                                </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">No HP / WhatsApp <span class="text-danger">*</span></label>
+                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="hp" class="form-control bg-white border shadow-none" value="{{ old('hp') }}" style="font-size: 13px;" required placeholder="08xxxxxxxxxx">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Email Orang Tua <span class="text-danger">*</span></label>
+                                <input type="email" name="email" id="parent_email" class="form-control bg-white border shadow-none" value="{{ old('email') }}" style="font-size: 13px;" required placeholder="nama@email.com">
+                                <div id="email_feedback_box" class="mt-2" style="display:none;"></div>
+                            </div>
+                            
+                            @if(!Auth::check())
                                 <div class="col-12 mb-3">
                                     <div class="p-3 rounded-3 border bg-light">
                                         <label class="form-label fw-semibold text-dark mb-1" id="password_label" style="font-size: 12.5px;">
@@ -438,23 +453,77 @@
                             <div class="col-md-6 mb-3">
                                 <div class="p-3 border rounded bg-light h-100">
                                     <h6 class="fw-bold text-dark mb-3" style="font-size: 13px;">Data Ayah Kandung</h6>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Nama Ayah <span class="text-danger">*</span></label><input type="text" name="nama_ayah" class="form-control bg-white border shadow-none" value="{{ old('nama_ayah') }}" style="font-size: 12px;" required placeholder="Nama lengkap ayah"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">NIK Ayah <span class="text-danger">*</span></label><input type="number" name="nik_ayah" class="form-control bg-white border shadow-none" value="{{ old('nik_ayah') }}" style="font-size: 12px;" required placeholder="16 digit NIK ayah"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Tahun Lahir <span class="text-danger">*</span></label><input type="number" name="tahun_lahir_ayah" class="form-control bg-white border shadow-none" value="{{ old('tahun_lahir_ayah') }}" style="font-size: 12px;" required placeholder="Contoh: 1980"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pendidikan <span class="text-danger">*</span></label><input type="text" name="pendidikan_ayah" class="form-control bg-white border shadow-none" value="{{ old('pendidikan_ayah') }}" style="font-size: 12px;" required placeholder="Contoh: S1 / SMA / dll"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pekerjaan <span class="text-danger">*</span></label><input type="text" name="pekerjaan_ayah" class="form-control bg-white border shadow-none" value="{{ old('pekerjaan_ayah') }}" style="font-size: 12px;" required placeholder="Contoh: Karyawan Swasta / Wiraswasta"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Penghasilan Bulanan <span class="text-danger">*</span></label><input type="text" name="penghasilan_ayah" class="form-control bg-white border shadow-none" value="{{ old('penghasilan_ayah') }}" style="font-size: 12px;" required placeholder="Contoh: Rp. 3.000.000"></div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Nama Ayah <span class="text-danger">*</span></label>
+                                        <input type="text" name="nama_ayah" class="form-control bg-white border shadow-none" value="{{ old('nama_ayah') }}" style="font-size: 12px;" required placeholder="Nama lengkap ayah">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">NIK Ayah <span class="text-danger">*</span></label>
+                                        <input type="text" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="nik_ayah" class="form-control bg-white border shadow-none" value="{{ old('nik_ayah') }}" style="font-size: 12px;" required placeholder="16 digit NIK ayah">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Tahun Lahir <span class="text-danger">*</span></label>
+                                        <input type="text" inputmode="numeric" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="tahun_lahir_ayah" class="form-control bg-white border shadow-none" value="{{ old('tahun_lahir_ayah') }}" style="font-size: 12px;" required placeholder="Contoh: 1980">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pendidikan <span class="text-danger">*</span></label>
+                                        <select name="pendidikan_ayah" class="form-select bg-white border shadow-none" style="font-size: 12px;" required>
+                                            <option value="">-- Pilih Pendidikan --</option>
+                                            <option value="Tidak Sekolah / SD" {{ old('pendidikan_ayah') == 'Tidak Sekolah / SD' ? 'selected' : '' }}>Tidak Sekolah / SD</option>
+                                            <option value="SMP / Sederajat" {{ old('pendidikan_ayah') == 'SMP / Sederajat' ? 'selected' : '' }}>SMP / Sederajat</option>
+                                            <option value="SMA / SMK / Sederajat" {{ old('pendidikan_ayah') == 'SMA / SMK / Sederajat' ? 'selected' : '' }}>SMA / SMK / Sederajat</option>
+                                            <option value="D1 / D2 / D3" {{ old('pendidikan_ayah') == 'D1 / D2 / D3' ? 'selected' : '' }}>D1 / D2 / D3</option>
+                                            <option value="D4 / S1" {{ old('pendidikan_ayah') == 'D4 / S1' ? 'selected' : '' }}>D4 / S1</option>
+                                            <option value="S2" {{ old('pendidikan_ayah') == 'S2' ? 'selected' : '' }}>S2</option>
+                                            <option value="S3" {{ old('pendidikan_ayah') == 'S3' ? 'selected' : '' }}>S3</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pekerjaan <span class="text-danger">*</span></label>
+                                        <input type="text" name="pekerjaan_ayah" class="form-control bg-white border shadow-none" value="{{ old('pekerjaan_ayah') }}" style="font-size: 12px;" required placeholder="Contoh: Karyawan Swasta / Wiraswasta">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Penghasilan Bulanan <span class="text-danger">*</span></label>
+                                        <input type="text" name="penghasilan_ayah" id="penghasilan_ayah" class="form-control bg-white border shadow-none" value="{{ old('penghasilan_ayah') }}" style="font-size: 12px;" required placeholder="Ketik angka saja (misal: 3000000)" oninput="formatRupiahInput(this)">
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="p-3 border rounded bg-light h-100">
                                     <h6 class="fw-bold text-dark mb-3" style="font-size: 13px;">Data Ibu Kandung</h6>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Nama Ibu <span class="text-danger">*</span></label><input type="text" name="nama_ibu" class="form-control bg-white border shadow-none" value="{{ old('nama_ibu') }}" style="font-size: 12px;" required placeholder="Nama lengkap ibu"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">NIK Ibu <span class="text-danger">*</span></label><input type="number" name="nik_ibu" class="form-control bg-white border shadow-none" value="{{ old('nik_ibu') }}" style="font-size: 12px;" required placeholder="16 digit NIK ibu"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Tahun Lahir <span class="text-danger">*</span></label><input type="number" name="tahun_lahir_ibu" class="form-control bg-white border shadow-none" value="{{ old('tahun_lahir_ibu') }}" style="font-size: 12px;" required placeholder="Contoh: 1985"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pendidikan <span class="text-danger">*</span></label><input type="text" name="pendidikan_ibu" class="form-control bg-white border shadow-none" value="{{ old('pendidikan_ibu') }}" style="font-size: 12px;" required placeholder="Contoh: S1 / SMA / dll"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pekerjaan <span class="text-danger">*</span></label><input type="text" name="pekerjaan_ibu" class="form-control bg-white border shadow-none" value="{{ old('pekerjaan_ibu') }}" style="font-size: 12px;" required placeholder="Contoh: Ibu Rumah Tangga / PNS"></div>
-                                    <div class="mb-2"><label class="form-label fw-semibold text-dark" style="font-size: 11px;">Penghasilan Bulanan <span class="text-danger">*</span></label><input type="text" name="penghasilan_ibu" class="form-control bg-white border shadow-none" value="{{ old('penghasilan_ibu') }}" style="font-size: 12px;" required placeholder="Contoh: Rp. 2.000.000"></div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Nama Ibu <span class="text-danger">*</span></label>
+                                        <input type="text" name="nama_ibu" class="form-control bg-white border shadow-none" value="{{ old('nama_ibu') }}" style="font-size: 12px;" required placeholder="Nama lengkap ibu">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">NIK Ibu <span class="text-danger">*</span></label>
+                                        <input type="text" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="nik_ibu" class="form-control bg-white border shadow-none" value="{{ old('nik_ibu') }}" style="font-size: 12px;" required placeholder="16 digit NIK ibu">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Tahun Lahir <span class="text-danger">*</span></label>
+                                        <input type="text" inputmode="numeric" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="tahun_lahir_ibu" class="form-control bg-white border shadow-none" value="{{ old('tahun_lahir_ibu') }}" style="font-size: 12px;" required placeholder="Contoh: 1985">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pendidikan <span class="text-danger">*</span></label>
+                                        <select name="pendidikan_ibu" class="form-select bg-white border shadow-none" style="font-size: 12px;" required>
+                                            <option value="">-- Pilih Pendidikan --</option>
+                                            <option value="Tidak Sekolah / SD" {{ old('pendidikan_ibu') == 'Tidak Sekolah / SD' ? 'selected' : '' }}>Tidak Sekolah / SD</option>
+                                            <option value="SMP / Sederajat" {{ old('pendidikan_ibu') == 'SMP / Sederajat' ? 'selected' : '' }}>SMP / Sederajat</option>
+                                            <option value="SMA / SMK / Sederajat" {{ old('pendidikan_ibu') == 'SMA / SMK / Sederajat' ? 'selected' : '' }}>SMA / SMK / Sederajat</option>
+                                            <option value="D1 / D2 / D3" {{ old('pendidikan_ibu') == 'D1 / D2 / D3' ? 'selected' : '' }}>D1 / D2 / D3</option>
+                                            <option value="D4 / S1" {{ old('pendidikan_ibu') == 'D4 / S1' ? 'selected' : '' }}>D4 / S1</option>
+                                            <option value="S2" {{ old('pendidikan_ibu') == 'S2' ? 'selected' : '' }}>S2</option>
+                                            <option value="S3" {{ old('pendidikan_ibu') == 'S3' ? 'selected' : '' }}>S3</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Pekerjaan <span class="text-danger">*</span></label>
+                                        <input type="text" name="pekerjaan_ibu" class="form-control bg-white border shadow-none" value="{{ old('pekerjaan_ibu') }}" style="font-size: 12px;" required placeholder="Contoh: Ibu Rumah Tangga / PNS">
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Penghasilan Bulanan <span class="text-danger">*</span></label>
+                                        <input type="text" name="penghasilan_ibu" id="penghasilan_ibu" class="form-control bg-white border shadow-none" value="{{ old('penghasilan_ibu') }}" style="font-size: 12px;" required placeholder="Ketik angka saja (misal: 2000000)" oninput="formatRupiahInput(this)">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -464,15 +533,15 @@
                         <div class="row gx-3">
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Tinggi Badan (cm) <span class="text-danger">*</span></label>
-                                <input type="number" name="tinggi_badan" class="form-control bg-white border shadow-none" value="{{ old('tinggi_badan') }}" style="font-size: 13px;" required placeholder="Contoh: 110">
+                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="tinggi_badan" class="form-control bg-white border shadow-none" value="{{ old('tinggi_badan') }}" style="font-size: 13px;" required placeholder="Contoh: 110">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Berat Badan (kg) <span class="text-danger">*</span></label>
-                                <input type="number" name="berat_badan" class="form-control bg-white border shadow-none" value="{{ old('berat_badan') }}" style="font-size: 13px;" required placeholder="Contoh: 18">
+                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="berat_badan" class="form-control bg-white border shadow-none" value="{{ old('berat_badan') }}" style="font-size: 13px;" required placeholder="Contoh: 18">
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Lingkar Kepala (cm) <span class="text-danger">*</span></label>
-                                <input type="number" name="lingkar_kepala" class="form-control bg-white border shadow-none" value="{{ old('lingkar_kepala') }}" style="font-size: 13px;" required placeholder="Contoh: 48">
+                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="lingkar_kepala" class="form-control bg-white border shadow-none" value="{{ old('lingkar_kepala') }}" style="font-size: 13px;" required placeholder="Contoh: 48">
                             </div>
                             
                             <div class="col-md-6 mb-3">
@@ -507,9 +576,25 @@
                         </div>
                     </form>
                     
-                    {{-- SCRIPT JAVASCRIPT: PETA LEAFLET, DYNAMIC KUOTA REALTIME, FORM VALIDATION & SWEETALERT --}}
+                    {{-- SCRIPT JAVASCRIPT: PETA LEAFLET, DYNAMIC KUOTA REALTIME, RUPIAH FORMATTER, FORM VALIDATION & SWEETALERT --}}
                     <script>
+                        // Live Format Nominal Rupiah Otomatis saat mengetik angka
+                        function formatRupiahInput(el) {
+                            let value = el.value.replace(/[^0-9]/g, '');
+                            if (!value) {
+                                el.value = '';
+                                return;
+                            }
+                            let formatted = new Intl.NumberFormat('id-ID').format(value);
+                            el.value = 'Rp. ' + formatted;
+                        }
+
                         document.addEventListener('DOMContentLoaded', function() {
+                            // Format nilai awal penghasilan jika ada old value
+                            const pAyah = document.getElementById('penghasilan_ayah');
+                            const pIbu = document.getElementById('penghasilan_ibu');
+                            if (pAyah && pAyah.value) formatRupiahInput(pAyah);
+                            if (pIbu && pIbu.value) formatRupiahInput(pIbu);
 
                             {{-- SweetAlert2 Notifikasi Sukses Pendaftaran --}}
                             @if(session('success_pendaftaran'))

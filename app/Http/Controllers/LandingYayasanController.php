@@ -107,17 +107,17 @@ class LandingYayasanController extends Controller
         $isEncrypted = false;
         $yayasan = $this->findYayasan($kode_yayasan, $isEncrypted);
 
-        // Jika diakses menggunakan kode unencrypted, redirect ke URL terenkripsi dengan hash anchor #register
+        // Jika diakses menggunakan kode unencrypted, redirect ke URL terenkripsi dengan hash anchor #login
         if (!$isEncrypted) {
-            return redirect()->to(route('yayasan.pendaftaran', array_merge(['kode_yayasan' => $yayasan->encrypted_token], $request->query())) . '#register');
+            return redirect()->to(route('yayasan.pendaftaran', array_merge(['kode_yayasan' => $yayasan->encrypted_token], $request->query())) . '#login');
         }
 
-        $request->merge([
-            'kode_yayasan' => $yayasan->encrypted_token,
-            'yayasan_id'   => $yayasan->id,
-        ]);
+        $yayasan->load('schools');
 
-        return app(SiswaController::class)->createPendaftaran($request);
+        $schools = $yayasan->schools->where('status', 'aktif')->values();
+        $selectedSchoolId = $request->query('school_id');
+
+        return view('landing_yayasan_pendaftaran', compact('yayasan', 'schools', 'selectedSchoolId'));
     }
 
     /**

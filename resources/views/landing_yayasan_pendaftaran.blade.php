@@ -529,7 +529,7 @@
                     </div>
 
                     @forelse($schools as $school)
-                    <a href="{{ route('pendaftaran', ['school_id' => $school->id]) }}" class="school-choice-item">
+                    <a href="{{ route('yayasan.pendaftaran.form', ['kode_yayasan' => $yayasan->encrypted_token, 'school_id' => $school->id]) }}#form" class="school-choice-item">
                         <div class="d-flex align-items-center gap-3">
                             <div class="d-flex align-items-center justify-content-center rounded-3 bg-white border" style="width:42px;height:42px;color:var(--primary);flex-shrink:0;">
                                 <iconify-icon icon="solar:buildings-3-bold-duotone" style="font-size:22px;"></iconify-icon>

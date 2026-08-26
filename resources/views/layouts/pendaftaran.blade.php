@@ -86,10 +86,14 @@
 
     {{-- ── Mini Top Bar: hanya back + logo, tanpa menu ── --}}
     <div class="pendaftaran-topbar">
-        <a href="javascript:history.back()" class="back-btn">
-            <iconify-icon icon="solar:alt-arrow-left-bold-duotone"></iconify-icon>
-            Kembali
-        </a>
+        @hasSection('topbar_back_btn')
+            @yield('topbar_back_btn')
+        @else
+            <a href="javascript:history.back()" class="back-btn">
+                <iconify-icon icon="solar:alt-arrow-left-bold-duotone"></iconify-icon>
+                Kembali
+            </a>
+        @endif
 
         @yield('topbar_branding')
 

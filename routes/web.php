@@ -68,6 +68,7 @@ Route::match(['get', 'post'], '/api/check-parent-email', [SiswaController::class
 Route::get('/y/{kode_yayasan}', [LandingYayasanController::class, 'show'])->name('yayasan.landing');
 // Halaman khusus pendaftaran PPDB siswa & registrasi wali murid per yayasan
 Route::get('/y/{kode_yayasan}/daftar', [LandingYayasanController::class, 'pendaftaranPage'])->name('yayasan.pendaftaran');
+Route::get('/y/{kode_yayasan}/form-pendaftaran', [SiswaController::class, 'createPendaftaran'])->name('yayasan.pendaftaran.form');
 // Halaman login khusus portal per yayasan dengan tema kustom
 Route::get('/y/{kode_yayasan}/login', [LandingYayasanController::class, 'loginPage'])->name('yayasan.login');
 // Daftar akun wali murid terikat ke yayasan tertentu
@@ -160,6 +161,10 @@ Route::middleware(['auth'])->group(function () {
     // 1. DASHBOARD UMUM
     $generalDashboardClosure = function (\Illuminate\Http\Request $request, ?string $token = null) {
         $user = Auth::user();
+        if ($user->isOwner()) {
+            return redirect()->route('owner.yayasans.index');
+        }
+
         if ($token) {
             $decryptedCode = \App\Models\Yayasan::decryptToken($token);
             if ($decryptedCode) {
@@ -169,7 +174,7 @@ Route::middleware(['auth'])->group(function () {
                 }
             }
         } else {
-            if ($user->isSuperAdmin() || $user->isPlatformAdmin()) {
+            if ($user->isSuperAdmin()) {
                 $yId = session('active_school_id') ? null : ($user->getUserYayasanId() ?: session('active_yayasan_id'));
                 if ($yId) {
                     $yObj = \App\Models\Yayasan::find($yId);
@@ -180,6 +185,10 @@ Route::middleware(['auth'])->group(function () {
                 return redirect()->route('superadmin.dashboard');
             } else {
                 $yId = $user->getUserYayasanId();
+                if (!$yId) {
+                    $yObj = \App\Models\Yayasan::where('status', 'aktif')->first();
+                    $yId = $yObj ? $yObj->id : null;
+                }
                 if ($yId) {
                     $yObj = \App\Models\Yayasan::find($yId);
                     if ($yObj) {
@@ -678,6 +687,17 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:wali_murid')->group(function () {
         Route::post('/switch-child', [\App\Http\Controllers\WaliMuridController::class, 'switchChild'])->name('switch-child');
         Route::post('/tautkan-anak', [\App\Http\Controllers\WaliMuridController::class, 'storeTautkanAnak'])->name('tautkan-anak');
+
+        // Route terenkripsi per yayasan untuk wali murid
+        Route::prefix('/y/{kode_yayasan}')->group(function () {
+            Route::get('/rapor-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'rapor'])->name('yayasan.walimurid.rapor');
+            Route::get('/perkembangan-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'perkembangan'])->name('yayasan.walimurid.perkembangan');
+            Route::get('/jurnal-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'jurnal'])->name('yayasan.walimurid.jurnal');
+            Route::get('/materi-anak', [JurnalHarianController::class, 'waliMuridMateri'])->name('yayasan.walimurid.materi');
+            Route::get('/materi', [MateriController::class, 'indexOrtu'])->name('yayasan.materi.ortu.index');
+        });
+
+        // Route standar (akan di-redirect otomatis ke URL terenkripsi)
         Route::get('/rapor-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'rapor'])->name('walimurid.rapor');
         Route::get('/perkembangan-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'perkembangan'])->name('walimurid.perkembangan');
         Route::get('/jurnal-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'jurnal'])->name('walimurid.jurnal');

@@ -138,7 +138,16 @@ class LandingYayasanController extends Controller
             return redirect()->route('yayasan.login', $yayasan->encrypted_token);
         }
 
-        return view('landing_yayasan_login', compact('yayasan'));
+        // Tarik data akun demo yang terdaftar di database khusus untuk yayasan ini
+        $demo_accounts = [
+            'super_admin' => \App\Models\User::where('yayasan_id', $yayasan->id)->where('role', 'super_admin')->first(),
+            'admin'       => \App\Models\User::where('yayasan_id', $yayasan->id)->where('role', 'admin')->first(),
+            'kepsek'      => \App\Models\User::where('yayasan_id', $yayasan->id)->where('role', 'kepsek')->first(),
+            'guru'        => \App\Models\User::where('yayasan_id', $yayasan->id)->where('role', 'guru')->first(),
+            'wali_murid'  => \App\Models\User::where('yayasan_id', $yayasan->id)->where('role', 'wali_murid')->first(),
+        ];
+
+        return view('landing_yayasan_login', compact('yayasan', 'demo_accounts'));
     }
 
     /**

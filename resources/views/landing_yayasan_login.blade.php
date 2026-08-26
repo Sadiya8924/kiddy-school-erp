@@ -779,6 +779,48 @@
                 </button>
             </form>
 
+            {{-- Quick Demo Accounts Grid for this Specific Yayasan --}}
+            @if(isset($demo_accounts) && array_filter($demo_accounts))
+            <div class="demo-accounts-card">
+                <div class="demo-accounts-title">
+                    <iconify-icon icon="solar:bolt-bold" style="color: var(--primary);"></iconify-icon>
+                    <span>Demo Akun {{ $siteTitle }}:</span>
+                </div>
+                <div class="demo-grid">
+                    @if(!empty($demo_accounts['wali_murid']))
+                    <button type="button" onclick="fillCredentials('{{ $demo_accounts['wali_murid']->email }}')" class="btn-quick-fill">
+                        <span class="role-name">👨‍👩‍👧 Wali Murid</span>
+                        <span class="email-text">{{ $demo_accounts['wali_murid']->email }}</span>
+                    </button>
+                    @endif
+                    @if(!empty($demo_accounts['guru']))
+                    <button type="button" onclick="fillCredentials('{{ $demo_accounts['guru']->email }}')" class="btn-quick-fill">
+                        <span class="role-name">👩‍🏫 Guru TK</span>
+                        <span class="email-text">{{ $demo_accounts['guru']->email }}</span>
+                    </button>
+                    @endif
+                    @if(!empty($demo_accounts['admin']))
+                    <button type="button" onclick="fillCredentials('{{ $demo_accounts['admin']->email }}')" class="btn-quick-fill">
+                        <span class="role-name">🏢 Admin TK</span>
+                        <span class="email-text">{{ $demo_accounts['admin']->email }}</span>
+                    </button>
+                    @endif
+                    @if(!empty($demo_accounts['kepsek']))
+                    <button type="button" onclick="fillCredentials('{{ $demo_accounts['kepsek']->email }}')" class="btn-quick-fill">
+                        <span class="role-name">🎓 Kepsek</span>
+                        <span class="email-text">{{ $demo_accounts['kepsek']->email }}</span>
+                    </button>
+                    @endif
+                    @if(!empty($demo_accounts['super_admin']))
+                    <button type="button" onclick="fillCredentials('{{ $demo_accounts['super_admin']->email }}')" class="btn-quick-fill" style="grid-column: span 2;">
+                        <span class="role-name">⚙️ Super Admin {{ $siteTitle }}</span>
+                        <span class="email-text">{{ $demo_accounts['super_admin']->email }}</span>
+                    </button>
+                    @endif
+                </div>
+            </div>
+            @endif
+
             <div class="text-center mt-4">
                 <p class="text-muted small mb-0" style="font-size: 13.5px;">
                     Belum punya akun?  

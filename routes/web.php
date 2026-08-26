@@ -539,6 +539,7 @@ Route::middleware(['auth'])->group(function () {
     // 3B. AKADEMIK & KBM - ACTION/UBAH DATA
     Route::middleware('role:super_admin,admin,guru')->group(function () {
         Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store'); 
+        Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update'); 
         Route::post('/kelas/{id}/move', [KelasController::class, 'moveStudents'])->name('kelas.move'); 
         Route::delete('/kelas/{id}', [KelasController::class, 'destroy'])->name('kelas.destroy'); 
         Route::delete('/kelas/{kelas_id}/siswa/{siswa_id}', [KelasController::class, 'removeStudent'])->name('kelas.remove_student');

@@ -62,6 +62,28 @@ class KelasController extends Controller
         return back()->with('success', 'Kelas baru berhasil dibuat!');
     }
 
+    // 2.5 UPDATE DATA KELAS (NAMA & TINGKAT)
+    public function update(Request $request, $id)
+    {
+        $kelas = Kelas::findOrFail($id);
+
+        if (!Auth::user()->isSuperAdmin() && $kelas->school_id != Auth::user()->school_id) {
+            return back()->with('error', 'Anda tidak memiliki akses untuk mengubah kelas ini.');
+        }
+
+        $request->validate([
+            'nama_kelas' => 'required|string|max:255',
+            'tingkat' => 'required|string|max:255',
+        ]);
+
+        $kelas->update([
+            'nama_kelas' => $request->nama_kelas,
+            'tingkat' => $request->tingkat,
+        ]);
+
+        return back()->with('success', 'Data kelas berhasil diperbarui!');
+    }
+
     // 3. PINDAHKAN SEMUA SISWA (MASSAL) KE KELAS LAIN
     public function moveStudents(Request $request, $id)
     {

@@ -17,8 +17,8 @@ use App\Http\Controllers\Owner\YayasanController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\ProsesKelasController;
 use App\Http\Controllers\AnnouncementController;
-use App\Http\Controllers\SiswaController; 
-use App\Http\Controllers\RaporTemplateController; 
+use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\RaporTemplateController;
 use App\Http\Controllers\ArsipRaporController;
 use App\Http\Controllers\JurnalHarianController;
 use App\Http\Controllers\SettingController;
@@ -220,7 +220,7 @@ Route::middleware(['auth'])->group(function () {
                             ->whereIn('target', ['semua', 'wali_murid'])
                             ->whereDate('tanggal_kegiatan', '>=', Carbon::today())
                             ->latest()->take(4)->get();
-            return view('walimurid.dashboard', compact('anak', 'pengumuman')); 
+            return view('walimurid.dashboard', compact('anak', 'pengumuman'));
         } else {
             $current_school_id = $user->school_id;
         }
@@ -232,7 +232,7 @@ Route::middleware(['auth'])->group(function () {
             ->whereDate('tanggal_kegiatan', '>=', Carbon::today())
             ->where(function($q) use ($user) {
                 if ($user->role == 'guru' && $user->kelas_id) {
-                    $q->whereNull('kelas_id')->orWhere('kelas_id', $user->kelas_id); 
+                    $q->whereNull('kelas_id')->orWhere('kelas_id', $user->kelas_id);
                 } else {
                     $q->whereNull('kelas_id');
                 }
@@ -318,7 +318,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/switch-school', function (\Illuminate\Http\Request $request) {
             if ($request->active_school_id) session(['active_school_id' => $request->active_school_id]);
-            else session()->forget('active_school_id'); 
+            else session()->forget('active_school_id');
             return back()->with('success', 'Berhasil mengubah sekolah yang dipantau.');
         })->name('switch_school');
 
@@ -340,7 +340,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/jurnal-harian/materi/{materi_id}/kelas/{kelas_id}', [JurnalHarianController::class, 'showKelas'])->name('jurnal.kelas.show');
         Route::get('/jurnal-harian/download-zip', [JurnalHarianController::class, 'downloadZip'])->name('jurnal.zip');
         Route::get('/perkembangan-physic', [PerkembanganFisikController::class, 'index'])->name('perkembangan.index');
-        Route::get('/perkembangan-fisik', [PerkembanganFisikController::class, 'index']); 
+        Route::get('/perkembangan-fisik', [PerkembanganFisikController::class, 'index']);
         Route::get('/perkembangan-fisik/{id}', [PerkembanganFisikController::class, 'show'])->name('perkembangan.show');
         Route::get('/rapor/{id}', [RaporController::class, 'show'])->name('rapor.detail');
         Route::get('/arsip-rapor', [ArsipRaporController::class, 'index'])->name('arsip.index');
@@ -383,7 +383,7 @@ Route::middleware(['auth'])->group(function () {
             $current_school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
             $semesterAktif = Semester::where('is_active', true)->first();
             $school = \App\Models\School::find($current_school_id);
-            
+
             $mulai = $request->query('tgl_mulai', date('Y-m-01'));
             $selesai = $request->query('tgl_selesai', date('Y-m-d'));
             $kelas_id = $request->query('kelas_id');
@@ -473,7 +473,7 @@ Route::middleware(['auth'])->group(function () {
                     $q->where('anggota_kelas.kelas_id', $user->kelas_id);
                     if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
                 });
-                $list_kelas = []; 
+                $list_kelas = [];
             } else {
                 $list_kelas = Kelas::where('school_id', $current_school_id)->get();
                 if ($request->has('kelas_id') && $request->kelas_id != '' && $request->kelas_id != 'all') {
@@ -524,7 +524,7 @@ Route::middleware(['auth'])->group(function () {
                     $q->where('anggota_kelas.kelas_id', $user->kelas_id);
                     if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
                 });
-                $list_kelas = []; 
+                $list_kelas = [];
             } else {
                 $list_kelas = Kelas::where('school_id', $current_school_id)->get();
                 if ($request->has('kelas_id') && $request->kelas_id != '' && $request->kelas_id != 'all') {
@@ -547,10 +547,10 @@ Route::middleware(['auth'])->group(function () {
 
     // 3B. AKADEMIK & KBM - ACTION/UBAH DATA
     Route::middleware('role:super_admin,admin,guru')->group(function () {
-        Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store'); 
-        Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update'); 
-        Route::post('/kelas/{id}/move', [KelasController::class, 'moveStudents'])->name('kelas.move'); 
-        Route::delete('/kelas/{id}', [KelasController::class, 'destroy'])->name('kelas.destroy'); 
+        Route::post('/kelas', [KelasController::class, 'store'])->name('kelas.store');
+        Route::put('/kelas/{id}', [KelasController::class, 'update'])->name('kelas.update');
+        Route::post('/kelas/{id}/move', [KelasController::class, 'moveStudents'])->name('kelas.move');
+        Route::delete('/kelas/{id}', [KelasController::class, 'destroy'])->name('kelas.destroy');
         Route::delete('/kelas/{kelas_id}/siswa/{siswa_id}', [KelasController::class, 'removeStudent'])->name('kelas.remove_student');
         Route::post('/data-siswa', [SiswaController::class, 'store'])->name('siswa.store');
         Route::post('/data-siswa/set-kelas', [SiswaController::class, 'setKelas'])->name('siswa.set-kelas');
@@ -573,7 +573,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/arsip-rapor', [ArsipRaporController::class, 'store'])->name('arsip.store');
         Route::delete('/arsip-rapor/{id}', [ArsipRaporController::class, 'destroy'])->name('arsip.destroy');
         Route::post('/absensi-harian', [KelasController::class, 'storeAbsensi'])->name('absensi.store');
-        
+
         // Manajemen Materi (Guru)
         Route::get('/materi/guru', [MateriController::class, 'indexGuru'])->name('materi.guru.index');
         Route::get('/materi/guru/create', [MateriController::class, 'createGuru'])->name('materi.guru.create');
@@ -589,7 +589,7 @@ Route::middleware(['auth'])->group(function () {
         // Route versi terenkripsi: /y/{token}/superadmin/landing-page (dihasilkan oleh $encLink di sidebar)
         Route::get('/y/{kode_yayasan}/superadmin/landing-page', [SettingController::class, 'editYayasanLanding'])->name('superadmin.landing.edit.encrypted');
         Route::post('/y/{kode_yayasan}/superadmin/landing-page', [SettingController::class, 'updateYayasanLanding'])->name('superadmin.landing.update.encrypted');
-        
+
         Route::get('/kenaikan-kelas', [ProsesKelasController::class, 'index'])->name('kenaikan.index');
         Route::post('/kenaikan-kelas/proses', [ProsesKelasController::class, 'proses'])->name('kenaikan.proses');
         Route::get('/admin/template', [RaporTemplateController::class, 'index']);
@@ -620,7 +620,7 @@ Route::middleware(['auth'])->group(function () {
             $semesters = Semester::orderBy('id', 'desc')->get();
             $belumPermanen = 0;
             $semesterAktif = Semester::where('is_active', true)->first();
-            
+
             if ($semesterAktif && $current_school_id) {
                 $totalSiswaAktif = Siswa::whereHas('kelas', function($q) use ($semesterAktif) {
                     $q->where('anggota_kelas.semester_id', $semesterAktif->id);
@@ -678,6 +678,336 @@ Route::middleware(['auth'])->group(function () {
         })->name('pengaturan.update-guru');
 
         Route::post('/pengaturan/menu-access', [KelasController::class, 'updateMenuAccess'])->name('pengaturan.update-menu-access');
+
+        // Route versi terenkripsi per yayasan (/y/{kode_yayasan}/...) untuk semua fitur admin/guru
+        Route::prefix('/y/{kode_yayasan}')->group(function () {
+            Route::get('/pengaturan', function () {
+                $user = auth()->user();
+                $current_school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
+
+                if ($current_school_id) {
+                    $school = \App\Models\School::find($current_school_id);
+                    $gurus = User::where('role', 'guru')->where('school_id', $current_school_id)->get();
+                    $list_kelas = Kelas::where('school_id', $current_school_id)->get();
+                } else {
+                    $school = null;
+                    $gurus = collect();
+                    $list_kelas = collect();
+                }
+
+                $semesters = Semester::orderBy('id', 'desc')->get();
+                $belumPermanen = 0;
+                $semesterAktif = Semester::where('is_active', true)->first();
+
+                if ($semesterAktif && $current_school_id) {
+                    $totalSiswaAktif = Siswa::whereHas('kelas', function($q) use ($semesterAktif) {
+                        $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                    })->where('school_id', $current_school_id)->where('status', 'aktif')->count();
+
+                    $totalRaporPermanen = Rapor::where('school_id', $current_school_id)->where('semester_id', $semesterAktif->id)->where('status', 'permanen')->count();
+                    $belumPermanen = $totalSiswaAktif - $totalRaporPermanen;
+                    if ($belumPermanen < 0) $belumPermanen = 0;
+                }
+                return view('pengaturan', compact('school', 'gurus', 'list_kelas', 'semesters', 'belumPermanen'));
+            });
+
+            Route::post('/pengaturan/update-pendaftaran', function (\Illuminate\Http\Request $request) {
+                $request->validate([
+                    'school_id' => 'required',
+                    'kuota_tk_pagi' => 'required|integer',
+                    'kuota_tk_siang' => 'required|integer',
+                    'kuota_paud' => 'required|integer',
+                    'max_indent_years' => 'required|integer|min:1|max:10',
+                ]);
+                \App\Models\School::where('id', $request->school_id)->update([
+                    'kuota_tk_pagi' => $request->kuota_tk_pagi,
+                    'kuota_tk_siang' => $request->kuota_tk_siang,
+                    'kuota_paud' => $request->kuota_paud,
+                    'max_indent_years' => $request->max_indent_years,
+                ]);
+                return back()->with('success', 'Pengaturan pendaftaran & kuota berhasil diperbarui!');
+            });
+
+            Route::post('/pengaturan/semester', function (\Illuminate\Http\Request $request) {
+                $request->validate(['tahun_ajaran' => 'required', 'jenis' => 'required']);
+                Semester::create(['tahun_ajaran' => $request->tahun_ajaran, 'jenis' => $request->jenis, 'is_active' => false]);
+                return back()->with('success', 'Semester baru berhasil dibuat!');
+            });
+
+            Route::post('/pengaturan/semester/aktifkan', function (\Illuminate\Http\Request $request) {
+                Semester::query()->update(['is_active' => false]);
+                $sem = Semester::findOrFail($request->semester_id);
+                $sem->update(['is_active' => true]);
+                session(['active_semester_id' => $sem->id]);
+                return back()->with('success', 'Sukses mengaktifkan Tahun Ajaran baru!');
+            });
+
+            Route::post('/pengaturan/semester/switch', function (\Illuminate\Http\Request $request) {
+                $request->validate(['semester_id' => 'required|exists:semesters,id']);
+                session(['active_semester_id' => $request->semester_id]);
+                return back()->with('success', 'Berhasil beralih konteks semester!');
+            });
+
+            Route::post('/pengaturan/update-guru', function (\Illuminate\Http\Request $request) {
+                $request->validate(['user_id' => 'required', 'kelas_id' => 'nullable']);
+                User::findOrFail($request->user_id)->update(['kelas_id' => $request->kelas_id]);
+                return back()->with('success', 'Penugasan kelas Wali Guru berhasil diperbarui!');
+            });
+
+            Route::post('/pengaturan/menu-access', [KelasController::class, 'updateMenuAccess']);
+
+            Route::get('/kelas', [KelasController::class, 'index']);
+            Route::get('/kelas/{id}', [KelasController::class, 'show']);
+            Route::post('/kelas', [KelasController::class, 'store']);
+            Route::put('/kelas/{id}', [KelasController::class, 'update']);
+            Route::post('/kelas/{id}/move', [KelasController::class, 'moveStudents']);
+            Route::delete('/kelas/{id}', [KelasController::class, 'destroy']);
+            Route::delete('/kelas/{kelas_id}/siswa/{siswa_id}', [KelasController::class, 'removeStudent']);
+
+            Route::get('/data-siswa', [SiswaController::class, 'index']);
+            Route::get('/siswa/{id}', [SiswaController::class, 'show']);
+            Route::post('/data-siswa', [SiswaController::class, 'store']);
+            Route::post('/data-siswa/set-kelas', [SiswaController::class, 'setKelas']);
+            Route::post('/data-siswa/import-nisn', [SiswaController::class, 'importNisn']);
+            Route::post('/data-siswa/tautkan-ortu', [SiswaController::class, 'tautkanOrtu']);
+            Route::post('/siswa/{id}/terima', [SiswaController::class, 'terimaPendaftaran']);
+
+            Route::get('/manajemen-lms', [MateriController::class, 'indexGuru']);
+            Route::get('/materi/guru', [MateriController::class, 'indexGuru']);
+            Route::get('/materi/guru/create', [MateriController::class, 'createGuru']);
+            Route::post('/materi/guru', [MateriController::class, 'storeGuru']);
+            Route::get('/materi/persetujuan', [MateriController::class, 'indexKepsek']);
+            Route::post('/materi/{id}/approve', [MateriController::class, 'approve']);
+            Route::post('/materi/{id}/reject', [MateriController::class, 'reject']);
+
+            Route::get('/jurnal-harian', [JurnalHarianController::class, 'index']);
+            Route::get('/jurnal-harian/materi/{materi_id}/kelas/{kelas_id}', [JurnalHarianController::class, 'showKelas']);
+            Route::get('/jurnal-harian/download-zip', [JurnalHarianController::class, 'downloadZip']);
+            Route::post('/jurnal-harian/materi', [JurnalHarianController::class, 'storeMateri']);
+            Route::get('/jurnal-harian/materi/{id}', [JurnalHarianController::class, 'show']);
+            Route::post('/jurnal-harian/{id}/comment', [JurnalHarianController::class, 'storeMateriComment']);
+
+            Route::get('/perkembangan-physic', [PerkembanganFisikController::class, 'index']);
+            Route::get('/perkembangan-fisik', [PerkembanganFisikController::class, 'index']);
+            Route::get('/perkembangan-fisik/{id}', [PerkembanganFisikController::class, 'show']);
+            Route::post('/perkembangan-fisik', [PerkembanganFisikController::class, 'store']);
+
+            Route::get('/absensi-harian', function (\Illuminate\Http\Request $request) {
+                $user = auth()->user();
+                $current_school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
+                $semesterAktif = Semester::where('is_active', true)->first();
+                $query = Siswa::where('school_id', $current_school_id)->where('status', 'aktif');
+
+                if ($user->role === 'guru' && $user->kelas_id) {
+                    $query->whereHas('kelas', function($q) use ($user, $semesterAktif) {
+                        $q->where('anggota_kelas.kelas_id', $user->kelas_id);
+                        if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                    });
+                    $list_kelas = collect();
+                } else {
+                    $list_kelas = Kelas::where('school_id', $current_school_id)->get();
+                    if ($request->has('kelas_id') && $request->kelas_id != '' && $request->kelas_id != 'all') {
+                        $query->whereHas('kelas', function($q) use ($request, $semesterAktif) {
+                            $q->where('anggota_kelas.kelas_id', $request->kelas_id);
+                            if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                        });
+                    }
+                }
+
+                if ($request->has('search') && $request->search != '') {
+                    $search = $request->search;
+                    $query->where(function($q) use ($search) {
+                        $q->where('nama_lengkap', 'like', "%{$search}%")->orWhere('nik', 'like', "%{$search}%");
+                    });
+                }
+
+                $siswas = $query->with('kelas')->get();
+                return view('absensi.absensi_harian', compact('siswas', 'list_kelas'));
+            });
+            Route::post('/absensi-harian', [KelasController::class, 'storeAbsensi']);
+
+            Route::get('/rekap-absensi', function (\Illuminate\Http\Request $request) {
+                $user = auth()->user();
+                $current_school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
+                $semesterAktif = Semester::where('is_active', true)->first();
+                $school = \App\Models\School::find($current_school_id);
+
+                $mulai = $request->query('tgl_mulai', date('Y-m-01'));
+                $selesai = $request->query('tgl_selesai', date('Y-m-d'));
+                $kelas_id = $request->query('kelas_id');
+                $search = $request->query('search');
+
+                if ($kelas_id && $kelas_id != 'all') {
+                    $target_kelas = Kelas::find($kelas_id);
+                    if ($target_kelas && $target_kelas->school) {
+                        $school = $target_kelas->school;
+                    }
+                }
+                if (!$school && $user->school) {
+                    $school = $user->school;
+                }
+                if (!$school) {
+                    $school = \App\Models\School::first();
+                }
+
+                $list_kelas = Kelas::where('school_id', $school->id ?? $current_school_id)->get();
+
+                $rekap = []; $range_tanggal = [];
+                if ($mulai && $selesai) {
+                    $period = new \DatePeriod(new \DateTime($mulai), new \DateInterval('P1D'), (new \DateTime($selesai))->modify('+1 day'));
+                    foreach ($period as $date) {
+                        if ($date->format('N') < 6) {
+                            $range_tanggal[] = $date->format('Y-m-d');
+                        }
+                    }
+                    $query = Siswa::where('school_id', $school->id ?? $current_school_id)->where('status', 'aktif');
+
+                    if ($user->role === 'guru' && $user->kelas_id) {
+                        $query->whereHas('kelas', function($q) use ($user, $semesterAktif) {
+                            $q->where('anggota_kelas.kelas_id', $user->kelas_id);
+                            if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                        });
+                    } elseif ($kelas_id && $kelas_id != 'all') {
+                        $query->whereHas('kelas', function($q) use ($kelas_id, $semesterAktif) {
+                            $q->where('anggota_kelas.kelas_id', $kelas_id);
+                            if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                        });
+                    }
+
+                    if ($search) {
+                        $query->where(function($q) use ($search) {
+                            $q->where('nama_lengkap', 'like', "%{$search}%")->orWhere('nik', 'like', "%{$search}%");
+                        });
+                    }
+
+                    $siswas = $query->with('kelas')->get();
+                    foreach ($siswas as $siswa) {
+                        $data_absen = [];
+                        $total_h = 0; $total_i = 0; $total_s = 0; $total_a = 0;
+                        foreach ($range_tanggal as $tgl) {
+                            $cek = \App\Models\Absensi::where('siswa_id', $siswa->id)->where('tanggal', $tgl)->first();
+                            $st = $cek ? $cek->status : '-';
+                            $data_absen[$tgl] = $st;
+                            if ($st === 'hadir') $total_h++;
+                            elseif ($st === 'izin') $total_i++;
+                            elseif ($st === 'sakit') $total_s++;
+                            elseif ($st === 'alfa') $total_a++;
+                        }
+                        $rekap[] = [
+                            'siswa_id' => $siswa->id,
+                            'nama' => $siswa->nama_lengkap,
+                            'nik' => $siswa->nik,
+                            'nisn' => $siswa->nisn ?? $siswa->nik,
+                            'kelas' => $siswa->kelas->first()->nama_kelas ?? '-',
+                            'absen' => $data_absen,
+                            'total_h' => $total_h,
+                            'total_i' => $total_i,
+                            'total_s' => $total_s,
+                            'total_a' => $total_a,
+                        ];
+                    }
+                }
+                return view('absensi.rekap', compact('rekap', 'mulai', 'selesai', 'range_tanggal', 'list_kelas', 'kelas_id', 'search', 'school'));
+            });
+
+            Route::get('/isi-rapor', function (\Illuminate\Http\Request $request) {
+                $user = auth()->user();
+                $current_school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
+                $semesterAktif = Semester::where('is_active', true)->first();
+                $query = Siswa::where('school_id', $current_school_id)->where('status', 'aktif');
+                if ($user->role === 'guru' && $user->kelas_id) {
+                    $query->whereHas('kelas', function($q) use ($user, $semesterAktif) {
+                        $q->where('anggota_kelas.kelas_id', $user->kelas_id);
+                        if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                    });
+                    $list_kelas = [];
+                } else {
+                    $list_kelas = Kelas::where('school_id', $current_school_id)->get();
+                    if ($request->has('kelas_id') && $request->kelas_id != '' && $request->kelas_id != 'all') {
+                        $query->whereHas('kelas', function($q) use ($request, $semesterAktif) {
+                            $q->where('anggota_kelas.kelas_id', $request->kelas_id);
+                            if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                        });
+                    }
+                }
+                $siswas = $query->get();
+                foreach ($siswas as $siswa) {
+                    $siswa->absensi_sakit = \App\Models\Absensi::where('siswa_id', $siswa->id)->where('status', 'sakit')->count();
+                    $siswa->absensi_izin = \App\Models\Absensi::where('siswa_id', $siswa->id)->where('status', 'izin')->count();
+                    $siswa->absensi_alfa = \App\Models\Absensi::where('siswa_id', $siswa->id)->where('status', 'alfa')->count();
+                    $perkembangan = \App\Models\PerkembanganFisik::where('siswa_id', $siswa->id)->latest('tgl_periksa')->first();
+                    $siswa->tinggi_badan_db = $perkembangan ? $perkembangan->tinggi_badan : null;
+                    $siswa->berat_badan_db = $perkembangan ? $perkembangan->berat_badan : null;
+                    $siswa->rapor_aktif = $semesterAktif ? Rapor::where('siswa_id', $siswa->id)->where('semester_id', $semesterAktif->id)->first() : null;
+
+                    $jurnalsWithFoto = \App\Models\JurnalHarian::where('siswa_id', $siswa->id)
+                        ->whereNotNull('foto')
+                        ->where('foto', '!=', '')
+                        ->select('id', 'tanggal', 'tema', 'kegiatan', 'foto')
+                        ->orderBy('tanggal', 'desc')
+                        ->get();
+
+                    $siswa->jurnal_fotos = $jurnalsWithFoto->map(function($j) {
+                        return [
+                            'id' => $j->id,
+                            'tanggal' => $j->tanggal ? \Carbon\Carbon::parse($j->tanggal)->translatedFormat('d M Y') : '',
+                            'tema' => $j->tema,
+                            'kegiatan' => \Illuminate\Support\Str::limit($j->kegiatan, 60),
+                            'foto' => $j->foto,
+                            'foto_url' => $j->foto_url
+                        ];
+                    })->values();
+                }
+                return view('rapor.isi_rapor', compact('siswas', 'list_kelas'));
+            });
+            Route::post('/isi-rapor', [RaporController::class, 'store']);
+
+            Route::get('/cetak-rapor', function (\Illuminate\Http\Request $request) {
+                $user = auth()->user();
+                $current_school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
+                $semesterAktif = Semester::where('is_active', true)->first();
+                $query = Siswa::where('school_id', $current_school_id)->where('status', 'aktif');
+                if ($user->role === 'guru' && $user->kelas_id) {
+                    $query->whereHas('kelas', function($q) use ($user, $semesterAktif) {
+                        $q->where('anggota_kelas.kelas_id', $user->kelas_id);
+                        if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                    });
+                    $list_kelas = [];
+                } else {
+                    $list_kelas = Kelas::where('school_id', $current_school_id)->get();
+                    if ($request->has('kelas_id') && $request->kelas_id != '' && $request->kelas_id != 'all') {
+                        $query->whereHas('kelas', function($q) use ($request, $semesterAktif) {
+                            $q->where('anggota_kelas.kelas_id', $request->kelas_id);
+                            if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
+                        });
+                    }
+                }
+                if ($request->has('search') && $request->search != '') {
+                    $search = $request->search;
+                    $query->where(function($q) use ($search) {
+                        $q->where('nama_lengkap', 'like', "%{$search}%")->orWhere('nik', 'like', "%{$search}%");
+                    });
+                }
+                $siswas = $query->with('kelas')->get();
+                return view('rapor.cetak_rapor', compact('siswas', 'list_kelas'));
+            });
+
+            Route::get('/arsip-rapor', [ArsipRaporController::class, 'index']);
+            Route::post('/arsip-rapor', [ArsipRaporController::class, 'store']);
+            Route::delete('/arsip-rapor/{id}', [ArsipRaporController::class, 'destroy']);
+
+            Route::get('/kenaikan-kelas', [ProsesKelasController::class, 'index']);
+            Route::post('/kenaikan-kelas/proses', [ProsesKelasController::class, 'proses']);
+            Route::get('/admin/template', [RaporTemplateController::class, 'index']);
+            Route::post('/admin/template', [RaporTemplateController::class, 'store']);
+            Route::post('/admin/template/{id}/activate', [RaporTemplateController::class, 'activate']);
+            Route::post('/admin/template/{id}/opsi-mulok', [RaporTemplateController::class, 'updateOpsiMulok']);
+            Route::get('/admin/template/{id}', [RaporTemplateController::class, 'show']);
+            Route::post('/admin/template/{id}/items', [RaporTemplateController::class, 'storeItem']);
+            Route::delete('/admin/template/items/{id}', [RaporTemplateController::class, 'destroyItem']);
+            Route::post('/pengumuman', [AnnouncementController::class, 'store']);
+            Route::delete('/pengumuman/{id}', [AnnouncementController::class, 'destroy']);
+        });
     });
 
     // AKSES KEPSEK & ADMIN
@@ -705,7 +1035,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/rapor-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'rapor'])->name('walimurid.rapor');
         Route::get('/perkembangan-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'perkembangan'])->name('walimurid.perkembangan');
         Route::get('/jurnal-anak/{id?}', [\App\Http\Controllers\WaliMuridController::class, 'jurnal'])->name('walimurid.jurnal');
-        
+
         Route::get('/materi-anak', [JurnalHarianController::class, 'waliMuridMateri'])->name('walimurid.materi');
         Route::post('/materi-anak/{id}/read', [JurnalHarianController::class, 'markMateriRead'])->name('walimurid.materi.read');
         Route::post('/materi-anak/{id}/comment', [JurnalHarianController::class, 'storeMateriComment'])->name('walimurid.materi.comment');
@@ -753,7 +1083,7 @@ Route::middleware(['auth'])->group(function () {
                     ->where('school_id', $school->id)
                     ->where('module_id', $mod->id)
                     ->first();
-                    
+
                 if(!$exists) {
                     DB::table('school_modules')->insert([
                         'school_id' => $school->id,

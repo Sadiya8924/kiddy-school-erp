@@ -1,9 +1,72 @@
-﻿<!DOCTYPE html>
+@php
+  $yayasanToken = null;
+  $yayasanObj = null;
+
+  // 1. Deteksi token dari segmen URL saat ini (/y/{kode_yayasan}/...)
+  if (request()->segment(1) === 'y' && request()->segment(2)) {
+      $yayasanToken = request()->segment(2);
+  }
+
+  // 2. Jika tidak ada di URL saat ini, cek dari URL referer (URL sebelumnya)
+  if (!$yayasanToken && request()->header('referer')) {
+      $refererPath = parse_url(request()->header('referer'), PHP_URL_PATH);
+      if ($refererPath && preg_match('#^/y/([^/]+)#', $refererPath, $matches)) {
+          $yayasanToken = $matches[1];
+      }
+  }
+
+  // 3. Jika user sedang login dan belum ketemu token, cek dari data Yayasan user
+  if (!$yayasanToken && auth()->check() && method_exists(auth()->user(), 'getUserYayasanId')) {
+      $userYayasanId = auth()->user()->getUserYayasanId();
+      if ($userYayasanId) {
+          $yayasanObj = \App\Models\Yayasan::find($userYayasanId);
+          if ($yayasanObj) {
+              $yayasanToken = $yayasanObj->encrypted_token;
+          }
+      }
+  }
+
+  // 4. Cari objek Yayasan jika token ditemukan
+  if ($yayasanToken && !$yayasanObj) {
+      $decryptedCode = \App\Models\Yayasan::decryptToken($yayasanToken);
+      $targetCode = $decryptedCode ? strtoupper(trim($decryptedCode)) : strtoupper(trim($yayasanToken));
+      $yayasanObj = \App\Models\Yayasan::where(function($q) use ($targetCode) {
+          $q->where('kode_yayasan', $targetCode)
+            ->orWhere('kode_yayasan', strtolower($targetCode));
+          if (in_array($targetCode, ['YYS-002', 'YYS-2', 'YAH2'])) {
+              $q->orWhereIn('kode_yayasan', ['YYS-002', 'YAH2']);
+          } elseif (in_array($targetCode, ['YYS-001', 'YYS-1', 'YBIC'])) {
+              $q->orWhereIn('kode_yayasan', ['YYS-001', 'YBIC']);
+          }
+      })->where('status', 'aktif')->first();
+  }
+
+  // Tentukan URL Beranda & Login
+  if ($yayasanToken) {
+      $homeUrl = route('yayasan.landing', $yayasanToken);
+      $loginUrl = route('yayasan.login', $yayasanToken);
+  } else {
+      $homeUrl = url('/');
+      $loginUrl = url('/login');
+  }
+
+  // Default title & logo
+  $siteTitle = \App\Models\Setting::get("site_title", "Sistem TK");
+  $siteLogo = \App\Models\Setting::get("site_logo");
+
+  if ($yayasanObj) {
+      $siteTitle = $yayasanObj->nama_yayasan;
+      if (!empty($yayasanObj->logo_yayasan)) {
+          $siteLogo = asset('storage/' . $yayasanObj->logo_yayasan);
+      }
+  }
+@endphp
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>@yield("code") — @yield("title") | {{ \App\Models\Setting::get("site_title", "Sistem TK") }}</title>
+  <title>@yield("code") — @yield("title") | {{ $siteTitle }}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
   <style>
@@ -18,7 +81,6 @@
 
     {{-- Logo Tenant --}}
     <div class="logo-area mb-4">
-      @php $siteLogo = \App\Models\Setting::get("site_logo"); $siteTitle = \App\Models\Setting::get("site_title", "Sistem TK"); @endphp
       @if($siteLogo)
         <img src="{{ $siteLogo }}" alt="{{ $siteTitle }}">
       @else
@@ -37,16 +99,19 @@
 
     {{-- Tombol Navigasi --}}
     @auth
-      <a href="{{ route("dashboard") }}" class="btn btn-primary rounded-pill px-4 me-2">
-        <iconify-icon icon="solar:home-2-bold-duotone" class="me-1"></iconify-icon>
-        Ke Dashboard
-      </a>
-    @else
-      <a href="/" class="btn btn-primary rounded-pill px-4 me-2">
+      <a href="{{ $homeUrl }}" class="btn btn-primary rounded-pill px-4 me-2">
         <iconify-icon icon="solar:home-2-bold-duotone" class="me-1"></iconify-icon>
         Beranda
       </a>
-      <a href="/login" class="btn btn-outline-secondary rounded-pill px-4">
+      <a href="{{ route("dashboard") }}" class="btn btn-outline-secondary rounded-pill px-4">
+        Ke Dashboard
+      </a>
+    @else
+      <a href="{{ $homeUrl }}" class="btn btn-primary rounded-pill px-4 me-2">
+        <iconify-icon icon="solar:home-2-bold-duotone" class="me-1"></iconify-icon>
+        Beranda
+      </a>
+      <a href="{{ $loginUrl }}" class="btn btn-outline-secondary rounded-pill px-4">
         Login
       </a>
     @endauth

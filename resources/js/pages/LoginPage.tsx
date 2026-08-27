@@ -133,7 +133,7 @@ export default function LoginPage({ onNavigate }: Props) {
               { icon: '🔗', label: 'Terintegrasi', desc: 'Platform multi-sekolah yang aman dan handal' },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)' }}>
-                <span className="text-xl flex-shrink-0">{item.icon}</span>
+                <span className="text-xl shrink-0">{item.icon}</span>
                 <div>
                   <div className="text-white text-sm font-600" style={{ fontWeight: 600 }}>{item.label}</div>
                   <div className="text-white/60 text-xs">{item.desc}</div>
@@ -241,11 +241,11 @@ export default function LoginPage({ onNavigate }: Props) {
                       {y.logo_yayasan ? (
                         <img
                           src={`/storage/${y.logo_yayasan}`}
-                          className="w-7 h-7 rounded-md object-cover border flex-shrink-0"
+                          className="w-7 h-7 rounded-md object-cover border shrink-0"
                           alt={y.nama_yayasan}
                         />
                       ) : (
-                        <div className="w-7 h-7 rounded-md bg-blue-50 text-blue-600 font-bold flex items-center justify-center text-[11px] border border-blue-200 flex-shrink-0">
+                        <div className="w-7 h-7 rounded-md bg-blue-50 text-blue-600 font-bold flex items-center justify-center text-[11px] border border-blue-200 shrink-0">
                           {y.nama_yayasan ? y.nama_yayasan.substring(0, 2).toUpperCase() : 'YA'}
                         </div>
                       )}
@@ -259,7 +259,7 @@ export default function LoginPage({ onNavigate }: Props) {
                         </div>
                       </div>
                     </div>
-                    <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all flex-shrink-0">
+                    <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all shrink-0">
                       Masuk Portal ➔
                     </span>
                   </a>

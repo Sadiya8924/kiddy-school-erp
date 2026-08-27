@@ -41,13 +41,29 @@
       })->where('status', 'aktif')->first();
   }
 
-  // Tentukan URL Beranda & Login
+  // Tentukan URL Kembali yang terenkripsi per Yayasan (1 Tombol Tunggal)
   if ($yayasanToken) {
-      $homeUrl = route('yayasan.landing', $yayasanToken);
-      $loginUrl = route('yayasan.login', $yayasanToken);
+      if (auth()->check()) {
+          $userRole = auth()->user()->role;
+          if ($userRole === 'super_admin') {
+              $backUrl = route('superadmin.dashboard.encrypted', $yayasanToken);
+          } else {
+              $backUrl = route('dashboard.encrypted', $yayasanToken);
+          }
+      } else {
+          $backUrl = route('yayasan.landing', $yayasanToken);
+      }
   } else {
-      $homeUrl = url('/');
-      $loginUrl = url('/login');
+      if (auth()->check()) {
+          $userRole = auth()->user()->role;
+          if ($userRole === 'super_admin') {
+              $backUrl = route('superadmin.dashboard');
+          } else {
+              $backUrl = route('dashboard');
+          }
+      } else {
+          $backUrl = url('/');
+      }
   }
 
   // Default title & logo
@@ -97,24 +113,13 @@
     <h2 class="fw-bold mt-2 mb-2" style="font-size:1.3rem;">@yield("title")</h2>
     <p class="text-muted mb-4 small">@yield("message")</p>
 
-    {{-- Tombol Navigasi --}}
-    @auth
-      <a href="{{ $homeUrl }}" class="btn btn-primary rounded-pill px-4 me-2">
-        <iconify-icon icon="solar:home-2-bold-duotone" class="me-1"></iconify-icon>
+    {{-- Tombol Navigasi Tunggal --}}
+    <div class="d-flex justify-content-center">
+      <a href="{{ $backUrl }}" class="btn btn-primary rounded-pill px-4 py-2 font-semibold shadow-sm d-inline-flex align-items-center gap-2" style="font-size: 13.5px;">
+        <iconify-icon icon="solar:arrow-left-bold-duotone" class="fs-5"></iconify-icon>
         Beranda
       </a>
-      <a href="{{ route("dashboard") }}" class="btn btn-outline-secondary rounded-pill px-4">
-        Ke Dashboard
-      </a>
-    @else
-      <a href="{{ $homeUrl }}" class="btn btn-primary rounded-pill px-4 me-2">
-        <iconify-icon icon="solar:home-2-bold-duotone" class="me-1"></iconify-icon>
-        Beranda
-      </a>
-      <a href="{{ $loginUrl }}" class="btn btn-outline-secondary rounded-pill px-4">
-        Login
-      </a>
-    @endauth
+    </div>
 
     <div class="mt-4 small text-muted">{{ $siteTitle }}</div>
   </div>

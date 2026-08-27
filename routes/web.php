@@ -1005,8 +1005,18 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/admin/template/{id}', [RaporTemplateController::class, 'show']);
             Route::post('/admin/template/{id}/items', [RaporTemplateController::class, 'storeItem']);
             Route::delete('/admin/template/items/{id}', [RaporTemplateController::class, 'destroyItem']);
+            Route::get('/pengumuman', [AnnouncementController::class, 'index']);
             Route::post('/pengumuman', [AnnouncementController::class, 'store']);
             Route::delete('/pengumuman/{id}', [AnnouncementController::class, 'destroy']);
+
+            // Superadmin & Owner central routes inside yayasan context
+            Route::resource('superadmin/schools', SchoolController::class);
+            Route::get('/superadmin/schools/{id}/modules', [ModuleManagementController::class, 'manage']);
+            Route::post('/superadmin/schools/{id}/modules', [ModuleManagementController::class, 'update']);
+            Route::get('/superadmin/users/y/{token}', [SuperUserController::class, 'index']);
+            Route::resource('superadmin/users', SuperUserController::class);
+            Route::resource('owner/yayasans', YayasanController::class);
+            Route::get('/owner/yayasan-registrations', [OwnerRegistrationController::class, 'index']);
         });
     });
 

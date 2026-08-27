@@ -37,6 +37,15 @@
     $contactEmail = \App\Models\Setting::get('saas_contact_email', 'support@kiddyschool.id');
     $contactPhone = \App\Models\Setting::get('saas_contact_phone', '+62 812-3456-7890');
     $contactAddress = \App\Models\Setting::get('saas_contact_address', 'Gedung Cyber Tech Lt. 5, Jakarta, Indonesia');
+
+    if (!isset($yayasans)) {
+        $yayasans = \App\Models\Yayasan::where('status', 'aktif')
+            ->with(['schools' => function($q) {
+                $q->where('status', 'aktif')->orderBy('nama_sekolah', 'asc');
+            }])
+            ->orderBy('nama_yayasan', 'asc')
+            ->get();
+    }
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -367,52 +376,292 @@
             line-height: 1.45;
         }
 
-        /* ── Client / Partner Logos ─────────────────── */
+        /* ── Client / Partner Logos (Dynamic Yayasan & TK) ─── */
         .clients-section {
             background: #FFFFFF;
             border-bottom: 1px solid #E8EDF5;
-            padding: 44px 24px;
+            padding: 46px 24px;
             text-align: center;
+            position: relative;
+            z-index: 30;
         }
         .clients-title {
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.14em;
             color: #94A3B8;
-            margin-bottom: 26px;
+            margin-bottom: 8px;
+        }
+        .clients-subtitle {
+            font-size: 13px;
+            color: #64748B;
+            margin-bottom: 24px;
+            font-weight: 500;
         }
         .clients-logos {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 16px;
             flex-wrap: wrap;
         }
-        .client-badge {
+        .yayasan-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .yayasan-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 9px 20px;
+            gap: 10px;
+            padding: 10px 20px;
             border-radius: 100px;
             background: #F8FAFC;
             border: 1.5px solid #E2E8F0;
-            font-size: 13px;
+            font-size: 13.5px;
             font-weight: 700;
             color: #334155;
-            transition: all 0.28s cubic-bezier(0.16,1,0.3,1);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+            outline: none;
         }
-        .client-badge:hover {
+        .yayasan-badge:hover,
+        .yayasan-wrapper.is-open .yayasan-badge {
             background: #EFF6FF;
             border-color: #93C5FD;
             color: #1D4ED8;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 22px rgba(37,99,235,0.10);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
         }
-        .client-badge iconify-icon {
-            font-size: 16px;
+        .yayasan-badge:focus-visible {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        .yayasan-icon {
+            font-size: 18px;
             color: #3B82F6;
             flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+        .yayasan-badge:hover .yayasan-icon,
+        .yayasan-wrapper.is-open .yayasan-icon {
+            transform: scale(1.1);
+        }
+        .yayasan-school-count {
+            font-size: 11px;
+            font-weight: 700;
+            background: #E2E8F0;
+            color: #475569;
+            padding: 3px 8px;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .yayasan-badge:hover .yayasan-school-count,
+        .yayasan-wrapper.is-open .yayasan-school-count {
+            background: #DBEAFE;
+            color: #1D4ED8;
+        }
+        .yayasan-chevron {
+            font-size: 13px;
+            color: #94A3B8;
+            transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+            margin-left: 1px;
+        }
+        .yayasan-badge:hover .yayasan-chevron,
+        .yayasan-wrapper.is-open .yayasan-chevron {
+            transform: rotate(180deg);
+            color: #2563EB;
+        }
+        /* Dropdown Popover */
+        .yayasan-schools-popover {
+            position: absolute;
+            top: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            width: 320px;
+            max-width: 90vw;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 20px;
+            box-shadow: 0 20px 45px -8px rgba(15, 23, 42, 0.16), 0 6px 16px rgba(15, 23, 42, 0.06);
+            text-align: left;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0.24s;
+        }
+        .yayasan-schools-popover::before {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 14px;
+            height: 14px;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            border-left: 1px solid #E2E8F0;
+            border-radius: 2px;
+            z-index: 1;
+        }
+        .yayasan-wrapper:hover .yayasan-schools-popover,
+        .yayasan-wrapper.is-open .yayasan-schools-popover {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+        .popover-header {
+            padding: 16px 18px 12px;
+            background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+            border-bottom: 1px solid #F1F5F9;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            z-index: 2;
+        }
+        .popover-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #2563EB;
+            background: #EFF6FF;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+        .popover-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #0F172A;
+            line-height: 1.3;
+        }
+        .popover-subtitle {
+            font-size: 11.5px;
+            color: #64748B;
+            margin-top: 2px;
+        }
+        .popover-body {
+            padding: 8px 10px;
+            max-height: 240px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 2;
+        }
+        .popover-body::-webkit-scrollbar {
+            width: 4px;
+        }
+        .popover-body::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 4px;
+        }
+        .school-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 9px 10px;
+            border-radius: 12px;
+            transition: background 0.18s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        .school-item:hover {
+            background: #F8FAFC;
+        }
+        .school-icon-wrap {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #EFF6FF;
+            color: #2563EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            flex-shrink: 0;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .school-item:hover .school-icon-wrap {
+            background: #DBEAFE;
+            transform: scale(1.06);
+        }
+        .school-info {
+            flex: 1;
+            min-width: 0;
+            text-align: left;
+        }
+        .school-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1E293B;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .school-meta {
+            font-size: 11px;
+            color: #94A3B8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 1px;
+        }
+        .school-tag {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #16A34A;
+            background: #DCFCE7;
+            padding: 2px 7px;
+            border-radius: 20px;
+            flex-shrink: 0;
+        }
+        .school-empty {
+            padding: 20px 14px;
+            text-align: center;
+            font-size: 12.5px;
+            color: #94A3B8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .popover-footer {
+            padding: 10px 14px 12px;
+            border-top: 1px solid #F1F5F9;
+            background: #FFFFFF;
+            border-radius: 0 0 20px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .popover-cta-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 700;
+            color: #2563EB;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: #EFF6FF;
+            transition: all 0.2s ease;
+        }
+        .popover-cta-btn:hover {
+            background: #DBEAFE;
+            color: #1D4ED8;
+            transform: translateY(-1px);
         }
 
         /* ── How It Works (Alur Cara Kerja) ──────────── */
@@ -1110,34 +1359,71 @@
     </div>
 </section>
 
-<!-- Client / Partner Pilot Logos -->
+<!-- Client / Partner Pilot Logos (Yayasan & Cabang TK Dinamis) -->
 <section class="clients-section">
-    <div class="clients-title">Telah Dipercaya oleh Puluhan Yayasan Pendidikan & TK di Seluruh Indonesia</div>
+    <div class="clients-title">Telah Dipercaya oleh Yayasan Pendidikan & TK di Seluruh Indonesia</div>
+    <p class="clients-subtitle">Arahkan kursor atau klik yayasan di bawah untuk melihat daftar cabang TK/PAUD yang terdaftar</p>
     <div class="clients-logos">
-        <div class="client-badge">
-            <iconify-icon icon="solar:buildings-bold-duotone"></iconify-icon>
-            Yayasan Al-Hikmah 2
-        </div>
-        <div class="client-badge">
-            <iconify-icon icon="solar:star-shine-bold-duotone"></iconify-icon>
-            Yayasan Bina Insani Ceria
-        </div>
-        <div class="client-badge">
-            <iconify-icon icon="solar:diploma-bold-duotone"></iconify-icon>
-            TK Permata Bangsa
-        </div>
-        <div class="client-badge">
-            <iconify-icon icon="solar:sun-bold-duotone"></iconify-icon>
-            TK Matahari Ceria
-        </div>
-        <div class="client-badge">
-            <iconify-icon icon="solar:crown-bold-duotone"></iconify-icon>
-            TK Bintang Harapan
-        </div>
-        <div class="client-badge">
-            <iconify-icon icon="solar:graduation-cap-bold-duotone"></iconify-icon>
-            TK Cendekia Smart
-        </div>
+        @forelse($yayasans as $y)
+            <div class="yayasan-wrapper">
+                <button type="button" class="yayasan-badge" aria-expanded="false" title="Klik atau hover untuk melihat cabang TK">
+                    <iconify-icon icon="solar:buildings-bold-duotone" class="yayasan-icon"></iconify-icon>
+                    <span>{{ $y->nama_yayasan }}</span>
+                    <span class="yayasan-school-count">
+                        <iconify-icon icon="solar:diploma-bold" style="font-size: 12px;"></iconify-icon>
+                        {{ $y->schools->count() }} Cabang
+                    </span>
+                    <iconify-icon icon="solar:alt-arrow-down-linear" class="yayasan-chevron"></iconify-icon>
+                </button>
+
+                <!-- Popover Daftar TK -->
+                <div class="yayasan-schools-popover" role="tooltip">
+                    <div class="popover-header">
+                        <div class="popover-tag">
+                            <iconify-icon icon="solar:verified-check-bold"></iconify-icon>
+                            Mitra Resmi Yayasan
+                        </div>
+                        <div class="popover-title">{{ $y->nama_yayasan }}</div>
+                        <div class="popover-subtitle">
+                            {{ $y->schools->count() }} Cabang TK/PAUD Terdaftar di Database
+                        </div>
+                    </div>
+
+                    <div class="popover-body">
+                        @forelse($y->schools as $school)
+                            <div class="school-item">
+                                <div class="school-icon-wrap">
+                                    <iconify-icon icon="solar:diploma-bold-duotone"></iconify-icon>
+                                </div>
+                                <div class="school-info">
+                                    <div class="school-name">{{ $school->nama_sekolah }}</div>
+                                    <div class="school-meta">
+                                        {{ $school->alamat ? \Illuminate\Support\Str::limit($school->alamat, 38) : 'Unit TK Resmi Aktif' }}
+                                    </div>
+                                </div>
+                                <span class="school-tag">Aktif</span>
+                            </div>
+                        @empty
+                            <div class="school-empty">
+                                <iconify-icon icon="solar:info-circle-linear" style="font-size: 16px;"></iconify-icon>
+                                <span>Belum ada cabang sekolah yang aktif</span>
+                            </div>
+                        @endforelse
+                    </div>
+
+                    @if(!empty($y->kode_yayasan))
+                    <div class="popover-footer">
+                        <a href="{{ url('/y/' . $y->kode_yayasan) }}" class="popover-cta-btn">
+                            <span>Kunjungi Landing Page Yayasan</span>
+                            <iconify-icon icon="solar:arrow-right-linear" style="font-size: 15px;"></iconify-icon>
+                        </a>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        @empty
+            <div class="text-muted" style="font-size: 13px;">Belum ada yayasan terdaftar di sistem.</div>
+        @endforelse
     </div>
 </section>
 
@@ -1571,6 +1857,43 @@ document.querySelectorAll('.feature-card, .step-card, .security-card, .testimoni
     el.style.transform = 'translateY(22px)';
     el.style.transition = (el.style.transition || '') + ', opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1)';
     observer.observe(el);
+});
+
+// Yayasan Badge Dropdown Toggle for Click & Touch
+document.addEventListener('click', function(e) {
+    const clickedWrapper = e.target.closest('.yayasan-wrapper');
+    const allWrappers = document.querySelectorAll('.yayasan-wrapper');
+
+    if (clickedWrapper && e.target.closest('.yayasan-badge')) {
+        const isOpen = clickedWrapper.classList.contains('is-open');
+        allWrappers.forEach(w => {
+            w.classList.remove('is-open');
+            const btn = w.querySelector('.yayasan-badge');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        });
+        if (!isOpen) {
+            clickedWrapper.classList.add('is-open');
+            const btn = clickedWrapper.querySelector('.yayasan-badge');
+            if (btn) btn.setAttribute('aria-expanded', 'true');
+        }
+    } else if (!clickedWrapper || !clickedWrapper.contains(e.target)) {
+        allWrappers.forEach(w => {
+            w.classList.remove('is-open');
+            const btn = w.querySelector('.yayasan-badge');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        });
+    }
+});
+
+// Close popovers on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.yayasan-wrapper.is-open').forEach(w => {
+            w.classList.remove('is-open');
+            const btn = w.querySelector('.yayasan-badge');
+            if (btn) btn.setAttribute('aria-expanded', 'false');
+        });
+    }
 });
 </script>
 

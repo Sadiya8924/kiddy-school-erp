@@ -21,11 +21,19 @@ class YayasanRegistrationController extends Controller
         $total_siswa   = \App\Models\Siswa::where('status', 'aktif')->count();
         $total_guru    = \App\Models\User::whereIn('role', ['guru', 'kepsek', 'admin'])->count();
 
+        $yayasans = Yayasan::where('status', 'aktif')
+            ->with(['schools' => function($q) {
+                $q->where('status', 'aktif')->orderBy('nama_sekolah', 'asc');
+            }])
+            ->orderBy('nama_yayasan', 'asc')
+            ->get();
+
         return view('landing_utama', compact(
             'total_yayasan',
             'total_sekolah',
             'total_siswa',
-            'total_guru'
+            'total_guru',
+            'yayasans'
         ));
     }
 

@@ -488,8 +488,14 @@
                         <input type="file" class="form-control rounded-3" name="hero_image" accept="image/*">
                         @if(!empty($content['hero_image']))
                             <div class="mt-2.5 d-flex align-items-center gap-2.5">
-                                <img src="{{ asset($content['hero_image']) }}" style="max-height: 80px; border-radius: 10px;" class="border p-1 bg-white shadow-xs">
-                                <span class="badge bg-success-subtle text-success rounded-pill px-2.5 py-1" style="font-size: 11px;">Gambar Hero Aktif</span>
+                                <img src="{{ \Illuminate\Support\Str::startsWith($content['hero_image'], ['http://', 'https://']) ? $content['hero_image'] : asset($content['hero_image']) }}" style="max-height: 80px; border-radius: 10px;" class="border p-1 bg-white shadow-xs">
+                                <div>
+                                    <span class="badge bg-success-subtle text-success rounded-pill px-2.5 py-1 mb-1 d-inline-block" style="font-size: 11px;">Gambar Hero Aktif</span>
+                                    <div class="form-check m-0">
+                                        <input class="form-check-input" type="checkbox" name="delete_hero_image" id="delete_hero_image" value="1">
+                                        <label class="form-check-label text-danger small" style="font-size:11px;" for="delete_hero_image">Hapus Gambar &amp; Gunakan Default</label>
+                                    </div>
+                                </div>
                             </div>
                         @endif
                     </div>
@@ -636,7 +642,7 @@
                             1 => ['tag' => 'Kreativitas & Motorik', 'title' => 'Eksplorasi Belajar & Sensorik', 'desc' => 'Mewarnai, meronce, menyusun balok, dan melatih motorik halus dengan metode bermain bermakna.', 'img' => 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=700&auto=format&fit=crop&q=80'],
                             2 => ['tag' => 'Karakter & Keagamaan', 'title' => 'Tahfidz Cilik & Pembiasaan Doa', 'desc' => 'Hafalan surat-surat pendek juz 30, doa harian, dan pengenalan adab sopan santun sejak dini.', 'img' => 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=700&auto=format&fit=crop&q=80'],
                             3 => ['tag' => 'Ekstrakurikuler', 'title' => 'Minat Bakat & Drumband Cilik', 'desc' => 'Melatih kekompakan, rasa percaya diri, dan kepekaan musikalitas anak melalui ekskul pilihan.', 'img' => 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=700&auto=format&fit=crop&q=80'],
-                            4 => ['tag' => 'Area Bermain Outbound', 'title' => 'Taman Bermain Aman & Asri', 'desc' => 'Fasilitas playground indoor & outdoor yang aman untuk melatih ketangkasan serta motorik kasar.', 'img' => 'https://images.unsplash.com/photo-1596464716127-f2a829822301?w=700&auto=format&fit=crop&q=80'],
+                            4 => ['tag' => 'Area Bermain Outbound', 'title' => 'Taman Bermain Aman & Asri', 'desc' => 'Fasilitas playground indoor & outdoor yang aman untuk melatih ketangkasan serta motorik kasar.', 'img' => 'https://images.unsplash.com/photo-1567057419565-4349c49d8a04?w=700&auto=format&fit=crop&q=80'],
                             5 => ['tag' => 'Pentas Seni & Field Trip', 'title' => 'Panggung Apresiasi & Wisata Edukasi', 'desc' => 'Kunjungan profesi edukatif serta panggung tahunan untuk melatih keberanian anak tampil di depan publik.', 'img' => 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=700&auto=format&fit=crop&q=80'],
                             6 => ['tag' => 'Sains & Eksplorasi', 'title' => 'Eksperimen Sains Anak Usia Dini', 'desc' => 'Mengenalkan logika fenomena alam dan rasa ingin tahu ilmiah melalui percobaan sederhana yang aman.', 'img' => 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=700&auto=format&fit=crop&q=80'],
                         ];
@@ -672,7 +678,7 @@
                                     <label class="form-label font-semibold text-dark small mb-1">Upload Foto Galeri #{{ $i }}</label>
                                     <input type="file" class="form-control form-control-sm rounded-3" name="galeri_{{ $i }}_image" accept="image/*">
                                     <div class="mt-2 d-flex align-items-center gap-2">
-                                        <img src="{{ asset($cImg) }}" class="rounded border object-fit-cover shadow-xs" width="60" height="44" onerror="this.src='{{ $def['img'] }}'">
+                                        <img src="{{ \Illuminate\Support\Str::startsWith($cImg, ['http://', 'https://']) ? $cImg : asset($cImg) }}" class="rounded border object-fit-cover shadow-xs" width="60" height="44" onerror="this.onerror=null; this.src='{{ $def['img'] }}';">
                                         <span class="text-muted" style="font-size: 10.5px;">Preview foto saat ini</span>
                                     </div>
                                 </div>

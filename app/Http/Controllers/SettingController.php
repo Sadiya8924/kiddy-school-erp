@@ -91,6 +91,15 @@ class SettingController extends Controller
             $content[$key] = $val;
         }
 
+        // Handle hero image deletion
+        if ($request->input('delete_hero_image') == '1') {
+            if (!empty($content['hero_image'])) {
+                $old = str_replace('/storage/', '', $content['hero_image']);
+                Storage::disk('public')->delete($old);
+            }
+            unset($content['hero_image']);
+        }
+
         // Save image uploads
         foreach ($fileKeys as $field) {
             if ($request->hasFile($field)) {

@@ -365,47 +365,55 @@
             max-width: 520px;
         }
 
-        /* Feature Cards Grid (Translucent Pills) */
+        /* Feature Cards Grid */
         .feature-cards-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            max-width: 560px;
+            gap: 14px;
+            max-width: 580px;
             position: relative;
             z-index: 10;
         }
         .feature-pill-card {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.92);
+            border: 2px solid rgba(255, 255, 255, 1);
             border-radius: 16px;
-            padding: 16px 18px;
+            padding: 18px 16px;
             display: flex;
             align-items: flex-start;
-            gap: 12px;
-            transition: all 0.25s ease;
+            gap: 14px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.15);
         }
         .feature-pill-card:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
+            background: #FFFFFF;
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         .feature-icon-box {
-            font-size: 22px;
-            line-height: 1;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
-            margin-top: 2px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         .feature-title {
             font-size: 13.5px;
-            font-weight: 700;
-            color: #FFFFFF;
+            font-weight: 800;
+            color: var(--primary-dark);
             margin-bottom: 3px;
+            letter-spacing: -0.01em;
         }
         .feature-desc {
             font-size: 11.5px;
-            color: rgba(255, 255, 255, 0.75);
-            line-height: 1.45;
+            color: #475569;
+            line-height: 1.5;
             margin: 0;
+            font-weight: 500;
         }
 
         /* ── Right Form Panel (40%) ───────────────────── */
@@ -555,53 +563,89 @@
             .header-brand-avatar { width: 30px; height: 30px; font-size: 12px; }
         }
 
-        /* ── GSAP Animated Orb decorations ───────────── */
+        /* ── GSAP Animated Decorations ───────────── */
         .gsap-orb {
             position: absolute;
             border-radius: 50%;
             pointer-events: none;
-            filter: blur(0px);
             opacity: 0;
+            will-change: transform, opacity;
         }
         .gsap-orb-1 {
-            width: 220px; height: 220px;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.14);
-            top: -60px; right: -60px;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.18), rgba(255,255,255,0.03));
+            border: 1.5px solid rgba(255,255,255,0.2);
+            top: -80px; right: -80px;
         }
         .gsap-orb-2 {
-            width: 140px; height: 140px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.12);
-            bottom: 10%; right: 8%;
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, rgba(255,255,255,0.12), transparent);
+            border: 1px solid rgba(255,255,255,0.15);
+            bottom: 8%; right: 6%;
         }
         .gsap-orb-3 {
-            width: 80px; height: 80px;
+            width: 100px; height: 100px;
             background: var(--accent);
-            opacity: 0.15;
-            bottom: 22%; left: 8%;
+            filter: blur(30px);
+            bottom: 18%; left: 6%;
+            opacity: 0;
         }
-        .gsap-star-1, .gsap-star-2 {
+        .gsap-orb-4 {
+            width: 60px; height: 60px;
+            background: var(--accent);
+            filter: blur(18px);
+            top: 30%; left: 3%;
+            opacity: 0;
+        }
+        /* Floating particles */
+        .hero-particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+        .gsap-star-1, .gsap-star-2, .gsap-star-3 {
             position: absolute;
             pointer-events: none;
             opacity: 0;
+            will-change: transform, opacity;
         }
-        .gsap-star-1 { top: 14%; right: 15%; }
-        .gsap-star-2 { bottom: 20%; right: 12%; }
+        .gsap-star-1 { top: 12%; right: 14%; }
+        .gsap-star-2 { bottom: 18%; right: 10%; }
+        .gsap-star-3 { top: 42%; left: 5%; }
+        /* Icon box shimmer */
+        .feature-icon-box {
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-icon-box::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 40%;
+            height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            transform: skewX(-20deg);
+            opacity: 0;
+        }
         .hero-content-inner {
             position: relative;
             z-index: 10;
+            will-change: transform;
         }
         .welcome-icon-wrap {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 56px; height: 56px;
-            border-radius: 16px;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.25);
-            margin-bottom: 18px;
-            font-size: 26px;
+            width: 60px; height: 60px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.18);
+            border: 1.5px solid rgba(255,255,255,0.35);
+            margin-bottom: 20px;
+            font-size: 28px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.3);
         }
     </style>
 </head>
@@ -623,14 +667,20 @@
             <div class="gsap-orb gsap-orb-1" id="orb1"></div>
             <div class="gsap-orb gsap-orb-2" id="orb2"></div>
             <div class="gsap-orb gsap-orb-3" id="orb3"></div>
+            <div class="gsap-orb gsap-orb-4" id="orb4"></div>
 
             <!-- Star accent icons -->
             <div class="gsap-star-1" id="star1">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </div>
             <div class="gsap-star-2" id="star2">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.6)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </div>
+            <div class="gsap-star-3" id="star3">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--accent)" opacity="0.6"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <!-- Floating particles (injected by JS) -->
+            <div id="particles-container"></div>
 
             <!-- Hero content -->
             <div class="hero-content-inner">
@@ -645,7 +695,7 @@
                 <div class="feature-cards-grid" id="feature-grid">
                     <div class="feature-pill-card">
                         <div class="feature-icon-box">
-                            <iconify-icon icon="solar:chart-2-bold-duotone" style="font-size:22px;color:var(--accent);"></iconify-icon>
+                            <iconify-icon icon="solar:chart-2-bold-duotone" style="font-size:24px;color:#fff;"></iconify-icon>
                         </div>
                         <div>
                             <div class="feature-title">Informasi Akademik</div>
@@ -654,7 +704,7 @@
                     </div>
                     <div class="feature-pill-card">
                         <div class="feature-icon-box">
-                            <iconify-icon icon="solar:bell-bing-bold-duotone" style="font-size:22px;color:var(--accent);"></iconify-icon>
+                            <iconify-icon icon="solar:bell-bing-bold-duotone" style="font-size:24px;color:#fff;"></iconify-icon>
                         </div>
                         <div>
                             <div class="feature-title">Pemberitahuan Sistem</div>
@@ -663,7 +713,7 @@
                     </div>
                     <div class="feature-pill-card">
                         <div class="feature-icon-box">
-                            <iconify-icon icon="solar:notebook-bold-duotone" style="font-size:22px;color:var(--accent);"></iconify-icon>
+                            <iconify-icon icon="solar:notebook-bold-duotone" style="font-size:24px;color:#fff;"></iconify-icon>
                         </div>
                         <div>
                             <div class="feature-title">Jurnal &amp; Materi</div>
@@ -672,7 +722,7 @@
                     </div>
                     <div class="feature-pill-card">
                         <div class="feature-icon-box">
-                            <iconify-icon icon="solar:link-circle-bold-duotone" style="font-size:22px;color:var(--accent);"></iconify-icon>
+                            <iconify-icon icon="solar:link-circle-bold-duotone" style="font-size:24px;color:#fff;"></iconify-icon>
                         </div>
                         <div>
                             <div class="feature-title">Terintegrasi</div>
@@ -854,118 +904,245 @@
             }
         }
 
-        /* ─────────────────────────────────────────────────────
-           GSAP Animations for Hero Panel Left
-        ───────────────────────────────────────────────────── */
+        /* ═══════════════════════════════════════════════════
+           GSAP PREMIUM ANIMATION SYSTEM — Theme-Aware
+        ═══════════════════════════════════════════════════ */
         document.addEventListener('DOMContentLoaded', function () {
             const panel = document.getElementById('hero-panel');
-            if (!panel) return;
+            if (!panel || typeof gsap === 'undefined') return;
 
-            // 1. Fade in orbs with stagger
-            gsap.to(['#orb1', '#orb2', '#orb3'], {
-                opacity: 1,
-                duration: 0.5,
-                stagger: 0.05,
-                ease: 'power2.out'
-            });
+            // ── Read active theme colors from CSS vars ──
+            const style    = getComputedStyle(document.documentElement);
+            const primary  = style.getPropertyValue('--primary').trim();
+            const accent   = style.getPropertyValue('--accent').trim();
 
-            // 2. Floating loop animation for orbs
+            // ═══════════════════════════════════════
+            //  1. MASTER TIMELINE — entrance sequence
+            // ═══════════════════════════════════════
+            const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+            // Panel slides in from left
+            tl.fromTo(panel,
+                { x: -40, opacity: 0 },
+                { x: 0, opacity: 1, duration: 0.6 }
+            )
+
+            // Orbs pop in with bounce
+            .fromTo(['#orb1', '#orb2'],
+                { scale: 0, opacity: 0 },
+                { scale: 1, opacity: 1, duration: 0.7, stagger: 0.12, ease: 'back.out(1.5)' },
+                '-=0.35'
+            )
+
+            // Accent glow orbs fade in
+            .fromTo(['#orb3', '#orb4'],
+                { scale: 0.3, opacity: 0 },
+                { scale: 1, opacity: 0.45, duration: 0.8, stagger: 0.1, ease: 'power2.out' },
+                '-=0.5'
+            )
+
+            // Welcome icon drops in
+            .fromTo('#welcome-icon',
+                { y: -30, opacity: 0, scale: 0.6, rotation: -15 },
+                { y: 0, opacity: 1, scale: 1, rotation: 0, duration: 0.55, ease: 'back.out(2)' },
+                '-=0.3'
+            )
+
+            // Heading sweeps up
+            .fromTo('#hero-heading',
+                { y: 30, opacity: 0, skewX: -3 },
+                { y: 0, opacity: 1, skewX: 0, duration: 0.5, ease: 'power3.out' },
+                '-=0.2'
+            )
+
+            // Subtext fades in
+            .fromTo('#hero-subtext',
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.45 },
+                '-=0.25'
+            )
+
+            // Feature cards pop in with stagger + bounce
+            .fromTo('#feature-grid .feature-pill-card',
+                { y: 30, opacity: 0, scale: 0.88 },
+                {
+                    y: 0, opacity: 1, scale: 1,
+                    duration: 0.5,
+                    stagger: { amount: 0.35, from: 'start' },
+                    ease: 'back.out(1.8)',
+                    clearProps: 'all'
+                },
+                '-=0.2'
+            )
+
+            // Stars appear
+            .fromTo(['#star1', '#star2', '#star3'],
+                { scale: 0, opacity: 0 },
+                { scale: 1, opacity: 1, duration: 0.4, stagger: 0.08, ease: 'back.out(2)' },
+                '-=0.4'
+            );
+
+            // ═══════════════════════════════════════
+            //  2. LOOPING AMBIENT ANIMATIONS
+            // ═══════════════════════════════════════
+
+            // Orb 1 — slow drift, large circle
             gsap.to('#orb1', {
-                y: -24,
-                x: 12,
-                duration: 7,
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut'
+                x: 20, y: -30,
+                duration: 9,
+                repeat: -1, yoyo: true,
+                ease: 'sine.inOut',
+                delay: 0.7
             });
+
+            // Orb 2 — medium drift, opposite direction
             gsap.to('#orb2', {
-                y: 18,
-                x: -10,
-                duration: 5.5,
-                repeat: -1,
-                yoyo: true,
+                x: -16, y: 22,
+                duration: 6.5,
+                repeat: -1, yoyo: true,
                 ease: 'sine.inOut',
-                delay: 0.1
+                delay: 1.2
             });
+
+            // Accent glow orb 3 — pulse brightness
             gsap.to('#orb3', {
-                y: -14,
-                x: 8,
-                duration: 4.8,
-                repeat: -1,
-                yoyo: true,
+                scale: 1.35,
+                opacity: 0.65,
+                x: 10, y: -18,
+                duration: 4.5,
+                repeat: -1, yoyo: true,
                 ease: 'sine.inOut',
-                delay: 0.1
+                delay: 0.5
             });
 
-            // 3. Stars twinkling fade in + rotation
-            gsap.to(['#star1', '#star2'], {
-                opacity: 1,
-                rotation: 20,
-                duration: 0.4,
-                stagger: 0.05,
-                ease: 'power2.out',
-                delay: 0.05
-            });
-            gsap.to('#star1', {
-                rotation: '+=360',
-                duration: 14,
-                repeat: -1,
-                ease: 'none',
-                delay: 0.2
-            });
-            gsap.to('#star2', {
-                y: -10,
-                duration: 3.2,
-                repeat: -1,
-                yoyo: true,
+            // Accent glow orb 4 — pulse brightness (offset)
+            gsap.to('#orb4', {
+                scale: 1.5,
+                opacity: 0.55,
+                x: -8, y: 14,
+                duration: 5.2,
+                repeat: -1, yoyo: true,
                 ease: 'sine.inOut',
-                delay: 0.1
+                delay: 1.8
             });
 
-            // 4. Slide-up + fade in for welcome icon
-            gsap.from('#welcome-icon', {
-                y: 15,
-                opacity: 0,
-                duration: 0.3,
-                ease: 'power2.out',
-                delay: 0.02
+            // Stars — continuous rotation & bob
+            gsap.to('#star1', { rotation: '+=360', duration: 16, repeat: -1, ease: 'none', delay: 1 });
+            gsap.to('#star2', { y: -12, duration: 3.5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 0.5 });
+            gsap.to('#star3', { y: 10, rotation: '-=180', duration: 5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 1.5 });
+
+            // Welcome icon — breathing pulse
+            gsap.to('#welcome-icon', {
+                scale: 1.08,
+                boxShadow: '0 0 30px rgba(255,255,255,0.3)',
+                duration: 2.2,
+                repeat: -1, yoyo: true,
+                ease: 'sine.inOut',
+                delay: 1.5
             });
 
-            // 5. Slide-up for heading and subtext
-            gsap.from('#hero-heading', {
-                y: 15,
-                opacity: 0,
-                duration: 0.3,
-                ease: 'power2.out',
-                delay: 0.05
-            });
-            gsap.from('#hero-subtext', {
-                y: 15,
-                opacity: 0,
-                duration: 0.3,
-                ease: 'power2.out',
-                delay: 0.08
-            });
-
-            // 6. Feature cards staggered entrance
-            const cards = document.querySelectorAll('#feature-grid .feature-pill-card');
-            gsap.from(cards, {
-                y: 15,
-                opacity: 0,
-                duration: 0.3,
-                stagger: 0.04,
-                ease: 'power2.out',
-                delay: 0.1
-            });
-
-            // 7. Continuous subtle float for the entire content
+            // Content inner — slow gentle float (reduced motion)
             gsap.to('#hero-panel .hero-content-inner', {
-                y: -8,
-                duration: 5,
-                repeat: -1,
-                yoyo: true,
+                y: -7,
+                duration: 6,
+                repeat: -1, yoyo: true,
                 ease: 'sine.inOut',
                 delay: 2
+            });
+
+            // ═══════════════════════════════════════
+            //  3. ICON BOX SHIMMER — sequential sweep
+            // ═══════════════════════════════════════
+            const iconBoxes = document.querySelectorAll('.feature-icon-box');
+            iconBoxes.forEach((box, i) => {
+                const shimmer = box.querySelector('::after');
+                gsap.to(box, {
+                    '--shimmer-x': '150%',
+                    duration: 0.6,
+                    delay: 1.2 + i * 0.25,
+                    ease: 'power2.inOut',
+                    repeat: -1,
+                    repeatDelay: 3.5 + i * 0.5
+                });
+                // Glow pulse on icon boxes
+                gsap.to(box, {
+                    boxShadow: `0 6px 24px ${accent}55`,
+                    duration: 1.8,
+                    repeat: -1, yoyo: true,
+                    ease: 'sine.inOut',
+                    delay: 1.5 + i * 0.4
+                });
+            });
+
+            // ═══════════════════════════════════════
+            //  4. FLOATING PARTICLES (theme-colored)
+            // ═══════════════════════════════════════
+            const container = document.getElementById('particles-container');
+            if (container) {
+                for (let i = 0; i < 12; i++) {
+                    const dot = document.createElement('div');
+                    const size = Math.random() * 5 + 3;
+                    const isAccent = i % 3 === 0;
+                    dot.className = 'hero-particle';
+                    dot.style.cssText = [
+                        `width:${size}px`, `height:${size}px`,
+                        `background:${isAccent ? accent : 'rgba(255,255,255,0.6)'}`,
+                        `left:${Math.random() * 90}%`,
+                        `top:${Math.random() * 90}%`,
+                        `border-radius:50%`
+                    ].join(';');
+                    container.appendChild(dot);
+
+                    // Each particle floats independently
+                    gsap.to(dot, {
+                        opacity: Math.random() * 0.6 + 0.2,
+                        y: (Math.random() - 0.5) * 40,
+                        x: (Math.random() - 0.5) * 20,
+                        duration: Math.random() * 4 + 3,
+                        repeat: -1, yoyo: true,
+                        ease: 'sine.inOut',
+                        delay: Math.random() * 2
+                    });
+                }
+            }
+
+            // ═══════════════════════════════════════
+            //  5. MOUSE PARALLAX on hero panel
+            // ═══════════════════════════════════════
+            panel.addEventListener('mousemove', function(e) {
+                const rect  = panel.getBoundingClientRect();
+                const cx    = rect.width  / 2;
+                const cy    = rect.height / 2;
+                const dx    = (e.clientX - rect.left - cx) / cx;
+                const dy    = (e.clientY - rect.top  - cy) / cy;
+
+                gsap.to('#orb1', { x: dx * 18, y: dy * 12, duration: 1, ease: 'power1.out', overwrite: 'auto' });
+                gsap.to('#orb2', { x: dx * -12, y: dy * -8, duration: 1.2, ease: 'power1.out', overwrite: 'auto' });
+                gsap.to('#orb3', { x: dx * 22, y: dy * 16, duration: 0.8, ease: 'power1.out', overwrite: 'auto' });
+                gsap.to('#star1', { x: dx * -10, y: dy * -7, duration: 1, ease: 'power1.out', overwrite: 'auto' });
+                gsap.to('#star2', { x: dx * 8, y: dy * 6, duration: 1.3, ease: 'power1.out', overwrite: 'auto' });
+                gsap.to('.hero-content-inner', { x: dx * 5, y: dy * 4, duration: 1.5, ease: 'power1.out', overwrite: 'auto' });
+            });
+
+            panel.addEventListener('mouseleave', function() {
+                gsap.to(['#orb1','#orb2','#orb3','#star1','#star2','.hero-content-inner'], {
+                    x: 0, y: 0, duration: 1.2, ease: 'power2.out', overwrite: 'auto'
+                });
+            });
+
+            // ═══════════════════════════════════════
+            //  6. CARD HOVER micro-animations
+            // ═══════════════════════════════════════
+            document.querySelectorAll('.feature-pill-card').forEach(card => {
+                const iconBox = card.querySelector('.feature-icon-box');
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card, { y: -6, scale: 1.03, duration: 0.3, ease: 'back.out(2)' });
+                    if (iconBox) gsap.to(iconBox, { scale: 1.15, rotation: 8, duration: 0.35, ease: 'back.out(2)' });
+                });
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, { y: 0, scale: 1, duration: 0.35, ease: 'power2.out' });
+                    if (iconBox) gsap.to(iconBox, { scale: 1, rotation: 0, duration: 0.35, ease: 'power2.out' });
+                });
             });
         });
     </script>

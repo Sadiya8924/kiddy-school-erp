@@ -585,6 +585,10 @@ Route::middleware(['auth'])->group(function () {
         // Landing page yayasan — hanya super_admin (non-owner) yang bisa edit
         Route::get('/superadmin/landing-page', [SettingController::class, 'editYayasanLanding'])->name('superadmin.landing.edit');
         Route::post('/superadmin/landing-page', [SettingController::class, 'updateYayasanLanding'])->name('superadmin.landing.update');
+
+        // Route versi terenkripsi: /y/{token}/superadmin/landing-page (dihasilkan oleh $encLink di sidebar)
+        Route::get('/y/{kode_yayasan}/superadmin/landing-page', [SettingController::class, 'editYayasanLanding'])->name('superadmin.landing.edit.encrypted');
+        Route::post('/y/{kode_yayasan}/superadmin/landing-page', [SettingController::class, 'updateYayasanLanding'])->name('superadmin.landing.update.encrypted');
         
         Route::get('/kenaikan-kelas', [ProsesKelasController::class, 'index'])->name('kenaikan.index');
         Route::post('/kenaikan-kelas/proses', [ProsesKelasController::class, 'proses'])->name('kenaikan.proses');

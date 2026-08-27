@@ -678,9 +678,13 @@ Route::middleware(['auth'])->group(function () {
         })->name('pengaturan.update-guru');
 
         Route::post('/pengaturan/menu-access', [KelasController::class, 'updateMenuAccess'])->name('pengaturan.update-menu-access');
+    });
 
-        // Route versi terenkripsi per yayasan (/y/{kode_yayasan}/...) untuk semua fitur admin/guru
-        Route::prefix('/y/{kode_yayasan}')->group(function () {
+    // 5. ROUTE VERSI TERENKRIPSI PER YAYASAN (/y/{kode_yayasan}/...) DENGAN PERAN MASING-MASING
+    Route::prefix('/y/{kode_yayasan}')->group(function () {
+
+        // Pengaturan & Modul khusus Admin / Kepsek / SuperAdmin
+        Route::middleware('role:super_admin,admin,kepsek')->group(function () {
             Route::get('/pengaturan', function () {
                 $user = auth()->user();
                 $current_school_id = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
@@ -756,6 +760,19 @@ Route::middleware(['auth'])->group(function () {
 
             Route::post('/pengaturan/menu-access', [KelasController::class, 'updateMenuAccess']);
 
+            Route::get('/kenaikan-kelas', [ProsesKelasController::class, 'index']);
+            Route::post('/kenaikan-kelas/proses', [ProsesKelasController::class, 'proses']);
+            Route::get('/admin/template', [RaporTemplateController::class, 'index']);
+            Route::post('/admin/template', [RaporTemplateController::class, 'store']);
+            Route::post('/admin/template/{id}/activate', [RaporTemplateController::class, 'activate']);
+            Route::post('/admin/template/{id}/opsi-mulok', [RaporTemplateController::class, 'updateOpsiMulok']);
+            Route::get('/admin/template/{id}', [RaporTemplateController::class, 'show']);
+            Route::post('/admin/template/{id}/items', [RaporTemplateController::class, 'storeItem']);
+            Route::delete('/admin/template/items/{id}', [RaporTemplateController::class, 'destroyItem']);
+        });
+
+        // Fitur Akademik Terenkripsi untuk Guru, Admin, Kepsek, & SuperAdmin
+        Route::middleware('role:super_admin,admin,guru,kepsek')->group(function () {
             Route::get('/kelas', [KelasController::class, 'index']);
             Route::get('/kelas/{id}', [KelasController::class, 'show']);
             Route::post('/kelas', [KelasController::class, 'store']);

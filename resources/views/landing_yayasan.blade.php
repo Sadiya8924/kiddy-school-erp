@@ -998,7 +998,7 @@
                 <div class="hero-visual-card">
                     <!-- Foto Berkualitas Tinggi: Interaksi Guru & Anak Preschool -->
                     @if(!empty($content['hero_image']))
-                        <img src="{{ asset($content['hero_image']) }}" alt="Belajar Ceria di {{ $yayasan->nama_yayasan }}">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($content['hero_image'], ['http://', 'https://']) ? $content['hero_image'] : asset($content['hero_image']) }}" alt="Belajar Ceria di {{ $yayasan->nama_yayasan }}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&auto=format&fit=crop&q=80';">
                     @else
                         <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&auto=format&fit=crop&q=80" alt="Belajar Ceria di {{ $yayasan->nama_yayasan }}">
                     @endif
@@ -1180,7 +1180,7 @@
                     1 => ['tag' => 'Kreativitas & Motorik', 'title' => 'Eksplorasi Belajar & Sensorik', 'desc' => 'Mewarnai, meronce, menyusun balok, dan melatih motorik halus dengan metode bermain bermakna.', 'img' => 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=700&auto=format&fit=crop&q=80'],
                     2 => ['tag' => 'Karakter & Keagamaan', 'title' => 'Tahfidz Cilik & Pembiasaan Doa', 'desc' => 'Hafalan surat-surat pendek juz 30, doa harian, dan pengenalan adab sopan santun sejak dini.', 'img' => 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=700&auto=format&fit=crop&q=80'],
                     3 => ['tag' => 'Ekstrakurikuler', 'title' => 'Minat Bakat & Drumband Cilik', 'desc' => 'Melatih kekompakan, rasa percaya diri, dan kepekaan musikalitas anak melalui ekskul pilihan.', 'img' => 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=700&auto=format&fit=crop&q=80'],
-                    4 => ['tag' => 'Area Bermain Outbound', 'title' => 'Taman Bermain Aman & Asri', 'desc' => 'Fasilitas playground indoor & outdoor yang aman untuk melatih ketangkasan serta motorik kasar.', 'img' => 'https://images.unsplash.com/photo-1596464716127-f2a829822301?w=700&auto=format&fit=crop&q=80'],
+                    4 => ['tag' => 'Area Bermain Outbound', 'title' => 'Taman Bermain Aman & Asri', 'desc' => 'Fasilitas playground indoor & outdoor yang aman untuk melatih ketangkasan serta motorik kasar.', 'img' => 'https://images.unsplash.com/photo-1567057419565-4349c49d8a04?w=700&auto=format&fit=crop&q=80'],
                     5 => ['tag' => 'Pentas Seni & Field Trip', 'title' => 'Panggung Apresiasi & Wisata Edukasi', 'desc' => 'Kunjungan profesi edukatif serta panggung tahunan untuk melatih keberanian anak tampil di depan publik.', 'img' => 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=700&auto=format&fit=crop&q=80'],
                     6 => ['tag' => 'Sains & Eksplorasi', 'title' => 'Eksperimen Sains Anak Usia Dini', 'desc' => 'Mengenalkan logika fenomena alam dan rasa ingin tahu ilmiah melalui percobaan sederhana yang aman.', 'img' => 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=700&auto=format&fit=crop&q=80'],
                 ];
@@ -1196,7 +1196,7 @@
                 @endphp
                 <div class="gallery-card">
                     <div class="gallery-img-wrapper">
-                        <img src="{{ asset($gImg) }}" alt="{{ $gTitle }}" onerror="this.src='{{ $def['img'] }}'">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($gImg, ['http://', 'https://']) ? $gImg : asset($gImg) }}" alt="{{ $gTitle }}" onerror="this.onerror=null; this.src='{{ $def['img'] }}';">
                         <span class="gallery-tag-pill">{{ $gTag }}</span>
                     </div>
                     <div class="gallery-body">

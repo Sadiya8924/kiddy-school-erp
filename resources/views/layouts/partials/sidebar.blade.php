@@ -48,7 +48,7 @@
 
         <div class="brand-logo d-flex align-items-center justify-content-between px-3 py-3 border-bottom border-light">
             <a href="{{ $encLink('/dashboard') }}" class="logo-img text-decoration-none d-flex align-items-center gap-2 overflow-hidden me-2">
-                <div class="rounded-circle theme-brand-bg-soft theme-text-primary p-2 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px;">
+                <div class="rounded-circle theme-brand-bg-soft theme-text-primary p-2 d-flex align-items-center justify-content-center shrink-0" style="width: 36px; height: 36px;">
                     <iconify-icon icon="solar:diploma-bold-duotone" class="fs-5 theme-brand-icon"></iconify-icon>
                 </div>
                 <div class="lh-sm overflow-hidden">

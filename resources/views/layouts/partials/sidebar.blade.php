@@ -70,13 +70,24 @@
                     $akademik_roles = ['owner', 'super_admin', 'admin', 'guru', 'kepsek'];
 
                     $allowed_modules = [];
-                    // Tarik hak akses HANYA untuk Admin, Guru, & Kepsek (karena terikat sekolah)
-                    if ($user && in_array($user->role, ['admin', 'guru', 'kepsek'])) {
+                    $userSchoolId = $user ? $user->school_id : null;
+                    if ($user && !$userSchoolId && $user->role === 'wali_murid') {
+                        $anakSiswa = \App\Models\Siswa::where('email', $user->email)->orWhere('user_id', $user->id)->first();
+                        if ($anakSiswa) {
+                            $userSchoolId = $anakSiswa->school_id;
+                        }
+                    }
+                    if ($user && !$userSchoolId) {
+                        $userSchoolId = session('active_school_id');
+                    }
+
+                    // Tarik hak akses untuk Admin, Guru, Kepsek, & Wali Murid
+                    if ($user && in_array($user->role, ['admin', 'guru', 'kepsek', 'wali_murid']) && $userSchoolId) {
                         $role_column = 'is_active_for_' . $user->role;
                         
                         $allowed_modules = \Illuminate\Support\Facades\DB::table('school_modules')
                             ->join('modules', 'school_modules.module_id', '=', 'modules.id')
-                            ->where('school_modules.school_id', $user->school_id)
+                            ->where('school_modules.school_id', $userSchoolId)
                             ->where('school_modules.' . $role_column, 1)
                             ->pluck('modules.name')
                             ->toArray();
@@ -86,9 +97,8 @@
                     $hasMenu = function($menuName) use ($allowed_modules, $user) {
                         if (!$user) return false;
                         if ($user->isSuperAdmin() || $user->isOwner()) return true; // Super admin & owner bebas
-                        if ($user->role === 'wali_murid') return true; // Wali murid bebas
                         
-                        // Cek untuk Admin, Guru, Kepsek
+                        // Cek untuk Admin, Guru, Kepsek, & Wali Murid
                         foreach ($allowed_modules as $allowed) {
                             if (strtolower(trim($allowed)) == strtolower(trim($menuName))) {
                                 return true;
@@ -159,7 +169,7 @@
                     </li>
                     @if($user->isOwner())
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('owner/yayasans*') ? 'active' : '' }}" href="{{ $encLink(route('owner.yayasans.index')) }}">
+                        <a class="sidebar-link {{ request()->is('*owner/yayasans*') ? 'active' : '' }}" href="{{ $encLink(route('owner.yayasans.index')) }}">
                             <span><iconify-icon icon="solar:buildings-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Data Yayasan</span>
                         </a>
@@ -167,14 +177,14 @@
                     @endif
                     @if(!$user->isOwner())
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('superadmin/schools*') ? 'active' : '' }}" href="{{ $encLink(route('superadmin.schools.index')) }}">
+                        <a class="sidebar-link {{ request()->is('*superadmin/schools*') ? 'active' : '' }}" href="{{ $encLink(route('superadmin.schools.index')) }}">
                             <span><iconify-icon icon="solar:buildings-2-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Data Sekolah (TK)</span>
                         </a>
                     </li>
                     @endif
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('superadmin/users*') ? 'active' : '' }}" href="{{ $sidebarYayasan ? route('superadmin.users.encrypted', $sidebarYayasan->encrypted_token) : $encLink(route('superadmin.users.index')) }}">
+                        <a class="sidebar-link {{ request()->is('*superadmin/users*') ? 'active' : '' }}" href="{{ $sidebarYayasan ? route('superadmin.users.encrypted', $sidebarYayasan->encrypted_token) : $encLink(route('superadmin.users.index')) }}">
                             <span><iconify-icon icon="solar:users-group-rounded-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Manajemen User</span>
                         </a>
@@ -220,7 +230,7 @@
                         <span class="hide-menu">KEGIATAN & PRESENSI</span>
                     </li>
                     
-                    @if($user->role == 'guru' || $user->isSuperAdmin())
+                    @if(($user->role == 'guru' || $user->isSuperAdmin()) && $hasMenu('Manajemen Materi'))
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->is('*materi/guru*') ? 'active' : '' }}" href="{{ $encLink(route('materi.guru.index')) }}">
                             <span><iconify-icon icon="solar:document-add-bold-duotone" class="fs-6"></iconify-icon></span>
@@ -228,7 +238,7 @@
                         </a>
                     </li>
                     @endif
-                    @if(in_array($user->role, ['kepsek', 'admin', 'super_admin']))
+                    @if(in_array($user->role, ['kepsek', 'admin', 'super_admin']) && $hasMenu('Persetujuan Materi'))
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->is('*materi/persetujuan*') ? 'active' : '' }}" href="{{ $encLink(route('materi.kepsek.index')) }}">
                             <span><iconify-icon icon="solar:shield-check-bold-duotone" class="fs-6"></iconify-icon></span>
@@ -349,7 +359,7 @@
                     </li>
                     @endif
                     
-                    @if($hasMenu('Laporan Fisik'))
+                    @if($hasMenu('Laporan Fisik') || $hasMenu('Perkembangan Fisik'))
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ $encLink('/perkembangan-anak') }}">
                             <span><iconify-icon icon="solar:pulse-bold-duotone" class="fs-6"></iconify-icon></span>
@@ -358,20 +368,23 @@
                     </li>
                     @endif
 
-                    
+                    @if($hasMenu('Manajemen Materi') || $hasMenu('Materi Pelajaran'))
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->routeIs('materi.ortu.index') ? 'active' : '' }}" href="{{ $encLink(route('materi.ortu.index')) }}">
                             <span><iconify-icon icon="solar:book-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Materi Pelajaran</span>
                         </a>
                     </li>
+                    @endif
                     
+                    @if($hasMenu('Jurnal Harian') || $hasMenu('Jurnal Harian Anak'))
                     <li class="sidebar-item">
                         <a class="sidebar-link {{ request()->is('materi-anak*') ? 'active' : '' }}" href="{{ $encLink(route('walimurid.materi')) }}">
                             <span><iconify-icon icon="solar:notebook-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Jurnal Harian Anak</span>
                         </a>
                     </li>
+                    @endif
 
                     <li class="sidebar-item mt-3">
                         <a class="sidebar-link text-primary fw-bold" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalTautkanAnak">

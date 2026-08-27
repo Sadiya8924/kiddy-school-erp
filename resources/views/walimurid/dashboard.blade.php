@@ -16,6 +16,32 @@
         if (!$dashToken) return $path;
         return '/y/' . $dashToken . (str_starts_with($path, '/') ? $path : '/' . $path);
     };
+
+    // Ambil modul aktif untuk Wali Murid di Sekolah Ananda
+    $schIdForOrtu = Auth::user()->school_id;
+    if (!$schIdForOrtu && isset($anak) && $anak->count() > 0) {
+        $schIdForOrtu = $anak->first()->school_id;
+    }
+    if (!$schIdForOrtu) {
+        $schIdForOrtu = session('active_school_id');
+    }
+    $allowedOrtuModules = [];
+    if ($schIdForOrtu) {
+        $allowedOrtuModules = \Illuminate\Support\Facades\DB::table('school_modules')
+            ->join('modules', 'school_modules.module_id', '=', 'modules.id')
+            ->where('school_modules.school_id', $schIdForOrtu)
+            ->where('school_modules.is_active_for_wali_murid', 1)
+            ->pluck('modules.name')
+            ->toArray();
+    }
+    $hasOrtuModule = function($menuName) use ($allowedOrtuModules) {
+        foreach ($allowedOrtuModules as $allowed) {
+            if (strtolower(trim($allowed)) == strtolower(trim($menuName))) {
+                return true;
+            }
+        }
+        return false;
+    };
 @endphp
 
 @section('konten_halaman')
@@ -134,25 +160,38 @@
                                                 </div>
                                             </div>
 
+                                            @if($hasOrtuModule('Rapor Anak'))
                                             <a href="{{ $dashLink('/rapor-anak/' . $a->id) }}" class="btn btn-sm btn-outline-primary rounded-3 font-semibold px-3 py-1.5 text-nowrap" style="font-size: 12px;">
                                                 Detail Rapor →
                                             </a>
+                                            @endif
                                         </div>
 
                                         {{-- Quick Actions Row --}}
                                         <div class="pt-3 d-flex align-items-center gap-2 flex-wrap">
+                                            @if($hasOrtuModule('Rapor Anak'))
                                             <a href="{{ $dashLink('/rapor-anak/' . $a->id) }}" class="btn btn-white border flex-grow-1 fw-semibold text-dark shadow-xs bg-white rounded-3 py-2" style="font-size: 12px;">
                                                 <iconify-icon icon="solar:notebook-bold-duotone" class="text-primary me-1 align-middle"></iconify-icon> Lihat Rapor
                                             </a>
+                                            @endif
+
+                                            @if($hasOrtuModule('Laporan Fisik') || $hasOrtuModule('Perkembangan Fisik'))
                                             <a href="{{ $dashLink('/perkembangan-anak/' . $a->id) }}" class="btn btn-white border flex-grow-1 fw-semibold text-dark shadow-xs bg-white rounded-3 py-2" style="font-size: 12px;">
                                                 <iconify-icon icon="solar:pulse-bold-duotone" class="text-success me-1 align-middle"></iconify-icon> Cek Fisik
                                             </a>
+                                            @endif
+
+                                            @if($hasOrtuModule('Jurnal Harian') || $hasOrtuModule('Jurnal Harian Anak'))
                                             <a href="{{ $dashLink('/jurnal-anak/' . $a->id) }}" class="btn btn-primary border flex-grow-1 fw-semibold shadow-xs rounded-3 py-2" style="font-size: 12px;">
                                                 <iconify-icon icon="solar:book-bookmark-bold-duotone" class="me-1 align-middle"></iconify-icon> Jurnal Harian
                                             </a>
+                                            @endif
+
+                                            @if($hasOrtuModule('Manajemen Materi') || $hasOrtuModule('Materi Pelajaran'))
                                             <a href="{{ $dashLink('/materi') }}" class="btn btn-info text-white border flex-grow-1 fw-semibold shadow-xs rounded-3 py-2" style="font-size: 12px; background-color: #8b5cf6; border-color: #8b5cf6;">
                                                 <iconify-icon icon="solar:folder-with-files-bold-duotone" class="me-1 align-middle"></iconify-icon> Materi Pelajaran
                                             </a>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

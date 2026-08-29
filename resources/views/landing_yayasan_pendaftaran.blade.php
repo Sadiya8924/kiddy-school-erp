@@ -606,14 +606,14 @@
 
                 @if(session('success'))
                 <div class="alert alert-success border-success-subtle bg-success-subtle text-success rounded-3 p-3 mb-3 small d-flex gap-2 align-items-start">
-                    <iconify-icon icon="solar:check-circle-bold" class="fs-5 flex-shrink-0 mt-0.5"></iconify-icon>
+                    <iconify-icon icon="solar:check-circle-bold" class="fs-5 shrink-0 mt-0.5"></iconify-icon>
                     <div>{{ session('success') }}</div>
                 </div>
                 @endif
 
                 @if(session('error'))
                 <div class="alert alert-danger border-danger-subtle bg-danger-subtle text-danger rounded-3 p-3 mb-3 small d-flex gap-2 align-items-start">
-                    <iconify-icon icon="solar:danger-triangle-bold" class="fs-5 flex-shrink-0 mt-0.5"></iconify-icon>
+                    <iconify-icon icon="solar:danger-triangle-bold" class="fs-5 shrink-0 mt-0.5"></iconify-icon>
                     <div>{{ session('error') }}</div>
                 </div>
                 @endif

@@ -13,13 +13,40 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $loginInput = trim($request->input('email') ?? $request->input('login') ?? '');
 
-        $user = User::where('email', $request->email)->first();
+        // Normalisasi nomor telepon jika input berupa angka
+        $cleanPhone = preg_replace('/[^0-9]/', '', $loginInput);
+        $phone0 = str_starts_with($cleanPhone, '62') ? ('0' . substr($cleanPhone, 2)) : $cleanPhone;
+        $phone62 = str_starts_with($cleanPhone, '0') ? ('62' . substr($cleanPhone, 1)) : $cleanPhone;
+
+        // Cari user berdasarkan email atau no_hp
+        $user = User::where(function($q) use ($loginInput, $cleanPhone, $phone0, $phone62) {
+            $q->where('email', $loginInput);
+            if (!empty($cleanPhone) && strlen($cleanPhone) >= 8) {
+                $q->orWhereIn('no_hp', array_unique([$loginInput, $cleanPhone, $phone0, $phone62]));
+            }
+        })->first();
+
+        // Fallback untuk akun wali murid yang nomor teleponnya tersimpan di data siswas
+        if (!$user && !empty($cleanPhone) && strlen($cleanPhone) >= 8) {
+            $siswa = \Illuminate\Support\Facades\DB::table('siswas')
+                ->where(function($q) use ($cleanPhone, $phone0, $phone62) {
+                    $q->whereIn('hp', array_unique([$cleanPhone, $phone0, $phone62]));
+                })
+                ->whereNotNull('user_id')
+                ->first();
+            if ($siswa) {
+                $user = User::find($siswa->user_id);
+                if ($user && empty($user->no_hp)) {
+                    $user->update(['no_hp' => $phone0]);
+                }
+            }
+        }
 
         // 1. Verifikasi kredensial dasar terlebih dahulu
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return back()->with('error', 'Kombinasi email dan password tidak valid.')->withInput($request->only('email'));
+            return back()->with('error', 'Kombinasi email / nomor telepon dan password tidak valid.')->withInput($request->only('email'));
         }
 
         // 2. Validasi Portal & Peran Akses Login
@@ -36,7 +63,7 @@ class AuthController extends Controller
                     $correctYayasanUrl  = $correctYayasan ? route('yayasan.login', $correctYayasan->encrypted_token) : '/login';
 
                     return back()->with('wrong_yayasan', [
-                        'user_email'           => $user->email,
+                        'user_email'           => $user->email ?? ($user->no_hp ?? 'Akun Anda'),
                         'user_name'            => $user->name,
                         'portal_yayasan_name'  => $portalYayasan->nama_yayasan,
                         'correct_yayasan_name' => $correctYayasanName,
@@ -54,7 +81,7 @@ class AuthController extends Controller
                     $correctYayasanUrl  = $correctYayasan ? route('yayasan.login', $correctYayasan->encrypted_token) : '/login';
 
                     return back()->with('wrong_yayasan', [
-                        'user_email'           => $user->email,
+                        'user_email'           => $user->email ?? ($user->no_hp ?? 'Akun Anda'),
                         'user_name'            => $user->name,
                         'portal_yayasan_name'  => 'Platform Owner SaaS',
                         'correct_yayasan_name' => $correctYayasanName,

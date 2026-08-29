@@ -142,10 +142,10 @@
           <form method="POST" action="/login">
             @csrf
             <div class="mb-3">
-              <label class="form-label fw-semibold small text-secondary">Alamat Email</label>
+              <label class="form-label fw-semibold small text-secondary">Email atau Nomor Telepon</label>
               <div class="input-group">
-                <span class="input-group-text bg-light border-end-0"><iconify-icon icon="solar:letter-bold-duotone" class="text-muted"></iconify-icon></span>
-                <input type="email" name="email" class="form-control border-start-0 ps-0 bg-light" placeholder="nama@email.com" value="{{ old('email') }}" required>
+                <span class="input-group-text bg-light border-end-0"><iconify-icon icon="solar:user-bold-duotone" class="text-muted"></iconify-icon></span>
+                <input type="text" name="email" class="form-control border-start-0 ps-0 bg-light" placeholder="nama@email.com atau 08xxxxxxxxxx" value="{{ old('email') }}" required autofocus>
               </div>
             </div>
             

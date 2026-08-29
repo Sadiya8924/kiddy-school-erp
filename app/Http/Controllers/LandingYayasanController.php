@@ -158,22 +158,42 @@ class LandingYayasanController extends Controller
     {
         $yayasan = $this->findYayasan($kode_yayasan);
 
-        $request->validate([
+        $rawPhone = $request->input('no_hp') ?? $request->input('phone') ?? $request->input('hp');
+        $cleanPhone = preg_replace('/[^0-9]/', '', $rawPhone ?? '');
+        $phone0 = str_starts_with($cleanPhone, '62') ? ('0' . substr($cleanPhone, 2)) : $cleanPhone;
+
+        $rules = [
             'name'                  => 'required|string|max:255',
-            'email'                 => 'required|email|unique:users,email',
             'password'              => 'required|string|min:8|confirmed',
-        ], [
+        ];
+
+        if ($request->filled('email')) {
+            $rules['email'] = 'email|unique:users,email';
+        }
+
+        if (!empty($phone0)) {
+            $rules['no_hp'] = 'string|max:30|unique:users,no_hp';
+        } else if (!$request->filled('email')) {
+            $rules['no_hp'] = 'required';
+        }
+
+        $messages = [
             'name.required'          => 'Nama lengkap wajib diisi.',
-            'email.required'         => 'Alamat email wajib diisi.',
+            'no_hp.required'         => 'Nomor telepon / WhatsApp atau email wajib diisi.',
+            'no_hp.unique'           => 'Nomor telepon ini sudah terdaftar. Silakan login.',
+            'email.email'            => 'Format email tidak valid.',
             'email.unique'           => 'Email ini sudah terdaftar. Silakan login.',
             'password.required'      => 'Kata sandi wajib diisi.',
             'password.min'           => 'Kata sandi minimal 8 karakter.',
             'password.confirmed'     => 'Konfirmasi sandi tidak cocok.',
-        ]);
+        ];
+
+        $request->validate($rules, $messages);
 
         $user = User::create([
             'name'       => $request->name,
-            'email'      => $request->email,
+            'email'      => $request->filled('email') ? $request->email : null,
+            'no_hp'      => !empty($phone0) ? $phone0 : null,
             'password'   => Hash::make($request->password),
             'role'       => 'wali_murid',
             'yayasan_id' => $yayasan->id,

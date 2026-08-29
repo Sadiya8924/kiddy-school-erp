@@ -798,8 +798,8 @@
                 <input type="hidden" name="kode_yayasan" value="{{ $yayasan->kode_yayasan }}">
 
                 <div class="mb-3">
-                    <label class="form-label-custom" for="login-email">Email</label>
-                    <input type="email" name="email" id="login-email" class="form-control-custom" placeholder="nama@email.com" value="{{ old('email') }}" required autofocus>
+                    <label class="form-label-custom" for="login-email">Email atau Nomor Telepon</label>
+                    <input type="text" name="email" id="login-email" class="form-control-custom" placeholder="Contoh: nama@email.com atau 08xxxxxxxxxx" value="{{ old('email') }}" required autofocus>
                 </div>
 
                 <div class="mb-3">

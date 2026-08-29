@@ -376,8 +376,8 @@
                                 <input type="text" name="rw" class="form-control bg-white border shadow-none" value="{{ old('rw') }}" style="font-size: 13px;" required placeholder="Contoh: 02">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Dusun <span class="text-danger">*</span></label>
-                                <input type="text" name="dusun" class="form-control bg-white border shadow-none" value="{{ old('dusun') }}" style="font-size: 13px;" required placeholder="Contoh: Dusun Krajan">
+                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Dusun <span class="text-muted fw-normal">(Opsional)</span></label>
+                                <input type="text" name="dusun" class="form-control bg-white border shadow-none" value="{{ old('dusun') }}" style="font-size: 13px;" placeholder="Contoh: Dusun Krajan">
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Desa/Kel. <span class="text-danger">*</span></label>
@@ -420,11 +420,11 @@
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">No HP / WhatsApp <span class="text-danger">*</span></label>
-                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="hp" class="form-control bg-white border shadow-none" value="{{ old('hp') }}" style="font-size: 13px;" required placeholder="08xxxxxxxxxx">
+                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="hp" id="parent_phone" class="form-control bg-white border shadow-none" value="{{ old('hp') }}" style="font-size: 13px;" required placeholder="08xxxxxxxxxx">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Email Orang Tua <span class="text-danger">*</span></label>
-                                <input type="email" name="email" id="parent_email" class="form-control bg-white border shadow-none" value="{{ old('email') }}" style="font-size: 13px;" required placeholder="nama@email.com">
+                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Email Orang Tua <span class="text-muted fw-normal">(Opsional)</span></label>
+                                <input type="email" name="email" id="parent_email" class="form-control bg-white border shadow-none" value="{{ old('email') }}" style="font-size: 13px;" placeholder="nama@email.com (opsional)">
                                 <div id="email_feedback_box" class="mt-2" style="display:none;"></div>
                             </div>
                             
@@ -605,7 +605,7 @@
                                     html: `
                                         <div style="text-align: left; font-size: 13.5px; line-height: 1.6; color: #374151;">
                                             <p style="margin-bottom: 10px;">Data pendaftaran siswa atas nama <strong style="color: {{ $theme['primary'] }};">${pData.nama_siswa}</strong> di <strong>${pData.nama_sekolah}</strong> (${pData.nama_yayasan}) telah berhasil disimpan ke database.</p>
-                                            <p style="margin-bottom: 10px;">Akun portal wali murid terhubung dengan email: <strong>${pData.email}</strong>.</p>
+                                            <p style="margin-bottom: 10px;">Akun portal wali murid dapat diakses menggunakan nomor telepon/email: <strong>${pData.email || pData.hp}</strong>.</p>
                                             <div style="background: #F3F4F6; border: 1px solid #E5E7EB; padding: 10px 14px; border-radius: 10px; font-size: 12px;">
                                                 👉 Silakan masuk ke <strong>Portal Login Yayasan</strong> untuk mengecek status pendaftaran &amp; informasi sekolah.
                                             </div>
@@ -953,79 +953,93 @@
                             updateTahunOptions();
                             updateBirthdateConstraints();
 
-                            // 3. Real-time Email Check for Parent Account
+                            // 3. Real-time Account Check for Parent Account (by Phone or Email)
                             const emailInput = document.getElementById('parent_email');
+                            const phoneInput = document.getElementById('parent_phone');
                             const feedbackBox = document.getElementById('email_feedback_box');
                             const passLabel = document.getElementById('password_label');
                             const passHint = document.getElementById('password_hint');
-                            let emailCheckTimeout = null;
+                            let accountCheckTimeout = null;
 
-                            if (emailInput && feedbackBox) {
-                                function checkEmail(emailVal) {
-                                    if (!emailVal || !emailVal.includes('@') || emailVal.length < 5) {
+                            function checkParentAccount() {
+                                const emailVal = emailInput ? emailInput.value.trim() : '';
+                                const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+
+                                const hasValidEmail = emailVal.includes('@') && emailVal.length >= 5;
+                                const hasValidPhone = phoneVal.replace(/[^0-9]/g, '').length >= 9;
+
+                                if (!hasValidEmail && !hasValidPhone) {
+                                    if (feedbackBox) feedbackBox.style.display = 'none';
+                                    return;
+                                }
+
+                                if (feedbackBox) {
+                                    feedbackBox.style.display = 'block';
+                                    feedbackBox.innerHTML = '<span class="text-muted small d-inline-flex align-items-center gap-1"><iconify-icon icon="solar:spinner-line-duotone" class="spin"></iconify-icon> Memeriksa status akun orang tua...</span>';
+                                }
+
+                                fetch('{{ route('api.check_parent_email') }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                    body: JSON.stringify({ email: emailVal, phone: phoneVal })
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (!feedbackBox) return;
+                                    if (!data.valid) {
                                         feedbackBox.style.display = 'none';
                                         return;
                                     }
 
-                                    feedbackBox.style.display = 'block';
-                                    feedbackBox.innerHTML = '<span class="text-muted small d-inline-flex align-items-center gap-1"><iconify-icon icon="solar:spinner-line-duotone" class="spin"></iconify-icon> Memeriksa status email...</span>';
-
-                                    fetch('{{ route('api.check_parent_email') }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                        },
-                                        body: JSON.stringify({ email: emailVal })
-                                    })
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        if (!data.valid) {
-                                            feedbackBox.style.display = 'none';
-                                            return;
-                                        }
-
-                                        if (data.exists) {
-                                            feedbackBox.innerHTML = `
-                                                <div class="alert alert-success py-2 px-3 mb-0 rounded-3 small d-flex align-items-start gap-2">
-                                                    <iconify-icon icon="solar:check-circle-bold" class="fs-5 flex-shrink-0 text-success mt-0.5"></iconify-icon>
-                                                    <div>
-                                                        <strong>Akun Terdaftar:</strong> ${data.name} ${data.total_anak > 0 ? `(${data.total_anak} anak sebelumnya)` : ''}.<br>
-                                                        <span class="text-muted" style="font-size:11px;">Masukkan kata sandi akun Anda di bawah untuk konfirmasi penautan anak ini.</span>
-                                                    </div>
+                                    if (data.exists) {
+                                        feedbackBox.innerHTML = `
+                                            <div class="alert alert-success py-2 px-3 mb-0 rounded-3 small d-flex align-items-start gap-2">
+                                                <iconify-icon icon="solar:check-circle-bold" class="fs-5 flex-shrink-0 text-success mt-0.5"></iconify-icon>
+                                                <div>
+                                                    <strong>Akun Terdaftar:</strong> ${data.name} ${data.total_anak > 0 ? `(${data.total_anak} anak sebelumnya)` : ''}.<br>
+                                                    <span class="text-muted" style="font-size:11px;">Masukkan kata sandi akun Anda di bawah untuk konfirmasi penautan anak ini.</span>
                                                 </div>
-                                            `;
-                                            if (passLabel) passLabel.innerHTML = 'Kata Sandi Akun Anda (Konfirmasi Penautan Anak) <span class="text-danger">*</span>';
-                                            if (passHint) passHint.innerHTML = 'Masukkan kata sandi akun Anda untuk mengonfirmasi penautan data anak ke akun terdaftar Anda.';
-                                        } else {
-                                            feedbackBox.innerHTML = `
-                                                <div class="alert alert-info py-2 px-3 mb-0 rounded-3 small d-flex align-items-start gap-2">
-                                                    <iconify-icon icon="solar:info-circle-bold" class="fs-5 flex-shrink-0 text-primary mt-0.5"></iconify-icon>
-                                                    <div>
-                                                        <strong>Email Baru:</strong> Akun portal wali murid akan otomatis dibuatkan menggunakan email &amp; kata sandi yang Anda tentukan di bawah.
-                                                    </div>
+                                            </div>
+                                        `;
+                                        if (passLabel) passLabel.innerHTML = 'Kata Sandi Akun Anda (Konfirmasi Penautan Anak) <span class="text-danger">*</span>';
+                                        if (passHint) passHint.innerHTML = 'Masukkan kata sandi akun Anda untuk mengonfirmasi penautan data anak ke akun terdaftar Anda.';
+                                    } else {
+                                        feedbackBox.innerHTML = `
+                                            <div class="alert alert-info py-2 px-3 mb-0 rounded-3 small d-flex align-items-start gap-2">
+                                                <iconify-icon icon="solar:info-circle-bold" class="fs-5 flex-shrink-0 text-primary mt-0.5"></iconify-icon>
+                                                <div>
+                                                    <strong>Akun Baru:</strong> Akun portal wali murid akan otomatis dibuatkan menggunakan nomor telepon / email &amp; kata sandi yang Anda tentukan di bawah.
                                                 </div>
-                                            `;
-                                            if (passLabel) passLabel.innerHTML = 'Buat Kata Sandi Akun Baru <span class="text-danger">*</span>';
-                                            if (passHint) passHint.innerHTML = 'Kata sandi ini akan menjadi kata sandi akun portal wali murid baru Anda (Min. 6 karakter).';
-                                        }
-                                    })
-                                    .catch(() => {
-                                        feedbackBox.style.display = 'none';
-                                    });
-                                }
-
-                                emailInput.addEventListener('input', function() {
-                                    clearTimeout(emailCheckTimeout);
-                                    emailCheckTimeout = setTimeout(() => {
-                                        checkEmail(this.value.trim());
-                                    }, 400);
+                                            </div>
+                                        `;
+                                        if (passLabel) passLabel.innerHTML = 'Buat Kata Sandi Akun Baru <span class="text-danger">*</span>';
+                                        if (passHint) passHint.innerHTML = 'Kata sandi ini akan menjadi kata sandi akun portal wali murid baru Anda (Min. 6 karakter).';
+                                    }
+                                })
+                                .catch(() => {
+                                    if (feedbackBox) feedbackBox.style.display = 'none';
                                 });
+                            }
 
-                                // Check on initial load if old email is present
-                                if (emailInput.value.trim()) {
-                                    checkEmail(emailInput.value.trim());
-                                }
+                            if (emailInput) {
+                                emailInput.addEventListener('input', function() {
+                                    clearTimeout(accountCheckTimeout);
+                                    accountCheckTimeout = setTimeout(checkParentAccount, 400);
+                                });
+                            }
+                            if (phoneInput) {
+                                phoneInput.addEventListener('input', function() {
+                                    clearTimeout(accountCheckTimeout);
+                                    accountCheckTimeout = setTimeout(checkParentAccount, 400);
+                                });
+                            }
+
+                            // Check on initial load if old email or phone is present
+                            if ((emailInput && emailInput.value.trim()) || (phoneInput && phoneInput.value.trim())) {
+                                checkParentAccount();
                             }
 
                             // 4. Toggle Show/Hide Password

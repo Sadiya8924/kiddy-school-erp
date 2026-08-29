@@ -642,9 +642,14 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Alamat Email Aktif <span class="text-danger">*</span></label>
-                            <input type="email" name="email" class="form-control" placeholder="email@anda.com" required value="{{ old('email') }}">
-                            <div class="form-text" style="font-size:11.5px;">Gunakan email yang sama saat mendaftarkan putra/putri Anda.</div>
+                            <label class="form-label">Nomor HP / WhatsApp <span class="text-danger">*</span></label>
+                            <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="no_hp" class="form-control" placeholder="08xxxxxxxxxx" required value="{{ old('no_hp') }}">
+                            <div class="form-text" style="font-size:11.5px;">Nomor telepon ini dapat digunakan untuk login ke portal wali murid.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Alamat Email <span class="text-muted fw-normal">(Opsional)</span></label>
+                            <input type="email" name="email" class="form-control" placeholder="email@anda.com (opsional)" value="{{ old('email') }}">
                         </div>
 
                         <div class="row g-3 mb-4">
@@ -679,8 +684,8 @@
                     <form action="{{ url('/login') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label">Alamat Email Terdaftar <span class="text-danger">*</span></label>
-                            <input type="email" name="email" class="form-control" placeholder="email@anda.com" required value="{{ old('email') }}">
+                            <label class="form-label">Email atau Nomor Telepon <span class="text-danger">*</span></label>
+                            <input type="text" name="email" class="form-control" placeholder="nama@email.com atau 08xxxxxxxxxx" required value="{{ old('email') }}">
                         </div>
 
                         <div class="mb-3">

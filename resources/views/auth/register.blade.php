@@ -76,10 +76,18 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label fw-semibold small text-secondary">Alamat Email</label>
+              <label class="form-label fw-semibold small text-secondary">Nomor HP / WhatsApp <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0"><iconify-icon icon="solar:phone-bold-duotone" class="text-muted"></iconify-icon></span>
+                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="no_hp" class="form-control border-start-0 ps-0 bg-light" placeholder="08xxxxxxxxxx" value="{{ old('no_hp') }}" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold small text-secondary">Alamat Email <span class="text-muted fw-normal">(Opsional)</span></label>
               <div class="input-group">
                 <span class="input-group-text bg-light border-end-0"><iconify-icon icon="solar:letter-bold-duotone" class="text-muted"></iconify-icon></span>
-                <input type="email" name="email" class="form-control border-start-0 ps-0 bg-light" placeholder="nama@email.com" value="{{ old('email') }}" required>
+                <input type="email" name="email" class="form-control border-start-0 ps-0 bg-light" placeholder="nama@email.com (opsional)" value="{{ old('email') }}">
               </div>
             </div>
             

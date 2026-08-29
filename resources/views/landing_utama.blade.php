@@ -429,7 +429,8 @@
             outline: none;
         }
         .yayasan-badge:hover,
-        .yayasan-wrapper.is-open .yayasan-badge {
+        .yayasan-wrapper:hover .yayasan-badge,
+        .yayasan-wrapper:focus-within .yayasan-badge {
             background: #EFF6FF;
             border-color: #93C5FD;
             color: #1D4ED8;
@@ -447,7 +448,8 @@
             transition: transform 0.2s ease;
         }
         .yayasan-badge:hover .yayasan-icon,
-        .yayasan-wrapper.is-open .yayasan-icon {
+        .yayasan-wrapper:hover .yayasan-icon,
+        .yayasan-wrapper:focus-within .yayasan-icon {
             transform: scale(1.1);
         }
         .yayasan-school-count {
@@ -463,7 +465,8 @@
             gap: 4px;
         }
         .yayasan-badge:hover .yayasan-school-count,
-        .yayasan-wrapper.is-open .yayasan-school-count {
+        .yayasan-wrapper:hover .yayasan-school-count,
+        .yayasan-wrapper:focus-within .yayasan-school-count {
             background: #DBEAFE;
             color: #1D4ED8;
         }
@@ -474,16 +477,17 @@
             margin-left: 1px;
         }
         .yayasan-badge:hover .yayasan-chevron,
-        .yayasan-wrapper.is-open .yayasan-chevron {
+        .yayasan-wrapper:hover .yayasan-chevron,
+        .yayasan-wrapper:focus-within .yayasan-chevron {
             transform: rotate(180deg);
             color: #2563EB;
         }
         /* Dropdown Popover */
         .yayasan-schools-popover {
             position: absolute;
-            top: calc(100% + 12px);
+            top: calc(100% + 10px);
             left: 50%;
-            transform: translateX(-50%) translateY(8px);
+            transform: translateX(-50%) translateY(6px);
             width: 320px;
             max-width: 90vw;
             background: #FFFFFF;
@@ -495,9 +499,19 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-                        visibility 0.24s;
+            transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0.22s;
+        }
+        /* Jembatan hover tak terlihat agar kursor tidak lepas saat bergerak antara tombol dan popover */
+        .yayasan-schools-popover::after {
+            content: '';
+            position: absolute;
+            top: -14px;
+            left: 0;
+            right: 0;
+            height: 14px;
+            background: transparent;
         }
         .yayasan-schools-popover::before {
             content: '';
@@ -514,7 +528,7 @@
             z-index: 1;
         }
         .yayasan-wrapper:hover .yayasan-schools-popover,
-        .yayasan-wrapper.is-open .yayasan-schools-popover {
+        .yayasan-wrapper:focus-within .yayasan-schools-popover {
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0);
@@ -554,11 +568,12 @@
             margin-top: 2px;
         }
         .popover-body {
-            padding: 8px 10px;
-            max-height: 240px;
+            padding: 8px 10px 14px;
+            max-height: 250px;
             overflow-y: auto;
             position: relative;
             z-index: 2;
+            border-radius: 0 0 20px 20px;
         }
         .popover-body::-webkit-scrollbar {
             width: 4px;
@@ -1362,11 +1377,11 @@
 <!-- Client / Partner Pilot Logos (Yayasan & Cabang TK Dinamis) -->
 <section class="clients-section">
     <div class="clients-title">Telah Dipercaya oleh Yayasan Pendidikan & TK di Seluruh Indonesia</div>
-    <p class="clients-subtitle">Arahkan kursor atau klik yayasan di bawah untuk melihat daftar cabang TK/PAUD yang terdaftar</p>
+    <p class="clients-subtitle">Arahkan kursor ke yayasan untuk melihat cabang TK/PAUD &bull; Klik untuk membuka landing page yayasan</p>
     <div class="clients-logos">
         @forelse($yayasans as $y)
             <div class="yayasan-wrapper">
-                <button type="button" class="yayasan-badge" aria-expanded="false" title="Klik atau hover untuk melihat cabang TK">
+                <a href="{{ !empty($y->kode_yayasan) ? url('/y/' . $y->kode_yayasan) : '#' }}" class="yayasan-badge" title="Klik untuk membuka landing page {{ $y->nama_yayasan }} (Arahkan kursor untuk melihat cabang TK)">
                     <iconify-icon icon="solar:buildings-bold-duotone" class="yayasan-icon"></iconify-icon>
                     <span>{{ $y->nama_yayasan }}</span>
                     <span class="yayasan-school-count">
@@ -1374,7 +1389,7 @@
                         {{ $y->schools->count() }} Cabang
                     </span>
                     <iconify-icon icon="solar:alt-arrow-down-linear" class="yayasan-chevron"></iconify-icon>
-                </button>
+                </a>
 
                 <!-- Popover Daftar TK -->
                 <div class="yayasan-schools-popover" role="tooltip">
@@ -1410,15 +1425,6 @@
                             </div>
                         @endforelse
                     </div>
-
-                    @if(!empty($y->kode_yayasan))
-                    <div class="popover-footer">
-                        <a href="{{ url('/y/' . $y->kode_yayasan) }}" class="popover-cta-btn">
-                            <span>Kunjungi Landing Page Yayasan</span>
-                            <iconify-icon icon="solar:arrow-right-linear" style="font-size: 15px;"></iconify-icon>
-                        </a>
-                    </div>
-                    @endif
                 </div>
             </div>
         @empty
@@ -1859,42 +1865,6 @@ document.querySelectorAll('.feature-card, .step-card, .security-card, .testimoni
     observer.observe(el);
 });
 
-// Yayasan Badge Dropdown Toggle for Click & Touch
-document.addEventListener('click', function(e) {
-    const clickedWrapper = e.target.closest('.yayasan-wrapper');
-    const allWrappers = document.querySelectorAll('.yayasan-wrapper');
-
-    if (clickedWrapper && e.target.closest('.yayasan-badge')) {
-        const isOpen = clickedWrapper.classList.contains('is-open');
-        allWrappers.forEach(w => {
-            w.classList.remove('is-open');
-            const btn = w.querySelector('.yayasan-badge');
-            if (btn) btn.setAttribute('aria-expanded', 'false');
-        });
-        if (!isOpen) {
-            clickedWrapper.classList.add('is-open');
-            const btn = clickedWrapper.querySelector('.yayasan-badge');
-            if (btn) btn.setAttribute('aria-expanded', 'true');
-        }
-    } else if (!clickedWrapper || !clickedWrapper.contains(e.target)) {
-        allWrappers.forEach(w => {
-            w.classList.remove('is-open');
-            const btn = w.querySelector('.yayasan-badge');
-            if (btn) btn.setAttribute('aria-expanded', 'false');
-        });
-    }
-});
-
-// Close popovers on ESC key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        document.querySelectorAll('.yayasan-wrapper.is-open').forEach(w => {
-            w.classList.remove('is-open');
-            const btn = w.querySelector('.yayasan-badge');
-            if (btn) btn.setAttribute('aria-expanded', 'false');
-        });
-    }
-});
 </script>
 
 </body>

@@ -312,7 +312,8 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Tanggal Lahir <span class="text-danger">*</span></label>
-                                <input type="date" name="tgl_lahir" class="form-control bg-white border shadow-none" value="{{ old('tgl_lahir') }}" style="font-size: 13px;" required>
+                                <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control bg-white border shadow-none" value="{{ old('tgl_lahir') }}" style="font-size: 13px;" required>
+                                <div id="tgl_lahir_feedback" class="mt-1"></div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Agama <span class="text-danger">*</span></label>
@@ -721,6 +722,8 @@
                             const tahunSelect = document.getElementById('tahun_inden');
                             const programSelect = document.getElementById('program_pilihan');
                             const headerSchoolName = document.getElementById('header_school_name');
+                            const tglLahirInput = document.getElementById('tgl_lahir');
+                            const tglLahirFeedback = document.getElementById('tgl_lahir_feedback');
                             
                             const oldTahun = "{{ old('tahun_inden') }}";
                             const oldProgram = "{{ old('program_pilihan') }}";
@@ -758,6 +761,8 @@
                                         tahunSelect.value = years[0];
                                     }
                                     updateProgramOptions();
+                                } else {
+                                    updateBirthdateConstraints();
                                 }
                             }
 
@@ -788,6 +793,146 @@
                                 } else {
                                     programSelect.disabled = true;
                                 }
+
+                                updateBirthdateConstraints();
+                            }
+
+                            function updateBirthdateConstraints(showValidationAlert = false) {
+                                if (!tglLahirInput) return true;
+
+                                const tahunVal = tahunSelect ? tahunSelect.value : '';
+                                const programVal = programSelect ? programSelect.value : '';
+                                const birthVal = tglLahirInput.value;
+
+                                if (!tahunVal) {
+                                    tglLahirInput.removeAttribute('min');
+                                    tglLahirInput.removeAttribute('max');
+                                    if (tglLahirFeedback) {
+                                        tglLahirFeedback.innerHTML = '<span class="text-muted" style="font-size:11px;"><iconify-icon icon="solar:info-circle-linear"></iconify-icon> Silakan pilih <strong>Tahun Ajaran</strong> untuk menentukan batasan tanggal lahir anak.</span>';
+                                    }
+                                    return true;
+                                }
+
+                                // Ambil tahun masuk awal (contoh: "2026/2027" -> 2026)
+                                const match = tahunVal.match(/^(\d{4})/);
+                                const entryYear = match ? parseInt(match[1]) : new Date().getFullYear();
+
+                                const isPaud = programVal.toUpperCase().includes('PAUD');
+                                const isTk = programVal.toUpperCase().includes('TK');
+
+                                let minYear, maxYear, minDate, maxDate, ageRuleText;
+
+                                if (isPaud) {
+                                    // PAUD: usia 3 - 4 tahun saat masuk per tahun ajaran
+                                    minYear = entryYear - 4;
+                                    maxYear = entryYear - 3;
+                                    minDate = `${minYear}-01-01`;
+                                    maxDate = `${maxYear}-12-31`;
+                                    ageRuleText = `Syarat Usia PAUD (TA ${tahunVal}): <strong>3 – 4 tahun</strong> (Kelahiran tahun <strong>${minYear} s/d ${maxYear}</strong>)`;
+                                } else if (isTk) {
+                                    // TK: usia 4 - 6 tahun saat masuk per tahun ajaran
+                                    minYear = entryYear - 7;
+                                    maxYear = entryYear - 4;
+                                    minDate = `${minYear}-01-01`;
+                                    maxDate = `${maxYear}-12-31`;
+                                    ageRuleText = `Syarat Usia TK (TA ${tahunVal}): <strong>4 – 6 tahun</strong> (Kelahiran tahun <strong>${minYear} s/d ${maxYear}</strong>)`;
+                                } else {
+                                    // Belum pilih program
+                                    minYear = entryYear - 7;
+                                    maxYear = entryYear - 3;
+                                    minDate = `${minYear}-01-01`;
+                                    maxDate = `${maxYear}-12-31`;
+                                    ageRuleText = `Batas Usia Masuk (TA ${tahunVal}): <strong>3 – 6 tahun</strong> (Kelahiran tahun <strong>${minYear} s/d ${maxYear}</strong>)`;
+                                }
+
+                                // Set pembatasan HTML5 date input
+                                tglLahirInput.setAttribute('min', minDate);
+                                tglLahirInput.setAttribute('max', maxDate);
+
+                                // Jika belum diisi tanggal lahir
+                                if (!birthVal) {
+                                    if (tglLahirFeedback) {
+                                        tglLahirFeedback.innerHTML = `<span class="text-primary d-inline-flex align-items-center gap-1" style="font-size:11.5px;"><iconify-icon icon="solar:calendar-date-bold"></iconify-icon> ${ageRuleText}</span>`;
+                                    }
+                                    tglLahirInput.classList.remove('is-invalid-custom', 'is-valid');
+                                    return true;
+                                }
+
+                                // Validasi nilai tanggal lahir yang diisi
+                                const birthDate = new Date(birthVal);
+                                const birthYear = birthDate.getFullYear();
+
+                                if (isNaN(birthYear)) {
+                                    return true;
+                                }
+
+                                // Hitung usia per 1 Juli tahun masuk
+                                const cutoffDate = new Date(entryYear, 6, 1);
+                                let ageYears = entryYear - birthYear;
+                                let ageMonths = 6 - birthDate.getMonth();
+                                if (cutoffDate.getDate() < birthDate.getDate()) {
+                                    ageMonths--;
+                                }
+                                if (ageMonths < 0) {
+                                    ageYears--;
+                                    ageMonths += 12;
+                                }
+
+                                let isValid = true;
+                                let errorMsg = '';
+
+                                if (birthYear < minYear) {
+                                    isValid = false;
+                                    if (isPaud) {
+                                        errorMsg = `Usia anak <strong>${ageYears} thn ${ageMonths} bln</strong> pada Juli ${entryYear}. Melebihi batas usia PAUD (maksimal 4 tahun). Silakan pilih program <strong>TK</strong>.`;
+                                    } else {
+                                        errorMsg = `Usia anak <strong>${ageYears} thn ${ageMonths} bln</strong> pada Juli ${entryYear}. Melebihi batas maksimal usia TK (maksimal 6–7 tahun).`;
+                                    }
+                                } else if (birthYear > maxYear) {
+                                    isValid = false;
+                                    if (isTk) {
+                                        errorMsg = `Usia anak <strong>${ageYears} thn ${ageMonths} bln</strong> pada Juli ${entryYear}. Belum memenuhi usia minimal TK (minimal 4 tahun). Silakan pilih <strong>PAUD</strong> jika berusia 3 tahun, atau daftar inden untuk tahun berikutnya.`;
+                                    } else {
+                                        errorMsg = `Usia anak <strong>${ageYears} thn ${ageMonths} bln</strong> pada Juli ${entryYear}. Belum memenuhi usia minimal PAUD (minimal 3 tahun). Silakan daftar inden untuk tahun berikutnya.`;
+                                    }
+                                }
+
+                                if (!isValid) {
+                                    tglLahirInput.classList.add('is-invalid-custom');
+                                    tglLahirInput.classList.remove('is-valid');
+                                    if (tglLahirFeedback) {
+                                        tglLahirFeedback.innerHTML = `
+                                            <div class="alert alert-danger py-1.5 px-2 mb-0 rounded-2 small d-flex align-items-start gap-1.5 mt-1" style="font-size: 11.5px; line-height: 1.35;">
+                                                <iconify-icon icon="solar:danger-triangle-bold" class="fs-6 flex-shrink-0 text-danger mt-0.5"></iconify-icon>
+                                                <div>${errorMsg}</div>
+                                            </div>
+                                        `;
+                                    }
+                                    if (showValidationAlert) {
+                                        Swal.fire({
+                                            title: 'Usia Tidak Memenuhi Syarat',
+                                            html: `${errorMsg}<br><br><div class="p-2 rounded bg-light text-dark small text-start border">${ageRuleText}</div>`,
+                                            icon: 'warning',
+                                            confirmButtonText: 'Perbaiki Tanggal / Program',
+                                            confirmButtonColor: '#EF4444',
+                                            customClass: { popup: 'rounded-4' }
+                                        });
+                                    }
+                                    return false;
+                                } else {
+                                    tglLahirInput.classList.remove('is-invalid-custom');
+                                    tglLahirInput.classList.add('is-valid');
+                                    const progLabel = isPaud ? 'PAUD' : (isTk ? 'TK' : 'Sekolah');
+                                    if (tglLahirFeedback) {
+                                        tglLahirFeedback.innerHTML = `
+                                            <div class="alert alert-success py-1.5 px-2 mb-0 rounded-2 small d-flex align-items-center gap-1.5 mt-1" style="font-size: 11.5px;">
+                                                <iconify-icon icon="solar:check-circle-bold" class="fs-6 flex-shrink-0 text-success"></iconify-icon>
+                                                <div>Usia anak: <strong>${ageYears} tahun ${ageMonths} bulan</strong> pada Juli ${entryYear} (Sesuai syarat ${progLabel}).</div>
+                                            </div>
+                                        `;
+                                    }
+                                    return true;
+                                }
                             }
 
                             if (schoolSelect && schoolSelect.tagName === 'SELECT') {
@@ -796,9 +941,17 @@
                             if (tahunSelect) {
                                 tahunSelect.addEventListener('change', updateProgramOptions);
                             }
+                            if (programSelect) {
+                                programSelect.addEventListener('change', () => updateBirthdateConstraints());
+                            }
+                            if (tglLahirInput) {
+                                tglLahirInput.addEventListener('input', () => updateBirthdateConstraints());
+                                tglLahirInput.addEventListener('change', () => updateBirthdateConstraints());
+                            }
 
                             // Inisialisasi awal saat form pertama kali dimuat
                             updateTahunOptions();
+                            updateBirthdateConstraints();
 
                             // 3. Real-time Email Check for Parent Account
                             const emailInput = document.getElementById('parent_email');
@@ -917,6 +1070,18 @@
                                                 popup: 'rounded-4'
                                             }
                                         });
+                                        return false;
+                                    }
+
+                                    // Validasi kesesuaian batasan usia anak
+                                    if (!updateBirthdateConstraints(true)) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        if (tglLahirInput) {
+                                            tglLahirInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            tglLahirInput.focus();
+                                        }
+                                        return false;
                                     }
                                 }, false);
                             }

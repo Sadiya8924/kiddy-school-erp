@@ -265,17 +265,37 @@ class SiswaController extends Controller
             return redirect()->to(route('yayasan.pendaftaran.form', array_merge(['kode_yayasan' => $yayasan->encrypted_token], $request->query())) . '#form');
         }
 
-        // 4. Siapkan data kuota & tahun inden untuk SETIAP sekolah (agar ganti sekolah instant tanpa reload 1-way)
+        // 4. Siapkan data kuota & tahun inden untuk SETIAP sekolah (mengikuti tahun_ajaran_aktif dari Super Admin/Pengaturan)
         $schools_data = [];
-        $tahunMulai = date('m') <= 6 ? date('Y') : date('Y') + 1;
 
         foreach ($schools as $s) {
-            $max_years = $s->max_indent_years ?? 3;
+            // Tentukan tahun ajaran awal pendaftaran berdasarkan konfigurasi Super Admin / Sekolah:
+            // 1. tahun_ajaran_aktif pada sekolah
+            // 2. Jika kosong, pakai tahun_ajaran dari semester aktif
+            // 3. Fallback: tahun kalender saat ini
+            $taAktif = trim($s->tahun_ajaran_aktif ?? '');
+            if (empty($taAktif)) {
+                $semAktif = \App\Models\Semester::where('is_active', true)->first();
+                $taAktif = $semAktif ? trim($semAktif->tahun_ajaran) : '';
+            }
+            if (empty($taAktif)) {
+                $taAktif = date('Y') . '/' . (date('Y') + 1);
+            }
+
+            if (preg_match('/^(\d{4})/', $taAktif, $matches)) {
+                $startYear = (int) $matches[1];
+            } else {
+                $startYear = (int) date('Y');
+            }
+
+            $max_years = (int) ($s->max_indent_years ?? 3);
+            if ($max_years < 1) $max_years = 1;
+
             $list_tahun = [];
             $kuota_tahun = [];
 
             for ($i = 0; $i < $max_years; $i++) {
-                $thn1 = $tahunMulai + $i;
+                $thn1 = $startYear + $i;
                 $thn2 = $thn1 + 1;
                 $tahunString = $thn1 . '/' . $thn2;
                 $list_tahun[] = $tahunString;
@@ -295,6 +315,7 @@ class SiswaController extends Controller
                 'id' => $s->id,
                 'nama_sekolah' => $s->nama_sekolah,
                 'alamat' => $s->alamat,
+                'tahun_ajaran_aktif' => $s->tahun_ajaran_aktif ?? $taAktif,
                 'list_tahun' => $list_tahun,
                 'kuota' => $kuota_tahun,
             ];
@@ -388,6 +409,41 @@ class SiswaController extends Controller
         ];
 
         $request->validate($rules, $messages);
+
+        // Validasi batasan usia anak berdasarkan Tahun Ajaran dan Program Kelas yang dipilih
+        if ($request->filled('tahun_inden') && $request->filled('tgl_lahir')) {
+            if (preg_match('/^(\d{4})/', $request->tahun_inden, $matches)) {
+                $entryYear = (int) $matches[1];
+                $birthDate = \Carbon\Carbon::parse($request->tgl_lahir);
+                $birthYear = (int) $birthDate->format('Y');
+                $cutoffDate = \Carbon\Carbon::create($entryYear, 7, 1);
+                
+                $diffYears = $birthDate->diffInYears($cutoffDate, false);
+                $diffMonths = $birthDate->copy()->addYears(max(0, $diffYears))->diffInMonths($cutoffDate);
+
+                $program = strtoupper($request->program_pilihan ?? '');
+                $isPaud = str_contains($program, 'PAUD');
+                $isTk = str_contains($program, 'TK');
+
+                if ($isPaud) {
+                    $minBirthYear = $entryYear - 4;
+                    $maxBirthYear = $entryYear - 3;
+                    if ($birthYear < $minBirthYear || $birthYear > $maxBirthYear) {
+                        return back()->withInput()->withErrors([
+                            'tgl_lahir' => "Untuk program PAUD pada Tahun Ajaran {$request->tahun_inden}, usia anak harus 3 – 4 tahun (kelahiran tahun {$minBirthYear} s/d {$maxBirthYear}). Tanggal lahir yang dimasukkan adalah " . $birthDate->format('d/m/Y') . " (usia {$diffYears} tahun {$diffMonths} bulan per Juli {$entryYear})."
+                        ])->with('error', "Usia anak tidak memenuhi syarat untuk program PAUD (3 - 4 tahun) pada Tahun Ajaran {$request->tahun_inden}.");
+                    }
+                } elseif ($isTk) {
+                    $minBirthYear = $entryYear - 7;
+                    $maxBirthYear = $entryYear - 4;
+                    if ($birthYear < $minBirthYear || $birthYear > $maxBirthYear) {
+                        return back()->withInput()->withErrors([
+                            'tgl_lahir' => "Untuk program TK pada Tahun Ajaran {$request->tahun_inden}, usia anak harus 4 – 6 tahun (kelahiran tahun {$minBirthYear} s/d {$maxBirthYear}). Tanggal lahir yang dimasukkan adalah " . $birthDate->format('d/m/Y') . " (usia {$diffYears} tahun {$diffMonths} bulan per Juli {$entryYear})."
+                        ])->with('error', "Usia anak tidak memenuhi syarat untuk program TK (4 - 6 tahun) pada Tahun Ajaran {$request->tahun_inden}.");
+                    }
+                }
+            }
+        }
 
         $school = DB::table('schools')->where('id', $request->school_id)->first();
         $parentUser = null;

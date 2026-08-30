@@ -46,6 +46,10 @@ class SchoolController extends Controller
             'telepon'            => 'nullable|string|max:20',
             'tahun_ajaran_aktif' => 'nullable|string|max:20',
             'semester_aktif'     => 'nullable|string|max:20',
+            'max_indent_years'   => 'nullable|integer|min:1|max:10',
+            'kuota_tk_pagi'      => 'nullable|integer|min:0',
+            'kuota_tk_siang'     => 'nullable|integer|min:0',
+            'kuota_paud'         => 'nullable|integer|min:0',
             'logo_sekolah'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status'             => 'required|in:aktif,nonaktif',
         ]);
@@ -82,6 +86,10 @@ class SchoolController extends Controller
             'telepon'            => 'nullable|string|max:20',
             'tahun_ajaran_aktif' => 'nullable|string|max:20',
             'semester_aktif'     => 'nullable|string|max:20',
+            'max_indent_years'   => 'nullable|integer|min:1|max:10',
+            'kuota_tk_pagi'      => 'nullable|integer|min:0',
+            'kuota_tk_siang'     => 'nullable|integer|min:0',
+            'kuota_paud'         => 'nullable|integer|min:0',
             'logo_sekolah'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status'             => 'required|in:aktif,nonaktif',
         ]);

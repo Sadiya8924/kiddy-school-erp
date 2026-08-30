@@ -75,9 +75,22 @@
               </div>
 
               <div class="col-md-6">
-                <label class="form-label font-semibold text-dark small mb-1">Tahun Ajaran Aktif</label>
-                <input type="text" name="tahun_ajaran_aktif" class="form-control rounded-3 font-medium text-dark shadow-none" value="{{ old('tahun_ajaran_aktif') }}"
-                       placeholder="Contoh: 2025/2026" style="font-size: 13px;">
+                <label class="form-label font-semibold text-dark small mb-1">Tahun Ajaran Aktif (PPDB)</label>
+                <input type="text" name="tahun_ajaran_aktif" class="form-control rounded-3 font-medium text-dark shadow-none" value="{{ old('tahun_ajaran_aktif', '2026/2027') }}"
+                       placeholder="Contoh: 2026/2027" style="font-size: 13px;">
+                <span class="text-muted" style="font-size: 11px;">Tahun ajaran awal yang dibuka untuk pendaftaran PPDB.</span>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label font-semibold text-dark small mb-1">Buka Inden Pendaftaran</label>
+                <select name="max_indent_years" class="form-select rounded-3 font-medium text-dark shadow-none" style="font-size: 13px;">
+                  @for($i = 1; $i <= 5; $i++)
+                    <option value="{{ $i }}" {{ old('max_indent_years', 3) == $i ? 'selected' : '' }}>
+                      {{ $i }} Tahun ke Depan
+                    </option>
+                  @endfor
+                </select>
+                <span class="text-muted" style="font-size: 11px;">Jumlah opsi tahun ajaran yang bisa dipilih pendaftar (inden).</span>
               </div>
 
               <div class="col-md-6">

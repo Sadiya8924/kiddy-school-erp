@@ -452,7 +452,8 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Tanggal Lahir <span class="text-danger">*</span></label>
-                                <input type="date" name="tgl_lahir" class="form-control bg-white border shadow-none" value="{{ old('tgl_lahir') }}" style="font-size: 13px;" required>
+                                <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control bg-white border shadow-none" value="{{ old('tgl_lahir') }}" style="font-size: 13px;" required>
+                                <div id="tgl_lahir_feedback" class="mt-1"></div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Agama <span class="text-danger">*</span></label>
@@ -515,8 +516,8 @@
                                 <input type="text" name="rw" class="form-control bg-white border shadow-none" value="{{ old('rw') }}" style="font-size: 13px;" required placeholder="Contoh: 02">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Dusun <span class="text-danger">*</span></label>
-                                <input type="text" name="dusun" class="form-control bg-white border shadow-none" value="{{ old('dusun') }}" style="font-size: 13px;" required placeholder="Contoh: Dusun Krajan">
+                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Dusun <span class="text-muted fw-normal">(Opsional)</span></label>
+                                <input type="text" name="dusun" class="form-control bg-white border shadow-none" value="{{ old('dusun') }}" style="font-size: 13px;" placeholder="Contoh: Dusun Krajan">
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Desa/Kel. <span class="text-danger">*</span></label>
@@ -559,11 +560,11 @@
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">No HP / WhatsApp <span class="text-danger">*</span></label>
-                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="hp" class="form-control bg-white border shadow-none" value="{{ old('hp') }}" style="font-size: 13px;" required placeholder="08xxxxxxxxxx">
+                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="hp" id="parent_phone" class="form-control bg-white border shadow-none" value="{{ old('hp') }}" style="font-size: 13px;" required placeholder="08xxxxxxxxxx">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Email Orang Tua <span class="text-danger">*</span></label>
-                                <input type="email" name="email" id="parent_email" class="form-control bg-white border shadow-none" value="{{ old('email') }}" style="font-size: 13px;" required placeholder="nama@email.com">
+                                <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Email Orang Tua <span class="text-muted fw-normal">(Opsional)</span></label>
+                                <input type="email" name="email" id="parent_email" class="form-control bg-white border shadow-none" value="{{ old('email') }}" style="font-size: 13px;" placeholder="nama@email.com (opsional)">
                                 <div id="email_feedback_box" class="mt-2" style="display:none;"></div>
                             </div>
                             
@@ -744,7 +745,7 @@
                                     html: `
                                         <div style="text-align: left; font-size: 13.5px; line-height: 1.6; color: #374151;">
                                             <p style="margin-bottom: 10px;">Data pendaftaran siswa atas nama <strong style="color: {{ $theme['primary'] }};">${pData.nama_siswa}</strong> di <strong>${pData.nama_sekolah}</strong> (${pData.nama_yayasan}) telah berhasil disimpan ke database.</p>
-                                            <p style="margin-bottom: 10px;">Akun portal wali murid terhubung dengan email: <strong>${pData.email}</strong>.</p>
+                                            <p style="margin-bottom: 10px;">Akun portal wali murid dapat diakses menggunakan nomor telepon/email: <strong>${pData.email || pData.hp}</strong>.</p>
                                             <div style="background: #F3F4F6; border: 1px solid #E5E7EB; padding: 10px 14px; border-radius: 10px; font-size: 12px;">
                                                 👉 Silakan masuk ke <strong>Portal Login Yayasan</strong> untuk mengecek status pendaftaran &amp; informasi sekolah.
                                             </div>
@@ -861,6 +862,8 @@
                             const tahunSelect = document.getElementById('tahun_inden');
                             const programSelect = document.getElementById('program_pilihan');
                             const headerSchoolName = document.getElementById('header_school_name');
+                            const tglLahirInput = document.getElementById('tgl_lahir');
+                            const tglLahirFeedback = document.getElementById('tgl_lahir_feedback');
                             
                             const oldTahun = "{{ old('tahun_inden') }}";
                             const oldProgram = "{{ old('program_pilihan') }}";
@@ -898,6 +901,8 @@
                                         tahunSelect.value = years[0];
                                     }
                                     updateProgramOptions();
+                                } else {
+                                    updateBirthdateConstraints();
                                 }
                             }
 
@@ -928,6 +933,146 @@
                                 } else {
                                     programSelect.disabled = true;
                                 }
+
+                                updateBirthdateConstraints();
+                            }
+
+                            function updateBirthdateConstraints(showValidationAlert = false) {
+                                if (!tglLahirInput) return true;
+
+                                const tahunVal = tahunSelect ? tahunSelect.value : '';
+                                const programVal = programSelect ? programSelect.value : '';
+                                const birthVal = tglLahirInput.value;
+
+                                if (!tahunVal) {
+                                    tglLahirInput.removeAttribute('min');
+                                    tglLahirInput.removeAttribute('max');
+                                    if (tglLahirFeedback) {
+                                        tglLahirFeedback.innerHTML = '<span class="text-muted" style="font-size:11px;"><iconify-icon icon="solar:info-circle-linear"></iconify-icon> Silakan pilih <strong>Tahun Ajaran</strong> untuk menentukan batasan tanggal lahir anak.</span>';
+                                    }
+                                    return true;
+                                }
+
+                                // Ambil tahun masuk awal (contoh: "2026/2027" -> 2026)
+                                const match = tahunVal.match(/^(\d{4})/);
+                                const entryYear = match ? parseInt(match[1]) : new Date().getFullYear();
+
+                                const isPaud = programVal.toUpperCase().includes('PAUD');
+                                const isTk = programVal.toUpperCase().includes('TK');
+
+                                let minYear, maxYear, minDate, maxDate, ageRuleText;
+
+                                if (isPaud) {
+                                    // PAUD: usia 3 - 4 tahun saat masuk per tahun ajaran
+                                    minYear = entryYear - 4;
+                                    maxYear = entryYear - 3;
+                                    minDate = `${minYear}-01-01`;
+                                    maxDate = `${maxYear}-12-31`;
+                                    ageRuleText = `Syarat Usia PAUD (TA ${tahunVal}): <strong>3 – 4 tahun</strong> (Kelahiran tahun <strong>${minYear} s/d ${maxYear}</strong>)`;
+                                } else if (isTk) {
+                                    // TK: usia 4 - 6 tahun saat masuk per tahun ajaran
+                                    minYear = entryYear - 7;
+                                    maxYear = entryYear - 4;
+                                    minDate = `${minYear}-01-01`;
+                                    maxDate = `${maxYear}-12-31`;
+                                    ageRuleText = `Syarat Usia TK (TA ${tahunVal}): <strong>4 – 6 tahun</strong> (Kelahiran tahun <strong>${minYear} s/d ${maxYear}</strong>)`;
+                                } else {
+                                    // Belum pilih program
+                                    minYear = entryYear - 7;
+                                    maxYear = entryYear - 3;
+                                    minDate = `${minYear}-01-01`;
+                                    maxDate = `${maxYear}-12-31`;
+                                    ageRuleText = `Batas Usia Masuk (TA ${tahunVal}): <strong>3 – 6 tahun</strong> (Kelahiran tahun <strong>${minYear} s/d ${maxYear}</strong>)`;
+                                }
+
+                                // Set pembatasan HTML5 date input
+                                tglLahirInput.setAttribute('min', minDate);
+                                tglLahirInput.setAttribute('max', maxDate);
+
+                                // Jika belum diisi tanggal lahir
+                                if (!birthVal) {
+                                    if (tglLahirFeedback) {
+                                        tglLahirFeedback.innerHTML = `<span class="text-primary d-inline-flex align-items-center gap-1" style="font-size:11.5px;"><iconify-icon icon="solar:calendar-date-bold"></iconify-icon> ${ageRuleText}</span>`;
+                                    }
+                                    tglLahirInput.classList.remove('is-invalid-custom', 'is-valid');
+                                    return true;
+                                }
+
+                                // Validasi nilai tanggal lahir yang diisi
+                                const birthDate = new Date(birthVal);
+                                const birthYear = birthDate.getFullYear();
+
+                                if (isNaN(birthYear)) {
+                                    return true;
+                                }
+
+                                // Hitung usia per 1 Juli tahun masuk
+                                const cutoffDate = new Date(entryYear, 6, 1);
+                                let ageYears = entryYear - birthYear;
+                                let ageMonths = 6 - birthDate.getMonth();
+                                if (cutoffDate.getDate() < birthDate.getDate()) {
+                                    ageMonths--;
+                                }
+                                if (ageMonths < 0) {
+                                    ageYears--;
+                                    ageMonths += 12;
+                                }
+
+                                let isValid = true;
+                                let errorMsg = '';
+
+                                if (birthYear < minYear) {
+                                    isValid = false;
+                                    if (isPaud) {
+                                        errorMsg = `Usia anak <strong>${ageYears} thn ${ageMonths} bln</strong> pada Juli ${entryYear}. Melebihi batas usia PAUD (maksimal 4 tahun). Silakan pilih program <strong>TK</strong>.`;
+                                    } else {
+                                        errorMsg = `Usia anak <strong>${ageYears} thn ${ageMonths} bln</strong> pada Juli ${entryYear}. Melebihi batas maksimal usia TK (maksimal 6–7 tahun).`;
+                                    }
+                                } else if (birthYear > maxYear) {
+                                    isValid = false;
+                                    if (isTk) {
+                                        errorMsg = `Usia anak <strong>${ageYears} thn ${ageMonths} bln</strong> pada Juli ${entryYear}. Belum memenuhi usia minimal TK (minimal 4 tahun). Silakan pilih <strong>PAUD</strong> jika berusia 3 tahun, atau daftar inden untuk tahun berikutnya.`;
+                                    } else {
+                                        errorMsg = `Usia anak <strong>${ageYears} thn ${ageMonths} bln</strong> pada Juli ${entryYear}. Belum memenuhi usia minimal PAUD (minimal 3 tahun). Silakan daftar inden untuk tahun berikutnya.`;
+                                    }
+                                }
+
+                                if (!isValid) {
+                                    tglLahirInput.classList.add('is-invalid-custom');
+                                    tglLahirInput.classList.remove('is-valid');
+                                    if (tglLahirFeedback) {
+                                        tglLahirFeedback.innerHTML = `
+                                            <div class="alert alert-danger py-1.5 px-2 mb-0 rounded-2 small d-flex align-items-start gap-1.5 mt-1" style="font-size: 11.5px; line-height: 1.35;">
+                                                <iconify-icon icon="solar:danger-triangle-bold" class="fs-6 flex-shrink-0 text-danger mt-0.5"></iconify-icon>
+                                                <div>${errorMsg}</div>
+                                            </div>
+                                        `;
+                                    }
+                                    if (showValidationAlert) {
+                                        Swal.fire({
+                                            title: 'Usia Tidak Memenuhi Syarat',
+                                            html: `${errorMsg}<br><br><div class="p-2 rounded bg-light text-dark small text-start border">${ageRuleText}</div>`,
+                                            icon: 'warning',
+                                            confirmButtonText: 'Perbaiki Tanggal / Program',
+                                            confirmButtonColor: '#EF4444',
+                                            customClass: { popup: 'rounded-4' }
+                                        });
+                                    }
+                                    return false;
+                                } else {
+                                    tglLahirInput.classList.remove('is-invalid-custom');
+                                    tglLahirInput.classList.add('is-valid');
+                                    const progLabel = isPaud ? 'PAUD' : (isTk ? 'TK' : 'Sekolah');
+                                    if (tglLahirFeedback) {
+                                        tglLahirFeedback.innerHTML = `
+                                            <div class="alert alert-success py-1.5 px-2 mb-0 rounded-2 small d-flex align-items-center gap-1.5 mt-1" style="font-size: 11.5px;">
+                                                <iconify-icon icon="solar:check-circle-bold" class="fs-6 flex-shrink-0 text-success"></iconify-icon>
+                                                <div>Usia anak: <strong>${ageYears} tahun ${ageMonths} bulan</strong> pada Juli ${entryYear} (Sesuai syarat ${progLabel}).</div>
+                                            </div>
+                                        `;
+                                    }
+                                    return true;
+                                }
                             }
 
                             if (schoolSelect && schoolSelect.tagName === 'SELECT') {
@@ -936,83 +1081,105 @@
                             if (tahunSelect) {
                                 tahunSelect.addEventListener('change', updateProgramOptions);
                             }
+                            if (programSelect) {
+                                programSelect.addEventListener('change', () => updateBirthdateConstraints());
+                            }
+                            if (tglLahirInput) {
+                                tglLahirInput.addEventListener('input', () => updateBirthdateConstraints());
+                                tglLahirInput.addEventListener('change', () => updateBirthdateConstraints());
+                            }
 
                             // Inisialisasi awal saat form pertama kali dimuat
                             updateTahunOptions();
+                            updateBirthdateConstraints();
 
-                            // 3. Real-time Email Check for Parent Account
+                            // 3. Real-time Account Check for Parent Account (by Phone or Email)
                             const emailInput = document.getElementById('parent_email');
+                            const phoneInput = document.getElementById('parent_phone');
                             const feedbackBox = document.getElementById('email_feedback_box');
                             const passLabel = document.getElementById('password_label');
                             const passHint = document.getElementById('password_hint');
-                            let emailCheckTimeout = null;
+                            let accountCheckTimeout = null;
 
-                            if (emailInput && feedbackBox) {
-                                function checkEmail(emailVal) {
-                                    if (!emailVal || !emailVal.includes('@') || emailVal.length < 5) {
+                            function checkParentAccount() {
+                                const emailVal = emailInput ? emailInput.value.trim() : '';
+                                const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+
+                                const hasValidEmail = emailVal.includes('@') && emailVal.length >= 5;
+                                const hasValidPhone = phoneVal.replace(/[^0-9]/g, '').length >= 9;
+
+                                if (!hasValidEmail && !hasValidPhone) {
+                                    if (feedbackBox) feedbackBox.style.display = 'none';
+                                    return;
+                                }
+
+                                if (feedbackBox) {
+                                    feedbackBox.style.display = 'block';
+                                    feedbackBox.innerHTML = '<span class="text-muted small d-inline-flex align-items-center gap-1"><iconify-icon icon="solar:spinner-line-duotone" class="spin"></iconify-icon> Memeriksa status akun orang tua...</span>';
+                                }
+
+                                fetch('{{ route('api.check_parent_email') }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                    body: JSON.stringify({ email: emailVal, phone: phoneVal })
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (!feedbackBox) return;
+                                    if (!data.valid) {
                                         feedbackBox.style.display = 'none';
                                         return;
                                     }
 
-                                    feedbackBox.style.display = 'block';
-                                    feedbackBox.innerHTML = '<span class="text-muted small d-inline-flex align-items-center gap-1"><iconify-icon icon="solar:spinner-line-duotone" class="spin"></iconify-icon> Memeriksa status email...</span>';
-
-                                    fetch('{{ route('api.check_parent_email') }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                        },
-                                        body: JSON.stringify({ email: emailVal })
-                                    })
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        if (!data.valid) {
-                                            feedbackBox.style.display = 'none';
-                                            return;
-                                        }
-
-                                        if (data.exists) {
-                                            feedbackBox.innerHTML = `
-                                                <div class="alert alert-success py-2 px-3 mb-0 rounded-3 small d-flex align-items-start gap-2">
-                                                    <iconify-icon icon="solar:check-circle-bold" class="fs-5 flex-shrink-0 text-success mt-0.5"></iconify-icon>
-                                                    <div>
-                                                        <strong>Akun Terdaftar:</strong> ${data.name} ${data.total_anak > 0 ? `(${data.total_anak} anak sebelumnya)` : ''}.<br>
-                                                        <span class="text-muted" style="font-size:11px;">Masukkan kata sandi akun Anda di bawah untuk konfirmasi penautan anak ini.</span>
-                                                    </div>
+                                    if (data.exists) {
+                                        feedbackBox.innerHTML = `
+                                            <div class="alert alert-success py-2 px-3 mb-0 rounded-3 small d-flex align-items-start gap-2">
+                                                <iconify-icon icon="solar:check-circle-bold" class="fs-5 flex-shrink-0 text-success mt-0.5"></iconify-icon>
+                                                <div>
+                                                    <strong>Akun Terdaftar:</strong> ${data.name} ${data.total_anak > 0 ? `(${data.total_anak} anak sebelumnya)` : ''}.<br>
+                                                    <span class="text-muted" style="font-size:11px;">Masukkan kata sandi akun Anda di bawah untuk konfirmasi penautan anak ini.</span>
                                                 </div>
-                                            `;
-                                            if (passLabel) passLabel.innerHTML = 'Kata Sandi Akun Anda (Konfirmasi Penautan Anak) <span class="text-danger">*</span>';
-                                            if (passHint) passHint.innerHTML = 'Masukkan kata sandi akun Anda untuk mengonfirmasi penautan data anak ke akun terdaftar Anda.';
-                                        } else {
-                                            feedbackBox.innerHTML = `
-                                                <div class="alert alert-info py-2 px-3 mb-0 rounded-3 small d-flex align-items-start gap-2">
-                                                    <iconify-icon icon="solar:info-circle-bold" class="fs-5 flex-shrink-0 text-primary mt-0.5"></iconify-icon>
-                                                    <div>
-                                                        <strong>Email Baru:</strong> Akun portal wali murid akan otomatis dibuatkan menggunakan email &amp; kata sandi yang Anda tentukan di bawah.
-                                                    </div>
+                                            </div>
+                                        `;
+                                        if (passLabel) passLabel.innerHTML = 'Kata Sandi Akun Anda (Konfirmasi Penautan Anak) <span class="text-danger">*</span>';
+                                        if (passHint) passHint.innerHTML = 'Masukkan kata sandi akun Anda untuk mengonfirmasi penautan data anak ke akun terdaftar Anda.';
+                                    } else {
+                                        feedbackBox.innerHTML = `
+                                            <div class="alert alert-info py-2 px-3 mb-0 rounded-3 small d-flex align-items-start gap-2">
+                                                <iconify-icon icon="solar:info-circle-bold" class="fs-5 flex-shrink-0 text-primary mt-0.5"></iconify-icon>
+                                                <div>
+                                                    <strong>Akun Baru:</strong> Akun portal wali murid akan otomatis dibuatkan menggunakan nomor telepon / email &amp; kata sandi yang Anda tentukan di bawah.
                                                 </div>
-                                            `;
-                                            if (passLabel) passLabel.innerHTML = 'Buat Kata Sandi Akun Baru <span class="text-danger">*</span>';
-                                            if (passHint) passHint.innerHTML = 'Kata sandi ini akan menjadi kata sandi akun portal wali murid baru Anda (Min. 6 karakter).';
-                                        }
-                                    })
-                                    .catch(() => {
-                                        feedbackBox.style.display = 'none';
-                                    });
-                                }
-
-                                emailInput.addEventListener('input', function() {
-                                    clearTimeout(emailCheckTimeout);
-                                    emailCheckTimeout = setTimeout(() => {
-                                        checkEmail(this.value.trim());
-                                    }, 400);
+                                            </div>
+                                        `;
+                                        if (passLabel) passLabel.innerHTML = 'Buat Kata Sandi Akun Baru <span class="text-danger">*</span>';
+                                        if (passHint) passHint.innerHTML = 'Kata sandi ini akan menjadi kata sandi akun portal wali murid baru Anda (Min. 6 karakter).';
+                                    }
+                                })
+                                .catch(() => {
+                                    if (feedbackBox) feedbackBox.style.display = 'none';
                                 });
+                            }
 
-                                // Check on initial load if old email is present
-                                if (emailInput.value.trim()) {
-                                    checkEmail(emailInput.value.trim());
-                                }
+                            if (emailInput) {
+                                emailInput.addEventListener('input', function() {
+                                    clearTimeout(accountCheckTimeout);
+                                    accountCheckTimeout = setTimeout(checkParentAccount, 400);
+                                });
+                            }
+                            if (phoneInput) {
+                                phoneInput.addEventListener('input', function() {
+                                    clearTimeout(accountCheckTimeout);
+                                    accountCheckTimeout = setTimeout(checkParentAccount, 400);
+                                });
+                            }
+
+                            // Check on initial load if old email or phone is present
+                            if ((emailInput && emailInput.value.trim()) || (phoneInput && phoneInput.value.trim())) {
+                                checkParentAccount();
                             }
 
                             // 4. Toggle Show/Hide Password
@@ -1057,6 +1224,18 @@
                                                 popup: 'rounded-4'
                                             }
                                         });
+                                        return false;
+                                    }
+
+                                    // Validasi kesesuaian batasan usia anak
+                                    if (!updateBirthdateConstraints(true)) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        if (tglLahirInput) {
+                                            tglLahirInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            tglLahirInput.focus();
+                                        }
+                                        return false;
                                     }
                                 }, false);
                             }

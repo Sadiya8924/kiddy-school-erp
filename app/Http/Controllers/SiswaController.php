@@ -265,17 +265,37 @@ class SiswaController extends Controller
             return redirect()->to(route('yayasan.pendaftaran.form', array_merge(['kode_yayasan' => $yayasan->encrypted_token], $request->query())) . '#form');
         }
 
-        // 4. Siapkan data kuota & tahun inden untuk SETIAP sekolah (agar ganti sekolah instant tanpa reload 1-way)
+        // 4. Siapkan data kuota & tahun inden untuk SETIAP sekolah (mengikuti tahun_ajaran_aktif dari Super Admin/Pengaturan)
         $schools_data = [];
-        $tahunMulai = date('m') <= 6 ? date('Y') : date('Y') + 1;
 
         foreach ($schools as $s) {
-            $max_years = $s->max_indent_years ?? 3;
+            // Tentukan tahun ajaran awal pendaftaran berdasarkan konfigurasi Super Admin / Sekolah:
+            // 1. tahun_ajaran_aktif pada sekolah
+            // 2. Jika kosong, pakai tahun_ajaran dari semester aktif
+            // 3. Fallback: tahun kalender saat ini
+            $taAktif = trim($s->tahun_ajaran_aktif ?? '');
+            if (empty($taAktif)) {
+                $semAktif = \App\Models\Semester::where('is_active', true)->first();
+                $taAktif = $semAktif ? trim($semAktif->tahun_ajaran) : '';
+            }
+            if (empty($taAktif)) {
+                $taAktif = date('Y') . '/' . (date('Y') + 1);
+            }
+
+            if (preg_match('/^(\d{4})/', $taAktif, $matches)) {
+                $startYear = (int) $matches[1];
+            } else {
+                $startYear = (int) date('Y');
+            }
+
+            $max_years = (int) ($s->max_indent_years ?? 3);
+            if ($max_years < 1) $max_years = 1;
+
             $list_tahun = [];
             $kuota_tahun = [];
 
             for ($i = 0; $i < $max_years; $i++) {
-                $thn1 = $tahunMulai + $i;
+                $thn1 = $startYear + $i;
                 $thn2 = $thn1 + 1;
                 $tahunString = $thn1 . '/' . $thn2;
                 $list_tahun[] = $tahunString;
@@ -295,6 +315,7 @@ class SiswaController extends Controller
                 'id' => $s->id,
                 'nama_sekolah' => $s->nama_sekolah,
                 'alamat' => $s->alamat,
+                'tahun_ajaran_aktif' => $s->tahun_ajaran_aktif ?? $taAktif,
                 'list_tahun' => $list_tahun,
                 'kuota' => $kuota_tahun,
             ];
@@ -313,18 +334,46 @@ class SiswaController extends Controller
     }
 
     /**
-     * API Realtime: Cek apakah email orang tua sudah terdaftar di sistem.
+     * API Realtime: Cek apakah email/nomor telepon orang tua sudah terdaftar di sistem.
      */
     public function checkParentEmail(Request $request)
     {
         $email = trim($request->input('email', ''));
-        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $phone = preg_replace('/[^0-9]/', '', $request->input('phone', '') ?: $request->input('hp', ''));
+        $phone0 = str_starts_with($phone, '62') ? ('0' . substr($phone, 2)) : $phone;
+
+        if ((empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) && (empty($phone) || strlen($phone) < 8)) {
             return response()->json(['valid' => false, 'exists' => false]);
         }
 
-        $user = User::where('email', $email)->first();
+        $user = User::where(function($q) use ($email, $phone, $phone0) {
+            $has = false;
+            if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $q->where('email', $email);
+                $has = true;
+            }
+            if (!empty($phone) && strlen($phone) >= 8) {
+                if ($has) {
+                    $q->orWhereIn('no_hp', array_unique([$phone, $phone0]));
+                } else {
+                    $q->whereIn('no_hp', array_unique([$phone, $phone0]));
+                }
+            }
+        })->first();
+
+        // Cek juga fallback dari riwayat siswas
+        if (!$user && !empty($phone) && strlen($phone) >= 8) {
+            $pastSiswa = DB::table('siswas')
+                ->whereIn('hp', array_unique([$phone, $phone0]))
+                ->whereNotNull('user_id')
+                ->first();
+            if ($pastSiswa) {
+                $user = User::find($pastSiswa->user_id);
+            }
+        }
+
         if ($user) {
-            $totalAnak = Siswa::where('email', $email)->count();
+            $totalAnak = DB::table('siswas')->where('user_id', $user->id)->count();
             return response()->json([
                 'valid'      => true,
                 'exists'     => true,
@@ -337,7 +386,7 @@ class SiswaController extends Controller
         return response()->json([
             'valid'   => true,
             'exists'  => false,
-            'message' => "Email baru. Akun portal wali murid akan otomatis dibuatkan menggunakan email & kata sandi yang Anda tentukan di bawah."
+            'message' => "Akun baru. Akun portal wali murid akan otomatis dibuatkan menggunakan nomor telepon / email & kata sandi yang Anda tentukan di bawah."
         ]);
     }
 
@@ -355,7 +404,9 @@ class SiswaController extends Controller
             'no_kk'            => 'required|string',
             'tempat_lahir'     => 'required|string|max:255',
             'tgl_lahir'        => 'required|date',
-            'email'            => 'required|email',
+            'hp'               => 'required|string|max:30',
+            'email'            => 'nullable|email|max:255',
+            'dusun'            => 'nullable|string|max:255',
             'lintang'          => 'nullable|string',
             'bujur'            => 'nullable|string',
             'foto_anak'        => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -379,7 +430,7 @@ class SiswaController extends Controller
             'no_kk.required'            => 'Nomor Kartu Keluarga (KK) wajib diisi.',
             'tempat_lahir.required'     => 'Tempat lahir wajib diisi.',
             'tgl_lahir.required'        => 'Tanggal lahir wajib diisi.',
-            'email.required'            => 'Email orang tua wajib diisi.',
+            'hp.required'               => 'Nomor HP / WhatsApp orang tua wajib diisi.',
             'email.email'               => 'Format email tidak valid.',
             'password.required'         => 'Kata sandi akun wajib diisi.',
             'password.min'              => 'Kata sandi minimal 6 karakter.',
@@ -389,17 +440,99 @@ class SiswaController extends Controller
 
         $request->validate($rules, $messages);
 
+        // Validasi batasan usia anak berdasarkan Tahun Ajaran dan Program Kelas yang dipilih
+        if ($request->filled('tahun_inden') && $request->filled('tgl_lahir')) {
+            if (preg_match('/^(\d{4})/', $request->tahun_inden, $matches)) {
+                $entryYear = (int) $matches[1];
+                $birthDate = \Carbon\Carbon::parse($request->tgl_lahir);
+                $birthYear = (int) $birthDate->format('Y');
+                $cutoffDate = \Carbon\Carbon::create($entryYear, 7, 1);
+                
+                $diffYears = $birthDate->diffInYears($cutoffDate, false);
+                $diffMonths = $birthDate->copy()->addYears(max(0, $diffYears))->diffInMonths($cutoffDate);
+
+                $program = strtoupper($request->program_pilihan ?? '');
+                $isPaud = str_contains($program, 'PAUD');
+                $isTk = str_contains($program, 'TK');
+
+                if ($isPaud) {
+                    $minBirthYear = $entryYear - 4;
+                    $maxBirthYear = $entryYear - 3;
+                    if ($birthYear < $minBirthYear || $birthYear > $maxBirthYear) {
+                        return back()->withInput()->withErrors([
+                            'tgl_lahir' => "Untuk program PAUD pada Tahun Ajaran {$request->tahun_inden}, usia anak harus 3 – 4 tahun (kelahiran tahun {$minBirthYear} s/d {$maxBirthYear}). Tanggal lahir yang dimasukkan adalah " . $birthDate->format('d/m/Y') . " (usia {$diffYears} tahun {$diffMonths} bulan per Juli {$entryYear})."
+                        ])->with('error', "Usia anak tidak memenuhi syarat untuk program PAUD (3 - 4 tahun) pada Tahun Ajaran {$request->tahun_inden}.");
+                    }
+                } elseif ($isTk) {
+                    $minBirthYear = $entryYear - 7;
+                    $maxBirthYear = $entryYear - 4;
+                    if ($birthYear < $minBirthYear || $birthYear > $maxBirthYear) {
+                        return back()->withInput()->withErrors([
+                            'tgl_lahir' => "Untuk program TK pada Tahun Ajaran {$request->tahun_inden}, usia anak harus 4 – 6 tahun (kelahiran tahun {$minBirthYear} s/d {$maxBirthYear}). Tanggal lahir yang dimasukkan adalah " . $birthDate->format('d/m/Y') . " (usia {$diffYears} tahun {$diffMonths} bulan per Juli {$entryYear})."
+                        ])->with('error', "Usia anak tidak memenuhi syarat untuk program TK (4 - 6 tahun) pada Tahun Ajaran {$request->tahun_inden}.");
+                    }
+                }
+            }
+        }
+
         $school = DB::table('schools')->where('id', $request->school_id)->first();
         $parentUser = null;
 
         // Logika Akun Wali Murid (Otomatis Buat Akun Baru atau Konfirmasi Akun Lama / Anak Ke-2)
         if (!Auth::check()) {
-            $existingUser = User::where('email', $request->email)->first();
+            $rawPhone = $request->input('hp');
+            $cleanPhone = preg_replace('/[^0-9]/', '', $rawPhone ?? '');
+            $phone0 = str_starts_with($cleanPhone, '62') ? ('0' . substr($cleanPhone, 2)) : $cleanPhone;
+            $phone62 = str_starts_with($cleanPhone, '0') ? ('62' . substr($cleanPhone, 1)) : $cleanPhone;
+
+            // Cari user berdasarkan email (jika diisi) ATAU nomor telepon
+            $existingUser = User::where(function($q) use ($request, $cleanPhone, $phone0, $phone62) {
+                $hasCond = false;
+                if ($request->filled('email')) {
+                    $q->where('email', $request->email);
+                    $hasCond = true;
+                }
+                if (!empty($cleanPhone) && strlen($cleanPhone) >= 8) {
+                    if ($hasCond) {
+                        $q->orWhereIn('no_hp', array_unique([$cleanPhone, $phone0, $phone62]));
+                    } else {
+                        $q->whereIn('no_hp', array_unique([$cleanPhone, $phone0, $phone62]));
+                    }
+                }
+            })->first();
+
+            // Cek juga fallback dari data siswas terdahulu
+            if (!$existingUser && !empty($cleanPhone) && strlen($cleanPhone) >= 8) {
+                $pastSiswa = DB::table('siswas')
+                    ->where(function($q) use ($cleanPhone, $phone0, $phone62, $request) {
+                        $q->whereIn('hp', array_unique([$cleanPhone, $phone0, $phone62]));
+                        if ($request->filled('email')) {
+                            $q->orWhere('email', $request->email);
+                        }
+                    })
+                    ->whereNotNull('user_id')
+                    ->first();
+                if ($pastSiswa) {
+                    $existingUser = User::find($pastSiswa->user_id);
+                }
+            }
 
             if ($existingUser) {
                 // Konfirmasi kata sandi akun yang sudah ada
                 if (!Hash::check($request->password, $existingUser->password)) {
-                    return back()->withInput()->with('error', 'Kata sandi untuk akun ' . $request->email . ' tidak cocok. Silakan masukkan kata sandi akun Anda yang benar untuk konfirmasi penautan anak.');
+                    $identLabel = $request->filled('email') ? $request->email : $phone0;
+                    return back()->withInput()->with('error', 'Kata sandi untuk akun ' . $identLabel . ' tidak cocok. Silakan masukkan kata sandi akun Anda yang benar untuk konfirmasi penautan anak.');
+                }
+                // Sinkronkan nomor telepon / email jika sebelumnya kosong
+                $updates = [];
+                if (empty($existingUser->no_hp) && !empty($phone0)) {
+                    $updates['no_hp'] = $phone0;
+                }
+                if (empty($existingUser->email) && $request->filled('email')) {
+                    $updates['email'] = $request->email;
+                }
+                if (!empty($updates)) {
+                    $existingUser->update($updates);
                 }
                 $parentUser = $existingUser;
             } else {
@@ -407,7 +540,8 @@ class SiswaController extends Controller
                 $parentName = $request->nama_ibu ?: ($request->nama_ayah ?: 'Wali dari ' . $request->nama_lengkap);
                 $parentUser = User::create([
                     'name'       => $parentName,
-                    'email'      => $request->email,
+                    'email'      => $request->filled('email') ? $request->email : null,
+                    'no_hp'      => $phone0 ?: $rawPhone,
                     'password'   => Hash::make($request->password),
                     'role'       => 'wali_murid',
                     'yayasan_id' => $school ? $school->yayasan_id : null,
@@ -484,7 +618,8 @@ class SiswaController extends Controller
             'nama_siswa'   => $request->nama_lengkap,
             'nama_sekolah' => $school ? $school->nama_sekolah : 'Sekolah',
             'nama_yayasan' => $yayasanObj ? $yayasanObj->nama_yayasan : 'Yayasan Terdaftar',
-            'email'        => $request->email,
+            'email'        => $request->email ?: ($parentUser ? $parentUser->no_hp : $request->hp),
+            'hp'           => $request->hp,
             'login_url'    => $loginUrl,
         ]);
     }

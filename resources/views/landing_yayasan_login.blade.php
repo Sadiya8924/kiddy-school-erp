@@ -744,7 +744,7 @@
                 <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" style="background: #FEF2F2; border: 1.5px solid #FCA5A5 !important; border-left: 5px solid #EF4444 !important;">
                     <div class="card-body p-3.5">
                         <div class="d-flex align-items-start gap-3">
-                            <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger flex-shrink-0 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger shrink-0 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                 <iconify-icon icon="solar:shield-warning-bold-duotone" class="fs-4"></iconify-icon>
                             </div>
                             <div>
@@ -798,15 +798,15 @@
                 <input type="hidden" name="kode_yayasan" value="{{ $yayasan->kode_yayasan }}">
 
                 <div class="mb-3">
-                    <label class="form-label-custom" for="login-email">Email</label>
-                    <input type="email" name="email" id="login-email" class="form-control-custom" placeholder="nama@email.com" value="{{ old('email') }}" required autofocus>
+                    <label class="form-label-custom" for="login-email">Email atau Nomor Telepon</label>
+                    <input type="text" name="email" id="login-email" class="form-control-custom" placeholder="Contoh: nama@email.com atau 08xxxxxxxxxx" value="{{ old('email') }}" required autofocus>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label-custom" for="login-password">Password</label>
                     <div class="position-relative">
                         <input type="password" name="password" id="login-password" class="form-control-custom pe-5" placeholder="Kata sandi Anda" required>
-                        <button type="button" onclick="togglePasswordVisibility()" class="btn position-absolute top-50 end-0 translate-middle-y text-muted border-0 me-1">
+                        <button type="button" onclick="togglePasswordVisibility()" class="btn position-absolute top-50 inset-e-0 translate-middle-y text-muted border-0 me-1">
                             <iconify-icon icon="solar:eye-bold" id="eye-icon" class="fs-5"></iconify-icon>
                         </button>
                     </div>

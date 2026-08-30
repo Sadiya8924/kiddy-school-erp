@@ -190,9 +190,115 @@
         opacity: 0.95;
     }
 
+    /* =============================================
+       FORM INPUT — PLACEHOLDER vs NILAI TERISI
+       ============================================= */
+
+    /* Placeholder: warna lebih samar / pudar */
+    .form-control::placeholder,
+    .form-select::placeholder {
+        color: #b0b8c5 !important;
+        font-style: italic;
+        opacity: 1;
+    }
+    /* Firefox */
+    .form-control::-moz-placeholder,
+    .form-select::-moz-placeholder {
+        color: #b0b8c5 !important;
+        opacity: 1;
+    }
+
+    /* Teks yang sudah diisi: gelap dan jelas terbaca */
+    .form-control,
+    .form-select {
+        color: #1a202c !important;
+        font-weight: 500 !important;
+        border: 1.5px solid #dce3ed !important;
+        border-radius: 10px !important;
+        padding: 10px 14px !important;
+        height: auto !important;
+        min-height: 44px !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+        background-color: #ffffff !important;
+    }
+
+    /* Select yang belum dipilih (value kosong): placeholder samar */
+    .form-select option[value=""] {
+        color: #b0b8c5 !important;
+    }
+    .form-select:invalid,
+    .form-select option:first-child:checked {
+        color: #b0b8c5 !important;
+    }
+
+    /* State: focus */
     .form-control:focus, .form-select:focus {
         border-color: {{ $theme['primary'] }} !important;
-        box-shadow: 0 0 0 3px {{ $theme['primary'] }}25 !important;
+        box-shadow: 0 0 0 3px {{ $theme['primary'] }}22 !important;
+        background-color: #ffffff !important;
+        color: #1a202c !important;
+    }
+
+    /* State: readonly / latitude-longitude otomatis */
+    .form-control[readonly] {
+        background-color: #f3f6fa !important;
+        color: {{ $theme['primary'] }} !important;
+        font-weight: 600 !important;
+        border-style: dashed !important;
+        cursor: not-allowed;
+    }
+
+    /* =============================================
+       FORM LABEL — lebih rapi & konsisten
+       ============================================= */
+    .form-label {
+        font-weight: 600 !important;
+        color: #374151 !important;
+        margin-bottom: 5px !important;
+        letter-spacing: 0.01em;
+    }
+
+    /* =============================================
+       SECTION CARD — pembatas bagian data
+       ============================================= */
+    .form-section-card {
+        background: #f8fafc;
+        border: 1px solid #e8edf4;
+        border-radius: 14px;
+        padding: 20px 20px 8px 20px;
+        margin-bottom: 8px;
+    }
+    .form-section-card .p-3.border.rounded.bg-light {
+        background: #ffffff !important;
+        border-color: #e2e8f0 !important;
+        border-radius: 12px !important;
+    }
+
+    /* =============================================
+       HEADING SECTION FORM
+       ============================================= */
+    .form-section-heading {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: {{ $theme['primary'] }};
+        border-bottom: 2px solid {{ $theme['primary'] }}22;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+        margin-top: 24px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .form-section-heading::before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 16px;
+        background: {{ $theme['primary'] }};
+        border-radius: 3px;
+        flex-shrink: 0;
     }
 
     /* Hide HTML5 spinner arrows for number inputs */
@@ -214,6 +320,40 @@
         background-color: #FEF2F2 !important;
         box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
     }
+
+    /* =============================================
+       FILE INPUT — lebih rapi
+       ============================================= */
+    input[type="file"].form-control {
+        padding: 8px 12px !important;
+        font-weight: 400 !important;
+        color: #6b7280 !important;
+        cursor: pointer;
+        font-size: 12px !important;
+    }
+    input[type="file"].form-control::file-selector-button {
+        background: {{ $theme['primary'] }}15;
+        color: {{ $theme['primary'] }};
+        border: 1px solid {{ $theme['primary'] }}40;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 11.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-right: 10px;
+    }
+    input[type="file"].form-control::file-selector-button:hover {
+        background: {{ $theme['primary'] }}25;
+    }
+
+    /* =============================================
+       ROW GAP — tambah jarak antar baris
+       ============================================= */
+    .row.gx-3 > [class*="col-"] {
+        padding-bottom: 2px;
+    }
+    .mb-form { margin-bottom: 18px !important; }
 </style>
 
 <div class="container mt-3 mb-5">
@@ -920,6 +1060,27 @@
                                     }
                                 }, false);
                             }
+                        });
+
+                        // ── SELECT PLACEHOLDER COLOR ──────────────────────────────
+                        // Bila select belum dipilih → warna teks samar (seperti placeholder)
+                        // Bila sudah dipilih       → warna teks gelap & jelas
+                        function applySelectPlaceholderStyle(sel) {
+                            if (sel.value === '' || sel.value === null) {
+                                sel.style.color = '#b0b8c5';
+                                sel.style.fontStyle = 'italic';
+                                sel.style.fontWeight = '400';
+                            } else {
+                                sel.style.color = '#1a202c';
+                                sel.style.fontStyle = 'normal';
+                                sel.style.fontWeight = '500';
+                            }
+                        }
+                        document.querySelectorAll('select.form-select').forEach(function(sel) {
+                            applySelectPlaceholderStyle(sel);
+                            sel.addEventListener('change', function() {
+                                applySelectPlaceholderStyle(this);
+                            });
                         });
                     </script>
                 </div>

@@ -216,8 +216,10 @@
         }
 
         /* Custom Fractional Spacing & Utility Fixes for Layout & Cards */
-        .gap-3\.5 { gap: 1.25rem !important; }
+        .gap-1\.5 { gap: 0.5rem !important; }
+        .gap-2 { gap: 0.5rem !important; }
         .gap-2\.5 { gap: 0.875rem !important; }
+        .gap-3\.5 { gap: 1.25rem !important; }
         .gap-4 { gap: 1.5rem !important; }
         .mb-3\.5 { margin-bottom: 1.25rem !important; }
         .mt-3\.5 { margin-top: 1.25rem !important; }

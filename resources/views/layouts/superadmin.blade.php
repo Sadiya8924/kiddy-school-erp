@@ -431,7 +431,16 @@
                         <iconify-icon icon="solar:buildings-bold-duotone" class="fs-6 text-primary"></iconify-icon>
                         <select name="active_school_id" class="form-select form-select-sm border-primary text-primary fw-bold shadow-sm" onchange="document.getElementById('formSwitchSchool').submit()" style="min-width: 200px;">
                             <option value="">-- Mode Pusat (Semua Data) --</option>
-                            @foreach(\App\Models\School::where('status', 'aktif')->get() as $school)
+                            @php
+                                $swYayasanId = auth()->user()->getUserYayasanId() ?: session('active_yayasan_id');
+                                $swSchoolsQuery = \App\Models\School::where('status', 'aktif');
+                                if (!auth()->user()->isOwner() || $swYayasanId) {
+                                    if ($swYayasanId) {
+                                        $swSchoolsQuery->where('yayasan_id', $swYayasanId);
+                                    }
+                                }
+                            @endphp
+                            @foreach($swSchoolsQuery->get() as $school)
                                 <option value="{{ $school->id }}" {{ session('active_school_id') == $school->id ? 'selected' : '' }}>
                                     Pantau: {{ $school->nama_sekolah }}
                                 </option>

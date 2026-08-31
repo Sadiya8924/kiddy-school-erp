@@ -91,11 +91,12 @@
                 <select name="active_school_id" class="form-select border-0 fw-bold shadow-none" onchange="document.getElementById('formSwitchSchool').submit()" style="min-width: 200px; background-color: var(--primary-blue-soft); color: var(--primary-blue-dark); border-radius: 8px;">
                     <option value="">-- Mode Pusat (Semua Data) --</option>
                     @php
+                        $swYayasanId = Auth::user()->getUserYayasanId() ?: session('active_yayasan_id');
                         $querySchools = \App\Models\School::where('status', 'aktif');
-                        if (session('active_yayasan_id')) {
-                            $querySchools->where('yayasan_id', session('active_yayasan_id'));
-                        } elseif (!Auth::user()->isOwner() && Auth::user()->yayasan_id) {
-                            $querySchools->where('yayasan_id', Auth::user()->yayasan_id);
+                        if (!Auth::user()->isOwner() || $swYayasanId) {
+                            if ($swYayasanId) {
+                                $querySchools->where('yayasan_id', $swYayasanId);
+                            }
                         }
                     @endphp
                     @foreach($querySchools->get() as $school)

@@ -190,9 +190,115 @@
         opacity: 0.95;
     }
 
+    /* =============================================
+       FORM INPUT — PLACEHOLDER vs NILAI TERISI
+       ============================================= */
+
+    /* Placeholder: warna lebih samar / pudar */
+    .form-control::placeholder,
+    .form-select::placeholder {
+        color: #b0b8c5 !important;
+        font-style: italic;
+        opacity: 1;
+    }
+    /* Firefox */
+    .form-control::-moz-placeholder,
+    .form-select::-moz-placeholder {
+        color: #b0b8c5 !important;
+        opacity: 1;
+    }
+
+    /* Teks yang sudah diisi: gelap dan jelas terbaca */
+    .form-control,
+    .form-select {
+        color: #1a202c !important;
+        font-weight: 500 !important;
+        border: 1.5px solid #dce3ed !important;
+        border-radius: 10px !important;
+        padding: 10px 14px !important;
+        height: auto !important;
+        min-height: 44px !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+        background-color: #ffffff !important;
+    }
+
+    /* Select yang belum dipilih (value kosong): placeholder samar */
+    .form-select option[value=""] {
+        color: #b0b8c5 !important;
+    }
+    .form-select:invalid,
+    .form-select option:first-child:checked {
+        color: #b0b8c5 !important;
+    }
+
+    /* State: focus */
     .form-control:focus, .form-select:focus {
         border-color: {{ $theme['primary'] }} !important;
-        box-shadow: 0 0 0 3px {{ $theme['primary'] }}25 !important;
+        box-shadow: 0 0 0 3px {{ $theme['primary'] }}22 !important;
+        background-color: #ffffff !important;
+        color: #1a202c !important;
+    }
+
+    /* State: readonly / latitude-longitude otomatis */
+    .form-control[readonly] {
+        background-color: #f3f6fa !important;
+        color: {{ $theme['primary'] }} !important;
+        font-weight: 600 !important;
+        border-style: dashed !important;
+        cursor: not-allowed;
+    }
+
+    /* =============================================
+       FORM LABEL — lebih rapi & konsisten
+       ============================================= */
+    .form-label {
+        font-weight: 600 !important;
+        color: #374151 !important;
+        margin-bottom: 5px !important;
+        letter-spacing: 0.01em;
+    }
+
+    /* =============================================
+       SECTION CARD — pembatas bagian data
+       ============================================= */
+    .form-section-card {
+        background: #f8fafc;
+        border: 1px solid #e8edf4;
+        border-radius: 14px;
+        padding: 20px 20px 8px 20px;
+        margin-bottom: 8px;
+    }
+    .form-section-card .p-3.border.rounded.bg-light {
+        background: #ffffff !important;
+        border-color: #e2e8f0 !important;
+        border-radius: 12px !important;
+    }
+
+    /* =============================================
+       HEADING SECTION FORM
+       ============================================= */
+    .form-section-heading {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: {{ $theme['primary'] }};
+        border-bottom: 2px solid {{ $theme['primary'] }}22;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+        margin-top: 24px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .form-section-heading::before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 16px;
+        background: {{ $theme['primary'] }};
+        border-radius: 3px;
+        flex-shrink: 0;
     }
 
     /* Hide HTML5 spinner arrows for number inputs */
@@ -213,6 +319,199 @@
         border-color: #EF4444 !important;
         background-color: #FEF2F2 !important;
         box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18) !important;
+    }
+
+    /* =============================================
+       FILE INPUT — lebih rapi
+       ============================================= */
+    input[type="file"].form-control {
+        padding: 8px 12px !important;
+        font-weight: 400 !important;
+        color: #6b7280 !important;
+        cursor: pointer;
+        font-size: 12px !important;
+    }
+    input[type="file"].form-control::file-selector-button {
+        background: {{ $theme['primary'] }}15;
+        color: {{ $theme['primary'] }};
+        border: 1px solid {{ $theme['primary'] }}40;
+        border-radius: 6px;
+        padding: 4px 10px;
+        font-size: 11.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-right: 10px;
+    }
+    input[type="file"].form-control::file-selector-button:hover {
+        background: {{ $theme['primary'] }}25;
+    }
+
+    /* =============================================
+       ROW GAP — tambah jarak antar baris
+       ============================================= */
+    .row.gx-3 > [class*="col-"] {
+        padding-bottom: 2px;
+    }
+    .mb-form { margin-bottom: 18px !important; }
+
+    /* =============================================
+       CUSTOM BEAUTIFUL DROPDOWN
+       ============================================= */
+
+    /* Sembunyikan native select, tapi tetap ada di DOM untuk submit form */
+    select.form-select.cs-hidden {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+
+    /* Wrapper custom select */
+    .cs-wrapper {
+        position: relative;
+    }
+
+    /* Trigger button */
+    .cs-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 14px;
+        background: #ffffff;
+        border: 1.5px solid #dce3ed;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 400;
+        color: #b0b8c5;
+        font-style: italic;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        user-select: none;
+        outline: none;
+        gap: 8px;
+    }
+    .cs-trigger.cs-has-value {
+        color: #1a202c;
+        font-style: normal;
+        font-weight: 500;
+    }
+    .cs-trigger:hover {
+        border-color: #aab4c8;
+    }
+    .cs-trigger.cs-open {
+        border-color: {{ $theme['primary'] }};
+        box-shadow: 0 0 0 3px {{ $theme['primary'] }}22;
+        background: #ffffff;
+    }
+    .cs-trigger.cs-invalid {
+        border-color: #EF4444 !important;
+        background-color: #FEF2F2 !important;
+        box-shadow: 0 0 0 3px rgba(239,68,68,0.18) !important;
+    }
+    .cs-trigger.cs-disabled {
+        background: #f3f6fa;
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+
+    /* Caret icon */
+    .cs-caret {
+        flex-shrink: 0;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        transition: transform 0.2s ease, color 0.2s;
+    }
+    .cs-trigger.cs-open .cs-caret {
+        transform: rotate(180deg);
+        color: {{ $theme['primary'] }};
+    }
+    .cs-caret svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* Dropdown panel */
+    .cs-dropdown {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border: 1.5px solid {{ $theme['primary'] }}40;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+        z-index: 9999;
+        overflow: hidden;
+        display: none;
+        animation: csDropIn 0.18s cubic-bezier(.4,0,.2,1);
+        max-height: 260px;
+        overflow-y: auto;
+    }
+    .cs-dropdown.cs-visible {
+        display: block;
+    }
+    @keyframes csDropIn {
+        from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Scrollbar dalam dropdown */
+    .cs-dropdown::-webkit-scrollbar { width: 5px; }
+    .cs-dropdown::-webkit-scrollbar-track { background: transparent; }
+    .cs-dropdown::-webkit-scrollbar-thumb { background: #dce3ed; border-radius: 10px; }
+
+    /* Option item */
+    .cs-option {
+        display: flex;
+        align-items: center;
+        padding: 10px 16px;
+        font-size: 13px;
+        font-weight: 400;
+        color: #374151;
+        cursor: pointer;
+        transition: background 0.12s, color 0.12s;
+        gap: 10px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .cs-option:last-child { border-bottom: none; }
+    .cs-option:hover {
+        background: {{ $theme['primary'] }}0f;
+        color: {{ $theme['primary'] }};
+        font-weight: 500;
+    }
+    .cs-option.cs-selected {
+        background: {{ $theme['primary'] }}15;
+        color: {{ $theme['primary'] }};
+        font-weight: 600;
+    }
+    .cs-option.cs-selected::after {
+        content: '';
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: {{ $theme['primary'] }};
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    /* Placeholder option (value kosong) */
+    .cs-option.cs-placeholder {
+        color: #b0b8c5;
+        font-style: italic;
+        font-size: 12px;
+        padding: 8px 16px;
+        background: #f8fafc;
+        pointer-events: none;
     }
 </style>
 
@@ -1098,6 +1397,181 @@
                                         return false;
                                     }
                                 }, false);
+                            }
+                        });
+
+                        // ══════════════════════════════════════════════════════
+                        //  CUSTOM BEAUTIFUL DROPDOWN ENGINE
+                        //  - Sembunyikan native select, tampilkan UI cantik
+                        //  - Sync nilai kembali ke native select untuk submit form
+                        //  - Support: disabled, invalid, dynamic options (Ajax)
+                        // ══════════════════════════════════════════════════════
+
+                        const CARET_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+
+                        function buildCustomSelect(nativeSel) {
+                            if (nativeSel.dataset.csBuilt) return; // jangan dobel-build
+                            nativeSel.dataset.csBuilt = '1';
+
+                            const wrapper = document.createElement('div');
+                            wrapper.className = 'cs-wrapper';
+
+                            // Trigger button
+                            const trigger = document.createElement('button');
+                            trigger.type = 'button';
+                            trigger.className = 'cs-trigger' + (nativeSel.disabled ? ' cs-disabled' : '');
+                            trigger.setAttribute('aria-haspopup', 'listbox');
+                            trigger.setAttribute('aria-expanded', 'false');
+
+                            const labelSpan = document.createElement('span');
+                            labelSpan.className = 'cs-label flex-grow-1 text-truncate';
+
+                            const caret = document.createElement('span');
+                            caret.className = 'cs-caret';
+                            caret.innerHTML = CARET_SVG;
+
+                            trigger.appendChild(labelSpan);
+                            trigger.appendChild(caret);
+
+                            // Dropdown panel
+                            const panel = document.createElement('div');
+                            panel.className = 'cs-dropdown';
+                            panel.setAttribute('role', 'listbox');
+
+                            wrapper.appendChild(trigger);
+                            wrapper.appendChild(panel);
+
+                            // Sisipkan wrapper setelah native select
+                            nativeSel.parentNode.insertBefore(wrapper, nativeSel);
+                            wrapper.insertBefore(nativeSel, wrapper.firstChild);
+
+                            // Sembunyikan native select
+                            nativeSel.classList.add('cs-hidden');
+
+                            // Fungsi: render opsi di panel dari native select
+                            function renderOptions() {
+                                panel.innerHTML = '';
+                                Array.from(nativeSel.options).forEach(opt => {
+                                    const item = document.createElement('div');
+                                    item.className = 'cs-option' + (opt.value === '' ? ' cs-placeholder' : '') + (opt.selected && opt.value !== '' ? ' cs-selected' : '');
+                                    item.textContent = opt.text;
+                                    item.dataset.value = opt.value;
+                                    item.setAttribute('role', 'option');
+
+                                    if (opt.value !== '') {
+                                        item.addEventListener('click', () => {
+                                            nativeSel.value = opt.value;
+                                            nativeSel.dispatchEvent(new Event('change', { bubbles: true }));
+                                            syncTrigger();
+                                            closePanel();
+                                        });
+                                    }
+                                    panel.appendChild(item);
+                                });
+                            }
+
+                            // Fungsi: sinkronkan label trigger dari nilai native select
+                            function syncTrigger() {
+                                const sel = nativeSel;
+                                const selectedOpt = sel.options[sel.selectedIndex];
+                                if (!selectedOpt || selectedOpt.value === '') {
+                                    // Ambil teks placeholder (opsi pertama)
+                                    const phText = sel.options[0] ? sel.options[0].text : '-- Pilih --';
+                                    labelSpan.textContent = phText;
+                                    trigger.classList.remove('cs-has-value');
+                                } else {
+                                    labelSpan.textContent = selectedOpt.text;
+                                    trigger.classList.add('cs-has-value');
+                                }
+                                // Update highlight di panel
+                                panel.querySelectorAll('.cs-option').forEach(item => {
+                                    if (item.dataset.value === sel.value) {
+                                        item.classList.add('cs-selected');
+                                    } else {
+                                        item.classList.remove('cs-selected');
+                                    }
+                                });
+                                // Disabled state
+                                if (sel.disabled) {
+                                    trigger.classList.add('cs-disabled');
+                                    trigger.disabled = true;
+                                } else {
+                                    trigger.classList.remove('cs-disabled');
+                                    trigger.disabled = false;
+                                }
+                            }
+
+                            function openPanel() {
+                                if (nativeSel.disabled) return;
+                                renderOptions();
+                                panel.classList.add('cs-visible');
+                                trigger.classList.add('cs-open');
+                                trigger.setAttribute('aria-expanded', 'true');
+                            }
+                            function closePanel() {
+                                panel.classList.remove('cs-visible');
+                                trigger.classList.remove('cs-open');
+                                trigger.setAttribute('aria-expanded', 'false');
+                            }
+
+                            trigger.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                if (panel.classList.contains('cs-visible')) {
+                                    closePanel();
+                                } else {
+                                    // Tutup semua dropdown lain
+                                    document.querySelectorAll('.cs-dropdown.cs-visible').forEach(p => {
+                                        p.classList.remove('cs-visible');
+                                        p.previousElementSibling && p.previousElementSibling.classList && p.previousElementSibling.classList.remove('cs-open');
+                                    });
+                                    openPanel();
+                                }
+                            });
+
+                            // Tutup jika klik di luar
+                            document.addEventListener('click', () => closePanel());
+                            panel.addEventListener('click', e => e.stopPropagation());
+
+                            // Observe perubahan pada native select (untuk Ajax populate)
+                            const observer = new MutationObserver(() => {
+                                syncTrigger();
+                                if (panel.classList.contains('cs-visible')) renderOptions();
+                            });
+                            observer.observe(nativeSel, { childList: true, attributes: true, attributeFilter: ['disabled', 'value'] });
+
+                            // Juga listen ke 'change' dari kode lain (Ajax update)
+                            nativeSel.addEventListener('change', () => syncTrigger());
+
+                            // Validasi: tambah cs-invalid bila was-validated & kosong
+                            const form = nativeSel.closest('form');
+                            if (form) {
+                                form.addEventListener('submit', () => {
+                                    if (nativeSel.required && nativeSel.value === '') {
+                                        trigger.classList.add('cs-invalid');
+                                    } else {
+                                        trigger.classList.remove('cs-invalid');
+                                    }
+                                }, true);
+                            }
+                            nativeSel.addEventListener('change', () => {
+                                if (nativeSel.value !== '') trigger.classList.remove('cs-invalid');
+                            });
+
+                            // Inisiasi awal
+                            syncTrigger();
+                        }
+
+                        // Bangun custom select untuk semua form-select yang relevan
+                        document.querySelectorAll('select.form-select').forEach(buildCustomSelect);
+
+                        // Re-build jika select baru ditambahkan secara dinamis
+                        // (misal: tahun_inden & program_pilihan diisi via Ajax)
+                        // Untuk itu kita observe parent mereka
+                        ['tahun_inden', 'program_pilihan'].forEach(id => {
+                            const sel = document.getElementById(id);
+                            if (sel) {
+                                // Setelah Ajax memperbarui opsi, trigger syncTrigger via MutationObserver
+                                // sudah ditangani di buildCustomSelect — tidak perlu kode tambahan.
                             }
                         });
                     </script>

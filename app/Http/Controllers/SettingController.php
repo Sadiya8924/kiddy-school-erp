@@ -63,7 +63,7 @@ class SettingController extends Controller
         $user = auth()->user();
         abort_unless($user->isPureSuperAdmin() || $user->isOwner(), 403, 'Akses ditolak.');
 
-        $yayasanId = session('active_yayasan_id') ?: $user->yayasan_id;
+        $yayasanId = $user->getUserYayasanId() ?: session('active_yayasan_id');
         $yayasan = Yayasan::find($yayasanId) ?: Yayasan::firstOrFail();
         $content = $yayasan->landing_content ?? [];
 
@@ -75,7 +75,7 @@ class SettingController extends Controller
         $user = auth()->user();
         abort_unless($user->isPureSuperAdmin() || $user->isOwner(), 403, 'Akses ditolak.');
 
-        $yayasanId = session('active_yayasan_id') ?: $user->yayasan_id;
+        $yayasanId = $user->getUserYayasanId() ?: session('active_yayasan_id');
         $yayasan = Yayasan::find($yayasanId) ?: Yayasan::firstOrFail();
         $content = $yayasan->landing_content ?? [];
 

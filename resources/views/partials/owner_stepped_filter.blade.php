@@ -5,8 +5,8 @@
     $activeSchoolId = session('active_school_id');
     
     // Super admin selalu terikat pada yayasan_id miliknya
-    if (!$user->isOwner() && $user->yayasan_id) {
-        $activeYayasanId = $user->yayasan_id;
+    if (!$user->isOwner()) {
+        $activeYayasanId = $user->getUserYayasanId() ?: session('active_yayasan_id');
     }
 
     $currentYayasan = $activeYayasanId ? \App\Models\Yayasan::find($activeYayasanId) : null;

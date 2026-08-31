@@ -24,9 +24,16 @@ class SiswaController extends Controller
 
         // Mode Pusat for SuperAdmin (TM-39)
         if (!$schoolId && ($user->isSuperAdmin() || $user->isOwner())) {
+            $activeYayasanId = $user->getUserYayasanId() ?: session('active_yayasan_id');
             $ringkasan = DB::table('siswas')
-                ->select('school_id', DB::raw('count(*) as total'))
-                ->groupBy('school_id')
+                ->join('schools', 'siswas.school_id', '=', 'schools.id')
+                ->select('siswas.school_id', DB::raw('count(siswas.id) as total'))
+                ->when(!$user->isOwner() || $activeYayasanId, function($q) use ($activeYayasanId) {
+                    if ($activeYayasanId) {
+                        $q->where('schools.yayasan_id', $activeYayasanId);
+                    }
+                })
+                ->groupBy('siswas.school_id')
                 ->get()
                 ->map(function($r) {
                     $r->sekolah = DB::table('schools')->where('id', $r->school_id)->first();
@@ -209,8 +216,8 @@ class SiswaController extends Controller
             $decryptedCode = \App\Models\Yayasan::decryptToken($routeParam);
             $y = \App\Models\Yayasan::where('kode_yayasan', $decryptedCode ?: $routeParam)->first();
             if ($y) $yayasan_id = $y->id;
-        } elseif ($user && $user->yayasan_id) {
-            $yayasan_id = $user->yayasan_id;
+        } elseif ($user && $user->getUserYayasanId()) {
+            $yayasan_id = $user->getUserYayasanId();
         } elseif ($request->filled('y') || $request->filled('token')) {
             $rawToken = $request->query('y') ?? $request->query('token');
             $decryptedCode = \App\Models\Yayasan::decryptToken($rawToken);
@@ -225,6 +232,8 @@ class SiswaController extends Controller
         } elseif ($request->filled('school_id')) {
             $sch = DB::table('schools')->where('id', $request->school_id)->first();
             if ($sch) $yayasan_id = $sch->yayasan_id;
+        } elseif (session('active_yayasan_id')) {
+            $yayasan_id = session('active_yayasan_id');
         }
 
         // 2. Query sekolah HANYA dari yayasan tersebut (jika terdeteksi)

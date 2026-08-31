@@ -13,6 +13,13 @@ class ModuleManagementController extends Controller
     public function manage($id)
     {
         $school = School::findOrFail($id);
+        $user = auth()->user();
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
+        if (!$user->isOwner() && $active_yayasan_id && $school->yayasan_id != $active_yayasan_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $all_modules = Module::all();
         
         // Ambil ID dari modul-modul yang saat ini sedang aktif di sekolah tersebut
@@ -25,6 +32,12 @@ class ModuleManagementController extends Controller
     public function update(Request $request, $id)
     {
         $school = School::findOrFail($id);
+        $user = auth()->user();
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
+        if (!$user->isOwner() && $active_yayasan_id && $school->yayasan_id != $active_yayasan_id) {
+            abort(403, 'Akses ditolak.');
+        }
         
         // Sinkronisasi data di tabel pivot school_modules.
         // Jika tidak ada checkbox yang dicentang (null), maka gunakan array kosong []

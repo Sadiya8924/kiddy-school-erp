@@ -301,13 +301,54 @@ Route::middleware(['auth'])->group(function () {
                 }
             }
 
-            $totalSchools  = \App\Models\School::count();
-            $activeSchools = \App\Models\School::where('status', 'aktif')->count();
-            $totalUsers    = \App\Models\User::whereNot('role', 'super_admin')->count();
-            $totalSiswa    = DB::table('siswas')->count();
-            $schools       = \App\Models\School::latest()->get();
+            $activeYayasanId = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
+            $schoolsQuery = \App\Models\School::query();
+            if (!$user->isOwner() || $activeYayasanId) {
+                if ($activeYayasanId) {
+                    $schoolsQuery->where('yayasan_id', $activeYayasanId);
+                }
+            }
+
+            $yayasanSchoolIds = (clone $schoolsQuery)->pluck('id');
+
+            $totalSchools  = (clone $schoolsQuery)->count();
+            $activeSchools = (clone $schoolsQuery)->where('status', 'aktif')->count();
+
+            $usersQuery = \App\Models\User::whereNot('role', 'super_admin');
+            if (!$user->isOwner() || $activeYayasanId) {
+                $usersQuery->where(function($q) use ($activeYayasanId, $yayasanSchoolIds) {
+                    if ($activeYayasanId) {
+                        $q->where('yayasan_id', $activeYayasanId);
+                    }
+                    if ($yayasanSchoolIds->isNotEmpty()) {
+                        $q->orWhereIn('school_id', $yayasanSchoolIds);
+                    }
+                });
+            }
+            $totalUsers = $usersQuery->count();
+
+            $totalSiswa = DB::table('siswas')
+                ->when((!$user->isOwner() || $activeYayasanId) && $yayasanSchoolIds->isNotEmpty(), function($q) use ($yayasanSchoolIds) {
+                    $q->whereIn('school_id', $yayasanSchoolIds);
+                }, function($q) use ($user, $activeYayasanId) {
+                    if (!$user->isOwner() && $activeYayasanId) {
+                        $q->whereRaw('1 = 0');
+                    }
+                })
+                ->count();
+
+            $schools = (clone $schoolsQuery)->latest()->get();
+
             $pengumuman_global = \App\Models\Announcement::join('schools', 'announcements.school_id', '=', 'schools.id')
                                 ->whereDate('announcements.tanggal_kegiatan', '>=', Carbon::today())
+                                ->when((!$user->isOwner() || $activeYayasanId) && $yayasanSchoolIds->isNotEmpty(), function($q) use ($yayasanSchoolIds) {
+                                    $q->whereIn('announcements.school_id', $yayasanSchoolIds);
+                                }, function($q) use ($user, $activeYayasanId) {
+                                    if (!$user->isOwner() && $activeYayasanId) {
+                                        $q->whereRaw('1 = 0');
+                                    }
+                                })
                                 ->select('announcements.*', 'schools.nama_sekolah')
                                 ->latest('announcements.created_at')->take(5)->get();
             return view('superadmin.dashboard', compact('totalSchools', 'activeSchools', 'totalUsers', 'totalSiswa', 'schools', 'pengumuman_global'));

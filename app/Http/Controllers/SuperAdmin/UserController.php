@@ -35,19 +35,8 @@ class UserController extends Controller
             }
         }
 
-        if (!$active_yayasan_id && $currentUser->yayasan_id) {
-            $active_yayasan_id = $currentUser->yayasan_id;
-        }
-
-        if (!$active_yayasan_id && !empty($currentUser->school_id)) {
-            $userSchool = School::find($currentUser->school_id);
-            if ($userSchool && $userSchool->yayasan_id) {
-                $active_yayasan_id = $userSchool->yayasan_id;
-            }
-        }
-
         if (!$active_yayasan_id) {
-            $active_yayasan_id = session('active_yayasan_id');
+            $active_yayasan_id = $currentUser->getUserYayasanId() ?: session('active_yayasan_id');
         }
 
         // Jika Owner/Superadmin dan belum memilih yayasan, tampilkan Card per-Yayasan
@@ -110,13 +99,29 @@ class UserController extends Controller
 
     public function create()
     {
-        $schools = School::where('status', 'aktif')->get();
-        $yayasans = Yayasan::where('status', 'aktif')->get();
+        $user = Auth::user();
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
+        $schools = School::where('status', 'aktif')
+            ->when(!$user->isOwner() && $active_yayasan_id, function($q) use ($active_yayasan_id) {
+                return $q->where('yayasan_id', $active_yayasan_id);
+            })
+            ->get();
+
+        $yayasans = Yayasan::where('status', 'aktif')
+            ->when(!$user->isOwner() && $active_yayasan_id, function($q) use ($active_yayasan_id) {
+                return $q->where('id', $active_yayasan_id);
+            })
+            ->get();
+
         return view('superadmin.users.create', compact('schools', 'yayasans'));
     }
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
         $request->validate([
             'school_id'  => 'nullable|exists:schools,id',
             'yayasan_id' => 'nullable|exists:yayasans,id',
@@ -129,7 +134,9 @@ class UserController extends Controller
         $schoolId = $request->school_id;
         $yayasanId = $request->yayasan_id;
 
-        if ($schoolId && !$yayasanId) {
+        if (!$user->isOwner() && $active_yayasan_id) {
+            $yayasanId = $active_yayasan_id;
+        } elseif ($schoolId && !$yayasanId) {
             $school = School::find($schoolId);
             if ($school) $yayasanId = $school->yayasan_id;
         }
@@ -148,13 +155,29 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $schools = School::where('status', 'aktif')->get();
-        $yayasans = Yayasan::where('status', 'aktif')->get();
+        $currentUser = Auth::user();
+        $active_yayasan_id = $currentUser->getUserYayasanId() ?: session('active_yayasan_id');
+
+        $schools = School::where('status', 'aktif')
+            ->when(!$currentUser->isOwner() && $active_yayasan_id, function($q) use ($active_yayasan_id) {
+                return $q->where('yayasan_id', $active_yayasan_id);
+            })
+            ->get();
+
+        $yayasans = Yayasan::where('status', 'aktif')
+            ->when(!$currentUser->isOwner() && $active_yayasan_id, function($q) use ($active_yayasan_id) {
+                return $q->where('id', $active_yayasan_id);
+            })
+            ->get();
+
         return view('superadmin.users.edit', compact('user', 'schools', 'yayasans'));
     }
 
     public function update(Request $request, User $user)
     {
+        $currentUser = Auth::user();
+        $active_yayasan_id = $currentUser->getUserYayasanId() ?: session('active_yayasan_id');
+
         $request->validate([
             'school_id'  => 'nullable|exists:schools,id',
             'yayasan_id' => 'nullable|exists:yayasans,id',
@@ -166,7 +189,9 @@ class UserController extends Controller
 
         $data = $request->except('password');
 
-        if ($request->school_id && !$request->yayasan_id) {
+        if (!$currentUser->isOwner() && $active_yayasan_id) {
+            $data['yayasan_id'] = $active_yayasan_id;
+        } elseif ($request->school_id && !$request->yayasan_id) {
             $school = School::find($request->school_id);
             if ($school) $data['yayasan_id'] = $school->yayasan_id;
         }

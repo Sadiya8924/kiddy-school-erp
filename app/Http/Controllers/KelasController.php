@@ -16,6 +16,7 @@ class KelasController extends Controller
     {
         $user = Auth::user();
         $schoolId = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
+        $activeYayasanId = $user->getUserYayasanId() ?: session('active_yayasan_id');
         
         $semesterAktif = Semester::where('is_active', true)->first();
 
@@ -30,12 +31,22 @@ class KelasController extends Controller
         // JIKA BUKAN SUPER ADMIN MODE PUSAT, FILTER BERDASARKAN SCHOOL_ID
         if ($schoolId) {
             $query->where('school_id', $schoolId);
+        } elseif (!$user->isOwner() && $activeYayasanId) {
+            $query->whereHas('school', function($q) use ($activeYayasanId) {
+                $q->where('yayasan_id', $activeYayasanId);
+            });
         }
 
         $list_kelas = $query->get();
         
         // Kirim data sekolah buat dropdown di Modal Tambah (khusus Super Admin)
-        $schools = $user->isSuperAdmin() ? \App\Models\School::where('status', 'aktif')->get() : [];
+        $schools = $user->isSuperAdmin() 
+            ? \App\Models\School::where('status', 'aktif')
+                ->when(!$user->isOwner() && $activeYayasanId, function($q) use ($activeYayasanId) {
+                    $q->where('yayasan_id', $activeYayasanId);
+                })
+                ->get() 
+            : [];
         $active_school_id = $schoolId;
 
         return view('kelas.index', compact('list_kelas', 'schools', 'active_school_id')); 

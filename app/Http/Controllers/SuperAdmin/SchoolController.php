@@ -13,16 +13,14 @@ class SchoolController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $active_yayasan_id = session('active_yayasan_id');
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
 
         $query = School::with('yayasan');
 
-        if ($user->isOwner()) {
+        if (!$user->isOwner() || $active_yayasan_id) {
             if ($active_yayasan_id) {
                 $query->where('yayasan_id', $active_yayasan_id);
             }
-        } elseif ($user->yayasan_id) {
-            $query->where('yayasan_id', $user->yayasan_id);
         }
 
         $schools = $query->latest()->paginate(10);
@@ -31,12 +29,23 @@ class SchoolController extends Controller
 
     public function create()
     {
-        $yayasans = Yayasan::where('status', 'aktif')->get();
+        $user = Auth::user();
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
+        $yayasans = Yayasan::where('status', 'aktif')
+            ->when(!$user->isOwner() && $active_yayasan_id, function($q) use ($active_yayasan_id) {
+                return $q->where('id', $active_yayasan_id);
+            })
+            ->get();
+
         return view('superadmin.schools.create', compact('yayasans'));
     }
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
         $request->validate([
             'yayasan_id'         => 'nullable|exists:yayasans,id',
             'nama_sekolah'       => 'required|string|max:255',
@@ -56,9 +65,9 @@ class SchoolController extends Controller
 
         $data = $request->except('logo_sekolah');
 
-        // Jika yayasan_id kosong, pakai active_yayasan_id atau user's yayasan_id atau default 1
-        if (empty($data['yayasan_id'])) {
-            $data['yayasan_id'] = session('active_yayasan_id') ?? Auth::user()->yayasan_id ?? 1;
+        // Jika yayasan_id kosong atau non-owner, pakai yayasan milik user
+        if (empty($data['yayasan_id']) || !$user->isOwner()) {
+            $data['yayasan_id'] = $active_yayasan_id ?: 1;
         }
 
         if ($request->hasFile('logo_sekolah')) {
@@ -71,12 +80,31 @@ class SchoolController extends Controller
 
     public function edit(School $school)
     {
-        $yayasans = Yayasan::where('status', 'aktif')->get();
+        $user = Auth::user();
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
+        if (!$user->isOwner() && $active_yayasan_id && $school->yayasan_id != $active_yayasan_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $yayasans = Yayasan::where('status', 'aktif')
+            ->when(!$user->isOwner() && $active_yayasan_id, function($q) use ($active_yayasan_id) {
+                return $q->where('id', $active_yayasan_id);
+            })
+            ->get();
+
         return view('superadmin.schools.edit', compact('school', 'yayasans'));
     }
 
     public function update(Request $request, School $school)
     {
+        $user = Auth::user();
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
+        if (!$user->isOwner() && $active_yayasan_id && $school->yayasan_id != $active_yayasan_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $request->validate([
             'yayasan_id'         => 'nullable|exists:yayasans,id',
             'nama_sekolah'       => 'required|string|max:255',
@@ -96,6 +124,10 @@ class SchoolController extends Controller
 
         $data = $request->except('logo_sekolah');
 
+        if (!$user->isOwner() && $active_yayasan_id) {
+            $data['yayasan_id'] = $active_yayasan_id;
+        }
+
         if ($request->hasFile('logo_sekolah')) {
             if ($school->logo_sekolah) Storage::disk('public')->delete($school->logo_sekolah);
             $data['logo_sekolah'] = $request->file('logo_sekolah')->store('logos', 'public');
@@ -107,6 +139,13 @@ class SchoolController extends Controller
 
     public function destroy(School $school)
     {
+        $user = Auth::user();
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
+        if (!$user->isOwner() && $active_yayasan_id && $school->yayasan_id != $active_yayasan_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
         if ($school->logo_sekolah) Storage::disk('public')->delete($school->logo_sekolah);
         $school->delete();
         return redirect()->route('superadmin.schools.index')->with('success', 'Sekolah berhasil dihapus!');
@@ -114,6 +153,13 @@ class SchoolController extends Controller
 
     public function show(School $school)
     {
+        $user = Auth::user();
+        $active_yayasan_id = $user->getUserYayasanId() ?: session('active_yayasan_id');
+
+        if (!$user->isOwner() && $active_yayasan_id && $school->yayasan_id != $active_yayasan_id) {
+            abort(403, 'Akses ditolak.');
+        }
+
         $users = $school->users()->whereNotIn('role', ['super_admin', 'owner'])->get();
         return view('superadmin.schools.show', compact('school', 'users'));
     }

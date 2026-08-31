@@ -522,7 +522,7 @@
             <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
                 {{-- Dynamic Theme Hero Banner --}}
                 <div class="card-header hero-banner-card text-center py-4 border-bottom-0">
-                    <div class="d-inline-flex align-items-center justify-content-center px-3 py-1 rounded-pill bg-white bg-opacity-20 text-white text-xs font-semibold mb-2" style="font-size: 11.5px; backdrop-filter: blur(4px);">
+                    <div class="d-inline-flex align-items-center justify-content-center px-3 py-1 rounded-pill mb-2" style="font-size: 11.5px; font-weight: 600; background: rgba(255, 255, 255, 0.18); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); letter-spacing: 0.01em;">
                         ✨ Pendaftaran Online Resmi — {{ $activeYayasan ? $activeYayasan->nama_yayasan : 'Kiddy School ERP' }}
                     </div>
                     <h3 class="mb-1 fw-extrabold text-white" style="letter-spacing: -0.02em;">Formulir Pendaftaran &amp; Inden Siswa Baru</h3>

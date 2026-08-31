@@ -32,7 +32,7 @@
           <div>
             <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
               <h5 class="fw-bold mb-0 text-white" style="font-size: 18px; letter-spacing: -0.02em;">Data Yayasan 👋</h5>
-              <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-2.5 py-1 font-semibold" style="font-size: 11px;">
+              <span class="badge rounded-pill px-2.5 py-1 font-semibold" style="font-size: 11px; background: rgba(255, 255, 255, 0.2); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3);">
                 Total: {{ $yayasans->total() }} Yayasan
               </span>
             </div>

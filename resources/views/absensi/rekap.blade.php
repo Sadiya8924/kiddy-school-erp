@@ -618,13 +618,6 @@
     @endforeach
 @endif
     
-    {{-- ========================================================== --}}
-    {{-- SUBTLE LOW-KEY FOOTER --}}
-    {{-- ========================================================== --}}
-    <footer class="text-center py-2 mt-2 no-print">
-        <span class="text-muted" style="font-size: 11px;">© 2026 TK Ceria - Web TK Al-Hidayah v1.0</span>
-    </footer>
-
 </div>
 @endif
 

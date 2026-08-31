@@ -480,10 +480,18 @@
           <!-- Unified Clean Footer -->
           <div class="py-3 text-center mt-4 border-top border-light">
             @php
-                $footerYayasanName = isset($currentYayasan) && $currentYayasan ? $currentYayasan->nama_yayasan : \App\Models\Setting::get('site_title', 'TK CERIA');
+                $currentSchoolId = session('active_school_id');
+                $activeSchool = $currentSchoolId ? \App\Models\School::find($currentSchoolId) : null;
+                if ($activeSchool) {
+                    $footerName = $activeSchool->nama_sekolah;
+                } elseif (isset($currentYayasan) && $currentYayasan) {
+                    $footerName = $currentYayasan->nama_yayasan;
+                } else {
+                    $footerName = \App\Models\Setting::get('site_title', 'Kiddy School ERP');
+                }
             @endphp
             <p class="mb-0 text-muted" style="font-size: 12px; font-weight: 500;">
-              © {{ date('Y') }} {{ $footerYayasanName }} — Kiddy School ERP v2.0
+              © {{ date('Y') }} {{ $footerName }} — Kiddy School ERP v2.0
             </p>
           </div>
         </div>

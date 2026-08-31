@@ -190,13 +190,6 @@
     </form>
     @endif
 
-    {{-- ========================================================== --}}
-    {{-- SUBTLE LOW-KEY FOOTER --}}
-    {{-- ========================================================== --}}
-    <footer class="text-center py-2 mt-2">
-        <span class="text-muted" style="font-size: 11px;">© {{ date('Y') }} {{ \App\Models\Setting::get('site_title', 'Kiddy School ERP') }}</span>
-    </footer>
-
 </div>
 
 @push('scripts')

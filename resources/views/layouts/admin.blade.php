@@ -467,7 +467,15 @@
                 <!-- Footer -->
                 <div class="py-3 text-center mt-4 border-top border-light">
                     @php
-                        $activeSchoolName = optional(\App\Models\School::find(session('active_school_id') ?? optional(auth()->user())->school_id))->nama_sekolah ?? \App\Models\Setting::get('site_title', 'Kiddy School ERP');
+                        $currentSchoolId = session('active_school_id') ?? optional(auth()->user())->school_id;
+                        $activeSchool = $currentSchoolId ? \App\Models\School::find($currentSchoolId) : null;
+                        if ($activeSchool) {
+                            $activeSchoolName = $activeSchool->nama_sekolah;
+                        } elseif (isset($currentYayasan) && $currentYayasan) {
+                            $activeSchoolName = $currentYayasan->nama_yayasan;
+                        } else {
+                            $activeSchoolName = \App\Models\Setting::get('site_title', 'Kiddy School ERP');
+                        }
                     @endphp
                     <p class="mb-0 text-muted" style="font-size: 12px; font-weight: 500;">© {{ date('Y') }} {{ $activeSchoolName }} — Kiddy School ERP v2.0</p>
                 </div>

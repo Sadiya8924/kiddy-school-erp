@@ -163,7 +163,7 @@
                                 @endif
                             </td>
                             <td class="py-3 text-end pe-0">
-                                <div class="d-flex justify-content-end gap-1.5 flex-wrap" onclick="event.stopPropagation();">
+                                <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap" style="gap: 8px !important;" onclick="event.stopPropagation();">
                                     <a href="/siswa/{{ $siswa->id }}" class="btn btn-sm btn-outline-primary rounded-3 px-2.5 py-1 font-semibold shadow-xs" style="font-size: 11.5px;">
                                         <iconify-icon icon="solar:eye-bold-duotone" class="align-middle me-1"></iconify-icon> Lihat Detail
                                     </a>

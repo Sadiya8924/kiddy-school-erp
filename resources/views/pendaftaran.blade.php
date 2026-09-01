@@ -194,18 +194,41 @@
        FORM INPUT — PLACEHOLDER vs NILAI TERISI
        ============================================= */
 
-    /* Placeholder: warna lebih samar / pudar */
+    /* Placeholder: transparan dan lebih samar / pudar */
     .form-control::placeholder,
-    .form-select::placeholder {
-        color: #b0b8c5 !important;
-        font-style: italic;
-        opacity: 1;
+    .form-select::placeholder,
+    textarea::placeholder {
+        color: #94a3b8 !important;
+        opacity: 0.38 !important;
+        font-style: normal !important;
+        font-weight: 400 !important;
+    }
+    /* Webkit */
+    .form-control::-webkit-input-placeholder,
+    .form-select::-webkit-input-placeholder,
+    textarea::-webkit-input-placeholder {
+        color: #94a3b8 !important;
+        opacity: 0.38 !important;
+        font-style: normal !important;
+        font-weight: 400 !important;
     }
     /* Firefox */
     .form-control::-moz-placeholder,
-    .form-select::-moz-placeholder {
-        color: #b0b8c5 !important;
-        opacity: 1;
+    .form-select::-moz-placeholder,
+    textarea::-moz-placeholder {
+        color: #94a3b8 !important;
+        opacity: 0.38 !important;
+        font-style: normal !important;
+        font-weight: 400 !important;
+    }
+    /* MS */
+    .form-control:-ms-input-placeholder,
+    .form-select:-ms-input-placeholder,
+    textarea:-ms-input-placeholder {
+        color: #94a3b8 !important;
+        opacity: 0.38 !important;
+        font-style: normal !important;
+        font-weight: 400 !important;
     }
 
     /* Teks yang sudah diisi: gelap dan jelas terbaca */
@@ -214,21 +237,21 @@
         color: #1a202c !important;
         font-weight: 500 !important;
         border: 1.5px solid #dce3ed !important;
-        border-radius: 10px !important;
-        padding: 10px 14px !important;
+        border-radius: 9px !important;
+        padding: 7.5px 12px !important;
         height: auto !important;
-        min-height: 44px !important;
+        min-height: 40px !important;
         transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
         background-color: #ffffff !important;
     }
 
     /* Select yang belum dipilih (value kosong): placeholder samar */
     .form-select option[value=""] {
-        color: #b0b8c5 !important;
+        color: #94a3b8 !important;
     }
     .form-select:invalid,
     .form-select option:first-child:checked {
-        color: #b0b8c5 !important;
+        color: #94a3b8 !important;
     }
 
     /* State: focus */
@@ -246,6 +269,176 @@
         font-weight: 600 !important;
         border-style: dashed !important;
         cursor: not-allowed;
+    }
+
+    /* =============================================
+       MODERN LAYOUT & CARD ELEVATION
+       ============================================= */
+    .pendaftaran-container {
+        max-width: 1200px;
+        width: calc(100% - 32px);
+        margin: 10px auto 44px;
+    }
+    .pendaftaran-card {
+        border: 1px solid rgba(226, 232, 240, 0.85) !important;
+        box-shadow: 0 12px 36px -12px rgba(15, 23, 42, 0.08) !important;
+        background: #ffffff;
+    }
+    .hero-top-pill {
+        font-size: 11px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.18);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        letter-spacing: 0.01em;
+    }
+    .hero-main-title {
+        font-size: 20px;
+        letter-spacing: -0.02em;
+    }
+    .hero-trust-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .hero-trust-item {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.9);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 500;
+    }
+    .hero-trust-item iconify-icon {
+        font-size: 13px;
+    }
+    .pendaftaran-body {
+        padding: 22px 28px 36px !important;
+        background: #ffffff;
+    }
+    .school-program-selector {
+        background: #ffffff;
+        border: 1.5px solid {{ $theme['primary'] }}30;
+        box-shadow: 0 4px 16px {{ $theme['primary'] }}0c;
+        border-radius: 13px;
+        padding: 14px 18px;
+        margin-bottom: 18px;
+    }
+    .step-number-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        background: {{ $theme['primary'] }};
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        margin-right: 5px;
+    }
+    .form-section-title-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: {{ $theme['primary'] }};
+        background: {{ $theme['primary'] }}0d;
+        border: 1px solid {{ $theme['primary'] }}22;
+        border-radius: 8px;
+        padding: 6px 14px;
+        margin-top: 16px;
+        margin-bottom: 12px;
+        border-left: 3px solid {{ $theme['primary'] }};
+    }
+    .form-section-title-badge iconify-icon {
+        font-size: 15px;
+    }
+    .parent-data-card {
+        background: #ffffff;
+        border: 1.5px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 15px 18px;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
+        transition: border-color 0.2s;
+    }
+    .parent-data-card:focus-within {
+        border-color: {{ $theme['primary'] }}55;
+    }
+    .parent-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #F1F5F9;
+    }
+    .parent-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+    }
+    .parent-avatar.ayah {
+        background: #EFF6FF;
+        color: #2563EB;
+    }
+    .parent-avatar.ibu {
+        background: #FDF2F8;
+        color: #DB2777;
+    }
+    .parent-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1E293B;
+    }
+    .pendaftaran-guarantee-badges {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 12px;
+        padding-top: 10px;
+    }
+    .guarantee-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        color: #64748B;
+        font-weight: 500;
+    }
+    .guarantee-item iconify-icon {
+        color: #10B981;
+        font-size: 13px;
+    }
+
+    @media (max-width: 768px) {
+        .pendaftaran-container {
+            width: 100%;
+            margin: 6px 0 24px;
+            padding: 0 8px;
+        }
+        .pendaftaran-body {
+            padding: 16px 14px 24px !important;
+        }
+        .hero-trust-bar {
+            gap: 8px;
+        }
     }
 
     /* =============================================
@@ -380,16 +573,17 @@
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        min-height: 44px;
-        padding: 10px 14px;
+        min-height: 40px;
+        padding: 7.5px 12px;
         background: #ffffff;
         border: 1.5px solid #dce3ed;
-        border-radius: 10px;
+        border-radius: 9px;
         cursor: pointer;
         font-size: 13px;
         font-weight: 400;
-        color: #b0b8c5;
-        font-style: italic;
+        color: #94a3b8;
+        opacity: 0.55;
+        font-style: normal;
         transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         user-select: none;
         outline: none;
@@ -399,6 +593,7 @@
         color: #1a202c;
         font-style: normal;
         font-weight: 500;
+        opacity: 1;
     }
     .cs-trigger:hover {
         border-color: #aab4c8;
@@ -515,74 +710,80 @@
     }
 </style>
 
-<div class="container mt-3 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
+<div class="pendaftaran-container">
+    <div class="card border-0 rounded-4 overflow-hidden pendaftaran-card">
+        {{-- Dynamic Theme Hero Banner --}}
+        <div class="card-header hero-banner-card text-center py-3.5 px-3 px-md-4 border-bottom-0">
+            <div class="d-inline-flex align-items-center justify-content-center px-3 py-0.5 rounded-pill mb-1.5 hero-top-pill">
+                ✨ Pendaftaran Online Resmi — {{ $activeYayasan ? $activeYayasan->nama_yayasan : 'Kiddy School ERP' }}
+            </div>
+            <h2 class="mb-1 fw-bold text-white hero-main-title">Formulir Pendaftaran &amp; Inden Siswa Baru</h2>
+            <p class="mb-2 small text-white-50" id="header_school_name">
+                {{ $currentSchool->nama_sekolah ?? 'Pendaftaran Siswa Baru' }} {{ $activeYayasan ? '— ' . $activeYayasan->nama_yayasan : '' }}
+            </p>
+            <div class="hero-trust-bar">
+                <span class="hero-trust-item"><iconify-icon icon="solar:shield-check-bold"></iconify-icon> Data Terenkripsi Aman</span>
+                <span class="hero-trust-item"><iconify-icon icon="solar:bolt-circle-bold"></iconify-icon> Kuota &amp; Seleksi Realtime</span>
+                <span class="hero-trust-item"><iconify-icon icon="solar:chat-round-dots-bold"></iconify-icon> Notifikasi Status WhatsApp</span>
+                <span class="hero-trust-item"><iconify-icon icon="solar:card-2-bold"></iconify-icon> Konfirmasi Instan</span>
+            </div>
+        </div>
 
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-                {{-- Dynamic Theme Hero Banner --}}
-                <div class="card-header hero-banner-card text-center py-4 border-bottom-0">
-                    <div class="d-inline-flex align-items-center justify-content-center px-3 py-1 rounded-pill mb-2" style="font-size: 11.5px; font-weight: 600; background: rgba(255, 255, 255, 0.18); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); letter-spacing: 0.01em;">
-                        ✨ Pendaftaran Online Resmi — {{ $activeYayasan ? $activeYayasan->nama_yayasan : 'Kiddy School ERP' }}
-                    </div>
-                    <h3 class="mb-1 fw-extrabold text-white" style="letter-spacing: -0.02em;">Formulir Pendaftaran &amp; Inden Siswa Baru</h3>
-                    <p class="mb-0 small text-white-50" id="header_school_name">
-                        {{ $currentSchool->nama_sekolah ?? 'Pendaftaran Siswa Baru' }} {{ $activeYayasan ? '— ' . $activeYayasan->nama_yayasan : '' }}
-                    </p>
-                </div>
+        <div class="card-body pendaftaran-body">
+            
+            {{-- 1-WAY UNIFIED REGISTRATION FORM --}}
+            <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data" id="formPendaftaran" novalidate>
+                @csrf
 
-                <div class="card-body p-4 p-md-5 bg-white">
-                    
-                    {{-- 1-WAY UNIFIED REGISTRATION FORM --}}
-                    <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data" id="formPendaftaran" novalidate>
-                        @csrf
-
-                        {{-- SECTION 1: PILIH CABANG SEKOLAH, TAHUN AJARAN, & PROGRAM KELAS --}}
-                        <div class="p-3.5 p-md-4 rounded-3 border border-theme-primary bg-light mb-4 shadow-xs">
-                            <div class="row gx-3 gy-3">
-                                <div class="col-md-5">
-                                    <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">
-                                        1. Pilih Cabang TK / PAUD Tujuan <span class="text-danger">*</span>
-                                    </label>
-                                    @if(isset($is_locked) && $is_locked && $currentSchool)
-                                        <input type="text" class="form-control bg-white border shadow-none fw-bold text-theme-primary" value="{{ $currentSchool->nama_sekolah }}" readonly style="font-size: 13.5px;">
-                                        <input type="hidden" name="school_id" id="school_id_field" value="{{ $currentSchool->id }}">
-                                    @else
-                                        <select name="school_id" id="school_id_field" class="form-select bg-white border shadow-none fw-bold text-theme-primary" required style="font-size: 13.5px;">
-                                            @if($schools->count() > 1)
-                                                <option value="">-- Pilih Cabang Sekolah --</option>
-                                            @endif
-                                            @foreach($schools as $s)
-                                                <option value="{{ $s->id }}" {{ ($selected_school_id == $s->id || $schools->count() == 1) ? 'selected' : '' }}>
-                                                    {{ $s->nama_sekolah }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                {{-- SECTION 1: PILIH CABANG SEKOLAH, TAHUN AJARAN, & PROGRAM KELAS --}}
+                <div class="school-program-selector">
+                    <div class="row gx-3 gy-2">
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
+                                <span class="step-number-badge">1</span> Pilih Cabang TK / PAUD <span class="text-danger">*</span>
+                            </label>
+                            @if(isset($is_locked) && $is_locked && $currentSchool)
+                                <input type="text" class="form-control bg-white border shadow-none fw-bold text-theme-primary" value="{{ $currentSchool->nama_sekolah }}" readonly style="font-size: 13px;">
+                                <input type="hidden" name="school_id" id="school_id_field" value="{{ $currentSchool->id }}">
+                            @else
+                                <select name="school_id" id="school_id_field" class="form-select bg-white border shadow-none fw-bold text-theme-primary" required style="font-size: 13px;">
+                                    @if($schools->count() > 1)
+                                        <option value="">-- Pilih Cabang Sekolah --</option>
                                     @endif
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">
-                                        2. Tahun Ajaran <span class="text-danger">*</span>
-                                    </label>
-                                    <select name="tahun_inden" id="tahun_inden" class="form-select bg-white border shadow-none fw-medium" required style="font-size: 13px;">
-                                        <option value="">-- Pilih Tahun --</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold text-dark mb-1" style="font-size: 13px;">
-                                        3. Program Kelas <span class="text-danger">*</span>
-                                    </label>
-                                    <select name="program_pilihan" id="program_pilihan" class="form-select bg-white border shadow-none fw-medium" required style="font-size: 13px;" disabled>
-                                        <option value="">-- Pilih Tahun Dahulu --</option>
-                                    </select>
-                                </div>
-                            </div>
+                                    @foreach($schools as $s)
+                                        <option value="{{ $s->id }}" {{ ($selected_school_id == $s->id || $schools->count() == 1) ? 'selected' : '' }}>
+                                            {{ $s->nama_sekolah }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            @endif
                         </div>
 
-                        {{-- A. DATA PRIBADI --}}
-                        <h6 class="fw-bold text-theme-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">A. Data Pribadi Siswa</h6>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
+                                <span class="step-number-badge">2</span> Tahun Ajaran <span class="text-danger">*</span>
+                            </label>
+                            <select name="tahun_inden" id="tahun_inden" class="form-select bg-white border shadow-none fw-medium" required style="font-size: 12.5px;">
+                                <option value="">-- Pilih Tahun --</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 12.5px;">
+                                <span class="step-number-badge">3</span> Program Kelas <span class="text-danger">*</span>
+                            </label>
+                            <select name="program_pilihan" id="program_pilihan" class="form-select bg-white border shadow-none fw-medium" required style="font-size: 12.5px;" disabled>
+                                <option value="">-- Pilih Tahun Dahulu --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- A. DATA PRIBADI --}}
+                <div class="form-section-title-badge">
+                    <iconify-icon icon="solar:user-id-bold-duotone"></iconify-icon>
+                    <span>A. Data Pribadi Calon Siswa</span>
+                </div>
                         <div class="row gx-3">
                             <div class="col-md-8 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Nama Lengkap Anak <span class="text-danger">*</span></label>
@@ -637,7 +838,10 @@
                         </div>
 
                         {{-- B. ALAMAT & KONTAK --}}
-                        <h6 class="fw-bold text-theme-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">B. Alamat, Koordinat, &amp; Kontak</h6>
+                        <div class="form-section-title-badge">
+                            <iconify-icon icon="solar:map-point-wave-bold-duotone"></iconify-icon>
+                            <span>B. Alamat, Koordinat, &amp; Kontak</span>
+                        </div>
                         
                         {{-- PETA INTERAKTIF --}}
                         <div class="row gx-3 mb-3">
@@ -649,7 +853,7 @@
                                     </button>
                                 </div>
                                 <p class="small text-muted mb-2">Gunakan kotak pencarian atau klik/geser pin di peta untuk menentukan lokasi rumah Anda. Lintang &amp; Bujur akan terisi otomatis.</p>
-                                <div id="map" class="rounded border shadow-sm" style="height: 300px; width: 100%; z-index: 1;"></div>
+                                <div id="map" class="rounded-3 border shadow-sm" style="height: 230px; width: 100%; z-index: 1;"></div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Garis Lintang (Latitude) <span class="text-danger">*</span></label>
@@ -748,11 +952,19 @@
                         </div>
 
                         {{-- C. DATA ORANG TUA --}}
-                        <h6 class="fw-bold text-theme-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">C. Data Orang Tua</h6>
+                        <div class="form-section-title-badge">
+                            <iconify-icon icon="solar:users-group-two-rounded-bold-duotone"></iconify-icon>
+                            <span>C. Data Orang Tua / Wali</span>
+                        </div>
                         <div class="row gx-3">
                             <div class="col-md-6 mb-3">
-                                <div class="p-3 border rounded bg-light h-100">
-                                    <h6 class="fw-bold text-dark mb-3" style="font-size: 13px;">Data Ayah Kandung</h6>
+                                <div class="parent-data-card h-100">
+                                    <div class="parent-card-header">
+                                        <div class="parent-avatar ayah">
+                                            <iconify-icon icon="solar:user-bold-duotone"></iconify-icon>
+                                        </div>
+                                        <span class="parent-title">Data Ayah Kandung</span>
+                                    </div>
                                     <div class="mb-2">
                                         <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Nama Ayah <span class="text-danger">*</span></label>
                                         <input type="text" name="nama_ayah" class="form-control bg-white border shadow-none" value="{{ old('nama_ayah') }}" style="font-size: 12px;" required placeholder="Nama lengkap ayah">
@@ -789,8 +1001,13 @@
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <div class="p-3 border rounded bg-light h-100">
-                                    <h6 class="fw-bold text-dark mb-3" style="font-size: 13px;">Data Ibu Kandung</h6>
+                                <div class="parent-data-card h-100">
+                                    <div class="parent-card-header">
+                                        <div class="parent-avatar ibu">
+                                            <iconify-icon icon="solar:user-heart-rounded-bold-duotone"></iconify-icon>
+                                        </div>
+                                        <span class="parent-title">Data Ibu Kandung</span>
+                                    </div>
                                     <div class="mb-2">
                                         <label class="form-label fw-semibold text-dark" style="font-size: 11px;">Nama Ibu <span class="text-danger">*</span></label>
                                         <input type="text" name="nama_ibu" class="form-control bg-white border shadow-none" value="{{ old('nama_ibu') }}" style="font-size: 12px;" required placeholder="Nama lengkap ibu">
@@ -829,7 +1046,10 @@
                         </div>
 
                         {{-- D. FISIK & DOKUMEN --}}
-                        <h6 class="fw-bold text-theme-primary border-bottom pb-2 mb-3 mt-4 text-uppercase" style="letter-spacing: 0.5px;">D. Fisik &amp; Dokumen Upload</h6>
+                        <div class="form-section-title-badge">
+                            <iconify-icon icon="solar:folder-with-files-bold-duotone"></iconify-icon>
+                            <span>D. Fisik &amp; Dokumen Upload</span>
+                        </div>
                         <div class="row gx-3">
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 12px;">Tinggi Badan (cm) <span class="text-danger">*</span></label>
@@ -869,10 +1089,15 @@
                             </div>
                         </div>
                         
-                        <div class="d-grid mt-4 pt-3 border-top">
-                            <button type="submit" id="btnSubmitForm" class="btn btn-theme-submit rounded-pill font-bold py-3 d-flex justify-content-center align-items-center gap-2" style="font-size: 15px; font-weight: 700;">
-                                <iconify-icon icon="solar:send-square-bold-duotone" class="fs-5"></iconify-icon> Kirim Formulir Pendaftaran
+                        <div class="mt-4 pt-3 border-top">
+                            <button type="submit" id="btnSubmitForm" class="btn btn-theme-submit rounded-3 py-2.5 w-100 d-flex justify-content-center align-items-center gap-2" style="font-size: 15px; font-weight: 700;">
+                                <iconify-icon icon="solar:plain-bold-duotone" class="fs-5"></iconify-icon> Kirim Formulir Pendaftaran Siswa
                             </button>
+                            <div class="pendaftaran-guarantee-badges">
+                                <span class="guarantee-item"><iconify-icon icon="solar:shield-check-bold"></iconify-icon> Enkripsi SSL 256-Bit</span>
+                                <span class="guarantee-item"><iconify-icon icon="solar:check-circle-bold"></iconify-icon> Data Langsung Masuk ke Sekolah</span>
+                                <span class="guarantee-item"><iconify-icon icon="solar:clock-circle-bold"></iconify-icon> Verifikasi Cepat 1x24 Jam</span>
+                            </div>
                         </div>
                     </form>
                     
@@ -1578,7 +1803,5 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 @endsection

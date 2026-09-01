@@ -16,7 +16,12 @@
 
     <style>
         body {
-            background-color: #F7F9FC;
+            background-color: #F8FAFC;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.04) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(224, 231, 255, 0.3) 0px, transparent 50%);
+            background-attachment: fixed;
             min-height: 100vh;
         }
 
@@ -25,10 +30,12 @@
             position: sticky;
             top: 0;
             z-index: 999;
-            background: #fff;
-            border-bottom: 1px solid #e9ecef;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.03);
+            padding: 9px 24px;
             display: flex;
             align-items: center;
             gap: 14px;

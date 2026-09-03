@@ -60,10 +60,11 @@ class SchoolController extends Controller
             'kuota_tk_siang'     => 'nullable|integer|min:0',
             'kuota_paud'         => 'nullable|integer|min:0',
             'logo_sekolah'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_sekolah'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status'             => 'required|in:aktif,nonaktif',
         ]);
 
-        $data = $request->except('logo_sekolah');
+        $data = $request->except(['logo_sekolah', 'foto_sekolah']);
 
         // Jika yayasan_id kosong atau non-owner, pakai yayasan milik user
         if (empty($data['yayasan_id']) || !$user->isOwner()) {
@@ -72,6 +73,10 @@ class SchoolController extends Controller
 
         if ($request->hasFile('logo_sekolah')) {
             $data['logo_sekolah'] = $request->file('logo_sekolah')->store('logos', 'public');
+        }
+
+        if ($request->hasFile('foto_sekolah')) {
+            $data['foto_sekolah'] = $request->file('foto_sekolah')->store('foto_sekolah', 'public');
         }
 
         School::create($data);
@@ -119,10 +124,11 @@ class SchoolController extends Controller
             'kuota_tk_siang'     => 'nullable|integer|min:0',
             'kuota_paud'         => 'nullable|integer|min:0',
             'logo_sekolah'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_sekolah'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'status'             => 'required|in:aktif,nonaktif',
         ]);
 
-        $data = $request->except('logo_sekolah');
+        $data = $request->except(['logo_sekolah', 'foto_sekolah']);
 
         if (!$user->isOwner() && $active_yayasan_id) {
             $data['yayasan_id'] = $active_yayasan_id;
@@ -131,6 +137,11 @@ class SchoolController extends Controller
         if ($request->hasFile('logo_sekolah')) {
             if ($school->logo_sekolah) Storage::disk('public')->delete($school->logo_sekolah);
             $data['logo_sekolah'] = $request->file('logo_sekolah')->store('logos', 'public');
+        }
+
+        if ($request->hasFile('foto_sekolah')) {
+            if ($school->foto_sekolah) Storage::disk('public')->delete($school->foto_sekolah);
+            $data['foto_sekolah'] = $request->file('foto_sekolah')->store('foto_sekolah', 'public');
         }
 
         $school->update($data);
@@ -147,6 +158,7 @@ class SchoolController extends Controller
         }
 
         if ($school->logo_sekolah) Storage::disk('public')->delete($school->logo_sekolah);
+        if ($school->foto_sekolah) Storage::disk('public')->delete($school->foto_sekolah);
         $school->delete();
         return redirect()->route('superadmin.schools.index')->with('success', 'Sekolah berhasil dihapus!');
     }

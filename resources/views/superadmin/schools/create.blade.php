@@ -118,6 +118,14 @@
                 <span class="text-muted" style="font-size: 11px;">Format: JPG/PNG, maks 2MB</span>
               </div>
 
+              <div class="col-md-6">
+                <label class="form-label font-semibold text-dark small mb-1">Foto Cabang Sekolah (Card Landing Page)</label>
+                <input type="file" name="foto_sekolah" class="form-control rounded-3 font-medium text-dark shadow-none @error('foto_sekolah') is-invalid @enderror"
+                       accept="image/*" style="font-size: 12.5px;">
+                @error('foto_sekolah')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <span class="text-muted" style="font-size: 11px;">Format: JPG/PNG, maks 2MB. Tampil di banner card landing page.</span>
+              </div>
+
             </div>
 
             <div class="d-flex align-items-center gap-2 mt-4 pt-2 border-top">

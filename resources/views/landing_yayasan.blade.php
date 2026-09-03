@@ -523,14 +523,22 @@
             bottom: 20px;
             left: 20px;
             right: 20px;
-            background: rgba(10, 18, 36, 0.88);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(255,255,255,0.16);
-            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.45) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+            border-radius: 18px;
             padding: 14px 18px;
             display: flex;
             align-items: center;
             gap: 14px;
+            transition: all 0.3s ease;
+        }
+        .hero-visual-badge:hover {
+            background: rgba(15, 23, 42, 0.6) !important;
+            border-color: rgba(255, 255, 255, 0.4) !important;
+            transform: translateY(-2px);
         }
 
         /* ═══════════════════════════════════════════════════════
@@ -648,7 +656,7 @@
             box-shadow: 0 20px 48px rgba(0,0,0,0.1);
         }
         .school-card-banner {
-            height: 150px;
+            height: 160px;
             background: var(--avatar-bg);
             display: flex;
             align-items: center;
@@ -658,11 +666,24 @@
             position: relative;
             overflow: hidden;
         }
+        .school-card-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            transition: transform 0.5s ease;
+        }
+        .school-card-item:hover .school-card-banner img {
+            transform: scale(1.06);
+        }
         .school-card-banner::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.15) 100%);
+            background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.25) 100%);
+            z-index: 2;
         }
         .school-card-content {
             padding: 24px;
@@ -1126,8 +1147,14 @@
             <div class="col-md-6 col-lg-4">
                 <div class="school-card-item">
                     <div class="school-card-banner">
-                        <iconify-icon icon="solar:buildings-3-bold-duotone" style="font-size:52px;opacity:.35;"></iconify-icon>
-                        <span class="badge position-absolute top-0 end-0 m-3 px-3 py-1.5 rounded-pill fw-bold" style="font-size:11px;background:var(--btn-cta);color:var(--btn-cta-text);z-index:2;">
+                        @if(!empty($school->foto_sekolah))
+                            <img src="{{ asset('storage/' . $school->foto_sekolah) }}" alt="{{ $school->nama_sekolah }}">
+                        @elseif(!empty($school->logo_sekolah))
+                            <img src="{{ asset('storage/' . $school->logo_sekolah) }}" alt="{{ $school->nama_sekolah }}">
+                        @else
+                            <iconify-icon icon="solar:buildings-3-bold-duotone" style="font-size:52px;opacity:.35;"></iconify-icon>
+                        @endif
+                        <span class="badge position-absolute top-0 end-0 m-3 px-3 py-1.5 rounded-pill fw-bold" style="font-size:11px;background:var(--btn-cta);color:var(--btn-cta-text);z-index:3;">
                             PPDB DIBUKA
                         </span>
                     </div>

@@ -7,7 +7,7 @@ class School extends Model
 {
     protected $fillable = [
         'yayasan_id',
-        'nama_sekolah', 'npsn', 'alamat', 'logo_sekolah',
+        'nama_sekolah', 'npsn', 'alamat', 'logo_sekolah', 'foto_sekolah',
         'kepala_sekolah', 'kepala_sekolah_user_id', 'telepon',
         'tahun_ajaran_aktif', 'semester_aktif', 'status',
         'is_rapor_open',

@@ -515,29 +515,101 @@
     }
 
     /* =============================================
-       FILE INPUT — lebih rapi
+       CUSTOM FILE UPLOAD BAR — Transparan & Semi Blur (Glassmorphism)
        ============================================= */
-    input[type="file"].form-control {
-        padding: 8px 12px !important;
-        font-weight: 400 !important;
-        color: #6b7280 !important;
+    .custom-file-bar {
+        position: relative;
+        background: rgba(255, 255, 255, 0.55) !important;
+        backdrop-filter: blur(12px) saturate(180%);
+        -webkit-backdrop-filter: blur(12px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.7) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        border-radius: 10px !important;
+        height: 44px;
+        transition: all 0.25s ease-in-out;
         cursor: pointer;
-        font-size: 12px !important;
     }
-    input[type="file"].form-control::file-selector-button {
-        background: {{ $theme['primary'] }}15;
-        color: {{ $theme['primary'] }};
-        border: 1px solid {{ $theme['primary'] }}40;
-        border-radius: 6px;
-        padding: 4px 10px;
-        font-size: 11.5px;
+    .custom-file-bar:hover {
+        background: rgba(255, 255, 255, 0.85) !important;
+        border-color: {{ $theme['primary'] }} !important;
+        box-shadow: 0 6px 20px {{ $theme['primary'] }}22, inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+    .custom-file-bar.has-file {
+        background: rgba(240, 253, 244, 0.8) !important;
+        border-color: #10b981 !important;
+    }
+    .custom-file-btn {
+        background-color: {{ $theme['primary'] }};
+        color: #ffffff;
         font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
-        margin-right: 10px;
+        font-size: 13px;
+        padding: 0 20px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        transition: all 0.2s ease;
+        border-top-left-radius: 9px;
+        border-bottom-left-radius: 9px;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.06);
     }
-    input[type="file"].form-control::file-selector-button:hover {
-        background: {{ $theme['primary'] }}25;
+    .custom-file-bar:hover .custom-file-btn {
+        filter: brightness(1.08);
+    }
+    .custom-file-input-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 5;
+    }
+
+    /* Fallback untuk native input[type="file"].form-control */
+    input[type="file"].form-control {
+        padding: 0 !important;
+        height: 44px !important;
+        line-height: 42px !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.7) !important;
+        background: rgba(255, 255, 255, 0.55) !important;
+        backdrop-filter: blur(12px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+        overflow: hidden !important;
+        font-size: 13px !important;
+        color: #334155 !important;
+        cursor: pointer;
+        transition: all 0.25s ease-in-out !important;
+    }
+    input[type="file"].form-control:hover {
+        background: rgba(255, 255, 255, 0.85) !important;
+        border-color: {{ $theme['primary'] }} !important;
+        box-shadow: 0 6px 20px {{ $theme['primary'] }}22 !important;
+    }
+    input[type="file"].form-control::file-selector-button,
+    input[type="file"].form-control::-webkit-file-upload-button {
+        background-color: {{ $theme['primary'] }} !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-top-left-radius: 9px !important;
+        border-bottom-left-radius: 9px !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        padding: 0 20px !important;
+        height: 100% !important;
+        margin-right: 14px !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    input[type="file"].form-control::file-selector-button:hover,
+    input[type="file"].form-control::-webkit-file-upload-button:hover {
+        filter: brightness(1.08) !important;
     }
 
     /* =============================================
@@ -1064,27 +1136,63 @@
                                 <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="lingkar_kepala" class="form-control bg-white border shadow-none" value="{{ old('lingkar_kepala') }}" style="font-size: 13px;" required placeholder="Contoh: 48">
                             </div>
                             
+                            <!-- Pas Foto Anak -->
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 13px;">Pas Foto Anak (Wajib) <span class="text-danger">*</span></label>
-                                <input type="file" name="foto_anak" accept="image/*" class="form-control bg-white border shadow-none" required>
+                                <div class="custom-file-bar position-relative d-flex align-items-center rounded-3 border overflow-hidden bg-white shadow-xs" id="bar_foto_anak" style="height: 42px; border-color: #cbd5e1 !important;">
+                                    <input type="file" name="foto_anak" id="foto_anak" accept="image/*" class="custom-file-input-overlay" required onchange="updateFileBarUI(this, 'foto_anak')">
+                                    <div class="custom-file-btn d-flex align-items-center justify-content-center px-3.5 h-100 fw-semibold text-white flex-shrink-0" style="background-color: {{ $theme['primary'] }}; font-size: 13px; min-width: 110px;">
+                                        Choose File
+                                    </div>
+                                    <div class="custom-file-name text-muted font-13 text-truncate px-3 flex-grow-1" id="name_foto_anak" style="color: #6b7280; font-size: 13px;">
+                                        No file chosen
+                                    </div>
+                                </div>
                                 <div class="form-text text-muted" style="font-size: 11px;">Format: JPG/PNG, Max: 2MB.</div>
                             </div>
 
+                            <!-- Scan/Foto KK -->
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 13px;">Scan/Foto KK (Wajib) <span class="text-danger">*</span></label>
-                                <input type="file" name="foto_kk" accept="image/*,.pdf" class="form-control bg-white border shadow-none" required>
+                                <div class="custom-file-bar position-relative d-flex align-items-center rounded-3 border overflow-hidden bg-white shadow-xs" id="bar_foto_kk" style="height: 42px; border-color: #cbd5e1 !important;">
+                                    <input type="file" name="foto_kk" id="foto_kk" accept="image/*,.pdf" class="custom-file-input-overlay" required onchange="updateFileBarUI(this, 'foto_kk')">
+                                    <div class="custom-file-btn d-flex align-items-center justify-content-center px-3.5 h-100 fw-semibold text-white flex-shrink-0" style="background-color: {{ $theme['primary'] }}; font-size: 13px; min-width: 110px;">
+                                        Choose File
+                                    </div>
+                                    <div class="custom-file-name text-muted font-13 text-truncate px-3 flex-grow-1" id="name_foto_kk" style="color: #6b7280; font-size: 13px;">
+                                        No file chosen
+                                    </div>
+                                </div>
                                 <div class="form-text text-muted" style="font-size: 11px;">Format: JPG/PNG/PDF, Max: 2MB.</div>
                             </div>
 
+                            <!-- Scan/Foto Akta Kelahiran -->
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 13px;">Scan/Foto Akta Kelahiran (Wajib) <span class="text-danger">*</span></label>
-                                <input type="file" name="foto_akte" accept="image/*,.pdf" class="form-control bg-white border shadow-none" required>
+                                <div class="custom-file-bar position-relative d-flex align-items-center rounded-3 border overflow-hidden bg-white shadow-xs" id="bar_foto_akte" style="height: 42px; border-color: #cbd5e1 !important;">
+                                    <input type="file" name="foto_akte" id="foto_akte" accept="image/*,.pdf" class="custom-file-input-overlay" required onchange="updateFileBarUI(this, 'foto_akte')">
+                                    <div class="custom-file-btn d-flex align-items-center justify-content-center px-3.5 h-100 fw-semibold text-white flex-shrink-0" style="background-color: {{ $theme['primary'] }}; font-size: 13px; min-width: 110px;">
+                                        Choose File
+                                    </div>
+                                    <div class="custom-file-name text-muted font-13 text-truncate px-3 flex-grow-1" id="name_foto_akte" style="color: #6b7280; font-size: 13px;">
+                                        No file chosen
+                                    </div>
+                                </div>
                                 <div class="form-text text-muted" style="font-size: 11px;">Format: JPG/PNG/PDF, Max: 2MB.</div>
                             </div>
                             
+                            <!-- Bukti Pembayaran -->
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold text-dark" style="font-size: 13px;">Bukti Pembayaran (Wajib) <span class="text-danger">*</span></label>
-                                <input type="file" name="bukti_pembayaran" accept="image/*" class="form-control bg-white border shadow-none" required>
+                                <div class="custom-file-bar position-relative d-flex align-items-center rounded-3 border overflow-hidden bg-white shadow-xs" id="bar_bukti_pembayaran" style="height: 42px; border-color: #cbd5e1 !important;">
+                                    <input type="file" name="bukti_pembayaran" id="bukti_pembayaran" accept="image/*" class="custom-file-input-overlay" required onchange="updateFileBarUI(this, 'bukti_pembayaran')">
+                                    <div class="custom-file-btn d-flex align-items-center justify-content-center px-3.5 h-100 fw-semibold text-white flex-shrink-0" style="background-color: {{ $theme['primary'] }}; font-size: 13px; min-width: 110px;">
+                                        Choose File
+                                    </div>
+                                    <div class="custom-file-name text-muted font-13 text-truncate px-3 flex-grow-1" id="name_bukti_pembayaran" style="color: #6b7280; font-size: 13px;">
+                                        No file chosen
+                                    </div>
+                                </div>
                                 <div class="form-text text-muted" style="font-size: 11px;">Format: JPG/PNG, Max: 2MB. Upload struk transfer pendaftaran.</div>
                             </div>
                         </div>
@@ -1103,6 +1211,57 @@
                     
                     {{-- SCRIPT JAVASCRIPT: PETA LEAFLET, DYNAMIC KUOTA REALTIME, RUPIAH FORMATTER, FORM VALIDATION & SWEETALERT --}}
                     <script>
+                        // Custom File Input Bar UI Updater (Matching User Screenshot Layout)
+                        function updateFileBarUI(input, key) {
+                            const bar = document.getElementById('bar_' + key);
+                            const name = document.getElementById('name_' + key);
+
+                            if (!bar || !name) return;
+
+                            if (input.files && input.files[0]) {
+                                const file = input.files[0];
+                                const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                                
+                                // Cek ukuran file max 2MB
+                                if (file.size > 2 * 1024 * 1024) {
+                                    if (typeof Swal !== 'undefined') {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: 'Ukuran File Terlalu Besar',
+                                            html: `File <strong>${file.name}</strong> (${fileSizeMB} MB) melebihi batas maksimal <strong>2MB</strong>.<br>Silakan pilih file lain.`,
+                                            confirmButtonText: 'Paham',
+                                            confirmButtonColor: '{{ $theme['primary'] }}',
+                                            customClass: { popup: 'rounded-4' }
+                                        });
+                                    } else {
+                                        alert(`Ukuran file (${fileSizeMB} MB) melebihi 2MB. Silakan pilih file lain.`);
+                                    }
+                                    input.value = '';
+                                    resetFileBarUI(key);
+                                    return;
+                                }
+
+                                bar.classList.add('has-file');
+                                name.style.color = '#0f172a';
+                                name.style.fontWeight = '600';
+                                name.textContent = file.name + ' (' + fileSizeMB + ' MB)';
+                            } else {
+                                resetFileBarUI(key);
+                            }
+                        }
+
+                        function resetFileBarUI(key) {
+                            const bar = document.getElementById('bar_' + key);
+                            const name = document.getElementById('name_' + key);
+
+                            if (!bar || !name) return;
+
+                            bar.classList.remove('has-file');
+                            name.style.color = '#6b7280';
+                            name.style.fontWeight = '400';
+                            name.textContent = 'No file chosen';
+                        }
+
                         // Live Format Nominal Rupiah Otomatis saat mengetik angka
                         function formatRupiahInput(el) {
                             let value = el.value.replace(/[^0-9]/g, '');

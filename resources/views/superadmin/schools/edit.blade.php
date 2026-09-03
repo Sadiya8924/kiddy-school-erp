@@ -121,6 +121,18 @@
                 <span class="text-muted" style="font-size: 11px;">Format: JPG/PNG, maks 2MB</span>
               </div>
 
+              <div class="col-md-6">
+                <label class="form-label font-semibold text-dark small mb-1">Foto Cabang Sekolah (Card Landing Page)</label>
+                @if($school->foto_sekolah)
+                  <div class="mb-2">
+                    <img src="{{ asset('storage/' . $school->foto_sekolah) }}" height="48" class="rounded-3 border shadow-xs object-fit-cover">
+                    <span class="d-block text-muted mt-1" style="font-size: 11px;">Foto banner saat ini. Upload baru untuk menggantinya.</span>
+                  </div>
+                @endif
+                <input type="file" name="foto_sekolah" class="form-control rounded-3 font-medium text-dark shadow-none" accept="image/*" style="font-size: 12.5px;">
+                <span class="text-muted" style="font-size: 11px;">Format: JPG/PNG, maks 2MB. Tampil di card landing page.</span>
+              </div>
+
             </div>
 
             <div class="d-flex align-items-center gap-2 mt-4 pt-2 border-top">

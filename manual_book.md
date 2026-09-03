@@ -50,6 +50,8 @@ Halaman publik khusus masing-masing yayasan (contoh: `/y/YAH2` atau `/y/YBIC`).
 [/y/{kode_yayasan}]
   ├── Tampilan Visual Dinamis 4 Tema (Natural Sage, Ceria Playful, Trustworthy Navy, Modern Ocean)
   ├── Sinkronisasi Nama Publik Yayasan (site_title) di Title, Header, Footer & Metadata
+  ├── Hero Visual Badge Glassmorphism (Transparan & Semi Blur "Pendidikan Holistik Ramah Anak")
+  ├── Card Unit Sekolah Dinamis (Menampilkan Foto Cabang Sekolah / Fallback Gambar Default)
   ├── Navbar Header Responsif (dengan Offcanvas Drawer di Mobile/Tablet <= 992px)
   ├── Tombol "Daftar PPDB Online"   → /y/{kode_yayasan}/daftar
   └── Tombol "Dashboard / Login"   → /y/{kode_yayasan}/login (jika belum login) atau /dashboard (jika sudah login)
@@ -72,6 +74,10 @@ Formulir registrasi calon wali murid baru per yayasan.
 [/y/{kode_yayasan}/daftar]
   ├── Pilihan Cabang Sekolah TK / PAUD
   ├── Form Data Wali Murid & Calon Siswa
+  ├── Upload Dokumen Persyaratan (Pas Foto Anak, Scan KK, Akta Kelahiran, Bukti Pembayaran)
+  │   ├── Bar UI Glassmorphism Transparan & Semi Blur dengan Warna Tombol Tema Dinamis
+  │   ├── Real-Time Feedback (Indikator Status & Ukuran File Terpilih)
+  │   └── Validasi Ukuran File Otomatis (Maksimal 2MB dengan Notifikasi SweetAlert2 Warning)
   └── Tombol Navigasi Topbar "Login Portal" → /y/{kode_yayasan}/login
 ```
 
@@ -169,9 +175,11 @@ Admin pusat yayasan. Bisa mengakses dan memantau **semua cabang sekolah** di baw
 ```
 [Daftar Sekolah]
   ├── Lihat semua cabang sekolah di bawah yayasan
-  ├── Tombol [+ Tambah Sekolah]
-  │   └── Form: nama sekolah, NPSN, kepala sekolah, foto, dll.
-  ├── Tombol [Edit] per sekolah → Ubah profil sekolah
+  ├── Tombol [+ Tambah Sekolah] & [Edit Sekolah]
+  │   ├── Data Utama: Nama Sekolah, NPSN, Alamat, Kepala Sekolah, Telepon, Tahun Ajaran, Status
+  │   ├── Upload Logo Sekolah (Tampil di Header/Rapor/Dashboard)
+  │   └── Upload Foto Cabang Sekolah (Tampil di Card Landing Page Yayasan)
+  │       └── Note: Jika belum di-upload, sistem otomatis menggunakan gambar default gedung sekolah
   └── Tombol [Modul] per sekolah → /superadmin/schools/{id}/modules
       └── Toggle ON/OFF fitur per sekolah
           (Jurnal Harian, Absensi, Rapor, Materi, dll.)

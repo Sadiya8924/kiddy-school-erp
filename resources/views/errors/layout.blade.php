@@ -42,7 +42,9 @@
   }
 
   // Tentukan URL Kembali yang terenkripsi per Yayasan (1 Tombol Tunggal)
-  if ($yayasanToken) {
+  if (auth()->check() && (auth()->user()->role === 'owner' || auth()->user()->isOwner())) {
+      $backUrl = route('owner.yayasans.index');
+  } elseif ($yayasanToken) {
       if (auth()->check()) {
           $userRole = auth()->user()->role;
           if ($userRole === 'super_admin') {
@@ -70,7 +72,7 @@
   $siteTitle = \App\Models\Setting::get("site_title", "Sistem TK");
   $siteLogo = \App\Models\Setting::get("site_logo");
 
-  if ($yayasanObj) {
+  if ($yayasanObj && (!auth()->check() || (auth()->user()->role !== 'owner' && !auth()->user()->isOwner()))) {
       $siteTitle = $yayasanObj->nama_yayasan;
       if (!empty($yayasanObj->logo_yayasan)) {
           $siteLogo = asset('storage/' . $yayasanObj->logo_yayasan);

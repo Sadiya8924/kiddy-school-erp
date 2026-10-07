@@ -26,7 +26,7 @@
                         $sidebarYayasan = \App\Models\Yayasan::find($sessId);
                     }
                 }
-                if (!$sidebarYayasan) {
+                if (!$sidebarYayasan && !$u->isOwner()) {
                     $sidebarYayasan = \App\Models\Yayasan::where('status', 'aktif')->first();
                 }
             }
@@ -40,6 +40,7 @@
                     $query = parse_url($url, PHP_URL_QUERY);
                     if ($path) $url = $path . ($query ? '?' . $query : '');
                 }
+                if (str_starts_with($url, '/owner') || str_starts_with($url, '/settings/landing-page')) return $url;
                 if (str_starts_with($url, '/y/')) return $url;
                 if (str_starts_with($url, '/d/')) return $url;
                 return '/y/' . $sidebarYayasanToken . (str_starts_with($url, '/') ? $url : '/' . $url);
@@ -47,7 +48,7 @@
         @endphp
 
         <div class="brand-logo d-flex align-items-center justify-content-between px-3 py-3 border-bottom border-light">
-            <a href="{{ $encLink('/dashboard') }}" class="logo-img text-decoration-none d-flex align-items-center gap-2 overflow-hidden me-2">
+            <a href="{{ (isset($u) && $u->isOwner()) ? route('owner.yayasans.index') : $encLink('/dashboard') }}" class="logo-img text-decoration-none d-flex align-items-center gap-2 overflow-hidden me-2">
                 <div class="rounded-circle theme-brand-bg-soft theme-text-primary p-2 d-flex align-items-center justify-content-center shrink-0" style="width: 36px; height: 36px;">
                     <iconify-icon icon="solar:diploma-bold-duotone" class="fs-5 theme-brand-icon"></iconify-icon>
                 </div>
@@ -55,7 +56,9 @@
                     <span class="fw-bold d-block theme-brand-title text-uppercase text-truncate" style="font-size: 13px; letter-spacing: -0.01em;" title="{{ $sidebarTitle }}">
                         {{ $sidebarTitle }}
                     </span>
-                    <span class="text-muted d-block text-truncate" style="font-size: 10.5px; font-weight: 500;">Portal ERP Yayasan</span>
+                    <span class="text-muted d-block text-truncate" style="font-size: 10.5px; font-weight: 500;">
+                        {{ (isset($u) && $u->isOwner() && !$sidebarYayasan) ? 'Portal Owner Pusat' : 'Portal ERP Yayasan' }}
+                    </span>
                 </div>
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
@@ -114,8 +117,8 @@
                 </li>
 
                 <li class="sidebar-item">
-                    <a class="sidebar-link {{ request()->is('dashboard') || request()->is('d/*') || request()->is('superadmin/dashboard') || request()->is('superadmin/d/*') ? 'active' : '' }}" 
-                       href="{{ $sidebarYayasan ? ($user->isSuperAdmin() ? route('superadmin.dashboard.encrypted', $sidebarYayasan->encrypted_token) : route('dashboard.encrypted', $sidebarYayasan->encrypted_token)) : ($user->isSuperAdmin() ? route('superadmin.dashboard') : route('dashboard')) }}">
+                    <a class="sidebar-link {{ request()->is('dashboard') || request()->is('d/*') || request()->is('superadmin/dashboard') || request()->is('superadmin/d/*') || ($user && $user->isOwner() && request()->is('owner/yayasans*')) ? 'active' : '' }}" 
+                       href="{{ ($user && $user->isOwner()) ? route('owner.yayasans.index') : ($sidebarYayasan ? ($user->isSuperAdmin() ? route('superadmin.dashboard.encrypted', $sidebarYayasan->encrypted_token) : route('dashboard.encrypted', $sidebarYayasan->encrypted_token)) : ($user->isSuperAdmin() ? route('superadmin.dashboard') : route('dashboard'))) }}">
                         <span><iconify-icon icon="solar:home-smile-bold-duotone" class="fs-6"></iconify-icon></span>
                         <span class="hide-menu">Dashboard</span>
                     </a>
@@ -130,7 +133,7 @@
                     @if($user->isOwner())
                     {{-- Owner: edit landing page utama/global --}}
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('settings/landing-page*') ? 'active' : '' }}" href="{{ $encLink(route('settings.landing.edit')) }}">
+                        <a class="sidebar-link {{ request()->is('settings/landing-page*') ? 'active' : '' }}" href="{{ route('settings.landing.edit') }}">
                             <span><iconify-icon icon="solar:monitor-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Edit Landing Page Utama</span>
                         </a>
@@ -138,7 +141,7 @@
                     {{-- Owner: Pendaftaran Yayasan Baru --}}
                     <li class="sidebar-item">
                         @php $regCount = \App\Models\YayasanRegistration::where('status','menunggu')->count(); @endphp
-                        <a class="sidebar-link {{ request()->is('owner/yayasan-registrations*') ? 'active' : '' }}" href="{{ $encLink(route('owner.yayasan_reg.index')) }}">
+                        <a class="sidebar-link {{ request()->is('owner/yayasan-registrations*') ? 'active' : '' }}" href="{{ route('owner.yayasan_reg.index') }}">
                             <span><iconify-icon icon="solar:buildings-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">
                                 Pendaftaran Yayasan
@@ -169,7 +172,7 @@
                     </li>
                     @if($user->isOwner())
                     <li class="sidebar-item">
-                        <a class="sidebar-link {{ request()->is('*owner/yayasans*') ? 'active' : '' }}" href="{{ $encLink(route('owner.yayasans.index')) }}">
+                        <a class="sidebar-link {{ request()->is('*owner/yayasans*') ? 'active' : '' }}" href="{{ route('owner.yayasans.index') }}">
                             <span><iconify-icon icon="solar:buildings-bold-duotone" class="fs-6"></iconify-icon></span>
                             <span class="hide-menu">Data Yayasan</span>
                         </a>

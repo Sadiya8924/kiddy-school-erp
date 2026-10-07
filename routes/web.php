@@ -74,6 +74,14 @@ Route::get('/y/{kode_yayasan}/login', [LandingYayasanController::class, 'loginPa
 // Daftar akun wali murid terikat ke yayasan tertentu
 Route::post('/y/{kode_yayasan}/register', [LandingYayasanController::class, 'register'])->name('yayasan.register')->middleware('throttle:5,1');
 
+// Redirect jika rute global owner / settings landing page terakses dengan prefix /y/{kode_yayasan}
+Route::get('/y/{kode_yayasan}/settings/landing-page', function () {
+    return redirect()->route('settings.landing.edit');
+});
+Route::get('/y/{kode_yayasan}/owner/{any}', function ($kode_yayasan, $any) {
+    return redirect('/owner/' . $any);
+})->where('any', '.*');
+
 Route::get('/login', function (\Illuminate\Http\Request $request) {
     if (Auth::check()) {
         return redirect('/dashboard');

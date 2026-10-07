@@ -1,8 +1,19 @@
 @extends('layouts.admin')
 
 @section('konten_halaman')
+@php
+    $kodeYayasan = request()->route('kode_yayasan') ?: (request()->segment(1) === 'y' ? request()->segment(2) : null);
+    $getJurnalUrl = function($routeName, $params = []) use ($kodeYayasan) {
+        if ($kodeYayasan) {
+            $yayasanRouteName = 'yayasan.' . $routeName;
+            $params = array_merge(['kode_yayasan' => $kodeYayasan], $params);
+            return route($yayasanRouteName, $params);
+        }
+        return route($routeName, $params);
+    };
+@endphp
 <div class="mb-4">
-    <a href="{{ route('jurnal.index') }}" class="btn btn-light text-primary border rounded-pill px-4 shadow-sm mb-3">
+    <a href="{{ $getJurnalUrl('jurnal.index') }}" class="btn btn-light text-primary border rounded-pill px-4 shadow-sm mb-3">
         <iconify-icon icon="solar:alt-arrow-left-bold-duotone" class="align-middle me-1"></iconify-icon> Kembali ke Daftar Materi
     </a>
     <div class="d-flex align-items-center gap-3 bg-white p-4 rounded-4 shadow-sm border-start border-5 border-primary">
@@ -110,7 +121,7 @@
     <div class="modal fade text-start" id="modalJurnal{{ $siswa->id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content border-0 shadow">
-                <form action="{{ route('jurnal.siswa.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ $getJurnalUrl('jurnal.siswa.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="materi_id" value="{{ $materi->id }}">
                     <input type="hidden" name="siswa_id" value="{{ $siswa->id }}">
@@ -243,7 +254,7 @@
                             @endforelse
                         </div>
                         
-                        <form action="{{ route('jurnal.comment.store', $jurnal->id) }}" method="POST">
+                        <form action="{{ $getJurnalUrl('jurnal.comment.store', ['id' => $jurnal->id]) }}" method="POST">
                             @csrf
                             <div class="input-group">
                                 <input type="text" name="komentar" class="form-control rounded-start-pill border-secondary" placeholder="Tulis balasan..." required>

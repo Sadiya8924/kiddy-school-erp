@@ -1,6 +1,17 @@
 @extends('layouts.admin')
 
 @section('konten_halaman')
+@php
+    $kodeYayasan = request()->route('kode_yayasan') ?: (request()->segment(1) === 'y' ? request()->segment(2) : null);
+    $getJurnalUrl = function($routeName, $params = []) use ($kodeYayasan) {
+        if ($kodeYayasan) {
+            $yayasanRouteName = 'yayasan.' . $routeName;
+            $params = array_merge(['kode_yayasan' => $kodeYayasan], $params);
+            return route($yayasanRouteName, $params);
+        }
+        return route($routeName, $params);
+    };
+@endphp
 <div class="d-flex flex-column gap-3.5 mt-0 pb-4">
 
     @if(session('success'))
@@ -61,7 +72,7 @@
                     <button type="button" class="btn btn-light text-primary rounded-3 btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5 shadow-sm" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#modalQuickViewJurnal">
                         <iconify-icon icon="solar:eye-bold-duotone" class="fs-5"></iconify-icon> Rekap Jurnal
                     </button>
-                    <a href="{{ route('jurnal.zip') }}" class="btn btn-outline-light text-white rounded-3 btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5 shadow-sm" style="font-size: 12px;">
+                    <a href="{{ $getJurnalUrl('jurnal.zip') }}" class="btn btn-outline-light text-white rounded-3 btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5 shadow-sm" style="font-size: 12px;">
                         <iconify-icon icon="solar:archive-bold-duotone" class="fs-5"></iconify-icon> Unduh ZIP
                     </a>
                 </div>
@@ -113,7 +124,7 @@
     {{-- FILTER BAR --}}
     <div class="card border shadow-sm mb-4" style="border-top: 3.5px solid var(--primary-blue) !important; border-radius: 16px !important;">
         <div class="card-body p-3.5">
-            <form method="GET" action="{{ route('jurnal.index') }}" class="row g-3 align-items-end">
+            <form method="GET" action="{{ $getJurnalUrl('jurnal.index') }}" class="row g-3 align-items-end">
                 <div class="col-md-3">
                     <label class="form-label small font-semibold text-dark mb-1" style="font-size: 12px;">
                         <iconify-icon icon="solar:calendar-bold-duotone" class="align-middle me-1 text-primary"></iconify-icon> Filter Tanggal:
@@ -146,11 +157,11 @@
                 </div>
 
                 <div class="col-md-2 d-flex gap-2">
-                    <a href="{{ route('jurnal.index', ['tanggal' => date('Y-m-d')]) }}" class="btn btn-outline-primary rounded-3 w-100 font-semibold py-1.5 {{ request('tanggal') == date('Y-m-d') ? 'active' : '' }}" style="font-size: 12px;" title="Tampilkan materi hari ini">
+                    <a href="{{ $getJurnalUrl('jurnal.index', ['tanggal' => date('Y-m-d')]) }}" class="btn btn-outline-primary rounded-3 w-100 font-semibold py-1.5 {{ request('tanggal') == date('Y-m-d') ? 'active' : '' }}" style="font-size: 12px;" title="Tampilkan materi hari ini">
                         Hari Ini
                     </a>
                     @if(request('tanggal') || (request('kelompok') && request('kelompok') != 'semua') || request('search'))
-                        <a href="{{ route('jurnal.index') }}" class="btn btn-light text-danger border rounded-3 px-3 py-1.5" title="Reset Filter">
+                        <a href="{{ $getJurnalUrl('jurnal.index') }}" class="btn btn-light text-danger border rounded-3 px-3 py-1.5" title="Reset Filter">
                             <iconify-icon icon="solar:restart-bold" class="align-middle fs-5"></iconify-icon>
                         </a>
                     @endif
@@ -163,22 +174,22 @@
                     @if(request('tanggal'))
                         <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1.5 font-semibold" style="font-size: 11px;">
                             Tanggal: {{ \Carbon\Carbon::parse(request('tanggal'))->translatedFormat('d F Y') }}
-                            <a href="{{ route('jurnal.index', request()->except('tanggal')) }}" class="text-primary ms-1"><iconify-icon icon="solar:close-circle-bold"></iconify-icon></a>
+                            <a href="{{ $getJurnalUrl('jurnal.index', request()->except('tanggal')) }}" class="text-primary ms-1"><iconify-icon icon="solar:close-circle-bold"></iconify-icon></a>
                         </span>
                     @endif
                     @if(request('kelompok') && request('kelompok') != 'semua')
                         <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1.5 font-semibold" style="font-size: 11px;">
                             Kelompok: {{ request('kelompok') }}
-                            <a href="{{ route('jurnal.index', request()->except('kelompok')) }}" class="text-success ms-1"><iconify-icon icon="solar:close-circle-bold"></iconify-icon></a>
+                            <a href="{{ $getJurnalUrl('jurnal.index', request()->except('kelompok')) }}" class="text-success ms-1"><iconify-icon icon="solar:close-circle-bold"></iconify-icon></a>
                         </span>
                     @endif
                     @if(request('search'))
                         <span class="badge bg-info-subtle text-info rounded-pill px-3 py-1.5 font-semibold" style="font-size: 11px;">
                             Pencarian: "{{ request('search') }}"
-                            <a href="{{ route('jurnal.index', request()->except('search')) }}" class="text-info ms-1"><iconify-icon icon="solar:close-circle-bold"></iconify-icon></a>
+                            <a href="{{ $getJurnalUrl('jurnal.index', request()->except('search')) }}" class="text-info ms-1"><iconify-icon icon="solar:close-circle-bold"></iconify-icon></a>
                         </span>
                     @endif
-                    <a href="{{ route('jurnal.index') }}" class="small text-danger text-decoration-none ms-auto font-semibold" style="font-size: 11.5px;">Bersihkan Semua</a>
+                    <a href="{{ $getJurnalUrl('jurnal.index') }}" class="small text-danger text-decoration-none ms-auto font-semibold" style="font-size: 11.5px;">Bersihkan Semua</a>
                 </div>
             @endif
         </div>
@@ -226,7 +237,7 @@
                             @endphp
                             
                             @forelse($kelas_match as $kelas)
-                                <a href="{{ route('jurnal.kelas.show', ['materi_id' => $materi->id, 'kelas_id' => $kelas->id]) }}" class="btn btn-outline-primary rounded-3 d-flex justify-content-between align-items-center px-3 py-1.5 font-semibold" style="font-size: 12px;">
+                                <a href="{{ $getJurnalUrl('jurnal.kelas.show', ['materi_id' => $materi->id, 'kelas_id' => $kelas->id]) }}" class="btn btn-outline-primary rounded-3 d-flex justify-content-between align-items-center px-3 py-1.5 font-semibold" style="font-size: 12px;">
                                     <span><iconify-icon icon="solar:eye-bold-duotone" class="align-middle me-1 text-primary"></iconify-icon> Lihat Jurnal - Kelas {{ $kelas->nama_kelas }}</span>
                                     <iconify-icon icon="solar:alt-arrow-right-bold-duotone" class="fs-5"></iconify-icon>
                                 </a>
@@ -253,7 +264,7 @@
                             @endif
                         </p>
                         @if(request('tanggal') || request('kelompok') || request('search'))
-                            <a href="{{ route('jurnal.index') }}" class="btn btn-primary rounded-3 px-4 py-2 font-semibold shadow-xs" style="font-size: 12.5px;">
+                            <a href="{{ $getJurnalUrl('jurnal.index') }}" class="btn btn-primary rounded-3 px-4 py-2 font-semibold shadow-xs" style="font-size: 12.5px;">
                                 <iconify-icon icon="solar:restart-bold" class="align-middle me-1"></iconify-icon> Reset Filter Pilihan
                             </a>
                         @else
@@ -289,7 +300,7 @@
                     @forelse($materis as $m)
                         @php $kMatch = $list_kelas->where('kelompok', $m->kelompok); @endphp
                         @foreach($kMatch as $k)
-                            <a href="{{ route('jurnal.kelas.show', ['materi_id' => $m->id, 'kelas_id' => $k->id]) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3 border-bottom border-light-subtle">
+                            <a href="{{ $getJurnalUrl('jurnal.kelas.show', ['materi_id' => $m->id, 'kelas_id' => $k->id]) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3 border-bottom border-light-subtle">
                                 <div>
                                     <h6 class="fw-bold text-dark mb-1" style="font-size: 13.5px;">{{ $m->judul_materi }}</h6>
                                     <small class="text-muted" style="font-size: 11.5px;">
@@ -320,7 +331,7 @@
 <div class="modal fade" id="modalTambahMateri" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow-lg">
-            <form action="{{ route('jurnal.materi.store') }}" method="POST">
+            <form action="{{ $getJurnalUrl('jurnal.materi.store') }}" method="POST">
                 @csrf
                 <div class="modal-header bg-slate-50 border-bottom p-3.5">
                     <div class="d-flex align-items-center gap-2">

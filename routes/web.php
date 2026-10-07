@@ -599,6 +599,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/data-siswa/tautkan-ortu', [SiswaController::class, 'tautkanOrtu'])->name('siswa.tautkan-ortu');
         Route::post('/siswa/{id}/terima', [SiswaController::class, 'terimaPendaftaran'])->name('siswa.terima');
         Route::post('/jurnal-harian/materi', [JurnalHarianController::class, 'storeMateri'])->name('jurnal.materi.store');
+        Route::post('/jurnal-harian/siswa', [JurnalHarianController::class, 'storeJurnalSiswa'])->name('jurnal.siswa.store');
         Route::get('/jurnal-harian/materi/{id}', [JurnalHarianController::class, 'show'])->name('jurnal.show');
         Route::get('/jurnal-media/{type}/{filename}', [JurnalHarianController::class, 'serveMedia'])->name('jurnal.media');
         // TM-30: Route destroy SENGAJA TIDAK ADA untuk data transaksional.
@@ -838,12 +839,13 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/materi/{id}/approve', [MateriController::class, 'approve']);
             Route::post('/materi/{id}/reject', [MateriController::class, 'reject']);
 
-            Route::get('/jurnal-harian', [JurnalHarianController::class, 'index']);
-            Route::get('/jurnal-harian/materi/{materi_id}/kelas/{kelas_id}', [JurnalHarianController::class, 'showKelas']);
-            Route::get('/jurnal-harian/download-zip', [JurnalHarianController::class, 'downloadZip']);
-            Route::post('/jurnal-harian/materi', [JurnalHarianController::class, 'storeMateri']);
-            Route::get('/jurnal-harian/materi/{id}', [JurnalHarianController::class, 'show']);
-            Route::post('/jurnal-harian/{id}/comment', [JurnalHarianController::class, 'storeMateriComment']);
+            Route::get('/jurnal-harian', [JurnalHarianController::class, 'index'])->name('yayasan.jurnal.index');
+            Route::get('/jurnal-harian/materi/{materi_id}/kelas/{kelas_id}', [JurnalHarianController::class, 'showKelas'])->name('yayasan.jurnal.kelas.show');
+            Route::get('/jurnal-harian/download-zip', [JurnalHarianController::class, 'downloadZip'])->name('yayasan.jurnal.zip');
+            Route::post('/jurnal-harian/materi', [JurnalHarianController::class, 'storeMateri'])->name('yayasan.jurnal.materi.store');
+            Route::post('/jurnal-harian/siswa', [JurnalHarianController::class, 'storeJurnalSiswa'])->name('yayasan.jurnal.siswa.store');
+            Route::get('/jurnal-harian/materi/{id}', [JurnalHarianController::class, 'show'])->name('yayasan.jurnal.show');
+            Route::post('/jurnal-harian/{id}/comment', [JurnalHarianController::class, 'storeMateriComment'])->name('yayasan.jurnal.comment.store');
 
             Route::get('/perkembangan-physic', [PerkembanganFisikController::class, 'index']);
             Route::get('/perkembangan-fisik', [PerkembanganFisikController::class, 'index']);
@@ -1074,7 +1076,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/superadmin/users/y/{token}', [SuperUserController::class, 'index']);
             Route::resource('superadmin/users', SuperUserController::class);
             Route::resource('owner/yayasans', YayasanController::class);
-            Route::get('/owner/yayasan-registrations', [OwnerRegistrationController::class, 'index']);
+            Route::get('/owner/yayasan-registrations', [YayasanRegistrationController::class, 'index']);
         });
     });
 

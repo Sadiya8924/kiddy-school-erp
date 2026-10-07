@@ -112,18 +112,29 @@ class JurnalHarianController extends Controller
     }
 
     // 3. HALAMAN ISI JURNAL PER SISWA DALAM 1 KELAS & MATERI
-    public function showKelas($materi_id, $kelas_id)
+    public function showKelas(Request $request, ...$params)
     {
         $user = Auth::user();
         $schoolId = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
         
+        $materi_id = $request->route('materi_id');
+        $kelas_id = $request->route('kelas_id');
+        if (!$materi_id || !$kelas_id) {
+            if (count($params) >= 2) {
+                $kelas_id = array_pop($params);
+                $materi_id = array_pop($params);
+            }
+        }
+        
         $materi = MateriJurnal::findOrFail($materi_id);
         $kelas = Kelas::findOrFail($kelas_id);
+        $schoolId = $schoolId ?: $kelas->school_id;
         $semesterAktif = Semester::where('is_active', true)->first();
 
         // Validasi keamanan: Guru cuma bisa buka kelasnya sendiri
         if ($user->role === 'guru' && $user->kelas_id != $kelas_id) {
-            return redirect('/jurnal-harian')->with('error', 'Akses ditolak! Anda bukan guru di kelas ini.');
+            $redirectUrl = $request->route('kode_yayasan') ? '/y/' . $request->route('kode_yayasan') . '/jurnal-harian' : '/jurnal-harian';
+            return redirect($redirectUrl)->with('error', 'Akses ditolak! Anda bukan guru di kelas ini.');
         }
 
         // Ambil data siswa di kelas tersebut
@@ -132,6 +143,13 @@ class JurnalHarianController extends Controller
                 $q->where('anggota_kelas.kelas_id', $kelas_id);
                 if ($semesterAktif) $q->where('anggota_kelas.semester_id', $semesterAktif->id);
             })->get();
+
+        if ($siswas->isEmpty()) {
+            $siswas = Siswa::where('school_id', $schoolId)
+                ->whereHas('kelas', function($q) use ($kelas_id) {
+                    $q->where('anggota_kelas.kelas_id', $kelas_id);
+                })->get();
+        }
 
         // Ambil jurnal yang sudah diisi untuk materi ini
         $jurnals = JurnalHarian::where('materi_id', $materi_id)
@@ -142,8 +160,24 @@ class JurnalHarianController extends Controller
         return view('jurnal.show', compact('materi', 'kelas', 'siswas', 'jurnals'));
     }
 
+    public function show(Request $request, ...$params)
+    {
+        $id = $request->route('id') ?? (count($params) ? end($params) : null);
+        $materi = MateriJurnal::findOrFail($id);
+        $user = Auth::user();
+        $kodeYayasan = $request->route('kode_yayasan');
+        if ($user->role === 'guru' && $user->kelas_id) {
+            $routeShowKelas = $kodeYayasan ? 'yayasan.jurnal.kelas.show' : 'jurnal.kelas.show';
+            $routeParams = ['materi_id' => $materi->id, 'kelas_id' => $user->kelas_id];
+            if ($kodeYayasan) $routeParams['kode_yayasan'] = $kodeYayasan;
+            return redirect()->route($routeShowKelas, $routeParams);
+        }
+        $indexRoute = $kodeYayasan ? route('yayasan.jurnal.index', $kodeYayasan) : route('jurnal.index');
+        return redirect($indexRoute);
+    }
+
     // 4. SIMPAN JURNAL (FOTO & KEGIATAN PER ANAK)
-    public function storeJurnalSiswa(Request $request)
+    public function storeJurnalSiswa(Request $request, ...$params)
     {
         $request->validate([
             'materi_id' => 'required',
@@ -155,7 +189,12 @@ class JurnalHarianController extends Controller
         ]);
 
         $materi = MateriJurnal::findOrFail($request->materi_id);
-        $schoolId = Auth::user()->isSuperAdmin() ? session('active_school_id') : Auth::user()->school_id;
+        $user = Auth::user();
+        $schoolId = $user->isSuperAdmin() ? session('active_school_id') : $user->school_id;
+        if (!$schoolId) {
+            $kelas = Kelas::find($request->kelas_id);
+            $schoolId = $kelas ? $kelas->school_id : $materi->school_id;
+        }
         
         $fotoPath = null;
         $videoPath = null;
@@ -419,11 +458,13 @@ class JurnalHarianController extends Controller
         return back();
     }
 
-    public function storeMateriComment(Request $request, $id)
+    public function storeMateriComment(Request $request, ...$params)
     {
         $request->validate([
             'komentar' => 'required|string'
         ]);
+
+        $id = $request->route('id') ?? (count($params) ? end($params) : null);
 
         DB::table('jurnal_comments')->insert([
             'jurnal_id' => $id,
